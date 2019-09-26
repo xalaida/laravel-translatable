@@ -1,0 +1,29 @@
+{
+  "name": "nevadskiy/translatable-models",
+  "description": "Laravel package that allows to translate models into different languages",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Vitalii Nevadskiy",
+      "email": "nevadskiy@gmail.com"
+    }
+  ],
+  "require": {
+    "php": "^7.2"
+  },
+  "require-dev": {
+    "phpunit/phpunit": "^8.0",
+    "orchestra/testbench": "^4.0",
+    "mockery/mockery": "^1.2"
+  },
+  "autoload": {
+    "psr-4": {
+      "Nevadskiy\\Translatable\\": "src/"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "Nevadskiy\\Translatable\\Tests\\": "tests/"
+    }
+  }
+}
