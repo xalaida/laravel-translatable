@@ -17,6 +17,8 @@ class Translator
     }
 
     /**
+     * Get translated attribute for the given model.
+     *
      * @param string $attribute
      * @param Model|HasTranslations $translatable
      * @return mixed
@@ -24,8 +26,9 @@ class Translator
     public function get(string $attribute, Model $translatable)
     {
         return $translatable->translations->filter(function (Translation $translation) use ($attribute) {
-            return $translation->locale === app()->getLocale();
-        })->first()->translatable_value;
+            return $translation->locale === app()->getLocale()
+                && $translation->translatable_attribute === $attribute;
+        })->first()->translatable_value ?? null;
     }
 
     /**

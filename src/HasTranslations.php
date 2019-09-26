@@ -7,14 +7,13 @@ use Illuminate\Database\Eloquent\Relations\MorphMany;
 trait HasTranslations
 {
     /**
-     * Determine if the attribute is translatable.
-     *
-     * @param string $attribute
-     * @return bool
+     * Boot HasTranslations trait.
      */
-    public function isTranslatable(string $attribute): bool
+    public static function bootHasTranslations(): void
     {
-        return in_array($attribute, $this->translatable, true);
+        static::retrieved(function (self $translatable) {
+            $translatable->translateAttributes();
+        });
     }
 
     /**
@@ -28,39 +27,47 @@ trait HasTranslations
     }
 
     /**
-     * Get model translated attribute if translation is available.
-     *
-     * @param $attribute
-     * @return mixed
+     * Translate model attributes.
      */
-    public function getAttribute($attribute)
+    protected function translateAttributes(): void
     {
-        if ($this->shouldBeTranslated($attribute)) {
-        // TODO: Save original attributes somewhere...
-            $this->attributes[$attribute] = $this->getTranslator()->get($attribute, $this);
+        if (! $this->getTranslator()->isDefaultLocale()) {
+            foreach ($this->getAttributes() as $attribute => $value) {
+                $this->translateAttribute($attribute, $value);
+            }
         }
-
-        return parent::getAttribute($attribute);
     }
 
     /**
-     * Determine if attribute should be translated
+     * Translate model attribute.
+     *
+     * @param string $attribute
+     * @param $value
+     */
+    protected function translateAttribute(string $attribute, $value): void
+    {
+        if ($this->isTranslatable($attribute)) {
+            $this->attributes[$attribute] = $this->getTranslator()->get($attribute, $this) ?: $value;
+        }
+    }
+
+    /**
+     * Determine if the attribute is translatable.
      *
      * @param string $attribute
      * @return bool
      */
-    public function shouldBeTranslated(string $attribute): bool
+    protected function isTranslatable(string $attribute): bool
     {
-        return $this->isTranslatable($attribute)
-            && ! $this->getTranslator()->isDefaultLocale();
+        return in_array($attribute, $this->translatable, true);
     }
 
     /**
-     * Get model translator
+     * Get translator.
      *
      * @return Translator
      */
-    public function getTranslator(): Translator
+    protected function getTranslator(): Translator
     {
         return app(Translator::class);
     }

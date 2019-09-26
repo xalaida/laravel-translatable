@@ -9,6 +9,8 @@ use Illuminate\Support\Collection;
 
 /**
  * @property string locale
+ * @property string translatable_attribute
+ * @property string translatable_value
  * @property Collection translations
  */
 class Translation extends Model
