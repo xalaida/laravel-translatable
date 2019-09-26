@@ -129,6 +129,8 @@ class ReadTranslationsTest extends TestCase
 }
 
 /**
+ * TODO: extract to support model class
+ *
  * @property string title
  * @property string description
  */

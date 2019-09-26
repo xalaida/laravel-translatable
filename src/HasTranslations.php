@@ -2,6 +2,7 @@
 
 namespace Nevadskiy\Translatable;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 
 trait HasTranslations
@@ -13,6 +14,13 @@ trait HasTranslations
     {
         static::retrieved(function (self $translatable) {
             $translatable->translateAttributes();
+        });
+
+        // TODO: fix this
+        static::addGlobalScope('translations', function (Builder $query, self $translatable) {
+            if (! $translatable->getTranslator()->isDefaultLocale()) {
+                $query->with('translations');
+            }
         });
     }
 
