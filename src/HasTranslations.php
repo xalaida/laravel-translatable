@@ -32,6 +32,20 @@ trait HasTranslations
     }
 
     /**
+     * Save translations for the attributes.
+     *
+     * @param array $translations
+     * @param string $locale
+     * @return void
+     */
+    public function translate(array $translations, string $locale = null): void
+    {
+        foreach ($translations as $attribute => $value) {
+            $this->getTranslator()->set($this, $attribute, $value, $locale);
+        }
+    }
+
+    /**
      * Get the attribute value.
      *
      * @param $attribute
@@ -101,7 +115,7 @@ trait HasTranslations
      */
     protected function loadTranslation(string $attribute): void
     {
-        $translation = $this->getTranslator()->get($attribute, $this);
+        $translation = $this->getTranslator()->get($this, $attribute);
         $this->translated[$attribute] = $translation ?: $this->attributes[$attribute];
         $this->attributes[$attribute] = $this->translated[$attribute];
     }

@@ -2,7 +2,6 @@
 
 namespace Nevadskiy\Translatable;
 
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Support\Collection;
@@ -31,24 +30,4 @@ class Translation extends Model
     {
         return $this->morphTo();
     }
-
-//    public function scopeLocale(Builder $builder, string $locale)
-//    {
-//        return $builder->where('locale', $locale);
-//    }
-//
-//    public function scopeAttribute(Builder $builder, string $attribute)
-//    {
-//        return $builder->where('translatable_attribute', $attribute);
-//    }
-//
-//    public function isLocale(string $locale): bool
-//    {
-//        return $this->locale === $locale;
-//    }
-//
-//    public function isAttribute(string $attribute): bool
-//    {
-//        return $this->translatable_attribute === $attribute;
-//    }
 }

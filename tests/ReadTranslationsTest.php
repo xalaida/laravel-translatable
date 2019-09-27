@@ -3,9 +3,7 @@
 namespace Nevadskiy\Translatable\Tests;
 
 use DB;
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Str;
-use Nevadskiy\Translatable\HasTranslations;
+use Nevadskiy\Translatable\Tests\Support\Models\Book;
 
 class ReadTranslationsTest extends TestCase
 {
@@ -244,51 +242,5 @@ class ReadTranslationsTest extends TestCase
         ]);
 
         $this->assertEquals(1, $book->id);
-    }
-}
-
-/**
- * @property int id
- * @property string title
- * @property string description
- * @property string description_short
- */
-class Book extends Model
-{
-    use HasTranslations;
-
-    /**
-     * The attributes that aren't mass assignable.
-     *
-     * @var array
-     */
-    protected $guarded = [];
-
-    /**
-     * The attributes that can be translatable.
-     *
-     * @var array
-     */
-    protected $translatable = ['title', 'description'];
-
-    /**
-     * Get description short attribute.
-     *
-     * @return string
-     */
-    public function getDescriptionShortAttribute(): string
-    {
-        return Str::limit($this->description, 3);
-    }
-
-    /**
-     * Get title attribute.
-     *
-     * @param string $title
-     * @return string
-     */
-    public function getTitleAttribute(string $title): string
-    {
-         return Str::ucfirst($title);
     }
 }

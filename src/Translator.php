@@ -19,11 +19,11 @@ class Translator
     /**
      * Get translated attribute for the given model.
      *
-     * @param string $attribute
      * @param Model|HasTranslations $translatable
+     * @param string $attribute
      * @return mixed
      */
-    public function get(string $attribute, Model $translatable)
+    public function get(Model $translatable, string $attribute)
     {
         return $translatable->translations->filter(function (Translation $translation) use ($attribute) {
             return $translation->locale === app()->getLocale()
@@ -32,31 +32,20 @@ class Translator
     }
 
     /**
+     * Set translation for the given model.
+     *
+     * @param Model|HasTranslations $translatable
      * @param string $attribute
-     * @param string $locale
-     * @return mixed
+     * @param string $value
+     * @param string|null $locale
+     * @return Translation
      */
-    protected function getLoadedTranslation(string $attribute, $locale)
+    public function set(Model $translatable, string $attribute, string $value, ?string $locale = null): Translation
     {
-        return $this->translatable->translations
-                ->filter(function ($translation) use ($attribute, $locale) {
-                    return $translation->isAttribute($attribute)
-                        && $translation->isLocale($locale);
-                })
-                ->first()
-                ->translatable_value ?? null;
-    }
-    /**
-     * @param string $attribute
-     * @param $locale
-     * @return mixed
-     */
-    protected function loadTranslation(string $attribute, string $locale)
-    {
-        return $this->translatable
-            ->translations()
-            ->locale($locale)
-            ->attribute($attribute)
-            ->value('translatable_value');
+        return $translatable->translations()->create([
+            'translatable_attribute' => $attribute,
+            'translatable_value' => $value,
+            'locale' => $locale ?: app()->getLocale(),
+        ]);
     }
 }
