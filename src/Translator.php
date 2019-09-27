@@ -42,10 +42,11 @@ class Translator
      */
     public function set(Model $translatable, string $attribute, string $value, ?string $locale = null): Translation
     {
-        return $translatable->translations()->create([
+        return $translatable->translations()->updateOrCreate([
             'translatable_attribute' => $attribute,
-            'translatable_value' => $value,
             'locale' => $locale ?: app()->getLocale(),
+        ], [
+            'translatable_value' => $value,
         ]);
     }
 }

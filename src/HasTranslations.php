@@ -22,6 +22,16 @@ trait HasTranslations
     }
 
     /**
+     * Get translatable attributes.
+     *
+     * @return array
+     */
+    public function getTranslatable(): array
+    {
+        return $this->translatable ?? [];
+    }
+
+    /**
      * Morph many translations relation.
      *
      * @return MorphMany
@@ -43,6 +53,17 @@ trait HasTranslations
         foreach ($translations as $attribute => $value) {
             $this->getTranslator()->set($this, $attribute, $value, $locale);
         }
+    }
+
+    /**
+     * Translate model attributes using translator engine.
+     *
+     * @param string $locale
+     * @return void
+     */
+    public function translateUsingEngine(string $locale): void
+    {
+        $this->getAutoTranslator()->translate($this, $locale);
     }
 
     /**
@@ -75,6 +96,16 @@ trait HasTranslations
     }
 
     /**
+     * Get auto translator.
+     *
+     * @return AutoTranslator
+     */
+    public function getAutoTranslator(): AutoTranslator
+    {
+        return app(AutoTranslator::class);
+    }
+
+    /**
      * Determine if the attribute should be translated.
      *
      * @param $attribute
@@ -94,7 +125,7 @@ trait HasTranslations
      */
     protected function isTranslatable(string $attribute): bool
     {
-        return in_array($attribute, $this->translatable, true);
+        return in_array($attribute, $this->getTranslatable(), true);
     }
 
     /**
