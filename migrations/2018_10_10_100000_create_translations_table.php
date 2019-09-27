@@ -21,10 +21,7 @@ class CreateTranslationsTable extends Migration
             $table->string('locale', 24)->comment('RFC 5646. See: http://www.rfc-editor.org/rfc/rfc5646.txt');
             $table->timestamps();
 
-            // TODO: add indices
-            // TODO: add unique key
-//            $this->index(["{$name}_type", "{$name}_id"], $indexName);
-
+            $table->index(['translatable_type', 'translatable_id', 'locale']);
             $table->unique(['translatable_type', 'translatable_id', 'translatable_attribute', 'locale']);
         });
     }
