@@ -2,26 +2,23 @@
 
 namespace Nevadskiy\Translatable;
 
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 
 trait HasTranslations
 {
     /**
+     * The attributes that has loaded translation.
+     *
+     * @var array
+     */
+    protected $translated = [];
+
+    /**
      * Boot HasTranslations trait.
      */
     public static function bootHasTranslations(): void
     {
-        static::retrieved(function (self $translatable) {
-            $translatable->translateAttributes();
-        });
-
-        // TODO: fix this
-        static::addGlobalScope('translations', function (Builder $query, self $translatable) {
-            if (! $translatable->getTranslator()->isDefaultLocale()) {
-                $query->with('translations');
-            }
-        });
+        static::addGlobalScope(new TranslationsEagerLoadScope());
     }
 
     /**
@@ -35,28 +32,44 @@ trait HasTranslations
     }
 
     /**
-     * Translate model attributes.
+     * Get the attribute value.
+     *
+     * @param $attribute
+     * @return mixed
      */
-    protected function translateAttributes(): void
+    public function getAttribute($attribute)
     {
-        if (! $this->getTranslator()->isDefaultLocale()) {
-            foreach ($this->getAttributes() as $attribute => $value) {
-                $this->translateAttribute($attribute, $value);
-            }
+        if (! $this->shouldBeTranslated($attribute)) {
+            return parent::getAttribute($attribute);
         }
+
+        if (! $this->hasLoadedTranslation($attribute)) {
+            $this->loadTranslation($attribute);
+        }
+
+        return parent::getAttribute($attribute);
     }
 
     /**
-     * Translate model attribute.
+     * Get translator.
      *
-     * @param string $attribute
-     * @param $value
+     * @return Translator
      */
-    protected function translateAttribute(string $attribute, $value): void
+    public function getTranslator(): Translator
     {
-        if ($this->isTranslatable($attribute)) {
-            $this->attributes[$attribute] = $this->getTranslator()->get($attribute, $this) ?: $value;
-        }
+        return app(Translator::class);
+    }
+
+    /**
+     * Determine if the attribute should be translated.
+     *
+     * @param $attribute
+     * @return bool
+     */
+    private function shouldBeTranslated(string $attribute): bool
+    {
+        return $this->isTranslatable($attribute)
+            && ! $this->getTranslator()->isDefaultLocale();
     }
 
     /**
@@ -71,12 +84,25 @@ trait HasTranslations
     }
 
     /**
-     * Get translator.
+     * Determine if the attribute has loaded translation.
      *
-     * @return Translator
+     * @param $attribute
+     * @return bool
      */
-    protected function getTranslator(): Translator
+    private function hasLoadedTranslation(string $attribute): bool
     {
-        return app(Translator::class);
+        return isset($this->translated[$attribute]);
+    }
+
+    /**
+     * Load the attribute translation.
+     *
+     * @param string $attribute
+     */
+    protected function loadTranslation(string $attribute): void
+    {
+        $translation = $this->getTranslator()->get($attribute, $this);
+        $this->translated[$attribute] = $translation ?: $this->attributes[$attribute];
+        $this->attributes[$attribute] = $this->translated[$attribute];
     }
 }

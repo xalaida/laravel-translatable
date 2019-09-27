@@ -2,13 +2,14 @@
 
 namespace Nevadskiy\Translatable\Tests;
 
+use DB;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Str;
 use Nevadskiy\Translatable\HasTranslations;
 
 class ReadTranslationsTest extends TestCase
 {
-    // TODO: unknown attribute
-    // TODO: test accessors
+    // TODO: add array serialization
 
     /** @test */
     public function it_successfully_retrieve_translatable_attribute(): void
@@ -126,19 +127,168 @@ class ReadTranslationsTest extends TestCase
 
         $this->assertEquals('Test book title', $book->fresh()->title);
     }
+
+    /** @test */
+    public function it_performs_only_two_queries_for_translations_eager_loading(): void
+    {
+        foreach (range(0, 10) as $i) {
+            $book = new Book([
+                'title' => "Test book title {$i}",
+                'description' => "Test book description {$i}",
+            ]);
+
+            $book->save();
+
+            $book->translations()->create([
+                'translatable_attribute' => 'title',
+                'translatable_value' => "Тестовое название книги {$i}",
+                'locale' => 'ru',
+            ]);
+
+            $book->translations()->create([
+                'translatable_attribute' => 'description',
+                'translatable_value' => "Тестовое описание книги {$i}",
+                'locale' => 'ru',
+            ]);
+        }
+
+        DB::enableQueryLog();
+
+        app()->setLocale('ru');
+
+        Book::all()->each(function ($book, $i) {
+            $this->assertEquals("Тестовое название книги {$i}", $book->title);
+            $this->assertEquals("Тестовое описание книги {$i}", $book->description);
+        });
+
+        $this->assertCount(2, DB::getQueryLog());
+    }
+
+    /** @test */
+    public function it_works_correctly_with_accessors(): void
+    {
+        $book = new Book([
+            'title' => 'Test book title',
+            'description' => 'Test book description',
+        ]);
+
+        $book->save();
+
+        $book->translations()->create([
+            'translatable_attribute' => 'title',
+            'translatable_value' => 'Тестовое название книги',
+            'locale' => 'ru',
+        ]);
+
+        $book->translations()->create([
+            'translatable_attribute' => 'description',
+            'translatable_value' => 'Тестовое описание книги',
+            'locale' => 'ru',
+        ]);
+
+        app()->setLocale('ru');
+
+        $this->assertEquals('Тес...', $book->fresh()->description_short);
+    }
+
+    /** @test */
+    public function it_successfully_works_with_accessors(): void
+    {
+        $book = new Book([
+            'title' => 'test book title',
+            'description' => 'Test book description',
+        ]);
+
+        $book->save();
+
+        $book->translations()->create([
+            'translatable_attribute' => 'title',
+            'translatable_value' => 'тестовое название книги',
+            'locale' => 'ru',
+        ]);
+
+        app()->setLocale('ru');
+
+        $this->assertEquals('Тестовое название книги', $book->fresh()->title);
+    }
+
+    /** @test */
+    public function it_returns_null_for_unknown_attribute(): void
+    {
+        $book = new Book([
+            'title' => 'Test book title',
+            'description' => 'Test book description',
+        ]);
+
+        $book->save();
+
+        app()->setLocale('ru');
+
+        $this->assertNull($book->fresh()->color);
+    }
+
+    /** @test */
+    public function it_returns_original_value_for_not_translatable_attribute(): void
+    {
+        $book = new Book([
+            'title' => 'test book title',
+            'description' => 'Test book description',
+        ]);
+
+        $book->save();
+
+        $book->translations()->create([
+            'translatable_attribute' => 'title',
+            'translatable_value' => 'тестовое название книги',
+            'locale' => 'ru',
+        ]);
+
+        $this->assertEquals(1, $book->id);
+    }
 }
 
 /**
- * TODO: extract to support model class
- *
+ * @property int id
  * @property string title
  * @property string description
+ * @property string description_short
  */
 class Book extends Model
 {
     use HasTranslations;
 
+    /**
+     * The attributes that aren't mass assignable.
+     *
+     * @var array
+     */
     protected $guarded = [];
 
+    /**
+     * The attributes that can be translatable.
+     *
+     * @var array
+     */
     protected $translatable = ['title', 'description'];
+
+    /**
+     * Get description short attribute.
+     *
+     * @return string
+     */
+    public function getDescriptionShortAttribute(): string
+    {
+        return Str::limit($this->description, 3);
+    }
+
+    /**
+     * Get title attribute.
+     *
+     * @param string $title
+     * @return string
+     */
+    public function getTitleAttribute(string $title): string
+    {
+         return Str::ucfirst($title);
+    }
 }
