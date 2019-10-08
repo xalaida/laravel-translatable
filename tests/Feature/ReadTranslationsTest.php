@@ -237,10 +237,34 @@ class ReadTranslationsTest extends TestCase
 
         $book->translations()->create([
             'translatable_attribute' => 'title',
-            'translatable_value' => 'тестовое название книги',
+            'translatable_value' => 'Тестовое название книги',
             'locale' => 'ru',
         ]);
 
         $this->assertEquals(1, $book->id);
+    }
+
+    /** @test */
+    public function it_has_translated_attributes_after_to_array_converting(): void
+    {
+        $book = new Book([
+            'title' => 'test book title',
+            'description' => 'Test book description',
+        ]);
+
+        $book->save();
+
+        $book->translations()->create([
+            'translatable_attribute' => 'title',
+            'translatable_value' => 'Тестовое название книги',
+            'locale' => 'ru',
+        ]);
+
+        app()->setLocale('ru');
+
+        $bookArray = $book->toArray();
+
+        $this->assertEquals('Тестовое название книги', $bookArray['title']);
+        $this->assertEquals('Test book description', $bookArray['description']);
     }
 }

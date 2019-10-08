@@ -30,7 +30,10 @@ class Book extends Model
      *
      * @var array
      */
-    protected $translatable = ['title', 'description'];
+    protected $translatable = [
+        'title',
+        'description',
+    ];
 
     /**
      * Get description short attribute.

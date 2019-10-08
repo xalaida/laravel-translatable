@@ -86,6 +86,22 @@ trait HasTranslations
     }
 
     /**
+     * Convert the model instance to an array.
+     *
+     * @return array
+     */
+    public function toArray(): array
+    {
+        $translatedAttributes = [];
+
+        foreach ($this->translatable as $attribute) {
+            $translatedAttributes[$attribute] = $this->getAttribute($attribute);
+        }
+
+        return array_merge(parent::toArray(), $translatedAttributes);
+    }
+
+    /**
      * Get translator.
      *
      * @return Translator
