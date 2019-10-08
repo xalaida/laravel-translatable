@@ -46,7 +46,28 @@ class Translator
             'translatable_attribute' => $attribute,
             'locale' => $locale ?: app()->getLocale(),
         ], [
-            'translatable_value' => $value,
+            'translatable_value' => $this->getMutatedValue($translatable, $attribute, $value),
         ]);
+    }
+
+    /**
+     * Get mutated attribute value.
+     *
+     * @param Model $translatable
+     * @param string $attribute
+     * @param string $value
+     * @return string
+     */
+    private function getMutatedValue(Model $translatable, string $attribute, string $value): string
+    {
+        $originalValue = $translatable->getAttribute($attribute);
+
+        $translatable->setAttribute($attribute, $value);
+
+        $mutatedValue = $translatable->getAttribute($attribute);
+
+        $translatable->setAttribute($attribute, $originalValue);
+
+        return $mutatedValue;
     }
 }

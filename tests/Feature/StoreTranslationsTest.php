@@ -11,7 +11,6 @@ class StoreTranslationsTest extends TestCase
     // TODO: check if attribute is translatable...
     // TODO: check if default locale
     // TODO: check if many attributes should only be from translatable array
-    // TODO: test attribute mutators
 
     /** @test */
     public function it_can_save_translations_for_translatable_attributes(): void
@@ -101,6 +100,25 @@ class StoreTranslationsTest extends TestCase
         $this->assertCount(2, $book->translations);
         $this->assertEquals('Тестовое название книги', $book->title);
         $this->assertEquals('Тестовое описание книги', $book->description);
+    }
+
+    /** @test */
+    public function it_use_model_mutation_for_attributes(): void
+    {
+        $book = new Book([
+            'title' => 'Test book title',
+            'description' => 'Test book description',
+        ]);
+
+        $book->save();
+
+        $book->translate(['title' => 'Очень очень длинное название для книги'], 'ru');
+
+        $this->assertEquals('Test book title', $book->title);
+
+        app()->setLocale('ru');
+
+        $this->assertEquals('Очень очень длинное название д...', $book->title);
     }
 }
 

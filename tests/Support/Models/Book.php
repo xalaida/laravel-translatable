@@ -55,4 +55,14 @@ class Book extends Model
     {
         return Str::ucfirst($title);
     }
+
+    /**
+     * Set title attribute.
+     *
+     * @param string $title
+     */
+    public function setTitleAttribute(string $title): void
+    {
+        $this->attributes['title'] = Str::limit($title, 30);
+    }
 }
