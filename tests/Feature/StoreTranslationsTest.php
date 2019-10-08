@@ -121,4 +121,3 @@ class StoreTranslationsTest extends TestCase
         $this->assertEquals('Очень очень длинное название д...', $book->title);
     }
 }
-
