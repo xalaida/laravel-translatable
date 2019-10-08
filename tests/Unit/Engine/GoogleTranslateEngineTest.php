@@ -3,6 +3,7 @@
 namespace Nevadskiy\Translatable\Tests\Unit\Engine;
 
 use Nevadskiy\Translatable\Engine\GoogleTranslateEngine;
+use Nevadskiy\Translatable\Engine\TranslationException;
 use Nevadskiy\Translatable\Tests\TestCase;
 
 class GoogleTranslateEngineTest extends TestCase
@@ -13,6 +14,11 @@ class GoogleTranslateEngineTest extends TestCase
      */
     public function it_translate_strings_successfully_using_api(): void
     {
-        $this->assertEquals('Книга', (new GoogleTranslateEngine())->translate('Book', 'ru', 'en'));
+        try {
+            $translation = (new GoogleTranslateEngine())->translate('Book', 'ru', 'en');
+            $this->assertEquals('Книга', $translation);
+        } catch (TranslationException $e) {
+            $this->markTestSkipped($e->getMessage());
+        }
     }
 }
