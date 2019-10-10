@@ -19,7 +19,6 @@ class StoreTranslationsTest extends TestCase
             'title' => 'Test book title',
             'description' => 'Test book description',
         ]);
-
         $book->save();
 
         $book->translate(['title' => 'Тестовое название книги'], 'ru');
@@ -36,7 +35,6 @@ class StoreTranslationsTest extends TestCase
             'title' => 'Test book title',
             'description' => 'Test book description',
         ]);
-
         $book->save();
 
         $book->translate([
@@ -58,7 +56,6 @@ class StoreTranslationsTest extends TestCase
             'title' => 'Test book title',
             'description' => 'Test book description',
         ]);
-
         $book->save();
 
         $book->translate(['title' => 'Неправильный перевод'], 'ru');
@@ -78,7 +75,6 @@ class StoreTranslationsTest extends TestCase
             'title' => 'Test book title',
             'description' => 'Test book description',
         ]);
-
         $book->save();
 
         $engine = Mockery::mock(TranslatorEngine::class);
@@ -109,7 +105,6 @@ class StoreTranslationsTest extends TestCase
             'title' => 'Test book title',
             'description' => 'Test book description',
         ]);
-
         $book->save();
 
         $book->translate(['title' => 'Очень очень длинное название для книги'], 'ru');
@@ -119,5 +114,21 @@ class StoreTranslationsTest extends TestCase
         app()->setLocale('ru');
 
         $this->assertEquals('Очень очень длинное название д...', $book->title);
+    }
+
+    /** @test */
+    public function it_restores_original_attribute_after_applied_mutations(): void
+    {
+        $book = new Book([
+            'title' => 'test book title',
+            'description' => 'Test book description',
+        ]);
+        $book->save();
+
+        $originalAttributes = $book->getAttributes();
+
+        $book->translate(['title' => 'Очень очень длинное название для книги'], 'ru');
+
+        $this->assertEquals($originalAttributes, $book->getAttributes());
     }
 }

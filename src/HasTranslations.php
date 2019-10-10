@@ -51,7 +51,7 @@ trait HasTranslations
     public function translate(array $translations, string $locale = null): void
     {
         foreach ($translations as $attribute => $value) {
-            $this->getTranslator()->set($this, $attribute, $value, $locale);
+            $this->getTranslator()->set($this, $attribute, $this->withSetAttribute($attribute, $value), $locale);
         }
     }
 
@@ -190,6 +190,26 @@ trait HasTranslations
         $this->attributes[$attribute] = $value;
 
         $processed = parent::getAttribute($attribute);
+
+        $this->attributes[$attribute] = $original;
+
+        return $processed;
+    }
+
+    /**
+     * Get the attribute value with all mutators applied.
+     *
+     * @param string $attribute
+     * @param string $value
+     * @return mixed
+     */
+    private function withSetAttribute(string $attribute, string $value)
+    {
+        $original = $this->attributes[$attribute];
+
+        parent::setAttribute($attribute, $value);
+
+        $processed = $this->attributes[$attribute];
 
         $this->attributes[$attribute] = $original;
 
