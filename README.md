@@ -4,6 +4,8 @@ Package installation does not affect original behaviour. You do not need to make
 All translated data are stored in the separate package's provided 'translations' table.
 
 ##### TODO
+- Add translation events
+- Fix nullable strings issues
 - Add possibility to ignore mutators & accessors for translations
 - Add possibility to simple API storing 
 - Add more API engine drivers
