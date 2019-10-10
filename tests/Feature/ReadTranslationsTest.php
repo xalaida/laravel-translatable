@@ -7,8 +7,6 @@ use Nevadskiy\Translatable\Tests\Support\Models\Book;
 
 class ReadTranslationsTest extends TestCase
 {
-    // TODO: add array serialization
-
     /** @test */
     public function it_successfully_retrieve_translatable_attribute(): void
     {
@@ -16,7 +14,6 @@ class ReadTranslationsTest extends TestCase
             'title' => 'Test book title',
             'description' => 'Test book description',
         ]);
-
         $book->save();
 
         $book->translations()->create([
@@ -27,7 +24,33 @@ class ReadTranslationsTest extends TestCase
 
         app()->setLocale('ru');
 
+        $this->assertEquals('Тестовое название книги', $book->title);
         $this->assertEquals('Тестовое название книги', $book->fresh()->title);
+    }
+
+    /** @test */
+    public function it_does_not_break_model_on_save_after_translation(): void
+    {
+        $book = new Book([
+            'title' => 'Test book title',
+            'description' => 'Test book description',
+        ]);
+        $book->save();
+
+        $book->translations()->create([
+            'translatable_attribute' => 'title',
+            'translatable_value' => 'Тестовое название книги',
+            'locale' => 'ru',
+        ]);
+
+        app()->setLocale('ru');
+        $this->assertEquals('Тестовое название книги', $book->title);
+
+        $book->save();
+
+        app()->setLocale('en');
+        $book = $book->fresh();
+        $this->assertEquals('Test book title', $book->title);
     }
 
     /** @test */
@@ -37,7 +60,6 @@ class ReadTranslationsTest extends TestCase
             'title' => 'Test book title',
             'description' => 'Test book description',
         ]);
-
         $book->save();
 
         app()->setLocale('ru');
@@ -52,7 +74,6 @@ class ReadTranslationsTest extends TestCase
             'title' => 'Test book title',
             'description' => 'Test book description',
         ]);
-
         $book->save();
 
         $book->translations()->create([
@@ -85,7 +106,6 @@ class ReadTranslationsTest extends TestCase
             'title' => 'Test book title',
             'description' => 'Test book description',
         ]);
-
         $book->save();
 
         $book->translations()->create([
@@ -112,7 +132,6 @@ class ReadTranslationsTest extends TestCase
             'title' => 'Test book title',
             'description' => 'Test book description',
         ]);
-
         $book->save();
 
         $book->translations()->create([
@@ -169,7 +188,6 @@ class ReadTranslationsTest extends TestCase
             'title' => 'Test book title',
             'description' => 'Test book description',
         ]);
-
         $book->save();
 
         $book->translations()->create([
@@ -217,7 +235,6 @@ class ReadTranslationsTest extends TestCase
             'title' => 'Test book title',
             'description' => 'Test book description',
         ]);
-
         $book->save();
 
         app()->setLocale('ru');
@@ -229,10 +246,9 @@ class ReadTranslationsTest extends TestCase
     public function it_returns_original_value_for_not_translatable_attribute(): void
     {
         $book = new Book([
-            'title' => 'test book title',
+            'title' => 'Test book title',
             'description' => 'Test book description',
         ]);
-
         $book->save();
 
         $book->translations()->create([
@@ -248,10 +264,9 @@ class ReadTranslationsTest extends TestCase
     public function it_has_translated_attributes_after_to_array_converting(): void
     {
         $book = new Book([
-            'title' => 'test book title',
+            'title' => 'Test book title',
             'description' => 'Test book description',
         ]);
-
         $book->save();
 
         $book->translations()->create([
@@ -266,5 +281,48 @@ class ReadTranslationsTest extends TestCase
 
         $this->assertEquals('Тестовое название книги', $bookArray['title']);
         $this->assertEquals('Test book description', $bookArray['description']);
+    }
+
+    /** @test */
+    public function it_store_original_attribute_value_after_translation(): void
+    {
+        $book = new Book([
+            'title' => 'Test book title',
+            'description' => 'Test book description',
+        ]);
+        $book->save();
+
+        $book->translations()->create([
+            'translatable_attribute' => 'title',
+            'translatable_value' => 'Тестовое название книги',
+            'locale' => 'ru',
+        ]);
+
+        app()->setLocale('ru');
+
+        $this->assertEquals('Тестовое название книги', $book->title);
+        $this->assertEquals('Test book title', $book->getWithoutTranslation('title'));
+    }
+
+    /** @test */
+    public function it_returns_original_before_translation_value_with_accessor_applied(): void
+    {
+        $book = new Book([
+            'title' => 'test book title',
+            'description' => 'Test book description',
+        ]);
+
+        $book->save();
+
+        $book->translations()->create([
+            'translatable_attribute' => 'title',
+            'translatable_value' => 'Тестовое название книги',
+            'locale' => 'ru',
+        ]);
+
+        app()->setLocale('ru');
+
+        $this->assertEquals('Тестовое название книги', $book->title);
+        $this->assertEquals('Test book title', $book->getWithoutTranslation('title'));
     }
 }

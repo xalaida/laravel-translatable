@@ -19,6 +19,7 @@ class GoogleTranslateEngine implements TranslatorEngine
     public function translate(string $string, string $target = 'en', string $source = null): string
     {
         try {
+            usleep(250 * 1000);
             return GoogleTranslate::trans($string, $target, $source);
         } catch (Throwable $e) {
             throw new TranslationException("Cannot load translation for '{$string}'. Reason: {$e->getMessage()}");

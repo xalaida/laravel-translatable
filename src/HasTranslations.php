@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Relations\MorphMany;
 trait HasTranslations
 {
     /**
-     * The attributes that has loaded translation.
+     * The attributes that have loaded translation.
      *
      * @var array
      */
@@ -82,6 +82,17 @@ trait HasTranslations
             $this->loadTranslation($attribute);
         }
 
+        return $this->withGetAttribute($attribute, $this->translated[$attribute]);
+    }
+
+    /**
+     * Get the attribute value without translation.
+     *
+     * @param string $attribute
+     * @return mixed
+     */
+    public function getWithoutTranslation(string $attribute)
+    {
         return parent::getAttribute($attribute);
     }
 
@@ -102,7 +113,7 @@ trait HasTranslations
     }
 
     /**
-     * Get translator.
+     * Get the translator.
      *
      * @return Translator
      */
@@ -112,7 +123,7 @@ trait HasTranslations
     }
 
     /**
-     * Get auto translator.
+     * Get the auto translator.
      *
      * @return AutoTranslator
      */
@@ -162,8 +173,26 @@ trait HasTranslations
      */
     protected function loadTranslation(string $attribute): void
     {
-        $translation = $this->getTranslator()->get($this, $attribute);
-        $this->translated[$attribute] = $translation ?: $this->attributes[$attribute];
-        $this->attributes[$attribute] = $this->translated[$attribute];
+        $this->translated[$attribute] = $this->getTranslator()->get($this, $attribute) ?: $this->attributes[$attribute];
+    }
+
+    /**
+     * Get the attribute value with all accessors and casts applied.
+     *
+     * @param string $attribute
+     * @param string $value
+     * @return mixed
+     */
+    private function withGetAttribute(string $attribute, string $value)
+    {
+        $original = $this->attributes[$attribute];
+
+        $this->attributes[$attribute] = $value;
+
+        $processed = parent::getAttribute($attribute);
+
+        $this->attributes[$attribute] = $original;
+
+        return $processed;
     }
 }
