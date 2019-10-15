@@ -180,10 +180,10 @@ trait HasTranslations
      * Get the attribute value with all accessors and casts applied.
      *
      * @param string $attribute
-     * @param string $value
+     * @param $value
      * @return mixed
      */
-    private function withGetAttribute(string $attribute, string $value)
+    private function withGetAttribute(string $attribute, $value)
     {
         $original = $this->attributes[$attribute];
 
@@ -200,10 +200,10 @@ trait HasTranslations
      * Get the attribute value with all mutators applied.
      *
      * @param string $attribute
-     * @param string $value
+     * @param $value
      * @return mixed
      */
-    private function withSetAttribute(string $attribute, string $value)
+    private function withSetAttribute(string $attribute, $value)
     {
         $original = $this->attributes[$attribute];
 

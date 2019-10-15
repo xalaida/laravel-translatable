@@ -3,6 +3,7 @@
 namespace Nevadskiy\Translatable\Tests;
 
 use DB;
+use Nevadskiy\Translatable\Tests\Support\Models\Block;
 use Nevadskiy\Translatable\Tests\Support\Models\Book;
 
 class ReadTranslationsTest extends TestCase
@@ -324,5 +325,24 @@ class ReadTranslationsTest extends TestCase
 
         $this->assertEquals('Тестовое название книги', $book->title);
         $this->assertEquals('Test book title', $book->getWithoutTranslation('title'));
+    }
+
+    /** @test */
+    public function it_successfully_casts_translatable_attribute(): void
+    {
+        $block = new Block([
+            'type' => 'comment',
+            'body' => ['title' => 'The block title', 'content' => 'The block content'],
+        ]);
+        $block->save();
+
+        $block->translate(['body' => ['title' => 'Заголовок блока', 'content' => 'Содержание блока']], 'ru');
+
+        app()->setLocale('ru');
+
+        $this->assertEquals([
+            'title' => 'Заголовок блока',
+            'content' => 'Содержание блока'
+        ], $block->body);
     }
 }
