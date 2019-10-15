@@ -20,7 +20,9 @@ reading
 get original
 
 ##### TODO
+- Add timestamp touching if translation was updated and throw updatedAt event when translation was added 
 - Add translation events
+- Feature remove listener for removing translations for removed item (resolve with softDelete)
 - Fix nullable strings issues
 - Add possibility to ignore mutators & accessors for translations
 - Add possibility to simple API storing 
