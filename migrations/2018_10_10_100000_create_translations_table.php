@@ -17,7 +17,7 @@ class CreateTranslationsTable extends Migration
             $table->increments('id');
             $table->morphs('translatable');
             $table->string('translatable_attribute');
-            $table->string('translatable_value');
+            $table->text('translatable_value');
             $table->string('locale', 24)->comment('RFC 5646. See: http://www.rfc-editor.org/rfc/rfc5646.txt');
             $table->timestamps();
 
