@@ -4,6 +4,7 @@ namespace Nevadskiy\Translatable\Tests\Support\Models;
 
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
+use Carbon\Carbon;
 use Illuminate\Support\Str;
 use Nevadskiy\Translatable\HasTranslations;
 
@@ -13,6 +14,7 @@ use Nevadskiy\Translatable\HasTranslations;
  * @property string description
  * @property string description_short
  * @property Collection translations
+ * @property Carbon created_at
  */
 class Book extends Model
 {

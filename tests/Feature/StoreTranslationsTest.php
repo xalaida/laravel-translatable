@@ -2,6 +2,7 @@
 
 namespace Nevadskiy\Translatable\Tests;
 
+use Carbon\Carbon;
 use Mockery;
 use Nevadskiy\Translatable\Engine\TranslatorEngine;
 use Nevadskiy\Translatable\Tests\Support\Models\Book;
@@ -120,7 +121,7 @@ class StoreTranslationsTest extends TestCase
     public function it_restores_original_attribute_after_applied_mutations(): void
     {
         $book = new Book([
-            'title' => 'test book title',
+            'title' => 'Test book title',
             'description' => 'Test book description',
         ]);
         $book->save();
@@ -130,5 +131,58 @@ class StoreTranslationsTest extends TestCase
         $book->translate(['title' => 'Очень очень длинное название для книги'], 'ru');
 
         $this->assertEquals($originalAttributes, $book->getAttributes());
+    }
+
+    /** @test */
+    public function it_sets_attribute_value_correctly_for_translatable_attributes(): void
+    {
+        $book = new Book([
+            'title' => 'test book title',
+            'description' => 'Test book description',
+        ]);
+        $book->save();
+
+        $book->translate(['title' => 'Тестовое название книги'], 'ru');
+
+        app()->setLocale('ru');
+
+        $book->title = 'Новое название книги';
+
+        $this->assertEquals('Новое название книги', $book->title);
+        $this->assertEquals('test book title', $book->getAttributes()['title']);
+    }
+
+    /** @test */
+    public function it_sets_attribute_value_correctly_for_not_translatable_attributes(): void
+    {
+        $book = new Book([
+            'title' => 'test book title',
+            'description' => 'Test book description',
+        ]);
+        $book->save();
+
+        app()->setLocale('ru');
+
+        $timestamp = Carbon::createFromTimestamp(Carbon::now()->subMonth()->getTimestamp());
+
+        $book->created_at = $timestamp;
+
+        $this->assertEquals($timestamp, $book->created_at);
+        $this->assertEquals($timestamp, $book->getAttributes()['created_at']);
+    }
+
+    /** @test */
+    public function it_sets_translatable_attribute_value_correctly_for_default_locale(): void
+    {
+        $book = new Book([
+            'title' => 'Test book title',
+            'description' => 'Test book description',
+        ]);
+        $book->save();
+
+        $book->title = 'New test book title';
+
+        $this->assertEquals('New test book title', $book->title);
+        $this->assertEquals('New test book title', $book->getAttributes()['title']);
     }
 }

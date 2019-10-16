@@ -86,6 +86,24 @@ trait HasTranslations
     }
 
     /**
+     * Set the attribute value.
+     *
+     * @param $attribute
+     * @param $value
+     * @return mixed
+     */
+    public function setAttribute($attribute, $value)
+    {
+        if (! $this->shouldBeTranslated($attribute)) {
+            return parent::setAttribute($attribute, $value);
+        }
+
+        $this->translated[$attribute] = $this->withSetAttribute($attribute, $value);
+
+        return $this;
+    }
+
+    /**
      * Get the attribute value without translation.
      *
      * @param string $attribute
