@@ -20,6 +20,7 @@ reading
 get original
 
 ##### TODO
+- ADD SCOPE ONLY FOR CURRENT LOCALE EAGER LOADING. DONT LOAD ALL LOCALES 
 - Add timestamp touching if translation was updated and throw updatedAt event when translation was added 
 - Add translation events
 - Feature remove listener for removing translations for removed item (resolve with softDelete)
