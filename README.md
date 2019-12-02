@@ -20,6 +20,7 @@ reading
 get original
 
 ##### TODO
+- Feature command for pruning translations for undefined translatable model (removed, etc.)
 - ADD SCOPE ONLY FOR CURRENT LOCALE EAGER LOADING. DONT LOAD ALL LOCALES 
 - Add timestamp touching if translation was updated and throw updatedAt event when translation was added 
 - Add translation events

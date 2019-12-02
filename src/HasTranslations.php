@@ -4,6 +4,9 @@ namespace Nevadskiy\Translatable;
 
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 
+/**
+ * @property Translation[] translations
+ */
 trait HasTranslations
 {
     /**

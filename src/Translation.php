@@ -14,8 +14,6 @@ use Illuminate\Support\Collection;
  * @property string translatable_value
  * @property int translatable_id
  * @property string translatable_type
- * @property Collection translations
- * @property HasTranslations translatable
  * @property Carbon updated_at
  * @property Carbon created_at
  */
