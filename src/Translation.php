@@ -5,7 +5,6 @@ namespace Nevadskiy\Translatable;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
-use Illuminate\Support\Collection;
 
 /**
  * @property int id

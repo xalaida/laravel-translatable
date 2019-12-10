@@ -6,6 +6,7 @@ use Carbon\Carbon;
 use Mockery;
 use Nevadskiy\Translatable\Engine\TranslatorEngine;
 use Nevadskiy\Translatable\Tests\Support\Models\Book;
+use Nevadskiy\Translatable\Translation;
 
 class StoreTranslationsTest extends TestCase
 {
@@ -184,5 +185,51 @@ class StoreTranslationsTest extends TestCase
 
         $this->assertEquals('New test book title', $book->title);
         $this->assertEquals('New test book title', $book->getAttributes()['title']);
+    }
+
+    /** @test */
+    public function it_stores_translation_for_translatable_attribute_automatically(): void
+    {
+        $book = new Book([
+            'title' => 'Test book title',
+            'description' => 'Test book description',
+        ]);
+        $book->save();
+
+        app()->setLocale('ru');
+
+        $book->title = 'Новая книга';
+        $book->save();
+
+        $this->assertEquals('Новая книга', $book->title);
+
+        $this->assertDatabaseHas('books', [
+            'title' => 'Test book title',
+            'description' => 'Test book description',
+        ]);
+
+        $this->assertDatabaseHas('translations', [
+            'translatable_attribute' => 'title',
+            'translatable_value' => 'Новая книга',
+        ]);
+    }
+
+    /** @test */
+    public function it_does_not_store_default_values_as_translatable_when_translations_not_available(): void
+    {
+        $book = new Book([
+            'title' => 'Test book title',
+            'description' => 'Test book description',
+        ]);
+        $book->save();
+
+        app()->setLocale('ru');
+
+        $this->assertEquals('Test book title', $book->title);
+        $this->assertEquals('Test book description', $book->description);
+
+        $book->save();
+
+        $this->assertEmpty(Translation::all());
     }
 }

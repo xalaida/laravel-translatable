@@ -22,6 +22,18 @@ trait HasTranslations
     public static function bootHasTranslations(): void
     {
         static::addGlobalScope(new TranslationsEagerLoadScope());
+
+        static::saving(function (self $translatable) {
+            $translatable->onSavingEvent();
+        });
+    }
+
+    /**
+     * On saving event listener.
+     */
+    public function onSavingEvent(): void
+    {
+        $this->translate(array_filter($this->translated));
     }
 
     /**
@@ -83,6 +95,10 @@ trait HasTranslations
 
         if (! $this->hasLoadedTranslation($attribute)) {
             $this->loadTranslation($attribute);
+        }
+
+        if (null === $this->translated[$attribute]) {
+            return $this->attributes[$attribute];
         }
 
         return $this->withGetAttribute($attribute, $this->translated[$attribute]);
@@ -194,7 +210,7 @@ trait HasTranslations
      */
     protected function loadTranslation(string $attribute): void
     {
-        $this->translated[$attribute] = $this->getTranslator()->get($this, $attribute) ?: $this->attributes[$attribute];
+        $this->translated[$attribute] = $this->getTranslator()->get($this, $attribute);
     }
 
     /**
