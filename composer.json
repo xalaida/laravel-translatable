@@ -1,5 +1,5 @@
 {
-  "name": "nevadskiy/translatable-models",
+  "name": "nevadskiy/translatable",
   "description": "Laravel package that allows to translate models into different languages",
   "license": "MIT",
   "authors": [
