@@ -188,7 +188,7 @@ class StoreTranslationsTest extends TestCase
     }
 
     /** @test */
-    public function it_stores_translation_for_translatable_attribute_automatically(): void
+    public function it_stores_translation_for_translatable_attribute_on_model_saving(): void
     {
         $book = new Book([
             'title' => 'Test book title',
@@ -211,6 +211,36 @@ class StoreTranslationsTest extends TestCase
         $this->assertDatabaseHas('translations', [
             'translatable_attribute' => 'title',
             'translatable_value' => 'Новая книга',
+            'locale' => 'ru',
+        ]);
+    }
+
+    /** @test */
+    public function it_stores_translation_for_translatable_attribute_on_model_updating(): void
+    {
+        $book = new Book([
+            'title' => 'Test book title',
+            'description' => 'Test book description',
+        ]);
+        $book->save();
+
+        app()->setLocale('ru');
+
+        $book->update([
+            'title' => 'Новая книга'
+        ]);
+
+        $this->assertEquals('Новая книга', $book->fresh()->title);
+
+        $this->assertDatabaseHas('books', [
+            'title' => 'Test book title',
+            'description' => 'Test book description',
+        ]);
+
+        $this->assertDatabaseHas('translations', [
+            'translatable_attribute' => 'title',
+            'translatable_value' => 'Новая книга',
+            'locale' => 'ru',
         ]);
     }
 
