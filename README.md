@@ -6,9 +6,20 @@ All translated data are stored in the separate package's provided 'translations'
 ## Usage
 Add HasTranslationsTrait
 
-Set $translatable array
+Add $translatable array
+```
+/**
+ * The attributes that can be translatable.
+ *
+ * @var array
+ */
+protected $translatable = [
+    'title',
+    'description',
+];
+```
 
-Set $fillable array contains translatable attributes ()
+Make sure your translatable attributes are $fillable
 
 #### Add docs for
 mutations
@@ -25,6 +36,7 @@ get original
 - add available locales array (probably dont)
 
 ##### TODO
+- Add setTranslation() and getTranslation() methods
 - FIX case when locale was changed multiple times (probably just clear translated[] array on translatable model)
 - ADD guard when for model creating for non default locale...
 - Feature command for pruning translations for undefined translatable model (removed, etc.)
