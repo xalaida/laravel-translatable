@@ -8,7 +8,7 @@ Add HasTranslationsTrait
 
 Set $translatable array
 
-Set $fillable array contains translatable attributes
+Set $fillable array contains translatable attributes ()
 
 #### Add docs for
 mutations
@@ -19,7 +19,14 @@ saving
 reading
 get original
 
+# FIX
+- fix that translatable attributes is can be set through non $translatable fields
+- refactor full translator class.
+- add available locales array (probably dont)
+
 ##### TODO
+- FIX case when locale was changed multiple times (probably just clear translated[] array on translatable model)
+- ADD guard when for model creating for non default locale...
 - Feature command for pruning translations for undefined translatable model (removed, etc.)
 - ADD SCOPE ONLY FOR CURRENT LOCALE EAGER LOADING. DONT LOAD ALL LOCALES 
 - Add timestamp touching if translation was updated and throw updatedAt event when translation was added 
