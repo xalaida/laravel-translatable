@@ -36,6 +36,7 @@ get original
 - add available locales array (probably dont)
 
 ##### TODO
+- check translation usage on ManyToMany (Pivot) models
 - Add setTranslation() and getTranslation() methods
 - FIX case when locale was changed multiple times (probably just clear translated[] array on translatable model)
 - ADD guard when for model creating for non default locale...
