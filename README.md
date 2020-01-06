@@ -36,6 +36,7 @@ get original
 - add available locales array (probably dont)
 
 ##### TODO
+- add remove unused translations console command (check if relation still exists and also add removal event listener for trait)
 - check translation usage on ManyToMany (Pivot) models
 - Add setTranslation() and getTranslation() methods
 - FIX case when locale was changed multiple times (probably just clear translated[] array on translatable model)
