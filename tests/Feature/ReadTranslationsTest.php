@@ -345,4 +345,18 @@ class ReadTranslationsTest extends TestCase
             'content' => 'Содержание блока'
         ], $block->body);
     }
+
+    /** @test */
+    public function it_successfully_casts_attribute_which_have_no_translations_available(): void
+    {
+        $block = new Block([
+            'type' => 'comment',
+            'body' => ['title' => 'The block title', 'content' => 'The block content'],
+        ]);
+        $block->save();
+
+        app()->setLocale('ru');
+
+        $this->assertEquals(['title' => 'The block title', 'content' => 'The block content'], $block->body);
+    }
 }

@@ -98,7 +98,7 @@ trait HasTranslations
         }
 
         if (null === $this->translated[$attribute]) {
-            return $this->attributes[$attribute];
+            return parent::getAttribute($attribute);
         }
 
         return $this->withGetAttribute($attribute, $this->translated[$attribute]);
