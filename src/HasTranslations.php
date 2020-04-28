@@ -2,9 +2,11 @@
 
 namespace Nevadskiy\Translatable;
 
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 
 /**
+ * @mixin Model
  * @property Translation[] translations
  */
 trait HasTranslations
