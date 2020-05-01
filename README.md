@@ -31,6 +31,8 @@ reading
 get original
 
 ##### TODO
+- [ ] change translate method to accept 3 arguments (string $attribute, string $value, string $locale = null)
+- [ ] add translateMany method to accept 2 arguments (array $translations, string $locale = null)
 - [ ] add possibility to remove translations eager loading...
 - [ ] fix that translatable attributes is can be set through non $translatable fields
 - [ ] refactor full translator class.
