@@ -8,11 +8,11 @@ use Illuminate\Database\Eloquent\Relations\MorphTo;
 
 /**
  * @property int id
- * @property string locale
- * @property string translatable_attribute
- * @property string translatable_value
- * @property int translatable_id
  * @property string translatable_type
+ * @property int translatable_id
+ * @property string translatable_attribute
+ * @property string value
+ * @property string locale
  * @property Carbon updated_at
  * @property Carbon created_at
  */
