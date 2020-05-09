@@ -25,19 +25,9 @@ trait HasTranslations
     {
         static::addGlobalScope(new TranslationsEagerLoadScope());
 
-        static::saving(function (self $translatable) {
+        static::saving(static function (self $translatable) {
             $translatable->onSavingEvent();
         });
-    }
-
-    /**
-     * Get translatable attributes.
-     *
-     * @return array
-     */
-    public function getTranslatable(): array
-    {
-        return $this->translatable ?? [];
     }
 
     /**
@@ -51,114 +41,147 @@ trait HasTranslations
     }
 
     /**
-     * On saving event listener.
+     * Save translation for the given attribute and locale.
+     *
+     * @param string $attribute
+     * @param $value
+     * @param string $locale
+     * @return void
      */
-    public function onSavingEvent(): void
+    public function translate(string $attribute, $value, string $locale): void
     {
-        $this->translate(array_filter($this->translated));
+        static::getTranslator()->set($this, $attribute, $this->withSetAttribute($attribute, $value), $locale);
     }
 
     /**
-     * Save translations for the attributes.
+     * Save many translations for the given attribute and locale.
      *
      * @param array $translations
      * @param string $locale
      * @return void
      */
-    public function translate(array $translations, string $locale = null): void
+    public function translateMany(array $translations, string $locale): void
     {
         foreach ($translations as $attribute => $value) {
-            static::getTranslator()->set($this, $attribute, $this->withSetAttribute($attribute, $value), $locale);
+            $this->translate($attribute, $value, $locale);
         }
     }
 
     /**
-     * Translate model attributes using translator engine.
+     * Get translation value for the attribute.
      *
-     * @param string $locale
-     * @return void
-     */
-    public function translateUsingEngine(string $locale): void
-    {
-        $this->getAutoTranslator()->translate($this, $locale);
-    }
-
-    /**
-     * Get the attribute value.
-     *
-     * @param $attribute
+     * @param string $attribute
+     * @param string|null $locale
      * @return mixed
      */
-    public function getAttribute($attribute)
+    public function getTranslation(string $attribute, string $locale = null)
     {
-        if (! $this->shouldBeTranslated($attribute)) {
-            return parent::getAttribute($attribute);
+        $locale = $locale ?: static::getTranslator()->getLocale();
+
+        $translation = $this->getRawTranslation($attribute, $locale);
+
+        if (is_null($translation)) {
+            return null;
         }
 
-        if (! $this->hasLoadedTranslation($attribute)) {
-            $this->loadTranslation($attribute);
-        }
-
-        if (null === $this->translated[$attribute]) {
-            return parent::getAttribute($attribute);
-        }
-
-        return $this->withGetAttribute($attribute, $this->translated[$attribute]);
+        return $this->withGetAttribute($attribute, $translation);
     }
 
     /**
-     * Set the attribute value.
+     * Get raw translation value for the attribute.
      *
-     * @param $attribute
-     * @param $value
+     * @param string $attribute
+     * @param string|null $locale
      * @return mixed
      */
-    public function setAttribute($attribute, $value)
+    public function getRawTranslation(string $attribute, string $locale = null)
     {
-        if (! $this->shouldBeTranslated($attribute)) {
-            return parent::setAttribute($attribute, $value);
+        $locale = $locale ?: static::getTranslator()->getLocale();
+
+        if (! $this->hasLoadedTranslation($attribute, $locale)) {
+            $this->loadTranslation($attribute, $locale);
         }
 
-        $this->translated[$attribute] = $this->withSetAttribute($attribute, $value);
-
-        return $this;
+        return $this->getLoadedTranslation($attribute, $locale);
     }
 
     /**
-     * Get the attribute value without translation.
+     * Get model translations.
+     *
+     * @param string|null $locale
+     * @return array
+     */
+    public function getTranslations(string $locale = null): array
+    {
+        $locale = $locale ?: static::getTranslator()->getLocale();
+
+        $translations = [];
+
+        foreach ($this->translatable as $attribute) {
+            $translations[$attribute] = $this->getTranslation($attribute, $locale);
+        }
+
+        return $translations;
+    }
+
+    /**
+     * Get attribute's default value without translation.
      *
      * @param string $attribute
      * @return mixed
      */
-    public function getWithoutTranslation(string $attribute)
+    public function getDefaultAttribute(string $attribute)
     {
         return parent::getAttribute($attribute);
     }
 
     /**
-     * Convert the model instance to an array.
+     * Determine whether the attribute has loaded translation.
      *
-     * @return array
+     * @param string $attribute
+     * @param string $locale
+     * @return bool
      */
-    public function toArray(): array
+    protected function hasLoadedTranslation(string $attribute, string $locale): bool
     {
-        $translatedAttributes = [];
-
-        foreach ($this->translatable as $attribute) {
-            $translatedAttributes[$attribute] = $this->getAttribute($attribute);
-        }
-
-        return array_merge(parent::toArray(), $translatedAttributes);
+        return isset($this->translated[$locale][$attribute]);
     }
 
     /**
-     * Get the auto translator.
+     * Load the attribute translation.
      *
-     * @return AutoTranslator
+     * @param string $attribute
+     * @param string $locale
      */
-    public function getAutoTranslator(): AutoTranslator
+    protected function loadTranslation(string $attribute, string $locale): void
     {
-        return app(AutoTranslator::class);
+        $this->translated[$locale][$attribute] = static::getTranslator()->get($this, $attribute, $locale);
+    }
+
+    /**
+     * Get the loaded attribute translation.
+     *
+     * @param string $attribute
+     * @param string $locale
+     * @return mixed
+     */
+    protected function getLoadedTranslation(string $attribute, string $locale)
+    {
+        return $this->translated[$locale][$attribute];
+    }
+
+    /**
+     * Set translation to the attribute.
+     *
+     * @param string $attribute
+     * @param $value
+     * @param string|null $locale
+     */
+    private function setTranslation(string $attribute, $value, string $locale = null): void
+    {
+        $locale = $locale ?: static::getTranslator()->getLocale();
+
+        $this->translated[$locale][$attribute] = $this->withSetAttribute($attribute, $value);
     }
 
     /**
@@ -174,7 +197,7 @@ trait HasTranslations
     }
 
     /**
-     * Determine if the attribute is translatable.
+     * Determine whether the attribute is translatable.
      *
      * @param string $attribute
      * @return bool
@@ -185,24 +208,70 @@ trait HasTranslations
     }
 
     /**
-     * Determine if the attribute has loaded translation.
+     * Get translatable attributes.
      *
-     * @param $attribute
-     * @return bool
+     * @return array
      */
-    public function hasLoadedTranslation(string $attribute): bool
+    public function getTranslatable(): array
     {
-        return isset($this->translated[$attribute]);
+        return $this->translatable ?? [];
     }
 
     /**
-     * Load the attribute translation.
+     * On saving event listener.
+     */
+    public function onSavingEvent(): void
+    {
+        $this->saveTranslations();
+    }
+
+    /**
+     * Save the model translations.
+     */
+    public function saveTranslations(): void
+    {
+        foreach ($this->translated as $locale => $attributes) {
+            $this->translateMany(array_filter($attributes), $locale);
+        }
+    }
+
+    /**
+     * Get an attribute from the model.
      *
      * @param string $attribute
+     * @return mixed
      */
-    protected function loadTranslation(string $attribute): void
+    public function getAttribute($attribute)
     {
-        $this->translated[$attribute] = static::getTranslator()->get($this, $attribute);
+        if (! $this->shouldBeTranslated($attribute)) {
+            return $this->getDefaultAttribute($attribute);
+        }
+
+        $translation = $this->getTranslation($attribute);
+
+        if (is_null($translation)) {
+            return $this->getDefaultAttribute($attribute);
+        }
+
+        return $translation;
+    }
+
+    /**
+     * Set a given attribute on the model.
+     *
+     * @param string $attribute
+     * @param mixed $value
+     * @return mixed
+     */
+    public function setAttribute($attribute, $value)
+    {
+        if (! $this->shouldBeTranslated($attribute)) {
+            return parent::setAttribute($attribute, $value);
+        }
+
+        $this->setTranslation($attribute, $value);
+
+        return $this;
     }
 
     /**
@@ -226,7 +295,7 @@ trait HasTranslations
     }
 
     /**
-     * Get the attribute value with all mutators applied.
+     * Get the attribute value with all mutators and casts applied.
      *
      * @param string $attribute
      * @param $value
@@ -246,12 +315,22 @@ trait HasTranslations
     }
 
     /**
-     * Get the translator instance.
+     * Convert the model instance to an array.
      *
-     * @return Translator
+     * @return array
      */
-    public static function getTranslator(): Translator
+    public function toArray(): array
     {
-        return app(Translator::class);
+        return array_merge(parent::toArray(), array_filter($this->getTranslations()));
+    }
+
+    /**
+     * Get the model translator instance.
+     *
+     * @return ModelTranslator
+     */
+    public static function getTranslator(): ModelTranslator
+    {
+        return app(ModelTranslator::class);
     }
 }
