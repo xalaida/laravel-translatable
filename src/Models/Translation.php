@@ -3,6 +3,7 @@
 namespace Nevadskiy\Translatable\Models;
 
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 
@@ -33,5 +34,17 @@ class Translation extends Model
     public function translatable(): MorphTo
     {
         return $this->morphTo();
+    }
+
+    /**
+     * Scope translations by the given locale.
+     *
+     * @param Builder $query
+     * @param string $locale
+     * @return Builder
+     */
+    public function scopeLocale(Builder $query, string $locale): Builder
+    {
+        return $query->where('locale', $locale);
     }
 }
