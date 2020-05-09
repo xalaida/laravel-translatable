@@ -13,6 +13,9 @@ RUN apt-get install -y libzip-dev zip && docker-php-ext-configure zip --with-lib
 # BC Math
 RUN docker-php-ext-install bcmath
 
+# Xdebug
+RUN pecl install xdebug && docker-php-ext-enable xdebug
+
 # Composer installation
 ENV COMPOSER_ALLOW_SUPERUSER 1
 RUN php -r "readfile('http://getcomposer.org/installer');" | php -- --install-dir=/usr/bin/ --filename=composer
