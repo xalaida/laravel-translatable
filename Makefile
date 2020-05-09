@@ -1,5 +1,3 @@
-# All commands have been successfully tested in OS Ubuntu 19.10
-
 install: build dependencies test
 
 build:
@@ -15,4 +13,4 @@ outdated:
 	docker run --rm -v ${PWD}:/app app composer outdated
 
 test:
-	docker run --rm -it -v ${PWD}:/app app vendor/bin/phpunit
+	docker run --rm -it -v ${PWD}:/app app vendor/bin/phpunit --stop-on-failure
