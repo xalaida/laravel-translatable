@@ -12,6 +12,8 @@ use Nevadskiy\Translatable\HasTranslations;
  * @property int id
  * @property string title
  * @property string description
+ * @property array|null content
+ * @property int version
  * @property string description_short
  * @property Collection translations
  * @property Carbon created_at
@@ -35,6 +37,16 @@ class Book extends Model
     protected $translatable = [
         'title',
         'description',
+        'content',
+    ];
+
+    /**
+     * The attributes that should be cast to native types.
+     *
+     * @var array
+     */
+    protected $casts = [
+        'content' => 'array'
     ];
 
     /**
