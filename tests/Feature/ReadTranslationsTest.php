@@ -1,10 +1,11 @@
 <?php
 
-namespace Nevadskiy\Translatable\Tests;
+namespace Nevadskiy\Translatable\Tests\Feature;
 
 use DB;
 use Nevadskiy\Translatable\Tests\Support\Models\Block;
 use Nevadskiy\Translatable\Tests\Support\Models\Book;
+use Nevadskiy\Translatable\Tests\TestCase;
 
 class ReadTranslationsTest extends TestCase
 {

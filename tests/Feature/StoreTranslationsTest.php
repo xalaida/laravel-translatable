@@ -1,12 +1,13 @@
 <?php
 
-namespace Nevadskiy\Translatable\Tests;
+namespace Nevadskiy\Translatable\Tests\Feature;
 
 use Carbon\Carbon;
 use Mockery;
 use Nevadskiy\Translatable\Engine\TranslatorEngine;
 use Nevadskiy\Translatable\Tests\Support\Models\Book;
 use Nevadskiy\Translatable\Translation;
+use Nevadskiy\Translatable\Tests\TestCase;
 
 class StoreTranslationsTest extends TestCase
 {

@@ -1,10 +1,11 @@
 <?php
 
-namespace Nevadskiy\Translatable\Tests;
+namespace Nevadskiy\Translatable\Tests\Feature;
 
 use Mockery;
 use Nevadskiy\Translatable\Engine\TranslatorEngine;
 use Nevadskiy\Translatable\Tests\Support\Models\Book;
+use Nevadskiy\Translatable\Tests\TestCase;
 
 class AutoTranslationsTest extends TestCase
 {
