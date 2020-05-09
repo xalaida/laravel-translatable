@@ -3,6 +3,7 @@
 namespace Nevadskiy\Translatable;
 
 use Illuminate\Database\Eloquent\Model;
+use Nevadskiy\Translatable\Models\Translation;
 
 class ModelTranslator
 {
