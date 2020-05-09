@@ -1,6 +1,6 @@
 <?php
 
-namespace Nevadskiy\Translatable;
+namespace Nevadskiy\Translatable\Models;
 
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;

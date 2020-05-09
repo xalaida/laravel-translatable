@@ -4,6 +4,8 @@ namespace Nevadskiy\Translatable;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
+use Nevadskiy\Translatable\Models\Translation;
+use Nevadskiy\Translatable\Scopes\TranslationsEagerLoadScope;
 
 /**
  * @mixin Model
@@ -23,10 +25,10 @@ trait HasTranslations
      */
     public static function bootHasTranslations(): void
     {
-        static::addGlobalScope(new TranslationsEagerLoadScope());
+        static::addGlobalScope(new TranslationsEagerLoadScope);
 
         static::saving(static function (self $translatable) {
-            $translatable->onSavingEvent();
+            $translatable->handleSavingEvent();
         });
     }
 
@@ -220,7 +222,7 @@ trait HasTranslations
     /**
      * On saving event listener.
      */
-    public function onSavingEvent(): void
+    public function handleSavingEvent(): void
     {
         $this->saveTranslations();
     }

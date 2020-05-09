@@ -3,7 +3,7 @@
 namespace Nevadskiy\Translatable\Tests\Feature;
 
 use Nevadskiy\Translatable\Tests\Support\Factories\BookFactory;
-use Nevadskiy\Translatable\Translation;
+use Nevadskiy\Translatable\Models\Translation;
 use Nevadskiy\Translatable\Tests\TestCase;
 
 class AutoTranslationsSetTest extends TestCase

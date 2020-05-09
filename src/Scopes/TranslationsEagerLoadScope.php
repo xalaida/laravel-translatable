@@ -1,10 +1,11 @@
 <?php
 
-namespace Nevadskiy\Translatable;
+namespace Nevadskiy\Translatable\Scopes;
 
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Scope;
+use Nevadskiy\Translatable\HasTranslations;
 
 class TranslationsEagerLoadScope implements Scope
 {
@@ -17,7 +18,7 @@ class TranslationsEagerLoadScope implements Scope
      */
     public function apply(Builder $query, Model $translatable): void
     {
-        if (! $translatable->getTranslator()->isDefaultLocale()) {
+        if (! $translatable::getTranslator()->isDefaultLocale()) {
             $query->with('translations');
         }
     }

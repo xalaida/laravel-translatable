@@ -2,10 +2,8 @@
 
 namespace Nevadskiy\Translatable\Tests\Feature;
 
-use Illuminate\Support\Facades\DB;
 use Nevadskiy\Translatable\Tests\Support\Factories\BookFactory;
-use Nevadskiy\Translatable\Tests\Support\Models\Book;
-use Nevadskiy\Translatable\Translation;
+use Nevadskiy\Translatable\Models\Translation;
 use Nevadskiy\Translatable\Tests\TestCase;
 
 class TranslationsTest extends TestCase

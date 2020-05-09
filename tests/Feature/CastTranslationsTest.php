@@ -4,7 +4,7 @@ namespace Nevadskiy\Translatable\Tests\Feature;
 
 use Nevadskiy\Translatable\Tests\Support\Factories\BookFactory;
 use Nevadskiy\Translatable\Tests\TestCase;
-use Nevadskiy\Translatable\Translation;
+use Nevadskiy\Translatable\Models\Translation;
 
 class CastTranslationsTest extends TestCase
 {
