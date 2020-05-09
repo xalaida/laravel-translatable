@@ -19,7 +19,7 @@ trait HasTranslations
     protected $translated = [];
 
     /**
-     * Boot HasTranslations trait.
+     * Boot the trait.
      */
     public static function bootHasTranslations(): void
     {
@@ -28,14 +28,6 @@ trait HasTranslations
         static::saving(function (self $translatable) {
             $translatable->onSavingEvent();
         });
-    }
-
-    /**
-     * On saving event listener.
-     */
-    public function onSavingEvent(): void
-    {
-        $this->translate(array_filter($this->translated));
     }
 
     /**
@@ -59,6 +51,14 @@ trait HasTranslations
     }
 
     /**
+     * On saving event listener.
+     */
+    public function onSavingEvent(): void
+    {
+        $this->translate(array_filter($this->translated));
+    }
+
+    /**
      * Save translations for the attributes.
      *
      * @param array $translations
@@ -68,7 +68,7 @@ trait HasTranslations
     public function translate(array $translations, string $locale = null): void
     {
         foreach ($translations as $attribute => $value) {
-            $this->getTranslator()->set($this, $attribute, $this->withSetAttribute($attribute, $value), $locale);
+            static::getTranslator()->set($this, $attribute, $this->withSetAttribute($attribute, $value), $locale);
         }
     }
 
@@ -152,16 +152,6 @@ trait HasTranslations
     }
 
     /**
-     * Get the translator.
-     *
-     * @return Translator
-     */
-    public function getTranslator(): Translator
-    {
-        return app(Translator::class);
-    }
-
-    /**
      * Get the auto translator.
      *
      * @return AutoTranslator
@@ -172,15 +162,15 @@ trait HasTranslations
     }
 
     /**
-     * Determine if the attribute should be translated.
+     * Determine whether the attribute should be translated.
      *
      * @param $attribute
      * @return bool
      */
-    private function shouldBeTranslated(string $attribute): bool
+    protected function shouldBeTranslated(string $attribute): bool
     {
         return $this->isTranslatable($attribute)
-            && ! $this->getTranslator()->isDefaultLocale();
+            && ! static::getTranslator()->isDefaultLocale();
     }
 
     /**
@@ -200,7 +190,7 @@ trait HasTranslations
      * @param $attribute
      * @return bool
      */
-    private function hasLoadedTranslation(string $attribute): bool
+    public function hasLoadedTranslation(string $attribute): bool
     {
         return isset($this->translated[$attribute]);
     }
@@ -212,7 +202,7 @@ trait HasTranslations
      */
     protected function loadTranslation(string $attribute): void
     {
-        $this->translated[$attribute] = $this->getTranslator()->get($this, $attribute);
+        $this->translated[$attribute] = static::getTranslator()->get($this, $attribute);
     }
 
     /**
@@ -222,7 +212,7 @@ trait HasTranslations
      * @param $value
      * @return mixed
      */
-    private function withGetAttribute(string $attribute, $value)
+    protected function withGetAttribute(string $attribute, $value)
     {
         $original = $this->attributes[$attribute];
 
@@ -242,7 +232,7 @@ trait HasTranslations
      * @param $value
      * @return mixed
      */
-    private function withSetAttribute(string $attribute, $value)
+    protected function withSetAttribute(string $attribute, $value)
     {
         $original = $this->attributes[$attribute];
 
@@ -253,5 +243,15 @@ trait HasTranslations
         $this->attributes[$attribute] = $original;
 
         return $processed;
+    }
+
+    /**
+     * Get the translator instance.
+     *
+     * @return Translator
+     */
+    public static function getTranslator(): Translator
+    {
+        return app(Translator::class);
     }
 }
