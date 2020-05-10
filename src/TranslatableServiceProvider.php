@@ -5,8 +5,6 @@ namespace Nevadskiy\Translatable;
 use Illuminate\Contracts\Events\Dispatcher;
 use Illuminate\Foundation\Events\LocaleUpdated;
 use Illuminate\Support\ServiceProvider;
-use Nevadskiy\Translatable\Engine\GoogleTranslateEngine;
-use Nevadskiy\Translatable\Engine\TranslatorEngine;
 
 class TranslatableServiceProvider extends ServiceProvider
 {
@@ -29,14 +27,6 @@ class TranslatableServiceProvider extends ServiceProvider
     public function register(): void
     {
         $this->registerModelTranslator();
-
-        $this->app->singleton(TranslatorEngine::class, function () {
-            return new GoogleTranslateEngine();
-        });
-
-        $this->app->singleton(AutoTranslator::class, function () {
-            return new AutoTranslator($this->app[TranslatorEngine::class]);
-        });
     }
 
     /**
