@@ -1,6 +1,7 @@
 # Laravel Translatable  
 The package add provides possibility to translate your Eloquent models into different languages.
 
+
 ## Features 
 - Simple and intuitive API
 - No need to rewrite existing migrations, models or views
@@ -10,6 +11,7 @@ The package add provides possibility to translate your Eloquent models into diff
 - Eager loads only needed translations
 - Well suitable for already existing projects
 - Provides useful events
+- Allows using with models with UUID primary keys
 
 
 ## Demo
@@ -34,7 +36,21 @@ echo $book->title; // 'Book about giraffes'
 composer require nevadskiy/laravel-translations
 ```
 
-2. Add a `HasTranslations` trait to your Models
+2. Publish package migrations (it copies only one file into your migrations folder)
+```
+php artisan vendor:publish --tag=translatable 
+```
+
+3. Optional. If you are going to use translations for models with UUID primary keys, replace the line `$table->bigInteger('translatable_id')->unsigned();` with `$table->uuid('translatable_id');`.
+
+4. Run migrate command
+```
+php artisan migrate
+```
+
+
+## Making models translatable 
+1. Add a `HasTranslations` trait to your models which you want to make translatable
 ```
 <?php
 
@@ -49,10 +65,8 @@ class Post extends Model
 }
 ```
 
-3. Add a `$translatable` array to your models with attributes you want to be translatable.
+2. Add a `$translatable` array to your models with attributes you want to be translatable.
 ```
-use HasTranslations;
-
 /**
  * The attributes that can be translatable.
  *
@@ -64,7 +78,7 @@ protected $translatable = [
 ];
 ```
 
-4. Also, make sure to have these attributes in the `$fillable` array
+3. Also, make sure to have translatable attributes in the `$fillable` array
 ```
 /**
  * The attributes that are mass assignable.
@@ -77,15 +91,7 @@ protected $fillable = [
 ];
 ```
 
-
-## Documentation
-Default language values are stored in the original table as usual.
-
-Values in non default languages of every model are stored in the single `translations` table.
-
-The package takes the default language from the `config('config.app.fallback_locale')` value.
-
-##### Translatable model may look like
+#### Final model may look like this
 ```
 <?php
 
@@ -106,6 +112,14 @@ class Post extends Model
     ];
 }
 ```
+
+
+## Documentation
+Default language values are stored in the original table as usual.
+
+Values in non default languages of every model are stored in the single `translations` table.
+
+The package takes the default language from the `config('config.app.fallback_locale')` value.
 
 ##### Manually store and retrieve translations of the model
 ```
@@ -129,9 +143,14 @@ app()->setLocale('en');
 echo $post->title; // 'Post about birds'
 ```
 
-##### Model creation
+##### Translatable models creation
 Note that translatable models will always be created in **default** locale even when current locale is different.
-All translations can be attached only to **existing** models.  
+Any translations can be attached only to **existing** models.  
+
+```
+app()->setLocale('de');
+Book::create(...); // This will persist model as usual in default locale.
+```
 
 ##### Displaying collection of models
 The package automatically eager loads translations of the current locale for you, so you can easily retrieve collection of models as usual
