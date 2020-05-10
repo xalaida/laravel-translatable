@@ -24,4 +24,21 @@ class TranslatableScopesTest extends TestCase
 
         $this->assertTrue($result->is($book2));
     }
+
+    /** @test */
+    public function it_can_retrieve_translatable_model_by_translation_using_current_locale(): void
+    {
+        $book1 = BookFactory::new()->create();
+        $book1->translate('title', 'Libro sobre pingüinos', 'es');
+        $book1->translate('title', 'Книга о пингвинах', 'ru');
+
+        $book2 = BookFactory::new()->create();
+        $book2->translate('title', 'Книга о жирафах', 'ru');
+
+        $this->app->setLocale('ru');
+
+        $result = Book::whereTranslatable('title', 'Книга о пингвинах')->first();
+
+        $this->assertTrue($result->is($book1));
+    }
 }

@@ -2,7 +2,6 @@
 
 namespace Nevadskiy\Translatable;
 
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
@@ -17,6 +16,8 @@ use Nevadskiy\Translatable\Scopes\TranslationsEagerLoadScope;
  */
 trait HasTranslations
 {
+    use TranslationScopes;
+
     /**
      * The attributes that have loaded translation.
      *
@@ -48,35 +49,6 @@ trait HasTranslations
     public function translations(): MorphMany
     {
         return $this->morphMany(Translation::class, 'translatable');
-    }
-
-    /**
-     * Scope to remove the 'translations' relation from a query.
-     *
-     * @param Builder $query
-     * @return Builder
-     */
-    protected function scopeWithoutTranslations(Builder $query): Builder
-    {
-        return $query->withoutGlobalScope(TranslationsEagerLoadScope::class);
-    }
-
-    /**
-     * Scope to filter models by translation.
-     *
-     * @param Builder $query
-     * @param string $attribute
-     * @param $value
-     * @param string|null $locale
-     * @return Builder
-     */
-    protected function scopeWhereTranslatable(Builder $query, string $attribute, $value, string $locale = null): Builder
-    {
-        return $query->whereHas('translations', function ($query) use ($attribute, $value, $locale) {
-            $query->where('translatable_attribute', $attribute);
-            $query->where('value', $value);
-            $query->locale($locale);
-        });
     }
 
     /**
