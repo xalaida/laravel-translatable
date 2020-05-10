@@ -9,7 +9,7 @@ use Illuminate\Support\ServiceProvider;
 class TranslatableServiceProvider extends ServiceProvider
 {
     /**
-     * The event listener mappings for the application.
+     * The event listener mappings for the package.
      *
      * @var array
      */
@@ -38,6 +38,7 @@ class TranslatableServiceProvider extends ServiceProvider
     {
         $this->publishMigrations();
         $this->bootEvents();
+        $this->bootCommands();
     }
 
     /**
@@ -65,7 +66,7 @@ class TranslatableServiceProvider extends ServiceProvider
     }
 
     /**
-     * Boot any application events.
+     * Boot any package events.
      */
     private function bootEvents(): void
     {
@@ -76,5 +77,15 @@ class TranslatableServiceProvider extends ServiceProvider
                 $dispatcher->listen($event, $listener);
             }
         }
+    }
+
+    /**
+     * Boot any package commands.
+     */
+    private function bootCommands(): void
+    {
+        $this->commands([
+            Console\RemoveUnusedTranslationsCommand::class,
+        ]);
     }
 }
