@@ -3,6 +3,7 @@
 namespace Nevadskiy\Translatable\Tests;
 
 use Illuminate\Foundation\Application;
+use Carbon\Carbon;
 use Nevadskiy\Translatable\TranslatableServiceProvider;
 use Orchestra\Testbench\TestCase as OrchestraTestCase;
 
@@ -50,5 +51,22 @@ class TestCase extends OrchestraTestCase
             'database' => ':memory:',
             'prefix' => '',
         ]);
+    }
+
+    /**
+     * Freeze the current time.
+     *
+     * @param Carbon|null $time
+     * @return Carbon
+     */
+    protected function freezeTime(Carbon $time = null): Carbon
+    {
+        $time = $time ?: Carbon::now();
+
+        $time = Carbon::createFromTimestamp($time->getTimestamp());
+
+        Carbon::setTestNow($time);
+
+        return $time;
     }
 }

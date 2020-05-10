@@ -17,6 +17,7 @@ use Nevadskiy\Translatable\HasTranslations;
  * @property string description_short
  * @property Collection translations
  * @property Carbon created_at
+ * @property Carbon updated_at
  */
 class Book extends Model
 {
