@@ -221,3 +221,9 @@ Sometimes you may need to query translatable model without the `translations` re
 ```
 $books = Book::withoutTranslations()->get();
 ```
+
+##### Available scopes
+Filter models by a translatable attribute, translation and locale.
+```
+$books = Book::whereTranslatable('title', 'Книга о жирафах', 'ru')->get();
+```

@@ -62,6 +62,24 @@ trait HasTranslations
     }
 
     /**
+     * Scope to filter models by translation.
+     *
+     * @param Builder $query
+     * @param string $attribute
+     * @param $value
+     * @param string|null $locale
+     * @return Builder
+     */
+    protected function scopeWhereTranslatable(Builder $query, string $attribute, $value, string $locale = null): Builder
+    {
+        return $query->whereHas('translations', function ($query) use ($attribute, $value, $locale) {
+            $query->where('translatable_attribute', $attribute);
+            $query->where('value', $value);
+            $query->locale($locale);
+        });
+    }
+
+    /**
      * Save translation for the given attribute and locale.
      *
      * @param string $attribute
