@@ -25,7 +25,7 @@ trait HasTranslations
     /**
      * Boot the trait.
      */
-    public static function bootHasTranslations(): void
+    protected static function bootHasTranslations(): void
     {
         static::addGlobalScope(new TranslationsEagerLoadScope);
 
@@ -187,7 +187,7 @@ trait HasTranslations
      * @param $value
      * @param string|null $locale
      */
-    private function setTranslation(string $attribute, $value, string $locale = null): void
+    protected function setTranslation(string $attribute, $value, string $locale = null): void
     {
         $locale = $locale ?: static::getTranslator()->getLocale();
 
@@ -231,7 +231,7 @@ trait HasTranslations
     /**
      * On saving event listener.
      */
-    public function handleSavingEvent(): void
+    protected function handleSavingEvent(): void
     {
         $this->saveTranslations();
     }
@@ -239,7 +239,7 @@ trait HasTranslations
     /**
      * Save the model translations.
      */
-    public function saveTranslations(): void
+    protected function saveTranslations(): void
     {
         foreach ($this->translated as $locale => $attributes) {
             $this->translateMany(array_filter($attributes), $locale);
@@ -340,7 +340,7 @@ trait HasTranslations
      *
      * @return ModelTranslator
      */
-    public static function getTranslator(): ModelTranslator
+    protected static function getTranslator(): ModelTranslator
     {
         return app(ModelTranslator::class);
     }
