@@ -6,6 +6,7 @@ use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
+use Nevadskiy\Translatable\Events\TranslationSavedEvent;
 
 /**
  * @property int id
@@ -34,6 +35,17 @@ class Translation extends Model
      */
     protected $touches = [
         'translatable'
+    ];
+
+    /**
+     * The event map for the model.
+     *
+     * Allows for object-based events for native Eloquent events.
+     *
+     * @var array
+     */
+    protected $dispatchesEvents = [
+        'saved' => TranslationSavedEvent::class,
     ];
 
     /**
