@@ -14,3 +14,6 @@ outdated:
 
 test:
 	docker run --rm -it -v ${PWD}:/app app vendor/bin/phpunit --stop-on-failure
+
+coverage:
+	docker run --rm -it -v ${PWD}:/app app vendor/bin/phpunit --coverage-html tests/report
