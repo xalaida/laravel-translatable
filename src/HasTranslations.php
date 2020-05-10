@@ -4,6 +4,7 @@ namespace Nevadskiy\Translatable;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
+use Nevadskiy\Translatable\Events\TranslationNotFoundEvent;
 use Nevadskiy\Translatable\Models\Translation;
 use Nevadskiy\Translatable\Scopes\TranslationsEagerLoadScope;
 
@@ -83,6 +84,8 @@ trait HasTranslations
         $translation = $this->getRawTranslation($attribute, $locale);
 
         if (is_null($translation)) {
+            event(new TranslationNotFoundEvent($this, $attribute, $locale));
+
             return null;
         }
 
