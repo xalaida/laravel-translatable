@@ -202,7 +202,8 @@ trait HasTranslations
      */
     protected function shouldBeTranslated(string $attribute): bool
     {
-        return $this->isTranslatable($attribute)
+        return $this->exists
+            && $this->isTranslatable($attribute)
             && ! static::getTranslator()->isDefaultLocale();
     }
 

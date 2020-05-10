@@ -129,6 +129,10 @@ app()->setLocale('en');
 echo $post->title; // 'Post about birds'
 ```
 
+##### Model creation
+Note that translatable models will always be created in **default** locale even when current locale is different.
+All translations can be attached only to **existing** models.  
+
 ##### Displaying collection of models
 The package automatically eager loads translations of the current locale for you, so you can easily retrieve collection of models as usual
 ```
