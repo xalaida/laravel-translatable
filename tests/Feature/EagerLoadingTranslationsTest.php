@@ -23,6 +23,7 @@ class EagerLoadingTranslationsTest extends TestCase
 
         [$book] = Book::all();
 
+        $this->assertTrue($book->relationLoaded('translations'));
         $this->assertCount(1, $book->translations);
         $this->assertEquals('ru', $book->translations[0]->locale);
     }
@@ -45,5 +46,15 @@ class EagerLoadingTranslationsTest extends TestCase
         $this->assertEquals('Третья книга', $book3->title);
 
         $this->assertCount(2, DB::getQueryLog());
+    }
+
+    /** @test */
+    public function it_allows_to_remove_translations_scope_from_query_builder(): void
+    {
+        BookFactory::new()->create()->translate('title', 'Книга о черепахах', 'ru');
+
+        [$book] = Book::withoutTranslations()->get();
+
+        $this->assertFalse($book->relationLoaded('translations'));
     }
 }

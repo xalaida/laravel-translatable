@@ -215,3 +215,9 @@ echo $post->getTranslation('description', 'ru'); // 'Очень длин'
 ##### Removing unused translations
 The package automatically remove translations of deleted models, but if translatable models have been removed using query builder, their translations would exist in the database.
 To remove all unused translations, run the `php artisan translatable:remove-unused` command.
+
+##### Querying models without translations
+Sometimes you may need to query translatable model without the `translations` relation. You can do this using `withoutTranslations` scope.
+```
+$books = Book::withoutTranslations()->get();
+```
