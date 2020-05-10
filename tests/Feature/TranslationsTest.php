@@ -185,4 +185,37 @@ class TranslationsTest extends TestCase
         $this->assertEquals('5', $book->getTranslation('version', $this->app->getLocale()));
         $this->assertCount(1, Translation::all());
     }
+
+    /** @test */
+    public function it_returns_translation_model_from_translate_method(): void
+    {
+        $book = BookFactory::new()->create();
+
+        $translation = $book->translate('title', 'Моя книга', 'ru');
+
+        $this->assertEquals('Моя книга', $translation->value);
+        $this->assertEquals('ru', $translation->locale);
+        $this->assertEquals('title', $translation->translatable_attribute);
+        $this->assertTrue($translation->translatable->is($book));
+    }
+
+    /** @test */
+    public function it_returns_translations_collection_from_translate_many_method(): void
+    {
+        $book = BookFactory::new()->create();
+
+        $translations = $book->translateMany(['title' => 'Моя книга', 'description' => 'Мое описание'], 'ru');
+
+        $this->assertCount(2, $translations);
+
+        $this->assertEquals('Моя книга', $translations[0]->value);
+        $this->assertEquals('title', $translations[0]->translatable_attribute);
+        $this->assertEquals('ru', $translations[0]->locale);
+        $this->assertTrue($translations[0]->translatable->is($book));
+
+        $this->assertEquals('Мое описание', $translations[1]->value);
+        $this->assertEquals('description', $translations[1]->translatable_attribute);
+        $this->assertEquals('ru', $translations[1]->locale);
+        $this->assertTrue($translations[1]->translatable->is($book));
+    }
 }

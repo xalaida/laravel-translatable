@@ -2,6 +2,7 @@
 
 namespace Nevadskiy\Translatable;
 
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Nevadskiy\Translatable\Events\TranslationNotFoundEvent;
@@ -49,11 +50,11 @@ trait HasTranslations
      * @param string $attribute
      * @param $value
      * @param string $locale
-     * @return void
+     * @return Translation
      */
-    public function translate(string $attribute, $value, string $locale): void
+    public function translate(string $attribute, $value, string $locale): Translation
     {
-        static::getTranslator()->set($this, $attribute, $this->withSetAttribute($attribute, $value), $locale);
+        return static::getTranslator()->set($this, $attribute, $this->withSetAttribute($attribute, $value), $locale);
     }
 
     /**
@@ -61,13 +62,17 @@ trait HasTranslations
      *
      * @param array $translations
      * @param string $locale
-     * @return void
+     * @return Collection
      */
-    public function translateMany(array $translations, string $locale): void
+    public function translateMany(array $translations, string $locale): Collection
     {
+        $collectionsCollection = new Collection();
+
         foreach ($translations as $attribute => $value) {
-            $this->translate($attribute, $value, $locale);
+            $collectionsCollection[] = $this->translate($attribute, $value, $locale);
         }
+
+        return $collectionsCollection;
     }
 
     /**

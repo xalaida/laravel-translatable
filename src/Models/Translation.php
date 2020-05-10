@@ -12,6 +12,7 @@ use Illuminate\Database\Eloquent\Relations\MorphTo;
  * @property string translatable_type
  * @property int translatable_id
  * @property string translatable_attribute
+ * @property Model translatable
  * @property string value
  * @property string locale
  * @property Carbon updated_at
