@@ -11,6 +11,7 @@ The package add provides possibility to translate your Eloquent models into diff
 - Eager loads only needed translations
 - Well suitable for already existing projects
 - Provides useful events
+- Removes translations of deleted models (respecting soft deletes)
 - Allows using with models with UUID primary keys
 
 
@@ -210,3 +211,7 @@ echo $post->description; // 'Очень длин'
 // Using getTranslation method
 echo $post->getTranslation('description', 'ru'); // 'Очень длин'
 ```
+
+##### Removing unused translations
+The package automatically remove translations of deleted models, but if translatable models have been removed using query builder, their translations would exist in the database.
+To remove all unused translations, run the `php artisan translatable:remove-unused` command.

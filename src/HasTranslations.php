@@ -5,6 +5,7 @@ namespace Nevadskiy\Translatable;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Nevadskiy\Translatable\Events\TranslationNotFoundEvent;
 use Nevadskiy\Translatable\Models\Translation;
 use Nevadskiy\Translatable\Scopes\TranslationsEagerLoadScope;
@@ -31,6 +32,10 @@ trait HasTranslations
 
         static::saving(static function (self $translatable) {
             $translatable->handleSavingEvent();
+        });
+
+        static::deleted(static function (self $translatable) {
+            $translatable->handleDeletedEvent();
         });
     }
 
@@ -229,7 +234,7 @@ trait HasTranslations
     }
 
     /**
-     * On saving event listener.
+     * Handle the model saving event.
      */
     protected function handleSavingEvent(): void
     {
@@ -244,6 +249,52 @@ trait HasTranslations
         foreach ($this->translated as $locale => $attributes) {
             $this->translateMany(array_filter($attributes), $locale);
         }
+    }
+
+    /**
+     * Handle the model deleted event.
+     */
+    protected function handleDeletedEvent(): void
+    {
+        if ($this->shouldDeleteTranslations()) {
+            $this->deleteTranslations();
+        }
+    }
+
+    /**
+     * Determine whether the model should delete translations.
+     *
+     * @return bool
+     */
+    protected function shouldDeleteTranslations(): bool
+    {
+        if (! $this->isUsingSoftDeletes()) {
+            return true;
+        }
+
+        if ($this->isForceDeleting()) {
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * Determine whether the model uses soft deletes.
+     *
+     * @return bool
+     */
+    protected function isUsingSoftDeletes(): bool
+    {
+        return in_array(SoftDeletes::class, class_uses($this), true);
+    }
+
+    /**
+     * Delete the model translations.
+     */
+    protected function deleteTranslations(): void
+    {
+        $this->translations()->delete();
     }
 
     /**
