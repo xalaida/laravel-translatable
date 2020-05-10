@@ -1,13 +1,58 @@
-# Translatable-models
+# Laravel Translatable  
+The package add provides possibility to translate your Eloquent models into different languages.
 
-Package installation does not affect original behaviour. You do not need to make any migrations for existing tables. 
-All translated data are stored in the separate package's provided 'translations' table.
+## Features 
+- Simple and intuitive API
+- No need to rewrite existing migrations, models or views
+- Storing all translations in the single 'translations' table
+- Works with model accessors & mutators
+- Works with model casts (even with JSON structures)
+- Eager loads only needed translations
+- Well suitable for already existing projects
+- Provides useful events
 
-## Usage
-Add HasTranslationsTrait
 
-Add $translatable array
+## Demo
 ```
+$post = Book::create(['title' => 'Book about giraffes']);
+
+// Storing translations
+app()->setLocale('es')
+$book->title = 'Libro sobre jirafas';
+$book->save();
+
+// Accessing translations
+echo $book->title; // 'Libro sobre jirafas'
+app()->setLocale('en');
+echo $book->title; // 'Book about giraffes'
+```
+
+
+## Installation
+1. Install a package via composer
+```
+composer require nevadskiy/laravel-translations
+```
+
+2. Add a `HasTranslations` trait to your Models
+```
+<?php
+
+namespace App;
+
+use Illuminate\Database\Eloquent\Model;
+use Nevadskiy\Translatable\HasTranslations;
+
+class Post extends Model
+{
+    use HasTranslations;
+}
+```
+
+3. Add a `$translatable` array to your models with attributes you want to be translatable.
+```
+use HasTranslations;
+
 /**
  * The attributes that can be translatable.
  *
@@ -19,34 +64,126 @@ protected $translatable = [
 ];
 ```
 
-Make sure your translatable attributes are $fillable
+4. Also, make sure to have these attributes in the `$fillable` array
+```
+/**
+ * The attributes that are mass assignable.
+ *
+ * @var array
+ */
+protected $fillable = [
+    'title',
+    'description',
+];
+```
 
-#### Add docs for
-mutations
-accessors
-array casts
-eager loading
-saving
-reading
-get original
 
-##### TODO
-- [ ] add possibility to remove translations eager loading...
-- [ ] fix that translatable attributes is can be set through non $translatable fields
-- [ ] refactor full translator class.
-- [ ] add available locales array (probably dont)
-- [ ] add remove unused translations console command (check if relation still exists and also add removal event listener for trait)
-- [ ] check translation usage on ManyToMany (Pivot) models
-- [ ] Add setTranslation() and getTranslation() methods
-- [ ] FIX case when locale was changed multiple times (probably just clear translated[] array on translatable model)
-- [ ] ADD guard when for model creating for non default locale...
-- [ ] Feature command for pruning translations for undefined translatable model (removed, etc.)
-- [ ] ADD SCOPE ONLY FOR CURRENT LOCALE EAGER LOADING. DONT LOAD ALL LOCALES 
-- [ ] Add timestamp touching if translation was updated and throw updatedAt event when translation was added 
-- [ ] Add translation events
-- [ ] Feature remove listener for removing translations for removed item (resolve with softDelete)
-- [ ] Fix nullable strings issues
-- [ ] Add possibility to ignore mutators & accessors for translations
-- [ ] Add possibility to simple API storing 
-- [ ] Add more API engine drivers
-- [ ] Add possibility to use auto-translation on updated\created events
+## Documentation
+Default language values are stored in the original table as usual.
+
+Values in non default languages of every model are stored in the single `translations` table.
+
+The package takes the default language from the `config('config.app.fallback_locale')` value.
+
+##### Translatable model may look like
+```
+<?php
+
+namespace App;
+
+use Illuminate\Database\Eloquent\Model;
+use Nevadskiy\Translatable\HasTranslations;
+
+class Post extends Model
+{
+    use HasTranslations; 
+
+    protected $guarded = [];
+
+    protected $translatable = [
+        'title', 
+        'description',
+    ];
+}
+```
+
+##### Manually store and retrieve translations of the model
+```
+$post = Post::where('title', 'Post about dolphins')->first();
+
+$post->translate('title', 'Пост о дельфинах', 'ru');
+
+echo $post->getTranslation('title', 'ru'); // 'Пост о дельфинах'
+```
+
+##### Automatically store and retrieve translations of the model using translatable attributes
+```
+$post = Post::where('title', 'Post about birds')->first();
+
+app()->setLocale('ru');
+$post->title = 'Пост о птицах';
+$post->save();
+
+echo $post->title; // 'Пост о птицах'
+app()->setLocale('en');
+echo $post->title; // 'Post about birds'
+```
+
+##### Displaying collection of models
+The package automatically eager loads translations of the current locale for you, so you can easily retrieve collection of models as usual
+```
+// In controller
+app()->setLocale('ru')
+$posts = Post::paginate(20);
+
+// In your views
+@foreach ($posts as $post)
+    {{ $post->title }} // Shows title in the current locale OR in default locale if translation is missing.
+@endforeach
+```  
+
+##### Translations work with model accessors
+```
+class Post extends Model
+{
+    // ...
+
+    public function getTitleAttribute()
+    {
+        return Str::ucfirst($this->attributes['title']);
+    }
+}
+
+$post = Post::create(['title' => 'post about birds']);
+$post->translate('title', 'пост о птицах', 'ru');
+
+// Using attribute
+app()->setLocale('ru');
+echo $post->title; // 'Пост о птицах'
+
+// Using getTranslate method
+echo $post->getTranslation('title', 'ru'); // 'Пост о птицах'
+```
+
+##### Translations work with model mutators as well
+```
+class Post extends Model
+{
+    // ...
+
+    public function setDesciptionAttribute($descrition)
+    {
+        $this->attributes['descrition'] = Str::substr($description, 0, 10);
+    }
+}
+
+$post = Post::create(['description' => 'Very long description']);
+$post->translate('description', 'Очень длинное описание', 'ru');
+
+// Using attribute
+app()->setLocale('ru');
+echo $post->description; // 'Очень длин'
+
+// Using getTranslation method
+echo $post->getTranslation('description', 'ru'); // 'Очень длин'
+```
