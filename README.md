@@ -1,5 +1,5 @@
 # Laravel Translatable  
-The package add provides possibility to translate your Eloquent models into different languages.
+The package add provides possibility to translate your Eloquent models into different languages with no pain.
 
 
 ## Features 
