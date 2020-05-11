@@ -10,6 +10,7 @@ use Nevadskiy\Translatable\HasTranslations;
 /**
  * @property int id
  * @property string body
+ * @property string slug
  * @property Carbon|null deleted_at
  * @property Carbon created_at
  * @property Carbon updated_at
@@ -33,5 +34,16 @@ class Post extends Model
      */
     protected $translatable = [
         'body',
+        'slug',
     ];
+
+    /**
+     * Get the route key for the model.
+     *
+     * @return string
+     */
+    public function getRouteKeyName(): string
+    {
+        return 'slug';
+    }
 }

@@ -16,7 +16,8 @@ use Nevadskiy\Translatable\Scopes\TranslationsEagerLoadScope;
  */
 trait HasTranslations
 {
-    use TranslationScopes;
+    use TranslationScopes,
+        TranslatableUrlRouting;
 
     /**
      * The attributes that have loaded translation.

@@ -21,7 +21,7 @@ class TranslationsEagerLoadScope implements Scope
     {
         if (! $translatable::getTranslator()->isDefaultLocale()) {
             $query->with(['translations' => function (MorphMany $query) use ($translatable) {
-                $query->locale($translatable::getTranslator()->getLocale());
+                $query->forLocale($translatable::getTranslator()->getLocale());
             }]);
         }
     }

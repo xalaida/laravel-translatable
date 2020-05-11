@@ -65,8 +65,20 @@ class Translation extends Model
      * @param string $locale
      * @return Builder
      */
-    public function scopeLocale(Builder $query, string $locale): Builder
+    public function scopeForLocale(Builder $query, string $locale): Builder
     {
         return $query->where('locale', $locale);
+    }
+
+    /**
+     * Scope translations by the given attribute.
+     *
+     * @param Builder $query
+     * @param string $attribute
+     * @return Builder
+     */
+    public function scopeForAttribute(Builder $query, string $attribute): Builder
+    {
+        return $query->where('translatable_attribute', $attribute);
     }
 }

@@ -8,6 +8,7 @@ The package add provides possibility to translate your Eloquent models into diff
 - Storing all translations in the single 'translations' table
 - Works with model accessors & mutators
 - Works with model casts (even with JSON structures)
+- Works with route model binding
 - Eager loads only needed translations
 - Well suitable for already existing projects
 - Provides useful events
@@ -226,4 +227,51 @@ $books = Book::withoutTranslations()->get();
 Filter models by a translatable attribute, translation and locale.
 ```
 $books = Book::whereTranslatable('title', 'Книга о жирафах', 'ru')->get();
+```
+
+##### Route model binding
+Translatable model can be easily resolved using Route Model Binding feature.
+
+All you need to do to let Laravel resolve models by a translatable attribute is to set the needed locale which you want to be used for querying models **before** a request will reach `Illuminate\Routing\Middleware\SubstituteBindings::class` middleware.
+
+The simplest solution is to create a new middleware, for example `SetLocaleMiddleware`, attach it to the route where you want to resolve translatable models, and register the middleware in the `$middlewarePriority` array of the `app/Http/Kernel.php` file above the `\Illuminate\Routing\Middleware\SubstituteBindings::class` class.
+It may look like this:
+
+```
+// app/Http/Middleware/SetLocaleMiddleware.php
+public function handle($request, Closure $next)
+{
+    // Setting application locale by cookie locale key
+    app()->setLocale($request->cookie('locale'));
+}
+```
+
+```
+// app/Http/Kernel.php
+protected $middlewareGroups = [
+    'web' => [
+        // ... default middleware stack
+        \App\Http\Middleware\SetLocaleMiddleware::class, // <--- your middleware
+        \Illuminate\Routing\Middleware\SubstituteBindings::class, // <--- bindings middleware below
+    ],
+];
+
+protected $middlewarePriority = [
+    // ... default middleware stack
+    \App\Http\Middleware\SetLocaleMiddleware::class, // <--- your middleware
+    \Illuminate\Routing\Middleware\SubstituteBindings::class, // <--- bindings middleware below
+];
+```
+
+```
+// routes/web.php
+Route::get('posts/{post:slug}', 'PostsController@show')
+```
+
+```
+// app/Http/Controllers/PostController.php
+public function show(Post $post)
+{
+    // Post model is resolved by translated slug in the current locale   
+}
 ```

@@ -39,6 +39,7 @@ class PostFactory
     {
         return [
             'body' => 'Testing post body',
+            'slug' => 'testing-post-slug',
         ];
     }
 }
