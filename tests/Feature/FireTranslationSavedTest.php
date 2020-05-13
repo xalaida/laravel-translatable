@@ -3,7 +3,6 @@
 namespace Nevadskiy\Translatable\Tests\Feature;
 
 use Illuminate\Support\Facades\Event;
-use Nevadskiy\Translatable\Events\TranslationNotFoundEvent;
 use Nevadskiy\Translatable\Events\TranslationSavedEvent;
 use Nevadskiy\Translatable\Tests\Support\Factories\BookFactory;
 use Nevadskiy\Translatable\Tests\TestCase;
