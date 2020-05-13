@@ -3,6 +3,7 @@
 namespace Nevadskiy\Translatable;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Str;
 use Nevadskiy\Translatable\Models\Translation;
 
 class ModelTranslator
@@ -94,6 +95,7 @@ class ModelTranslator
             'translatable_attribute' => $attribute,
             'locale' => $locale ?: $this->getLocale(),
         ], [
+            'id' => Str::uuid()->toString(),
             'value' => $value,
         ]);
     }
