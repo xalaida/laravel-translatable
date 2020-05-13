@@ -43,7 +43,7 @@ composer require nevadskiy/laravel-translations
 php artisan vendor:publish --tag=translatable 
 ```
 
-3. Optional. If you are going to use translations for models with UUID primary keys, replace the line `$table->bigInteger('translatable_id')->unsigned();` with `$table->uuid('translatable_id');`.
+3. Optional. If you are going to use translations for models with UUID primary keys, replace the line `$table->morphs('translatable');` with `$table->uuidMorphs('translatable_id');`.
 
 4. Run migrate command
 ```
@@ -223,11 +223,20 @@ Sometimes you may need to query translatable model without the `translations` re
 $books = Book::withoutTranslations()->get();
 ```
 
-##### Available scopes
-Filter models by a translatable attribute, translation and locale.
+##### Available scopes 
+Query models by translations
+```
+$books = Book::whereTranslatable('title', 'Книга о жирафах')->get();
+```
+
+Note that there is not locale detection within the scopes. 
+If you want to query rows only in the specific locale, you should pass it yourself. 
+Otherwise, the scope will return matched rows within all locales.
 ```
 $books = Book::whereTranslatable('title', 'Книга о жирафах', 'ru')->get();
-```
+``` 
+
+For more complex queries - feel free to use [Laravel relation queries](https://laravel.com/docs/7.x/eloquent-relationships#querying-relationship-existence).
 
 ##### Route model binding
 Translatable model can be easily resolved using Route Model Binding feature.
