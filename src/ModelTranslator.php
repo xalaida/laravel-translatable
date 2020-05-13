@@ -53,13 +53,16 @@ class ModelTranslator
     }
 
     /**
-     * Determine whether the translator uses the default locale as current locale.
+     * Determine does the translator use the current or given locale as the default locale.
      *
+     * @param string $locale
      * @return bool
      */
-    public function isDefaultLocale(): bool
+    public function isDefaultLocale(string $locale = null): bool
     {
-        return $this->getLocale() === $this->defaultLocale;
+        $locale = $locale ?: $this->getLocale();
+
+        return $locale === $this->defaultLocale;
     }
 
     /**

@@ -24,7 +24,7 @@ trait TranslationScopes
     }
 
     /**
-     * Scope to filter models by translation.
+     * Scope to filter models by translatable attribute.
      *
      * @param Builder $query
      * @param string $attribute
@@ -34,9 +34,35 @@ trait TranslationScopes
      */
     protected function scopeWhereTranslatable(Builder $query, string $attribute, $value, string $locale = null): Builder
     {
-        return $query->whereHas('translations', function (Builder $query) use ($attribute, $value, $locale) {
+        return $query->where(function (Builder $query) use ($attribute, $value, $locale) {
+            if (is_null($locale) || static::getTranslator()->isDefaultLocale($locale)) {
+                $query->where($attribute, $value);
+            }
+
+            if (! static::getTranslator()->isDefaultLocale($locale)) {
+                $query->whereTranslation($attribute, $value, $locale);
+            }
+        });
+    }
+
+    /**
+     * Scope to filter models by translation.
+     *
+     * @param Builder $query
+     * @param string $attribute
+     * @param $value
+     * @param string|null $locale
+     * @return Builder
+     */
+    protected function scopeWhereTranslation(Builder $query, string $attribute, $value, string $locale = null): Builder
+    {
+        return $query->orWhereHas('translations', function (Builder $query) use ($attribute, $value, $locale) {
             $query->forAttribute($attribute);
-            $query->forLocale($locale ?: static::getTranslator()->getLocale());
+
+            if ($locale) {
+                $query->forLocale($locale);
+            }
+
             $query->where('value', $value);
         });
     }
