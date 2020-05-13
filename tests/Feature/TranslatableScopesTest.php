@@ -98,14 +98,14 @@ class TranslatableScopesTest extends TestCase
     /** @test */
     public function it_can_retrieve_models_only_by_translations(): void
     {
-        $book1 = BookFactory::new()->create();
-        $book1->translate('title', 'Testing title', 'ru');
+        $book = BookFactory::new()->create();
+        $book->translate('title', 'Testing title', 'ru');
 
-        $book2 = BookFactory::new()->create(['title' => 'Testing title']);
+        BookFactory::new()->create(['title' => 'Testing title']);
 
         $result = Book::whereTranslation('title', 'Testing title', null)->get();
 
         $this->assertCount(1, $result);
-        $this->assertTrue($result[0]->is($book1));
+        $this->assertTrue($result[0]->is($book));
     }
 }
