@@ -34,7 +34,7 @@ trait TranslationScopes
      */
     protected function scopeWhereTranslatable(Builder $query, string $attribute, $value, string $locale = null): Builder
     {
-        return $query->whereHas('translations', function ($query) use ($attribute, $value, $locale) {
+        return $query->whereHas('translations', function (Builder $query) use ($attribute, $value, $locale) {
             $query->forAttribute($attribute);
             $query->forLocale($locale ?: static::getTranslator()->getLocale());
             $query->where('value', $value);
