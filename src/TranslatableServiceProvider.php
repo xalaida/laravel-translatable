@@ -16,7 +16,7 @@ class TranslatableServiceProvider extends ServiceProvider
     protected $listen = [
         LocaleUpdated::class => [
             Listeners\UpdateLocaleListener::class,
-        ]
+        ],
     ];
 
     /**

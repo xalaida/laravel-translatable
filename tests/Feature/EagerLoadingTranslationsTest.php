@@ -20,7 +20,6 @@ class EagerLoadingTranslationsTest extends TestCase
 
         $this->app->setLocale('ru');
 
-
         [$book] = Book::all();
 
         $this->assertTrue($book->relationLoaded('translations'));

@@ -2,9 +2,9 @@
 
 namespace Nevadskiy\Translatable\Tests\Feature;
 
+use Nevadskiy\Translatable\Models\Translation;
 use Nevadskiy\Translatable\Tests\Support\Factories\BookFactory;
 use Nevadskiy\Translatable\Tests\TestCase;
-use Nevadskiy\Translatable\Models\Translation;
 
 class CastTranslationsTest extends TestCase
 {
@@ -15,7 +15,7 @@ class CastTranslationsTest extends TestCase
             'content' => [
                 'title' => 'Chapter 1',
                 'body' => 'Chapter about birds',
-            ]
+            ],
         ]);
 
         $book->translate('content', ['title' => 'Глава 1', 'body' => 'Глава о птицах'], 'ru');
@@ -33,7 +33,7 @@ class CastTranslationsTest extends TestCase
             'content' => [
                 'title' => 'Chapter 1',
                 'body' => 'Chapter about birds',
-            ]
+            ],
         ]);
 
         $this->app->setLocale('ru');

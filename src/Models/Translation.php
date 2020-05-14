@@ -48,7 +48,7 @@ class Translation extends Model
      * @var array
      */
     protected $touches = [
-        'translatable'
+        'translatable',
     ];
 
     /**

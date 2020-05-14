@@ -2,8 +2,8 @@
 
 namespace Nevadskiy\Translatable\Tests\Feature;
 
-use Nevadskiy\Translatable\Tests\Support\Factories\BookFactory;
 use Nevadskiy\Translatable\Models\Translation;
+use Nevadskiy\Translatable\Tests\Support\Factories\BookFactory;
 use Nevadskiy\Translatable\Tests\TestCase;
 
 class TranslationsTest extends TestCase

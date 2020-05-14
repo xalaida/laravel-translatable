@@ -2,9 +2,9 @@
 
 namespace Nevadskiy\Translatable\Tests\Support\Models;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
-use Carbon\Carbon;
 use Illuminate\Support\Str;
 use Nevadskiy\Translatable\HasTranslations;
 
@@ -47,7 +47,7 @@ class Book extends Model
      * @var array
      */
     protected $casts = [
-        'content' => 'array'
+        'content' => 'array',
     ];
 
     /**

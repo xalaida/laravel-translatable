@@ -34,9 +34,12 @@ trait TranslationScopes
      * @return Builder
      */
     protected function scopeWhereTranslatable(
-        Builder $query, string $attribute, $value, string $locale = null, string $operator = '='
-    ): Builder
-    {
+        Builder $query,
+        string $attribute,
+        $value,
+        string $locale = null,
+        string $operator = '='
+    ): Builder {
         return $query->where(function (Builder $query) use ($attribute, $value, $locale, $operator) {
             if (is_null($locale) || static::getTranslator()->isDefaultLocale($locale)) {
                 $query->where($attribute, $operator, $value);

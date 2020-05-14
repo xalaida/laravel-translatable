@@ -2,8 +2,8 @@
 
 namespace Nevadskiy\Translatable\Tests\Feature;
 
-use Nevadskiy\Translatable\Tests\Support\Factories\BookFactory;
 use Nevadskiy\Translatable\Models\Translation;
+use Nevadskiy\Translatable\Tests\Support\Factories\BookFactory;
 use Nevadskiy\Translatable\Tests\TestCase;
 
 class AutoTranslationsSetTest extends TestCase
@@ -92,7 +92,7 @@ class AutoTranslationsSetTest extends TestCase
     {
         $book = BookFactory::new()->create([
             'title' => 'My book',
-            'description' => 'Book about birds'
+            'description' => 'Book about birds',
         ]);
 
         $this->app->setLocale('ru');

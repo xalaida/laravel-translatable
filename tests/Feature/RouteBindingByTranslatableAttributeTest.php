@@ -121,7 +121,7 @@ class RouteBindingByTranslatableAttributeTest extends TestCase
         $this->app->setLocale('ru');
         $url = route('posts.show', $post, false);
 
-        $this->assertEquals('/posts/' . rawurlencode('пост-о-пингвинах'), $url);
+        $this->assertEquals('/posts/'.rawurlencode('пост-о-пингвинах'), $url);
     }
 
     /** @test */

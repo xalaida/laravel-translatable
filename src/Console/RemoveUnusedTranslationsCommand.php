@@ -3,7 +3,6 @@
 namespace Nevadskiy\Translatable\Console;
 
 use Illuminate\Console\Command;
-use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Nevadskiy\Translatable\Models\Translation;
 

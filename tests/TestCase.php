@@ -2,8 +2,8 @@
 
 namespace Nevadskiy\Translatable\Tests;
 
-use Illuminate\Foundation\Application;
 use Carbon\Carbon;
+use Illuminate\Foundation\Application;
 use Nevadskiy\Translatable\TranslatableServiceProvider;
 use Orchestra\Testbench\TestCase as OrchestraTestCase;
 
@@ -31,7 +31,6 @@ class TestCase extends OrchestraTestCase
      * Get package providers.
      *
      * @param Application $app
-     *
      * @return array
      */
     protected function getPackageProviders($app): array

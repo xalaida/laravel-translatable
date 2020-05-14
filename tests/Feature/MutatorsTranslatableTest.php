@@ -36,7 +36,7 @@ class MutatorsTranslatableTest extends TestCase
 
         $this->app->setLocale('ru');
 
-        $book->title ='Очень очень длинное название для книги';
+        $book->title = 'Очень очень длинное название для книги';
 
         $this->assertEquals('Очень очень длинное название д...', $book->title);
     }
