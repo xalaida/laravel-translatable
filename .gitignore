@@ -3,4 +3,5 @@
 /.vscode
 /tests/report
 .phpunit.result.cache
+.php_cs.cache
 TODO.md
