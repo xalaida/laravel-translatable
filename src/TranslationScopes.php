@@ -30,40 +30,29 @@ trait TranslationScopes
      * @param string $attribute
      * @param $value
      * @param string|null $locale
+     * @param string $operator
      * @return Builder
      */
-    protected function scopeWhereTranslatable(Builder $query, string $attribute, $value, string $locale = null): Builder
+    protected function scopeWhereTranslatable(
+        Builder $query, string $attribute, $value, string $locale = null, string $operator = '='
+    ): Builder
     {
-        return $query->where(function (Builder $query) use ($attribute, $value, $locale) {
+        return $query->where(function (Builder $query) use ($attribute, $value, $locale, $operator) {
             if (is_null($locale) || static::getTranslator()->isDefaultLocale($locale)) {
-                $query->where($attribute, $value);
+                $query->where($attribute, $operator, $value);
             }
 
-            if (! static::getTranslator()->isDefaultLocale($locale)) {
-                $query->whereTranslation($attribute, $value, $locale);
+            if (is_null($locale) || ! static::getTranslator()->isDefaultLocale($locale)) {
+                $query->orWhereHas('translations', function (Builder $query) use ($attribute, $value, $locale, $operator) {
+                    $query->forAttribute($attribute);
+
+                    if ($locale) {
+                        $query->forLocale($locale);
+                    }
+
+                    $query->where('value', $operator, $value);
+                });
             }
-        });
-    }
-
-    /**
-     * Scope to filter models by translation.
-     *
-     * @param Builder $query
-     * @param string $attribute
-     * @param $value
-     * @param string|null $locale
-     * @return Builder
-     */
-    protected function scopeWhereTranslation(Builder $query, string $attribute, $value, string $locale = null): Builder
-    {
-        return $query->orWhereHas('translations', function (Builder $query) use ($attribute, $value, $locale) {
-            $query->forAttribute($attribute);
-
-            if ($locale) {
-                $query->forLocale($locale);
-            }
-
-            $query->where('value', $value);
         });
     }
 }

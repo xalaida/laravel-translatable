@@ -96,16 +96,21 @@ class TranslatableScopesTest extends TestCase
     }
 
     /** @test */
-    public function it_can_retrieve_models_only_by_translations(): void
+    public function it_can_retrieve_models_using_like_operator(): void
     {
-        $book = BookFactory::new()->create();
-        $book->translate('title', 'Testing title', 'ru');
+        $book1 = BookFactory::new()->create();
+        $book1->translate('title', 'Книга о птицах', 'ru');
 
-        BookFactory::new()->create(['title' => 'Testing title']);
+        $book2 = BookFactory::new()->create();
+        $book2->translate('title', 'Книга о дельфинах', 'ru');
 
-        $result = Book::whereTranslation('title', 'Testing title', null)->get();
+        $book3 = BookFactory::new()->create();
+        $book3->translate('title', 'Книга про собак', 'ru');
 
-        $this->assertCount(1, $result);
-        $this->assertTrue($result[0]->is($book));
+        $result = Book::whereTranslatable('title', 'Книга о%', null, 'LIKE')->get();
+
+        $this->assertCount(2, $result);
+        $this->assertTrue($result[0]->is($book1));
+        $this->assertTrue($result[1]->is($book2));
     }
 }

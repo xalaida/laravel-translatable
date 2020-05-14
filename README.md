@@ -13,12 +13,12 @@ The package add provides possibility to translate your Eloquent models into diff
 - Well suitable for already existing projects
 - Provides useful events
 - Removes translations of deleted models (respecting soft deletes)
-- Allows using with models with UUID primary keys
+- Allows using with models that use UUID primary keys
 
 
 ## Demo
 ```
-$post = Book::create(['title' => 'Book about giraffes']);
+$book = Book::create(['title' => 'Book about giraffes']);
 
 // Storing translations
 app()->setLocale('es')
@@ -236,7 +236,18 @@ Otherwise, the scope will return matched rows within all locales.
 $books = Book::whereTranslatable('title', 'Книга о жирафах', 'ru')->get();
 ``` 
 
+Also, you can use different operators for querying translations.
+```
+$books = Book::whereTranslatable('title', 'Book about %', null, 'LIKE')->get();
+```
+
+Or using a specific locale.
+```
+$books = Book::whereTranslatable('title', 'Книги о %', 'ru', 'LIKE')->get();
+```
+
 For more complex queries - feel free to use [Laravel relation queries](https://laravel.com/docs/7.x/eloquent-relationships#querying-relationship-existence).
+ 
 
 ##### Route model binding
 Translatable model can be easily resolved using Route Model Binding feature.
