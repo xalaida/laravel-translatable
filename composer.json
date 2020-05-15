@@ -1,12 +1,9 @@
 {
   "name": "nevadskiy/laravel-translatable",
-  "description": "Laravel package that allows to translate models into different languages",
+  "description": "The package provides possibility to translate your Eloquent models into different languages using a single database table.",
   "license": "MIT",
   "keywords": ["translations", "localization", "laravel"],
-  "support": {
-    "issues": "https://github.com/nevadskiy/laravel-translatable/issues",
-    "docs": "https://github.com/nevadskiy/laravel-translatable"
-  },
+  "homepage": "https://github.com/nevadskiy/laravel-translatable",
   "authors": [
     {
       "name": "Nevadskiy",
