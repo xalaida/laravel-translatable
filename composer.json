@@ -2,9 +2,14 @@
   "name": "nevadskiy/laravel-translatable",
   "description": "Laravel package that allows to translate models into different languages",
   "license": "MIT",
+  "keywords": ["translations", "localization", "laravel"],
+  "support": {
+    "issues": "https://github.com/nevadskiy/laravel-translatable/issues",
+    "docs": "https://github.com/nevadskiy/laravel-translatable"
+  },
   "authors": [
     {
-      "name": "Vitalii Nevadskiy",
+      "name": "Nevadskiy",
       "email": "nevadskiy@gmail.com"
     }
   ],
@@ -34,5 +39,9 @@
         "Nevadskiy\\Translatable\\TranslatableServiceProvider"
       ]
     }
+  },
+  "scripts": {
+    "test": "phpunit --colors=always",
+    "fix": "php-cs-fixer fix"
   }
 }
