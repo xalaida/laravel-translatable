@@ -1,18 +1,15 @@
-# Laravel Translatable  
-The package add provides possibility to translate your Eloquent models into different languages with no pain.
+# Laravel Translatable
+The package provides possibility to translate your Eloquent models into different languages using a single database table.
 
 
 ## Features 
 - Simple and intuitive API
 - No need to rewrite existing migrations, models or views
 - Storing all translations in the single 'translations' table
-- Works with model accessors & mutators
-- Works with model casts (even with JSON structures)
+- Works with model accessors & mutators & casts, even with JSON.
 - Works with route model binding
 - Eager loads only needed translations
-- Well suitable for already existing projects
 - Provides useful events
-- Removes translations of deleted models (respecting soft deletes)
 - Allows using with models that use UUID primary keys
 
 
@@ -295,3 +292,25 @@ public function show(Post $post)
     // Post model is resolved by translated slug in the current locale   
 }
 ```
+
+
+## Changelog
+
+Please see [CHANGELOG](CHANGELOG.md) for more information what has changed recently.
+
+
+## Contributing
+
+Any contribution is **Welcome**.
+
+Please see CONTRIBUTING for details.
+
+
+## Security
+
+If you discover any security related issues, please [e-mail me](mailto:nevadskiy@gmail.com) instead of using the issue tracker.
+
+
+## License
+
+The MIT License (MIT). Please see [License File](LICENSE.md) for more information.
