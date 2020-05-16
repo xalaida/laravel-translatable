@@ -313,7 +313,7 @@ Please see [CHANGELOG](CHANGELOG.md) for more information what has changed recen
 
 Any contribution is **Welcome**.
 
-Please see [CHANGELOG](CONTRIBUTING.md) for more information.
+Please see [CHANGELOG](CHANGELOG.md) for more information.
 
 
 ## Security
@@ -323,4 +323,4 @@ If you discover any security related issues, please [e-mail me](mailto:nevadskiy
 
 ## License
 
-The MIT License (MIT). Please see [CHANGELOG](LICENSE.md) for more information.
+The MIT License (MIT). Please see [LICENSE](LICENSE.md) for more information.
