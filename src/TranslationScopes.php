@@ -14,9 +14,6 @@ trait TranslationScopes
 {
     /**
      * Scope to remove the 'translations' relation from a query.
-     *
-     * @param Builder $query
-     * @return Builder
      */
     protected function scopeWithoutTranslations(Builder $query): Builder
     {
@@ -26,12 +23,7 @@ trait TranslationScopes
     /**
      * Scope to filter models by translatable attribute.
      *
-     * @param Builder $query
-     * @param string $attribute
-     * @param $value
-     * @param string|null $locale
-     * @param string $operator
-     * @return Builder
+     * @param mixed $value
      */
     protected function scopeWhereTranslatable(
         Builder $query,

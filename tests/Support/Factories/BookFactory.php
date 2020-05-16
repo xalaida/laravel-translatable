@@ -18,9 +18,6 @@ class BookFactory
 
     /**
      * Create a new book instance and save it into the database.
-     *
-     * @param array $attributes
-     * @return Book
      */
     public function create(array $attributes = []): Book
     {
@@ -32,8 +29,6 @@ class BookFactory
 
     /**
      * Get default values.
-     *
-     * @return array
      */
     private function getDefaults(): array
     {

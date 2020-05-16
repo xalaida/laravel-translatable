@@ -64,8 +64,6 @@ class Translation extends Model
 
     /**
      * Translatable morph relation.
-     *
-     * @return MorphTo
      */
     public function translatable(): MorphTo
     {
@@ -74,10 +72,6 @@ class Translation extends Model
 
     /**
      * Scope translations by the given locale.
-     *
-     * @param Builder $query
-     * @param string $locale
-     * @return Builder
      */
     public function scopeForLocale(Builder $query, string $locale): Builder
     {
@@ -86,10 +80,6 @@ class Translation extends Model
 
     /**
      * Scope translations by the given attribute.
-     *
-     * @param Builder $query
-     * @param string $attribute
-     * @return Builder
      */
     public function scopeForAttribute(Builder $query, string $attribute): Builder
     {

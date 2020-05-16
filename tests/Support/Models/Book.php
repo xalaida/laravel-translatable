@@ -52,8 +52,6 @@ class Book extends Model
 
     /**
      * Get description short attribute.
-     *
-     * @return string
      */
     public function getDescriptionShortAttribute(): string
     {
@@ -62,9 +60,6 @@ class Book extends Model
 
     /**
      * Get title attribute.
-     *
-     * @param string $title
-     * @return string
      */
     public function getTitleAttribute(string $title): string
     {
@@ -73,8 +68,6 @@ class Book extends Model
 
     /**
      * Set title attribute.
-     *
-     * @param string $title
      */
     public function setTitleAttribute(string $title): void
     {

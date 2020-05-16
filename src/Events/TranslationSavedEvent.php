@@ -13,8 +13,6 @@ class TranslationSavedEvent
 
     /**
      * Create a new event instance.
-     *
-     * @param Translation $translation
      */
     public function __construct(Translation $translation)
     {

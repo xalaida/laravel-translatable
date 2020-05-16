@@ -24,8 +24,6 @@ class ModelTranslator
 
     /**
      * ModelTranslator constructor.
-     *
-     * @param string $defaultLocale
      */
     public function __construct(string $defaultLocale)
     {
@@ -34,8 +32,6 @@ class ModelTranslator
 
     /**
      * Set the current locale.
-     *
-     * @param string $locale
      */
     public function setLocale(string $locale): void
     {
@@ -44,8 +40,6 @@ class ModelTranslator
 
     /**
      * Get the translator locale.
-     *
-     * @return string
      */
     public function getLocale(): string
     {
@@ -54,9 +48,6 @@ class ModelTranslator
 
     /**
      * Determine does the translator use the current or given locale as the default locale.
-     *
-     * @param string $locale
-     * @return bool
      */
     public function isDefaultLocale(string $locale = null): bool
     {
@@ -69,8 +60,6 @@ class ModelTranslator
      * Get the translation of the given model.
      *
      * @param Model|HasTranslations $translatable
-     * @param string $attribute
-     * @param string $locale
      * @return mixed
      */
     public function get(Model $translatable, string $attribute, string $locale = null)
@@ -87,9 +76,6 @@ class ModelTranslator
      * Save the translation for the given model.
      *
      * @param Model|HasTranslations $translatable
-     * @param string $attribute
-     * @param string $value
-     * @param string|null $locale
      * @return Translation|Model
      */
     public function set(Model $translatable, string $attribute, string $value, string $locale = null): Translation

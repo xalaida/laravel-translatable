@@ -18,9 +18,6 @@ class PostFactory
 
     /**
      * Create a new post instance and save it into the database.
-     *
-     * @param array $attributes
-     * @return Post
      */
     public function create(array $attributes = []): Post
     {
@@ -32,8 +29,6 @@ class PostFactory
 
     /**
      * Get default values.
-     *
-     * @return array
      */
     private function getDefaults(): array
     {

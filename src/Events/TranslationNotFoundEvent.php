@@ -26,8 +26,6 @@ class TranslationNotFoundEvent
      * Create a new event instance.
      *
      * @param Model|HasTranslations $model
-     * @param string $attribute
-     * @param string $locale
      */
     public function __construct(Model $model, string $attribute, string $locale)
     {

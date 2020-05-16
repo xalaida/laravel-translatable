@@ -21,8 +21,6 @@ class TranslatableServiceProvider extends ServiceProvider
 
     /**
      * Register any package services.
-     *
-     * @return void
      */
     public function register(): void
     {
@@ -31,8 +29,6 @@ class TranslatableServiceProvider extends ServiceProvider
 
     /**
      * Bootstrap any package services.
-     *
-     * @return void
      */
     public function boot(): void
     {
@@ -55,8 +51,6 @@ class TranslatableServiceProvider extends ServiceProvider
 
     /**
      * Boot the package migrations publisher.
-     *
-     * @return void
      */
     private function publishMigrations(): void
     {

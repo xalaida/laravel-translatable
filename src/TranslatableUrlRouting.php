@@ -44,9 +44,6 @@ trait TranslatableUrlRouting
 
     /**
      * Determine whether it should resolve route binding using translations.
-     *
-     * @param string $field
-     * @return bool
      */
     protected function shouldResolveBindingUsingTranslations(string $field): bool
     {

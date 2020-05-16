@@ -11,8 +11,6 @@ class TestCase extends OrchestraTestCase
 {
     /**
      * Setup the test environment.
-     *
-     * @return void
      */
     protected function setUp(): void
     {
@@ -31,7 +29,6 @@ class TestCase extends OrchestraTestCase
      * Get package providers.
      *
      * @param Application $app
-     * @return array
      */
     protected function getPackageProviders($app): array
     {
@@ -42,7 +39,6 @@ class TestCase extends OrchestraTestCase
      * Define environment setup.
      *
      * @param Application $app
-     * @return void
      */
     protected function getEnvironmentSetUp($app): void
     {
@@ -56,9 +52,6 @@ class TestCase extends OrchestraTestCase
 
     /**
      * Freeze the current time.
-     *
-     * @param Carbon|null $time
-     * @return Carbon
      */
     protected function freezeTime(Carbon $time = null): Carbon
     {

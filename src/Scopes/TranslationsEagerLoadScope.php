@@ -13,9 +13,7 @@ class TranslationsEagerLoadScope implements Scope
     /**
      * Apply the scope to a given Eloquent query builder.
      *
-     * @param Builder $query
      * @param Model|HasTranslations $translatable
-     * @return void
      */
     public function apply(Builder $query, Model $translatable): void
     {

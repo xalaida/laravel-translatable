@@ -14,8 +14,6 @@ class UpdateLocaleListener
 
     /**
      * UpdateLocaleListener constructor.
-     *
-     * @param ModelTranslator $translator
      */
     public function __construct(ModelTranslator $translator)
     {
@@ -24,8 +22,6 @@ class UpdateLocaleListener
 
     /**
      * Handle the given event.
-     *
-     * @param LocaleUpdated $event
      */
     public function handle(LocaleUpdated $event): void
     {

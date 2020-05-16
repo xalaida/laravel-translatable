@@ -44,8 +44,6 @@ trait HasTranslations
 
     /**
      * Morph many translations relation.
-     *
-     * @return MorphMany
      */
     public function translations(): MorphMany
     {
@@ -55,10 +53,7 @@ trait HasTranslations
     /**
      * Save translation for the given attribute and locale.
      *
-     * @param string $attribute
-     * @param $value
-     * @param string $locale
-     * @return Translation
+     * @param mixed $value
      */
     public function translate(string $attribute, $value, string $locale): Translation
     {
@@ -67,10 +62,6 @@ trait HasTranslations
 
     /**
      * Save many translations for the given attribute and locale.
-     *
-     * @param array $translations
-     * @param string $locale
-     * @return Collection
      */
     public function translateMany(array $translations, string $locale): Collection
     {
@@ -86,8 +77,6 @@ trait HasTranslations
     /**
      * Get translation value for the attribute.
      *
-     * @param string $attribute
-     * @param string|null $locale
      * @return mixed
      */
     public function getTranslation(string $attribute, string $locale = null)
@@ -108,8 +97,6 @@ trait HasTranslations
     /**
      * Get raw translation value for the attribute.
      *
-     * @param string $attribute
-     * @param string|null $locale
      * @return mixed
      */
     public function getRawTranslation(string $attribute, string $locale = null)
@@ -125,9 +112,6 @@ trait HasTranslations
 
     /**
      * Get model translations.
-     *
-     * @param string|null $locale
-     * @return array
      */
     public function getTranslations(string $locale = null): array
     {
@@ -145,7 +129,6 @@ trait HasTranslations
     /**
      * Get attribute's default value without translation.
      *
-     * @param string $attribute
      * @return mixed
      */
     public function getDefaultAttribute(string $attribute)
@@ -155,10 +138,6 @@ trait HasTranslations
 
     /**
      * Determine whether the attribute has loaded translation.
-     *
-     * @param string $attribute
-     * @param string $locale
-     * @return bool
      */
     protected function hasLoadedTranslation(string $attribute, string $locale): bool
     {
@@ -167,9 +146,6 @@ trait HasTranslations
 
     /**
      * Load the attribute translation.
-     *
-     * @param string $attribute
-     * @param string $locale
      */
     protected function loadTranslation(string $attribute, string $locale): void
     {
@@ -179,8 +155,6 @@ trait HasTranslations
     /**
      * Get the loaded attribute translation.
      *
-     * @param string $attribute
-     * @param string $locale
      * @return mixed
      */
     protected function getLoadedTranslation(string $attribute, string $locale)
@@ -191,9 +165,7 @@ trait HasTranslations
     /**
      * Set translation to the attribute.
      *
-     * @param string $attribute
-     * @param $value
-     * @param string|null $locale
+     * @param mixed $value
      */
     protected function setTranslation(string $attribute, $value, string $locale = null): void
     {
@@ -204,9 +176,6 @@ trait HasTranslations
 
     /**
      * Determine whether the attribute should be translated.
-     *
-     * @param $attribute
-     * @return bool
      */
     protected function shouldBeTranslated(string $attribute): bool
     {
@@ -217,9 +186,6 @@ trait HasTranslations
 
     /**
      * Determine whether the attribute is translatable.
-     *
-     * @param string $attribute
-     * @return bool
      */
     protected function isTranslatable(string $attribute): bool
     {
@@ -228,8 +194,6 @@ trait HasTranslations
 
     /**
      * Get translatable attributes.
-     *
-     * @return array
      */
     public function getTranslatable(): array
     {
@@ -266,8 +230,6 @@ trait HasTranslations
 
     /**
      * Determine whether the model should delete translations.
-     *
-     * @return bool
      */
     protected function shouldDeleteTranslations(): bool
     {
@@ -284,8 +246,6 @@ trait HasTranslations
 
     /**
      * Determine whether the model uses soft deletes.
-     *
-     * @return bool
      */
     protected function isUsingSoftDeletes(): bool
     {
@@ -342,8 +302,7 @@ trait HasTranslations
     /**
      * Get the attribute value with all accessors and casts applied.
      *
-     * @param string $attribute
-     * @param $value
+     * @param mixed $value
      * @return mixed
      */
     protected function withGetAttribute(string $attribute, $value)
@@ -362,8 +321,7 @@ trait HasTranslations
     /**
      * Get the attribute value with all mutators and casts applied.
      *
-     * @param string $attribute
-     * @param $value
+     * @param mixed $value
      * @return mixed
      */
     protected function withSetAttribute(string $attribute, $value)
@@ -381,8 +339,6 @@ trait HasTranslations
 
     /**
      * Convert the model instance to an array.
-     *
-     * @return array
      */
     public function toArray(): array
     {
@@ -391,8 +347,6 @@ trait HasTranslations
 
     /**
      * Get the model translator instance.
-     *
-     * @return ModelTranslator
      */
     protected static function getTranslator(): ModelTranslator
     {
