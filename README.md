@@ -3,14 +3,12 @@ The package provides possibility to translate your Eloquent models into differen
 
 
 ## Features 
-- Simple and intuitive API
-- No need to rewrite existing migrations, models or views
-- Storing all translations in the single 'translations' table
+- Simple and intuitive API.
+- No need to rewrite existing migrations, models or views.
+- Storing all translations in the single 'translations' table.
 - Works with model accessors & mutators & casts, even with JSON.
-- Works with route model binding
-- Eager loads only needed translations
-- Provides useful events
-- Allows using with models that use UUID primary keys
+- Works with route model binding.
+- Provides useful events.
 
 
 ## Demo
@@ -22,34 +20,44 @@ app()->setLocale('es')
 $book->title = 'Libro sobre jirafas';
 $book->save();
 
-// Accessing translations
+// Reading translations
+app()->setLocale('es')
 echo $book->title; // 'Libro sobre jirafas'
+
 app()->setLocale('en');
 echo $book->title; // 'Book about giraffes'
 ```
 
 
+## Requirements
+
+- Laravel `7.0` or newer  
+- PHP `7.2` or newer
+
+
 ## Installation
-1. Install a package via composer
+1. Install a package via composer.
 ```
-composer require nevadskiy/laravel-translations
+composer require nevadskiy/laravel-translatable
 ```
 
-2. Publish package migrations (it copies only one file into your migrations folder)
+2. Publish package migrations (it copies only one file into your migrations folder).
 ```
 php artisan vendor:publish --tag=translatable 
 ```
 
-3. Optional. If you are going to use translations for models with UUID primary keys, replace the line `$table->morphs('translatable');` with `$table->uuidMorphs('translatable_id');`.
+3. Optional. If you are going to use translations for models with UUID primary keys, make the following:
 
-4. Run migrate command
+Replace the line `$table->morphs('translatable');` with `$table->uuidMorphs('translatable');` in the published migration.
+
+4. Run the migration command.
 ```
 php artisan migrate
 ```
 
 
 ## Making models translatable 
-1. Add a `HasTranslations` trait to your models which you want to make translatable
+1. Add the `HasTranslations` trait to your models which you want to make translatable.
 ```
 <?php
 
@@ -64,7 +72,7 @@ class Post extends Model
 }
 ```
 
-2. Add a `$translatable` array to your models with attributes you want to be translatable.
+2. Add the `$translatable` array to your models with attributes you want to be translatable.
 ```
 /**
  * The attributes that can be translatable.
@@ -77,7 +85,7 @@ protected $translatable = [
 ];
 ```
 
-3. Also, make sure to have translatable attributes in the `$fillable` array
+3. Also, make sure to have translatable attributes in the `$fillable` array.
 ```
 /**
  * The attributes that are mass assignable.
@@ -114,11 +122,26 @@ class Post extends Model
 
 
 ## Documentation
-Default language values are stored in the original table as usual.
+Default locale values are stored in the original table as usual.
 
-Values in non default languages of every model are stored in the single `translations` table.
+Values in non-default locales of each translatable model are stored in the single `translations` table.
 
-The package takes the default language from the `config('config.app.fallback_locale')` value.
+The package takes the default locale from the `config('app.fallback_locale')` value.
+
+##### Automatically store and retrieve translations of the model using translatable attributes
+```
+$post = Post::where('title', 'Post about birds')->first();
+
+app()->setLocale('ru');
+
+$post->update(['title' => 'Пост о птицах']);
+
+echo $post->title; // 'Пост о птицах'
+
+app()->setLocale('en');
+
+echo $post->title; // 'Post about birds'
+```
 
 ##### Manually store and retrieve translations of the model
 ```
@@ -129,36 +152,23 @@ $post->translate('title', 'Пост о дельфинах', 'ru');
 echo $post->getTranslation('title', 'ru'); // 'Пост о дельфинах'
 ```
 
-##### Automatically store and retrieve translations of the model using translatable attributes
-```
-$post = Post::where('title', 'Post about birds')->first();
-
-app()->setLocale('ru');
-$post->title = 'Пост о птицах';
-$post->save();
-
-echo $post->title; // 'Пост о птицах'
-app()->setLocale('en');
-echo $post->title; // 'Post about birds'
-```
-
 ##### Translatable models creation
 Note that translatable models will always be created in **default** locale even when current locale is different.
 Any translations can be attached only to **existing** models.  
 
 ```
 app()->setLocale('de');
-Book::create(...); // This will persist model as usual in default locale.
+Book::create(...); // This will persist model as usual with the default locale.
 ```
 
 ##### Displaying collection of models
-The package automatically eager loads translations of the current locale for you, so you can easily retrieve collection of models as usual
+The package automatically eager loads translations of the current locale for you, so you can easily retrieve collection of models as usual.
 ```
-// In controller
+// In a controller
 app()->setLocale('ru')
 $posts = Post::paginate(20);
 
-// In your views
+// In a view
 @foreach ($posts as $post)
     {{ $post->title }} // Shows title in the current locale OR in default locale if translation is missing.
 @endforeach
@@ -179,7 +189,7 @@ class Post extends Model
 $post = Post::create(['title' => 'post about birds']);
 $post->translate('title', 'пост о птицах', 'ru');
 
-// Using attribute
+// Using attribute with the current locale
 app()->setLocale('ru');
 echo $post->title; // 'Пост о птицах'
 
@@ -202,7 +212,7 @@ class Post extends Model
 $post = Post::create(['description' => 'Very long description']);
 $post->translate('description', 'Очень длинное описание', 'ru');
 
-// Using attribute
+// Using attribute with the current locale
 app()->setLocale('ru');
 echo $post->description; // 'Очень длин'
 
@@ -211,8 +221,8 @@ echo $post->getTranslation('description', 'ru'); // 'Очень длин'
 ```
 
 ##### Removing unused translations
-The package automatically remove translations of deleted models, but if translatable models have been removed using query builder, their translations would exist in the database.
-To remove all unused translations, run the `php artisan translatable:remove-unused` command.
+The package automatically remove translations of deleted models respecting softDeletes, but if translatable models have been removed using query builder, their translations would exist in the database.
+To manually remove all unused translations, run the `php artisan translatable:remove-unused` command.
 
 ##### Querying models without translations
 Sometimes you may need to query translatable model without the `translations` relation. You can do this using `withoutTranslations` scope.
@@ -221,13 +231,13 @@ $books = Book::withoutTranslations()->get();
 ```
 
 ##### Available scopes 
-Query models by translations
+Query models by translatable attributes. It also includes values in the default locale.  
 ```
 $books = Book::whereTranslatable('title', 'Книга о жирафах')->get();
 ```
 
 Note that there is not locale detection within the scopes. 
-If you want to query rows only in the specific locale, you should pass it yourself. 
+If you want to query rows only by a specific locale, you should pass it yourself. 
 Otherwise, the scope will return matched rows within all locales.
 ```
 $books = Book::whereTranslatable('title', 'Книга о жирафах', 'ru')->get();
@@ -247,7 +257,7 @@ For more complex queries - feel free to use [Laravel relation queries](https://l
  
 
 ##### Route model binding
-Translatable model can be easily resolved using Route Model Binding feature.
+Translatable model can be easily resolved using **Route Model Binding** feature.
 
 All you need to do to let Laravel resolve models by a translatable attribute is to set the needed locale which you want to be used for querying models **before** a request will reach `Illuminate\Routing\Middleware\SubstituteBindings::class` middleware.
 
@@ -258,7 +268,7 @@ It may look like this:
 // app/Http/Middleware/SetLocaleMiddleware.php
 public function handle($request, Closure $next)
 {
-    // Setting application locale by cookie locale key
+    // Setting the current locale from cookie
     app()->setLocale($request->cookie('locale'));
 }
 ```
@@ -269,13 +279,13 @@ protected $middlewareGroups = [
     'web' => [
         // ... default middleware stack
         \App\Http\Middleware\SetLocaleMiddleware::class, // <--- your middleware
-        \Illuminate\Routing\Middleware\SubstituteBindings::class, // <--- bindings middleware below
+        \Illuminate\Routing\Middleware\SubstituteBindings::class, // <--- bindings middleware
     ],
 ];
 
 protected $middlewarePriority = [
     // ... default middleware stack
-    \App\Http\Middleware\SetLocaleMiddleware::class, // <--- your middleware
+    \App\Http\Middleware\SetLocaleMiddleware::class, // <--- your middleware above
     \Illuminate\Routing\Middleware\SubstituteBindings::class, // <--- bindings middleware below
 ];
 ```
@@ -289,7 +299,7 @@ Route::get('posts/{post:slug}', 'PostsController@show')
 // app/Http/Controllers/PostController.php
 public function show(Post $post)
 {
-    // Post model is resolved by translated slug in the current locale   
+    // Post model is resolved by translated slug using the current locale   
 }
 ```
 
@@ -303,7 +313,7 @@ Please see [CHANGELOG](CHANGELOG.md) for more information what has changed recen
 
 Any contribution is **Welcome**.
 
-Please see CONTRIBUTING for details.
+Please see [CHANGELOG](CONTRIBUTING.md) for more information.
 
 
 ## Security
@@ -313,4 +323,4 @@ If you discover any security related issues, please [e-mail me](mailto:nevadskiy
 
 ## License
 
-The MIT License (MIT). Please see [License File](LICENSE.md) for more information.
+The MIT License (MIT). Please see [CHANGELOG](LICENSE.md) for more information.
