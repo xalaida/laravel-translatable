@@ -43,7 +43,7 @@ composer require nevadskiy/laravel-translatable
 
 2. Publish package migrations (it copies only one file into your migrations folder).
 ```
-php artisan vendor:publish --tag=translatable 
+php artisan vendor:publish --tag=translatable
 ```
 
 3. Optional. If you are going to use translations for models with UUID primary keys, make the following:
@@ -313,7 +313,7 @@ Please see [CHANGELOG](CHANGELOG.md) for more information what has changed recen
 
 Any contribution is **Welcome**.
 
-Please see [CHANGELOG](CHANGELOG.md) for more information.
+Please see [CONTRIBUTING](CONTRIBUTING.md) for more information.
 
 
 ## Security
