@@ -12,7 +12,7 @@ class CreateTranslationsTable extends Migration
     public function up(): void
     {
         Schema::create('translations', function (Blueprint $table) {
-            $table->uuid('id');
+            $table->uuid('id')->primary();
             $table->morphs('translatable');
             $table->string('translatable_attribute');
             $table->text('value');
