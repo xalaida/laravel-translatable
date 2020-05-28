@@ -6,7 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-## [1.0.0] - 202X-XX-XX
+## [0.2.0] - 2020-05-28
+### Fixed
+- Fixed primary key in the translations table
+
+## [0.1.0] - 2020-05-16
 ### Added
 - Everything
-
