@@ -89,7 +89,7 @@ class TranslationsTest extends TestCase
 
         $this->assertDatabaseHas('translations', [
             'translatable_id' => $book->id,
-            'translatable_type' => get_class($book),
+            'translatable_type' => $book->getMorphClass(),
             'translatable_attribute' => 'title',
             'value' => 'Моя новая книга',
             'locale' => 'ru',
@@ -124,7 +124,7 @@ class TranslationsTest extends TestCase
 
         $this->assertDatabaseHas('translations', [
             'translatable_id' => $book->id,
-            'translatable_type' => get_class($book),
+            'translatable_type' => $book->getMorphClass(),
             'translatable_attribute' => 'title',
             'value' => 'Моя новая книга',
             'locale' => 'ru',
@@ -132,7 +132,7 @@ class TranslationsTest extends TestCase
 
         $this->assertDatabaseHas('translations', [
             'translatable_id' => $book->id,
-            'translatable_type' => get_class($book),
+            'translatable_type' => $book->getMorphClass(),
             'translatable_attribute' => 'description',
             'value' => 'Как хранить переводы для Laravel',
             'locale' => 'ru',
