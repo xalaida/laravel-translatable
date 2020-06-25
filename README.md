@@ -303,6 +303,19 @@ public function show(Post $post)
 }
 ```
 
+##### Using morph map
+It is recommended to use `morph map` for all translatable models to minimize coupling between database and application structure.
+
+```
+use Illuminate\Database\Eloquent\Relations\Relation;
+
+Relation::morphMap([
+    'posts' => Post::class,
+    'categories' => Category::class,
+]);
+```
+[Learn more](https://laravel.com/docs/7.x/eloquent-relationships#custom-polymorphic-types)
+
 
 ## Changelog
 
