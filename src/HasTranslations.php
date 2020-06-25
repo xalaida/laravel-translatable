@@ -31,7 +31,7 @@ trait HasTranslations
      */
     protected static function bootHasTranslations(): void
     {
-        static::addGlobalScope(new TranslationsEagerLoadScope);
+        static::addGlobalScope(new TranslationsEagerLoadScope());
 
         static::saving(static function (self $translatable) {
             $translatable->handleSavingEvent();
