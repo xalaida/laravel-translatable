@@ -13,7 +13,7 @@ class BookFactory
      */
     public static function new(): self
     {
-        return new static;
+        return new static();
     }
 
     /**
