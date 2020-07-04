@@ -5,7 +5,7 @@ namespace Nevadskiy\Translatable\Listeners;
 use Illuminate\Foundation\Events\LocaleUpdated;
 use Nevadskiy\Translatable\ModelTranslator;
 
-class UpdateLocaleListener
+class UpdateTranslatorLocale
 {
     /**
      * @var ModelTranslator
