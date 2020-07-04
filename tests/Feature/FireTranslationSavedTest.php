@@ -14,7 +14,7 @@ class FireTranslationSavedTest extends TestCase
     {
         $book = BookFactory::new()->create();
 
-        Event::fake();
+        Event::fake(TranslationSavedEvent::class);
 
         $book->translate('title', 'Моя книга', 'ru');
 
@@ -29,7 +29,7 @@ class FireTranslationSavedTest extends TestCase
     /** @test */
     public function it_does_not_fire_translation_saved_event_when_translatable_model_is_just_created(): void
     {
-        Event::fake();
+        Event::fake(TranslationSavedEvent::class);
 
         BookFactory::new()->create();
 

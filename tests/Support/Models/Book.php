@@ -24,13 +24,6 @@ class Book extends Model
     use HasTranslations;
 
     /**
-     * The attributes that aren't mass assignable.
-     *
-     * @var array
-     */
-    protected $guarded = [];
-
-    /**
      * The attributes that can be translatable.
      *
      * @var array
@@ -69,8 +62,10 @@ class Book extends Model
     /**
      * Set title attribute.
      */
-    public function setTitleAttribute(string $title): void
+    public function setTitleAttribute(string $title): self
     {
         $this->attributes['title'] = Str::limit($title, 30);
+
+        return $this;
     }
 }

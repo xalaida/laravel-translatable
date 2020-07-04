@@ -41,16 +41,16 @@ echo $book->title; // 'Book about giraffes'
 composer require nevadskiy/laravel-translatable
 ```
 
-2. Publish package migrations (it copies only one file into your migrations folder).
+2. Optional. If you are going to use translations for models with UUID primary keys, make the following:
+
+- Publish package migration
 ```
 php artisan vendor:publish --tag=translatable
 ```
 
-3. Optional. If you are going to use translations for models with UUID primary keys, make the following:
+- Replace the line `$table->morphs('translatable');` with `$table->uuidMorphs('translatable');` in the published migration.
 
-Replace the line `$table->morphs('translatable');` with `$table->uuidMorphs('translatable');` in the published migration.
-
-4. Run the migration command.
+3. Run the migration command.
 ```
 php artisan migrate
 ```
@@ -85,19 +85,6 @@ protected $translatable = [
 ];
 ```
 
-3. Also, make sure to have translatable attributes in the `$fillable` array.
-```
-/**
- * The attributes that are mass assignable.
- *
- * @var array
- */
-protected $fillable = [
-    'title',
-    'description',
-];
-```
-
 #### Final model may look like this
 ```
 <?php
@@ -110,8 +97,6 @@ use Nevadskiy\Translatable\HasTranslations;
 class Post extends Model
 {
     use HasTranslations; 
-
-    protected $guarded = [];
 
     protected $translatable = [
         'title', 
@@ -151,6 +136,16 @@ $post->translate('title', 'Пост о дельфинах', 'ru');
 
 echo $post->getTranslation('title', 'ru'); // 'Пост о дельфинах'
 ```
+
+##### Methods for reading translation
+
+Method | Description
+--- | ---
+`getTranslationOrDefault` | Retrieves a translation for the given attribute or a default value if a translation is missing.
+`getTranslation` | Retrieves a translation for the given attribute or `null` if a translation is missing.
+`getRawTranslation` | Retrieves a translation without any Eloquent accessors applied for the given attribute or `null` if a translation is missing.
+`getDefaultAttribute` | Retrieves the value in a default locale.
+
 
 ##### Translatable models creation
 Note that translatable models will always be created in **default** locale even when current locale is different.
@@ -198,6 +193,8 @@ echo $post->getTranslation('title', 'ru'); // 'Пост о птицах'
 ```
 
 ##### Translations work with model mutators as well
+Note that mutators should return the model instances.
+
 ```
 class Post extends Model
 {
@@ -206,6 +203,8 @@ class Post extends Model
     public function setDesciptionAttribute($descrition)
     {
         $this->attributes['descrition'] = Str::substr($description, 0, 10);
+
+        return $this;
     }
 }
 

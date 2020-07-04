@@ -16,7 +16,7 @@ class FireTranslationNotFoundEventTest extends TestCase
 
         $this->app->setLocale('ru');
 
-        Event::fake();
+        Event::fake(TranslationNotFoundEvent::class);
 
         $this->assertEquals('My original book', $book->title);
 
@@ -32,7 +32,7 @@ class FireTranslationNotFoundEventTest extends TestCase
     {
         $book = BookFactory::new()->create(['title' => 'My original book']);
 
-        Event::fake();
+        Event::fake(TranslationNotFoundEvent::class);
 
         $this->assertNull($book->getTranslation('title', 'ru'));
 
@@ -50,7 +50,7 @@ class FireTranslationNotFoundEventTest extends TestCase
 
         $book->translate('title', 'Моя оригинальная книга', 'ru');
 
-        Event::fake();
+        Event::fake(TranslationNotFoundEvent::class);
 
         $this->assertEquals('Моя оригинальная книга', $book->getTranslation('title', 'ru'));
 

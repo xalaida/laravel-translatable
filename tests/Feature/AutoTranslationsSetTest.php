@@ -32,6 +32,7 @@ class AutoTranslationsSetTest extends TestCase
 
         $this->app->setLocale('ru');
 
+        $book->fillable(['title']);
         $book->update(['title' => 'Моя книга']);
 
         $book = $book->fresh();
@@ -76,11 +77,11 @@ class AutoTranslationsSetTest extends TestCase
     /** @test */
     public function it_does_not_store_resolved_values_as_translations_when_translations_not_available(): void
     {
-        $book = BookFactory::new()->create(['title' => 'Non-translatable title']);
+        $book = BookFactory::new()->create(['title' => 'Not translatable title']);
 
         $this->app->setLocale('ru');
 
-        $this->assertEquals('Non-translatable title', $book->title);
+        $this->assertEquals('Not translatable title', $book->title);
 
         $book->save();
 
@@ -135,20 +136,22 @@ class AutoTranslationsSetTest extends TestCase
     {
         $book = BookFactory::new()->create();
 
-        $book->update(['title' => 'New test book title']);
+        $book->title = 'New test book title';
+        $book->save();
 
         $this->assertEquals('New test book title', $book->title);
         $this->assertEmpty(Translation::all());
     }
 
     /** @test */
-    public function it_does_not_save_translations_for_non_translatable_attributes(): void
+    public function it_does_not_save_translations_for_not_translatable_attributes(): void
     {
         $book = BookFactory::new()->create();
 
         $this->app->setLocale('ru');
 
-        $book->update(['version' => 3]);
+        $book->version = 3;
+        $book->save();
 
         $book = $book->fresh();
 

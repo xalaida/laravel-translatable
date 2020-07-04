@@ -80,7 +80,8 @@ class AccessorsTranslatableTest extends TestCase
 
         $this->app->setLocale('ru');
 
-        $book->update(['title' => 'моя книга']);
+        $book->title = 'моя книга';
+        $book->save();
 
         $this->assertEquals('Моя книга', $book->title);
         $book->save();

@@ -21,7 +21,8 @@ class PostFactory
      */
     public function create(array $attributes = []): Post
     {
-        $post = new Post(array_merge($this->getDefaults(), $attributes));
+        $post = new Post();
+        $post->forceFill(array_merge($this->getDefaults(), $attributes));
         $post->save();
 
         return $post;
