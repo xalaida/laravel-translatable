@@ -6,11 +6,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 ### Added
+
+## [0.3.0] - 2020-07-04
+### Added
 - Added tests for morph map 
+- Added `getTranslationOrDefault` method
+
+### Changed
 - No longer need to publish default migration
 - No longer need to copy translatable attributes into the model's fillable array
+
+### Fixed
 - `getTranslation` method now returns default value if translation is missing
-- Added `getTranslationOrDefault` method
+- `getRawTranslation` now fires event `TranslationNotFound`
 
 ## [0.2.0] - 2020-05-28
 ### Fixed
