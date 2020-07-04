@@ -21,7 +21,8 @@ class BookFactory
      */
     public function create(array $attributes = []): Book
     {
-        $book = new Book(array_merge($this->getDefaults(), $attributes));
+        $book = new Book();
+        $book->forceFill(array_merge($this->getDefaults(), $attributes));
         $book->save();
 
         return $book;

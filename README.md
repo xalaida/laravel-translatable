@@ -85,19 +85,6 @@ protected $translatable = [
 ];
 ```
 
-3. Also, make sure to have translatable attributes in the `$fillable` array.
-```
-/**
- * The attributes that are mass assignable.
- *
- * @var array
- */
-protected $fillable = [
-    'title',
-    'description',
-];
-```
-
 #### Final model may look like this
 ```
 <?php
@@ -110,8 +97,6 @@ use Nevadskiy\Translatable\HasTranslations;
 class Post extends Model
 {
     use HasTranslations; 
-
-    protected $guarded = [];
 
     protected $translatable = [
         'title', 

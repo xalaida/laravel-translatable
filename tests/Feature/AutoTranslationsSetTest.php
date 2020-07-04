@@ -32,6 +32,7 @@ class AutoTranslationsSetTest extends TestCase
 
         $this->app->setLocale('ru');
 
+        $book->fillable(['title']);
         $book->update(['title' => 'Моя книга']);
 
         $book = $book->fresh();
@@ -135,7 +136,8 @@ class AutoTranslationsSetTest extends TestCase
     {
         $book = BookFactory::new()->create();
 
-        $book->update(['title' => 'New test book title']);
+        $book->title = 'New test book title';
+        $book->save();
 
         $this->assertEquals('New test book title', $book->title);
         $this->assertEmpty(Translation::all());
@@ -148,7 +150,8 @@ class AutoTranslationsSetTest extends TestCase
 
         $this->app->setLocale('ru');
 
-        $book->update(['version' => 3]);
+        $book->version = 3;
+        $book->save();
 
         $book = $book->fresh();
 

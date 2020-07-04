@@ -24,13 +24,6 @@ class Book extends Model
     use HasTranslations;
 
     /**
-     * The attributes that aren't mass assignable.
-     *
-     * @var array
-     */
-    protected $guarded = [];
-
-    /**
      * The attributes that can be translatable.
      *
      * @var array

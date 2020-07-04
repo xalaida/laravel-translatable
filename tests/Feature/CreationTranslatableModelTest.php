@@ -3,7 +3,7 @@
 namespace Nevadskiy\Translatable\Tests\Feature;
 
 use Nevadskiy\Translatable\Models\Translation;
-use Nevadskiy\Translatable\Tests\Support\Models\Book;
+use Nevadskiy\Translatable\Tests\Support\Factories\BookFactory;
 use Nevadskiy\Translatable\Tests\TestCase;
 
 class CreationTranslatableModelTest extends TestCase
@@ -13,12 +13,11 @@ class CreationTranslatableModelTest extends TestCase
     {
         $this->app->setLocale('ru');
 
-        $book = new Book([
+        $book = BookFactory::new()->create([
             'title' => 'My book',
             'description' => 'Book about birds',
             'version' => '1',
         ]);
-        $book->save();
 
         $this->assertEmpty(Translation::all());
         $this->assertDatabaseHas($book->getTable(), [
