@@ -83,19 +83,6 @@ class TranslatableScopesTest extends TestCase
     }
 
     /** @test */
-    public function it_does_not_retrieve_wrong_translated_model_by_passing_default_locale(): void
-    {
-        $defaultLocale = $this->app['config']['app']['fallback_locale'];
-
-        $wrongTranslatedBook = BookFactory::new()->create(['title' => 'Book about birds']);
-        $wrongTranslatedBook->translate('title', 'Book about dolphins', $defaultLocale);
-
-        $result = Book::whereTranslatable('title', 'Book about dolphins', $defaultLocale)->first();
-
-        $this->assertNull($result);
-    }
-
-    /** @test */
     public function it_can_retrieve_models_using_like_operator(): void
     {
         $book1 = BookFactory::new()->create();

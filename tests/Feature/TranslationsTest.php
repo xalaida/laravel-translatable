@@ -2,6 +2,7 @@
 
 namespace Nevadskiy\Translatable\Tests\Feature;
 
+use Nevadskiy\Translatable\Exceptions\NotTranslatableAttributeException;
 use Nevadskiy\Translatable\Models\Translation;
 use Nevadskiy\Translatable\Tests\Support\Factories\BookFactory;
 use Nevadskiy\Translatable\Tests\TestCase;
@@ -165,57 +166,26 @@ class TranslationsTest extends TestCase
     }
 
     /** @test */
-    public function it_saves_translations_correctly_even_for_default_locale(): void
+    public function it_updates_default_value_for_default_locale(): void
     {
         $book = BookFactory::new()->create(['title' => 'My book']);
 
         $book->translate('title', 'My english book', $this->app->getLocale());
 
-        $this->assertEquals('My english book', $book->getTranslation('title', $this->app->getLocale()));
-        $this->assertCount(1, Translation::all());
+        $this->assertEquals('My english book', $book->getAttribute('title'));
+        $this->assertEmpty(Translation::all());
     }
 
     /** @test */
-    public function it_saves_translations_correctly_even_for_not_translatable_attributes(): void
+    public function it_throws_en_exception_during_translation_not_translatable_attributes(): void
     {
         $book = BookFactory::new()->create(['title' => 'My book']);
 
-        $book->translate('version', '5', $this->app->getLocale());
-
-        $this->assertEquals('5', $book->getTranslation('version', $this->app->getLocale()));
-        $this->assertCount(1, Translation::all());
-    }
-
-    /** @test */
-    public function it_returns_translation_model_from_translate_method(): void
-    {
-        $book = BookFactory::new()->create();
-
-        $translation = $book->translate('title', 'Моя книга', 'ru');
-
-        $this->assertEquals('Моя книга', $translation->value);
-        $this->assertEquals('ru', $translation->locale);
-        $this->assertEquals('title', $translation->translatable_attribute);
-        $this->assertTrue($translation->translatable->is($book));
-    }
-
-    /** @test */
-    public function it_returns_translations_collection_from_translate_many_method(): void
-    {
-        $book = BookFactory::new()->create();
-
-        $translations = $book->translateMany(['title' => 'Моя книга', 'description' => 'Мое описание'], 'ru');
-
-        $this->assertCount(2, $translations);
-
-        $this->assertEquals('Моя книга', $translations[0]->value);
-        $this->assertEquals('title', $translations[0]->translatable_attribute);
-        $this->assertEquals('ru', $translations[0]->locale);
-        $this->assertTrue($translations[0]->translatable->is($book));
-
-        $this->assertEquals('Мое описание', $translations[1]->value);
-        $this->assertEquals('description', $translations[1]->translatable_attribute);
-        $this->assertEquals('ru', $translations[1]->locale);
-        $this->assertTrue($translations[1]->translatable->is($book));
+        try {
+            $book->translate('version', '5', $this->app->getLocale());
+            $this->fail('Exception was not thrown for not translatable attribute');
+        } catch (NotTranslatableAttributeException $e) {
+            $this->assertCount(0, Translation::all());
+        }
     }
 }

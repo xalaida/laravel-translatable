@@ -198,6 +198,8 @@ echo $post->getTranslation('title', 'ru'); // 'Пост о птицах'
 ```
 
 ##### Translations work with model mutators as well
+Note that mutators should return the model instances.
+
 ```
 class Post extends Model
 {
@@ -206,6 +208,8 @@ class Post extends Model
     public function setDesciptionAttribute($descrition)
     {
         $this->attributes['descrition'] = Str::substr($description, 0, 10);
+
+        return $this;
     }
 }
 
