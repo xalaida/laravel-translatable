@@ -33,6 +33,7 @@ class TranslatableServiceProvider extends ServiceProvider
     public function boot(): void
     {
         $this->publishMigrations();
+        $this->bootMigrations();
         $this->bootEvents();
         $this->bootCommands();
     }
@@ -50,13 +51,21 @@ class TranslatableServiceProvider extends ServiceProvider
     }
 
     /**
-     * Boot the package migrations publisher.
+     * Publish any package migrations.
      */
     private function publishMigrations(): void
     {
         $this->publishes([
             __DIR__.'/../database/migrations' => database_path('migrations'),
         ], 'translatable');
+    }
+
+    /**
+     * Boot any package migrations.
+     */
+    public function bootMigrations(): void
+    {
+        $this->loadMigrationsFrom(__DIR__.'/../database/migrations');
     }
 
     /**
