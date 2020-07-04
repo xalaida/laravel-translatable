@@ -2,11 +2,11 @@
 
 namespace Nevadskiy\Translatable;
 
-use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Nevadskiy\Translatable\Events\TranslationNotFoundEvent;
+use Nevadskiy\Translatable\Exceptions\NotTranslatableAttributeException;
 use Nevadskiy\Translatable\Models\Translation;
 use Nevadskiy\Translatable\Scopes\TranslationsEagerLoadScope;
 
@@ -54,24 +54,29 @@ trait HasTranslations
      * Save translation for the given attribute and locale.
      *
      * @param mixed $value
+     * @return HasTranslations|mixed
      */
-    public function translate(string $attribute, $value, string $locale): Translation
+    public function translate(string $attribute, $value, string $locale)
     {
-        return static::getTranslator()->set($this, $attribute, $this->withSetAttribute($attribute, $value), $locale);
+        $this->setTranslation($attribute, $value, $locale)->save();
+
+        return $this;
     }
 
     /**
      * Save many translations for the given attribute and locale.
+     *
+     * @return HasTranslations|mixed
      */
-    public function translateMany(array $translations, string $locale): Collection
+    public function translateMany(array $translations, string $locale)
     {
-        $translationsCollection = new Collection();
-
         foreach ($translations as $attribute => $value) {
-            $translationsCollection[] = $this->translate($attribute, $value, $locale);
+            $this->setTranslation($attribute, $value, $locale);
         }
 
-        return $translationsCollection;
+        $this->save();
+
+        return $this;
     }
 
     /**
@@ -81,7 +86,13 @@ trait HasTranslations
      */
     public function getTranslation(string $attribute, string $locale = null)
     {
+        $this->assertTranslatableAttribute($attribute);
+
         $locale = $locale ?: static::getTranslator()->getLocale();
+
+        if (static::getTranslator()->isDefaultLocale($locale)) {
+            return $this->getDefaultAttribute($attribute);
+        }
 
         $translation = $this->getRawTranslation($attribute, $locale);
 
@@ -137,6 +148,17 @@ trait HasTranslations
     }
 
     /**
+     * Set attribute's value without translation.
+     *
+     * @param mixed $value
+     * @return mixed
+     */
+    public function setDefaultAttribute(string $attribute, $value)
+    {
+        return parent::setAttribute($attribute, $value);
+    }
+
+    /**
      * Determine whether the attribute has loaded translation.
      */
     protected function hasLoadedTranslation(string $attribute, string $locale): bool
@@ -166,12 +188,21 @@ trait HasTranslations
      * Set translation to the attribute.
      *
      * @param mixed $value
+     * @return HasTranslations|mixed
      */
-    protected function setTranslation(string $attribute, $value, string $locale = null): void
+    public function setTranslation(string $attribute, $value, string $locale = null)
     {
+        $this->assertTranslatableAttribute($attribute);
+
         $locale = $locale ?: static::getTranslator()->getLocale();
 
+        if (static::getTranslator()->isDefaultLocale($locale)) {
+            return $this->setDefaultAttribute($attribute, $value);
+        }
+
         $this->translated[$locale][$attribute] = $this->withSetAttribute($attribute, $value);
+
+        return $this;
     }
 
     /**
@@ -179,9 +210,7 @@ trait HasTranslations
      */
     protected function shouldBeTranslated(string $attribute): bool
     {
-        return $this->exists
-            && $this->isTranslatable($attribute)
-            && ! static::getTranslator()->isDefaultLocale();
+        return $this->exists && $this->isTranslatable($attribute);
     }
 
     /**
@@ -214,7 +243,9 @@ trait HasTranslations
     protected function saveTranslations(): void
     {
         foreach ($this->translated as $locale => $attributes) {
-            $this->translateMany(array_filter($attributes), $locale);
+            foreach (array_filter($attributes) as $attribute => $value) {
+                static::getTranslator()->set($this, $attribute, $value, $locale);
+            }
         }
     }
 
@@ -272,7 +303,17 @@ trait HasTranslations
             return $this->getDefaultAttribute($attribute);
         }
 
-        $translation = $this->getTranslation($attribute);
+        return $this->getTranslationOrDefault($attribute);
+    }
+
+    /**
+     * Get a translation of the attribute or default value if translation is missing.
+     *
+     * @return mixed
+     */
+    public function getTranslationOrDefault(string $attribute, string $locale = null)
+    {
+        $translation = $this->getTranslation($attribute, $locale);
 
         if (is_null($translation)) {
             return $this->getDefaultAttribute($attribute);
@@ -291,12 +332,10 @@ trait HasTranslations
     public function setAttribute($attribute, $value)
     {
         if (! $this->shouldBeTranslated($attribute)) {
-            return parent::setAttribute($attribute, $value);
+            return $this->setDefaultAttribute($attribute, $value);
         }
 
-        $this->setTranslation($attribute, $value);
-
-        return $this;
+        return $this->setTranslation($attribute, $value);
     }
 
     /**
@@ -351,5 +390,15 @@ trait HasTranslations
     protected static function getTranslator(): ModelTranslator
     {
         return app(ModelTranslator::class);
+    }
+
+    /**
+     * Assert that attribute is translatable.
+     */
+    protected function assertTranslatableAttribute(string $attribute): void
+    {
+        if (! $this->isTranslatable($attribute)) {
+            throw NotTranslatableAttributeException::fromAttribute($attribute);
+        }
     }
 }
