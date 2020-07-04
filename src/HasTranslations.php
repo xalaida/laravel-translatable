@@ -65,13 +65,13 @@ trait HasTranslations
      */
     public function translateMany(array $translations, string $locale): Collection
     {
-        $collectionsCollection = new Collection();
+        $translationsCollection = new Collection();
 
         foreach ($translations as $attribute => $value) {
-            $collectionsCollection[] = $this->translate($attribute, $value, $locale);
+            $translationsCollection[] = $this->translate($attribute, $value, $locale);
         }
 
-        return $collectionsCollection;
+        return $translationsCollection;
     }
 
     /**
