@@ -41,16 +41,16 @@ echo $book->title; // 'Book about giraffes'
 composer require nevadskiy/laravel-translatable
 ```
 
-2. Publish package migrations (it copies only one file into your migrations folder).
+2. Optional. If you are going to use translations for models with UUID primary keys, make the following:
+
+- Publish package migration
 ```
 php artisan vendor:publish --tag=translatable
 ```
 
-3. Optional. If you are going to use translations for models with UUID primary keys, make the following:
+- Replace the line `$table->morphs('translatable');` with `$table->uuidMorphs('translatable');` in the published migration.
 
-Replace the line `$table->morphs('translatable');` with `$table->uuidMorphs('translatable');` in the published migration.
-
-4. Run the migration command.
+3. Run the migration command.
 ```
 php artisan migrate
 ```
