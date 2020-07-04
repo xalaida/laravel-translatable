@@ -137,6 +137,16 @@ $post->translate('title', 'Пост о дельфинах', 'ru');
 echo $post->getTranslation('title', 'ru'); // 'Пост о дельфинах'
 ```
 
+##### Methods for reading translation
+
+Method | Description
+--- | ---
+`getTranslationOrDefault` | Retrieves a translation for the given attribute or a default value if a translation is missing.
+`getTranslation` | Retrieves a translation for the given attribute or `null` if a translation is missing.
+`getRawTranslation` | Retrieves a translation without any Eloquent accessors applied for the given attribute or `null` if a translation is missing.
+`getDefaultAttribute` | Retrieves the value in a default locale.
+
+
 ##### Translatable models creation
 Note that translatable models will always be created in **default** locale even when current locale is different.
 Any translations can be attached only to **existing** models.  
