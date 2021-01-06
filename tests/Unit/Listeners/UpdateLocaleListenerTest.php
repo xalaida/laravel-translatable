@@ -15,7 +15,7 @@ class UpdateLocaleListenerTest extends TestCase
 
         $this->app->setLocale('ru');
 
-        $this->assertEquals('ru', $translator->getLocale());
+        self::assertEquals('ru', $translator->getLocale());
         $this->assertNotEquals('ru', $originalLocale);
     }
 }

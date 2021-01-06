@@ -18,7 +18,7 @@ class TranslatableScopesTest extends TestCase
 
         $result = Book::whereTranslatable('title', 'Book about dolphins')->first();
 
-        $this->assertTrue($result->is($book));
+        self::assertTrue($result->is($book));
     }
 
     /** @test */
@@ -37,9 +37,9 @@ class TranslatableScopesTest extends TestCase
 
         $books = Book::whereTranslatable('title', 'Книга про собак')->get();
 
-        $this->assertCount(2, $books);
-        $this->assertTrue($books[0]->is($book1));
-        $this->assertTrue($books[1]->is($book2));
+        self::assertCount(2, $books);
+        self::assertTrue($books[0]->is($book1));
+        self::assertTrue($books[1]->is($book2));
     }
 
     /** @test */
@@ -56,7 +56,7 @@ class TranslatableScopesTest extends TestCase
 
         $result = Book::whereTranslatable('title', 'Книга о жирафах', 'ru')->first();
 
-        $this->assertTrue($result->is($book2));
+        self::assertTrue($result->is($book2));
     }
 
     /** @test */
@@ -67,7 +67,7 @@ class TranslatableScopesTest extends TestCase
 
         $result = Book::whereTranslatable('title', 'Book about dolphins', 'ru')->first();
 
-        $this->assertNull($result);
+        self::assertNull($result);
     }
 
     /** @test */
@@ -79,7 +79,7 @@ class TranslatableScopesTest extends TestCase
 
         $result = Book::whereTranslatable('title', 'Book about dolphins', $defaultLocale)->first();
 
-        $this->assertTrue($result->is($book));
+        self::assertTrue($result->is($book));
     }
 
     /** @test */
@@ -96,8 +96,8 @@ class TranslatableScopesTest extends TestCase
 
         $result = Book::whereTranslatable('title', 'Книга о%', null, 'LIKE')->get();
 
-        $this->assertCount(2, $result);
-        $this->assertTrue($result[0]->is($book1));
-        $this->assertTrue($result[1]->is($book2));
+        self::assertCount(2, $result);
+        self::assertTrue($result[0]->is($book1));
+        self::assertTrue($result[1]->is($book2));
     }
 }

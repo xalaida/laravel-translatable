@@ -66,7 +66,7 @@ class ModelTranslator
     {
         $locale = $locale ?: $this->getLocale();
 
-        return $translatable->translations->filter(function (Translation $translation) use ($attribute, $locale) {
+        return $translatable->translations->filter(static function (Translation $translation) use ($attribute, $locale) {
             return $translation->locale === $locale
                 && $translation->translatable_attribute === $attribute;
         })->first()->value ?? null;

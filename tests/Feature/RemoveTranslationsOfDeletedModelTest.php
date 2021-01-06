@@ -18,12 +18,12 @@ class RemoveTranslationsOfDeletedModelTest extends TestCase
         $book2 = BookFactory::new()->create();
         $book2->translateMany(['title' => 'Дельфины', 'description' => 'Книга о дельфинах'], 'ru');
 
-        $this->assertCount(4, Translation::all());
+        self::assertCount(4, Translation::all());
 
         $book1->delete();
 
-        $this->assertEmpty($book1->translations);
-        $this->assertCount(2, $book2->translations);
+        self::assertEmpty($book1->translations);
+        self::assertCount(2, $book2->translations);
     }
 
     /** @test */
@@ -32,11 +32,11 @@ class RemoveTranslationsOfDeletedModelTest extends TestCase
         $post1 = PostFactory::new()->create();
         $post1->translate('body', 'Удаленный пост', 'ru');
 
-        $this->assertCount(1, Translation::all());
+        self::assertCount(1, Translation::all());
 
         $post1->delete();
 
-        $this->assertCount(1, Translation::all());
+        self::assertCount(1, Translation::all());
     }
 
     /** @test */
@@ -45,10 +45,10 @@ class RemoveTranslationsOfDeletedModelTest extends TestCase
         $post1 = PostFactory::new()->create();
         $post1->translate('body', 'Удаленный пост', 'ru');
 
-        $this->assertCount(1, Translation::all());
+        self::assertCount(1, Translation::all());
 
         $post1->forceDelete();
 
-        $this->assertCount(0, Translation::all());
+        self::assertCount(0, Translation::all());
     }
 }

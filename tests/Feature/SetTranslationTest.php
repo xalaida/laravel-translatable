@@ -17,8 +17,8 @@ class SetTranslationTest extends TestCase
         $book->setTranslation('title', 'Book title in English', 'en');
         $book->save();
 
-        $this->assertEquals('Book title in English', $book->title);
-        $this->assertEmpty(Translation::all());
+        self::assertEquals('Book title in English', $book->title);
+        self::assertEmpty(Translation::all());
     }
 
     /** @test */

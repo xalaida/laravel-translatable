@@ -22,8 +22,8 @@ class CastTranslationsTest extends TestCase
 
         $this->app->setLocale('ru');
 
-        $this->assertEquals(['title' => 'Глава 1', 'body' => 'Глава о птицах'], $book->content);
-        $this->assertCount(1, Translation::all());
+        self::assertEquals(['title' => 'Глава 1', 'body' => 'Глава о птицах'], $book->content);
+        self::assertCount(1, Translation::all());
     }
 
     /** @test */
@@ -38,6 +38,6 @@ class CastTranslationsTest extends TestCase
 
         $this->app->setLocale('ru');
 
-        $this->assertEquals(['title' => 'Chapter 1', 'body' => 'Chapter about birds'], $book->content);
+        self::assertEquals(['title' => 'Chapter 1', 'body' => 'Chapter about birds'], $book->content);
     }
 }

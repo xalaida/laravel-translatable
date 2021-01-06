@@ -14,7 +14,7 @@ class TouchParentOnSaveTest extends TestCase
 
         $book = BookFactory::new()->create();
 
-        $this->assertEquals($createdTime, $book->created_at);
+        self::assertEquals($createdTime, $book->created_at);
 
         $translatedTime = $this->freezeTime(now()->addMonth());
 
@@ -22,7 +22,7 @@ class TouchParentOnSaveTest extends TestCase
 
         $book = $book->fresh();
 
-        $this->assertEquals($createdTime, $book->created_at);
-        $this->assertEquals($translatedTime, $book->updated_at);
+        self::assertEquals($createdTime, $book->created_at);
+        self::assertEquals($translatedTime, $book->updated_at);
     }
 }

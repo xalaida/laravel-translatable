@@ -14,7 +14,7 @@ class GetTranslationTest extends TestCase
         $book = BookFactory::new()->create(['title' => 'My best book']);
         $book->translate('title', 'Моя лучшая книга', 'ru');
 
-        $this->assertEquals('My best book', $book->getTranslation('title', 'en'));
+        self::assertEquals('My best book', $book->getTranslation('title', 'en'));
     }
 
     /** @test */
