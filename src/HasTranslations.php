@@ -365,14 +365,6 @@ trait HasTranslations
     }
 
     /**
-     * Convert the model instance to an array.
-     */
-    public function toArray(): array
-    {
-        return array_merge(parent::toArray(), array_filter($this->getTranslations()));
-    }
-
-    /**
      * Get model translations.
      */
     public function getTranslations(string $locale = null): array
@@ -381,8 +373,8 @@ trait HasTranslations
 
         $translations = [];
 
-        foreach ($this->translatable as $attribute) {
-            $translations[$attribute] = $this->getTranslation($attribute, $locale);
+        foreach ($this->getTranslatable() as $attribute) {
+            $translations[$attribute] = $this->getTranslationOrDefault($attribute, $locale);
         }
 
         return $translations;
@@ -404,5 +396,15 @@ trait HasTranslations
         if (! $this->isTranslatable($attribute)) {
             throw NotTranslatableAttributeException::fromAttribute($attribute);
         }
+    }
+
+    /**
+     * Convert the model's attributes to an array.
+     *
+     * @return array
+     */
+    public function attributesToArray(): array
+    {
+        return array_merge(parent::attributesToArray(), $this->getTranslations());
     }
 }
