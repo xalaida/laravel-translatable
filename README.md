@@ -1,11 +1,13 @@
 # Laravel Translatable
 The package provides possibility to translate your Eloquent models into different languages using a single database table.
 
+Inspired by [django-modeltranslation](https://github.com/deschler/django-modeltranslation)
 
 ## Features 
 - Simple and intuitive API.
+- All translations are resolved automatically for the current locale.
 - No need to rewrite existing migrations, models or views.
-- Storing all translations in the single 'translations' table.
+- Store all translations in the single 'translations' table.
 - Works with model accessors & mutators & casts, even with JSON.
 - Works with route model binding.
 - Provides useful events.
