@@ -20,9 +20,9 @@ class AutoTranslationsSetTest extends TestCase
 
         $book = $book->fresh();
 
-        $this->assertCount(1, Translation::all());
-        $this->assertEquals('Моя первая книга', $book->getTranslation('title', 'ru'));
-        $this->assertEquals('My first book', $book->getDefaultAttribute('title'));
+        self::assertCount(1, Translation::all());
+        self::assertEquals('Моя первая книга', $book->getTranslation('title', 'ru'));
+        self::assertEquals('My first book', $book->getDefaultTranslation('title'));
     }
 
     /** @test */
@@ -37,9 +37,9 @@ class AutoTranslationsSetTest extends TestCase
 
         $book = $book->fresh();
 
-        $this->assertCount(1, Translation::all());
-        $this->assertEquals('Моя книга', $book->getTranslation('title', 'ru'));
-        $this->assertEquals('My first book', $book->getDefaultAttribute('title'));
+        self::assertCount(1, Translation::all());
+        self::assertEquals('Моя книга', $book->getTranslation('title', 'ru'));
+        self::assertEquals('My first book', $book->getDefaultTranslation('title'));
     }
 
     /** @test */
@@ -53,9 +53,9 @@ class AutoTranslationsSetTest extends TestCase
 
         $book = $book->fresh();
 
-        $this->assertEmpty(Translation::all());
-        $this->assertNull($book->getTranslation('title', 'ru'));
-        $this->assertEquals('My first book', $book->title);
+        self::assertEmpty(Translation::all());
+        self::assertNull($book->getTranslation('title', 'ru'));
+        self::assertEquals('My first book', $book->title);
     }
 
     /** @test */
@@ -70,8 +70,8 @@ class AutoTranslationsSetTest extends TestCase
         $book->title = 'Исправленное название книги';
         $book->save();
 
-        $this->assertEquals('Исправленное название книги', $book->getTranslation('title'));
-        $this->assertEquals('My book', $book->getDefaultAttribute('title'));
+        self::assertEquals('Исправленное название книги', $book->getTranslation('title'));
+        self::assertEquals('My book', $book->getDefaultTranslation('title'));
     }
 
     /** @test */
@@ -81,11 +81,11 @@ class AutoTranslationsSetTest extends TestCase
 
         $this->app->setLocale('ru');
 
-        $this->assertEquals('Not translatable title', $book->title);
+        self::assertEquals('Not translatable title', $book->title);
 
         $book->save();
 
-        $this->assertEmpty(Translation::all());
+        self::assertEmpty(Translation::all());
     }
 
     /** @test */
@@ -105,11 +105,11 @@ class AutoTranslationsSetTest extends TestCase
 
         $book = $book->fresh();
 
-        $this->assertEquals('Моя книга', $book->title);
-        $this->assertEquals('Книга о птицах', $book->description);
-        $this->assertEquals(12, $book->version);
+        self::assertEquals('Моя книга', $book->title);
+        self::assertEquals('Книга о птицах', $book->description);
+        self::assertEquals(12, $book->version);
 
-        $this->assertCount(2, Translation::all());
+        self::assertCount(2, Translation::all());
     }
 
     /** @test */
@@ -122,13 +122,13 @@ class AutoTranslationsSetTest extends TestCase
         $book->translate('title', 'Mi titulo original', 'es');
 
         $this->app->setLocale('sv');
-        $this->assertEquals('Min ursprungliga titel', $book->title);
+        self::assertEquals('Min ursprungliga titel', $book->title);
 
         $this->app->setLocale('es');
-        $this->assertEquals('Mi titulo original', $book->title);
+        self::assertEquals('Mi titulo original', $book->title);
 
         $this->app->setLocale($originalLocale);
-        $this->assertEquals('My original title', $book->title);
+        self::assertEquals('My original title', $book->title);
     }
 
     /** @test */
@@ -139,8 +139,8 @@ class AutoTranslationsSetTest extends TestCase
         $book->title = 'New test book title';
         $book->save();
 
-        $this->assertEquals('New test book title', $book->title);
-        $this->assertEmpty(Translation::all());
+        self::assertEquals('New test book title', $book->title);
+        self::assertEmpty(Translation::all());
     }
 
     /** @test */
@@ -155,8 +155,8 @@ class AutoTranslationsSetTest extends TestCase
 
         $book = $book->fresh();
 
-        $this->assertEquals(3, $book->version);
-        $this->assertEmpty(Translation::all());
+        self::assertEquals(3, $book->version);
+        self::assertEmpty(Translation::all());
     }
 
     /** @test */
@@ -171,7 +171,7 @@ class AutoTranslationsSetTest extends TestCase
 
         $book = $book->fresh();
 
-        $this->assertEquals('Book about animals', $book->description);
-        $this->assertEmpty(Translation::all());
+        self::assertEquals('Book about animals', $book->description);
+        self::assertEmpty(Translation::all());
     }
 }

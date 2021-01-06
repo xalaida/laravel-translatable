@@ -144,7 +144,7 @@ Method | Description
 `getTranslationOrDefault` | Retrieves a translation for the given attribute or a default value if a translation is missing.
 `getTranslation` | Retrieves a translation for the given attribute or `null` if a translation is missing.
 `getRawTranslation` | Retrieves a translation without any Eloquent accessors applied for the given attribute or `null` if a translation is missing.
-`getDefaultAttribute` | Retrieves the value in a default locale.
+`getDefaultTranslation` | Retrieves the value in a default locale.
 
 
 ##### Translatable models creation

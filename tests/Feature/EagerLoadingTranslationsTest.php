@@ -22,9 +22,9 @@ class EagerLoadingTranslationsTest extends TestCase
 
         [$book] = Book::all();
 
-        $this->assertTrue($book->relationLoaded('translations'));
-        $this->assertCount(1, $book->translations);
-        $this->assertEquals('ru', $book->translations[0]->locale);
+        self::assertTrue($book->relationLoaded('translations'));
+        self::assertCount(1, $book->translations);
+        self::assertEquals('ru', $book->translations[0]->locale);
     }
 
     /** @test */
@@ -40,11 +40,11 @@ class EagerLoadingTranslationsTest extends TestCase
 
         [$book1, $book2, $book3] = Book::all();
 
-        $this->assertEquals('Первая книга', $book1->title);
-        $this->assertEquals('Вторая книга', $book2->title);
-        $this->assertEquals('Третья книга', $book3->title);
+        self::assertEquals('Первая книга', $book1->title);
+        self::assertEquals('Вторая книга', $book2->title);
+        self::assertEquals('Третья книга', $book3->title);
 
-        $this->assertCount(2, DB::getQueryLog());
+        self::assertCount(2, DB::getQueryLog());
     }
 
     /** @test */
@@ -54,6 +54,6 @@ class EagerLoadingTranslationsTest extends TestCase
 
         [$book] = Book::withoutTranslations()->get();
 
-        $this->assertFalse($book->relationLoaded('translations'));
+        self::assertFalse($book->relationLoaded('translations'));
     }
 }

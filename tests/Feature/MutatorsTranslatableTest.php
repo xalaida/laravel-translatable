@@ -26,7 +26,7 @@ class MutatorsTranslatableTest extends TestCase
 
         $book->translate('title', 'Очень очень длинное название для книги', 'ru');
 
-        $this->assertEquals('My book', $book->title);
+        self::assertEquals('My book', $book->title);
     }
 
     /** @test */
@@ -38,6 +38,6 @@ class MutatorsTranslatableTest extends TestCase
 
         $book->title = 'Очень очень длинное название для книги';
 
-        $this->assertEquals('Очень очень длинное название д...', $book->title);
+        self::assertEquals('Очень очень длинное название д...', $book->title);
     }
 }

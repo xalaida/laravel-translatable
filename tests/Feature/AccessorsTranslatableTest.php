@@ -14,7 +14,7 @@ class AccessorsTranslatableTest extends TestCase
 
         $book->translate('title', 'моя книга', 'ru');
 
-        $this->assertEquals('Моя книга', $book->getTranslation('title', 'ru'));
+        self::assertEquals('Моя книга', $book->getTranslation('title', 'ru'));
     }
 
     /** @test */
@@ -22,7 +22,7 @@ class AccessorsTranslatableTest extends TestCase
     {
         $book = BookFactory::new()->create(['title' => 'my book']);
 
-        $this->assertEquals('My book', $book->title);
+        self::assertEquals('My book', $book->title);
     }
 
     /** @test */
@@ -34,7 +34,7 @@ class AccessorsTranslatableTest extends TestCase
 
         $this->app->setLocale('ru');
 
-        $this->assertEquals('My book', $book->getDefaultAttribute('title'));
+        self::assertEquals('My book', $book->getDefaultTranslation('title'));
     }
 
     /** @test */
@@ -46,7 +46,7 @@ class AccessorsTranslatableTest extends TestCase
 
         $book->getTranslation('title', 'ru');
 
-        $this->assertEquals('my book', $book->getRawOriginal('title'));
+        self::assertEquals('my book', $book->getRawOriginal('title'));
     }
 
     /** @test */
@@ -58,7 +58,7 @@ class AccessorsTranslatableTest extends TestCase
 
         $book->title = 'моя книга';
 
-        $this->assertEquals('Моя книга', $book->title);
+        self::assertEquals('Моя книга', $book->title);
     }
 
     /** @test */
@@ -70,7 +70,7 @@ class AccessorsTranslatableTest extends TestCase
 
         $this->app->setLocale('ru');
 
-        $this->assertEquals('моя книга', $book->getRawTranslation('title', 'ru'));
+        self::assertEquals('моя книга', $book->getRawTranslation('title', 'ru'));
     }
 
     /** @test */
@@ -83,12 +83,12 @@ class AccessorsTranslatableTest extends TestCase
         $book->title = 'моя книга';
         $book->save();
 
-        $this->assertEquals('Моя книга', $book->title);
+        self::assertEquals('Моя книга', $book->title);
         $book->save();
 
         $book = $book->fresh();
 
-        $this->assertEquals('моя книга', $book->getRawTranslation('title', 'ru'));
+        self::assertEquals('моя книга', $book->getRawTranslation('title', 'ru'));
     }
 
     /** @test */
@@ -100,6 +100,6 @@ class AccessorsTranslatableTest extends TestCase
 
         $this->app->setLocale('ru');
 
-        $this->assertEquals('Кни...', $book->description_short);
+        self::assertEquals('Кни...', $book->description_short);
     }
 }

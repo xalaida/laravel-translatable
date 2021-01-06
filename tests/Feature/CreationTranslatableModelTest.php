@@ -19,7 +19,7 @@ class CreationTranslatableModelTest extends TestCase
             'version' => '1',
         ]);
 
-        $this->assertEmpty(Translation::all());
+        self::assertEmpty(Translation::all());
         $this->assertDatabaseHas($book->getTable(), [
             'title' => 'My book',
             'description' => 'Book about birds',

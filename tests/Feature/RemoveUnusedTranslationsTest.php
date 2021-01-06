@@ -19,17 +19,17 @@ class RemoveUnusedTranslationsTest extends TestCase
         $book2 = BookFactory::new()->create();
         $book2->translateMany(['title' => 'Дельфины', 'description' => 'Книга о дельфинах'], 'ru');
 
-        $this->assertCount(4, Translation::all());
+        self::assertCount(4, Translation::all());
 
         Book::where('id', $book1->id)->delete();
 
-        $this->assertCount(4, Translation::all());
+        self::assertCount(4, Translation::all());
 
         $this->artisan('translatable:remove-unused');
 
-        $this->assertCount(2, Translation::all());
-        $this->assertEmpty($book1->translations);
-        $this->assertCount(2, $book2->translations);
+        self::assertCount(2, Translation::all());
+        self::assertEmpty($book1->translations);
+        self::assertCount(2, $book2->translations);
     }
 
     /** @test */
@@ -42,10 +42,10 @@ class RemoveUnusedTranslationsTest extends TestCase
         $post2 = PostFactory::new()->create();
         $post2->translate('body', 'Тестовый пост', 'ru');
 
-        $this->assertCount(2, Translation::all());
+        self::assertCount(2, Translation::all());
 
         $this->artisan('translatable:remove-unused');
 
-        $this->assertCount(2, Translation::all());
+        self::assertCount(2, Translation::all());
     }
 }

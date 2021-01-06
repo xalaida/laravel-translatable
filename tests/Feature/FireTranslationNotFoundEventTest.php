@@ -18,9 +18,9 @@ class FireTranslationNotFoundEventTest extends TestCase
 
         Event::fake(TranslationNotFoundEvent::class);
 
-        $this->assertEquals('My original book', $book->title);
+        self::assertEquals('My original book', $book->title);
 
-        Event::assertDispatched(TranslationNotFoundEvent::class, function (TranslationNotFoundEvent $event) use ($book) {
+        Event::assertDispatched(TranslationNotFoundEvent::class, static function (TranslationNotFoundEvent $event) use ($book) {
             return $event->attribute === 'title'
                 && $event->locale === 'ru'
                 && $event->model->is($book);
@@ -34,9 +34,9 @@ class FireTranslationNotFoundEventTest extends TestCase
 
         Event::fake(TranslationNotFoundEvent::class);
 
-        $this->assertNull($book->getTranslation('title', 'ru'));
+        self::assertNull($book->getTranslation('title', 'ru'));
 
-        Event::assertDispatched(TranslationNotFoundEvent::class, function (TranslationNotFoundEvent $event) use ($book) {
+        Event::assertDispatched(TranslationNotFoundEvent::class, static function (TranslationNotFoundEvent $event) use ($book) {
             return $event->attribute === 'title'
                 && $event->locale === 'ru'
                 && $event->model->is($book);
@@ -52,7 +52,7 @@ class FireTranslationNotFoundEventTest extends TestCase
 
         Event::fake(TranslationNotFoundEvent::class);
 
-        $this->assertEquals('Моя оригинальная книга', $book->getTranslation('title', 'ru'));
+        self::assertEquals('Моя оригинальная книга', $book->getTranslation('title', 'ru'));
 
         Event::assertNotDispatched(TranslationNotFoundEvent::class);
     }

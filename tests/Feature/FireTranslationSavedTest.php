@@ -18,7 +18,7 @@ class FireTranslationSavedTest extends TestCase
 
         $book->translate('title', 'Моя книга', 'ru');
 
-        Event::assertDispatched(TranslationSavedEvent::class, function (TranslationSavedEvent $event) use ($book) {
+        Event::assertDispatched(TranslationSavedEvent::class, static function (TranslationSavedEvent $event) use ($book) {
             return $event->translation->translatable->is($book)
                 && $event->translation->translatable_attribute === 'title'
                 && $event->translation->locale === 'ru'

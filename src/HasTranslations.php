@@ -59,7 +59,7 @@ trait HasTranslations
     public function getAttribute($attribute)
     {
         if (! $this->shouldBeTranslated($attribute)) {
-            return $this->getDefaultAttribute($attribute);
+            return $this->getDefaultTranslation($attribute);
         }
 
         return $this->getTranslationOrDefault($attribute);
@@ -86,7 +86,7 @@ trait HasTranslations
      *
      * @return mixed
      */
-    public function getDefaultAttribute(string $attribute)
+    public function getDefaultTranslation(string $attribute)
     {
         return parent::getAttribute($attribute);
     }
@@ -143,7 +143,7 @@ trait HasTranslations
         $locale = $locale ?: static::getTranslator()->getLocale();
 
         if (static::getTranslator()->isDefaultLocale($locale)) {
-            return $this->getDefaultAttribute($attribute);
+            return $this->getDefaultTranslation($attribute);
         }
 
         $rawTranslation = $this->getRawTranslation($attribute, $locale);
@@ -320,7 +320,7 @@ trait HasTranslations
         $translation = $this->getTranslation($attribute, $locale);
 
         if (is_null($translation)) {
-            return $this->getDefaultAttribute($attribute);
+            return $this->getDefaultTranslation($attribute);
         }
 
         return $translation;

@@ -16,7 +16,7 @@ class AutoTranslationsGetTest extends TestCase
 
         $this->app->setLocale('ru');
 
-        $this->assertEquals('Моя лучшая книга', $book->title);
+        self::assertEquals('Моя лучшая книга', $book->title);
     }
 
     /** @test */
@@ -26,7 +26,7 @@ class AutoTranslationsGetTest extends TestCase
 
         $this->app->setLocale('ru');
 
-        $this->assertEquals('My legendary book', $book->title);
+        self::assertEquals('My legendary book', $book->title);
     }
 
     /** @test */
@@ -38,7 +38,7 @@ class AutoTranslationsGetTest extends TestCase
 
         $this->app->setLocale('ru');
 
-        $this->assertEquals('My excellent book', $book->getDefaultAttribute('title'));
+        self::assertEquals('My excellent book', $book->getDefaultTranslation('title'));
     }
 
     /** @test */
@@ -48,7 +48,7 @@ class AutoTranslationsGetTest extends TestCase
 
         $book->translate('title', 'Моя лучшая книга', 'ru');
 
-        $this->assertEquals('My best book', $book->title);
+        self::assertEquals('My best book', $book->title);
     }
 
     /** @test */
@@ -56,6 +56,6 @@ class AutoTranslationsGetTest extends TestCase
     {
         $book = BookFactory::new()->create(['version' => 5]);
 
-        $this->assertEquals(5, $book->version);
+        self::assertEquals(5, $book->version);
     }
 }
