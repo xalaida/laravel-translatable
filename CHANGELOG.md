@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 ### Added
 
+## [0.4.0] - 2021-01-06
+### Changed
+- Rename method `getDefaultAttribute` into `getDefaultTranslation`
+
+### Fixed
+- Refactor tests
+- Fix case when JSON serializing makes additional DB calls for translations
+
 ## [0.3.0] - 2020-07-04
 ### Added
 - Added tests for morph map 

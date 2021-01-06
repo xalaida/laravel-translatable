@@ -400,8 +400,6 @@ trait HasTranslations
 
     /**
      * Convert the model's attributes to an array.
-     *
-     * @return array
      */
     public function attributesToArray(): array
     {
