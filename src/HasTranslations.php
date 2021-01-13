@@ -21,12 +21,11 @@ trait HasTranslations
         TranslatableUrlRouting;
 
     /**
-     * The attributes that have loaded translation.
-     * TODO: probably rename into attributeTranslations.
+     * Resolved translations for the attributes.
      *
      * @var array
      */
-    protected $translated = [];
+    protected $attributeTranslations = [];
 
     /**
      * Boot the trait.
@@ -139,7 +138,7 @@ trait HasTranslations
         $value = $this->applyAttributeMutator($attribute, $value);
 
         if ($isPreferred) {
-            $this->translated[$locale][$attribute] = $value;
+            $this->attributeTranslations[$locale][$attribute] = $value;
         }
 
         return static::getTranslator()->add($this, $attribute, $value, $locale, $isPreferred);
@@ -212,7 +211,7 @@ trait HasTranslations
      */
     protected function hasLoadedTranslation(string $attribute, string $locale): bool
     {
-        return isset($this->translated[$locale][$attribute]);
+        return isset($this->attributeTranslations[$locale][$attribute]);
     }
 
     /**
@@ -220,7 +219,7 @@ trait HasTranslations
      */
     protected function loadTranslation(string $attribute, string $locale): void
     {
-        $this->translated[$locale][$attribute] = static::getTranslator()->get($this, $attribute, $locale);
+        $this->attributeTranslations[$locale][$attribute] = static::getTranslator()->get($this, $attribute, $locale);
     }
 
     /**
@@ -230,7 +229,7 @@ trait HasTranslations
      */
     protected function getLoadedTranslation(string $attribute, string $locale)
     {
-        return $this->translated[$locale][$attribute];
+        return $this->attributeTranslations[$locale][$attribute];
     }
 
     /**
@@ -249,7 +248,7 @@ trait HasTranslations
             return $this->setDefaultAttribute($attribute, $value);
         }
 
-        $this->translated[$locale][$attribute] = $this->applyAttributeMutator($attribute, $value);
+        $this->attributeTranslations[$locale][$attribute] = $this->applyAttributeMutator($attribute, $value);
 
         return $this;
     }
@@ -291,7 +290,7 @@ trait HasTranslations
      */
     protected function saveTranslations(): void
     {
-        foreach ($this->translated as $locale => $attributes) {
+        foreach ($this->attributeTranslations as $locale => $attributes) {
             foreach (array_filter($attributes) as $attribute => $value) {
                 static::getTranslator()->set($this, $attribute, $value, $locale);
             }
