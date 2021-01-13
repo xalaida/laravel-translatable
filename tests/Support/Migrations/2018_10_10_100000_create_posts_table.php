@@ -11,8 +11,8 @@ class CreatePostsTable extends Migration
      */
     public function up(): void
     {
-        Schema::create('posts', function (Blueprint $table) {
-            $table->increments('id');
+        Schema::create('posts', static function (Blueprint $table) {
+            $table->uuid('id')->primary();
             $table->text('body');
             $table->string('slug');
             $table->softDeletes();

@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
 use Nevadskiy\Translatable\HasTranslations;
+use Nevadskiy\Uuid\Uuid;
 
 /**
  * @property int id
@@ -21,7 +22,8 @@ use Nevadskiy\Translatable\HasTranslations;
  */
 class Book extends Model
 {
-    use HasTranslations;
+    use Uuid,
+        HasTranslations;
 
     /**
      * The attributes that can be translatable.

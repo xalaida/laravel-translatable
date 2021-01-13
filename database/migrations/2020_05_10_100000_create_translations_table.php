@@ -14,7 +14,7 @@ class CreateTranslationsTable extends Migration
         Schema::create('translations', function (Blueprint $table) {
             // Fields
             $table->uuid('id')->primary();
-            $table->morphs('translatable');
+            $table->uuidMorphs('translatable');
             $table->string('translatable_attribute');
             $table->text('value');
             $table->string('locale', 24)->comment('RFC 5646. See: http://www.rfc-editor.org/rfc/rfc5646.txt');

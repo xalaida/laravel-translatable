@@ -7,11 +7,12 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Nevadskiy\Translatable\Events\TranslationSavedEvent;
+use Nevadskiy\Uuid\Uuid;
 
 /**
- * @property int id
+ * @property string id
  * @property string translatable_type
- * @property int translatable_id
+ * @property string translatable_id
  * @property string translatable_attribute
  * @property Model translatable
  * @property string value
@@ -21,19 +22,7 @@ use Nevadskiy\Translatable\Events\TranslationSavedEvent;
  */
 class Translation extends Model
 {
-    /**
-     * The "type" of the primary key ID.
-     *
-     * @var string
-     */
-    protected $keyType = 'string';
-
-    /**
-     * Indicates if the IDs are auto-incrementing.
-     *
-     * @var bool
-     */
-    public $incrementing = false;
+    use Uuid;
 
     /**
      * The attributes that aren't mass assignable.
