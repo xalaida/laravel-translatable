@@ -12,15 +12,17 @@ class CreateTranslationsTable extends Migration
     public function up(): void
     {
         Schema::create('translations', function (Blueprint $table) {
+            // Fields
             $table->uuid('id')->primary();
             $table->morphs('translatable');
             $table->string('translatable_attribute');
             $table->text('value');
             $table->string('locale', 24)->comment('RFC 5646. See: http://www.rfc-editor.org/rfc/rfc5646.txt');
+            $table->boolean('is_preferred')->default(true)->comment('Determine whether the translation is preferred over the others.');
             $table->timestamps();
 
+            // Indices
             $table->index(['translatable_type', 'translatable_id', 'locale'], 'translatable-index');
-            $table->unique(['translatable_type', 'translatable_id', 'translatable_attribute', 'locale'], 'translatable-unique');
         });
     }
 
