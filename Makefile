@@ -1,9 +1,13 @@
 # Install the app
 install: build deps test
 
-# Build app container
+# Build the app container
 build:
 	docker build -t app .
+
+# Rebuild the app container
+rebuild:
+	docker build --no-cache -t app .
 
 # Install app dependencies
 deps:
@@ -25,6 +29,6 @@ test:
 coverage:
 	docker run --rm -it -v ${PWD}:/app app vendor/bin/phpunit --coverage-html tests/report
 
-# Fix code style
+# Fix the code style
 fix:
 	docker run --rm -it -v ${PWD}:/app app vendor/bin/php-cs-fixer fix
