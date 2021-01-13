@@ -6,7 +6,7 @@ use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
-use Nevadskiy\Translatable\Events\TranslationSavedEvent;
+use Nevadskiy\Translatable\Events\TranslationSaved;
 use Nevadskiy\Translatable\HasTranslations;
 use Nevadskiy\Uuid\Uuid;
 
@@ -69,7 +69,7 @@ class Translation extends Model
      * @var array
      */
     protected $dispatchesEvents = [
-        'saved' => TranslationSavedEvent::class,
+        'saved' => TranslationSaved::class,
     ];
 
     /**

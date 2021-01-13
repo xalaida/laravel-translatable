@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 ### Added
 - Install UUID package
+- Feature to add multiple translations in same locale
+
+### Changed
+- Rename `TranslationNotFoundEvent` into `TranslationNotFound`
+- Rename `TranslationSavedEvent` into `TranslationSaved`
 
 ## [0.5.0] - 2021-01-13
 ### Added

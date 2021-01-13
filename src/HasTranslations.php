@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Collection;
-use Nevadskiy\Translatable\Events\TranslationNotFoundEvent;
+use Nevadskiy\Translatable\Events\TranslationNotFound;
 use Nevadskiy\Translatable\Exceptions\NotTranslatableAttributeException;
 use Nevadskiy\Translatable\Models\Translation;
 use Nevadskiy\Translatable\Scopes\TranslationsEagerLoadScope;
@@ -197,7 +197,7 @@ trait HasTranslations
         $translation = $this->getLoadedTranslation($attribute, $locale);
 
         if (is_null($translation)) {
-            event(new TranslationNotFoundEvent($this, $attribute, $locale));
+            event(new TranslationNotFound($this, $attribute, $locale));
         }
 
         return $translation;
