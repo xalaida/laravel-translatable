@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 ### Added
 
+## [0.5.0] - 2021-01-13
+### Added
+- Laravel 8 support
+
 ## [0.4.0] - 2021-01-06
 ### Changed
 - Rename method `getDefaultAttribute` into `getDefaultTranslation`
