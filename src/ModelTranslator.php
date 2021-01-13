@@ -103,8 +103,7 @@ class ModelTranslator
         string $value,
         string $locale = null,
         bool $isPreferred = true
-    ): Translation
-    {
+    ): Translation {
         return $translatable->translations()->firstOrCreate([
             'translatable_attribute' => $attribute,
             'locale' => $locale ?: $this->getLocale(),

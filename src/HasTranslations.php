@@ -22,7 +22,7 @@ trait HasTranslations
 
     /**
      * The attributes that have loaded translation.
-     * TODO: probably rename into attributeTranslations
+     * TODO: probably rename into attributeTranslations.
      *
      * @var array
      */
@@ -122,9 +122,13 @@ trait HasTranslations
      *
      * @param mixed $value
      */
-    public function addTranslation(string $attribute, $value, string $locale = null, bool $isPreferred = true): Translation
-    {
-         $this->assertTranslatableAttribute($attribute);
+    public function addTranslation(
+        string $attribute,
+        $value,
+        string $locale = null,
+        bool $isPreferred = true
+    ): Translation {
+        $this->assertTranslatableAttribute($attribute);
 
         $locale = $locale ?: static::getTranslator()->getLocale();
 
@@ -144,7 +148,7 @@ trait HasTranslations
     /**
      * Save many translations for the given attribute and locale.
      *
-     * @return HasTranslations|mixed
+     * @return HasTranslations
      */
     public function translateMany(array $translations, string $locale)
     {
