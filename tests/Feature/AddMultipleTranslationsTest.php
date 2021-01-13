@@ -13,14 +13,14 @@ class AddMultipleTranslationsTest extends TestCase
     {
         $book = BookFactory::new()->create(['title' => 'My first book']);
 
-        $book->addTranslation('title', 'Первая книга', 'ru');
-        $book->addTranslation('title', 'Моя первая книга', 'ru');
+        $translation1 = $book->addTranslation('title', 'Первая книга', 'ru');
+        $translation2 = $book->addTranslation('title', 'Моя первая книга', 'ru');
 
         self::assertCount(2, $book->translations);
-        self::assertEquals('Первая книга', $book->translations[0]->value);
-        self::assertEquals('ru', $book->translations[0]->locale);
-        self::assertEquals('Моя первая книга', $book->translations[1]->value);
-        self::assertEquals('ru', $book->translations[1]->locale);
+        self::assertEquals('Первая книга', $translation1->value);
+        self::assertEquals('ru', $translation1->locale);
+        self::assertEquals('Моя первая книга', $translation2->value);
+        self::assertEquals('ru', $translation2->locale);
     }
 
     /** @test */
