@@ -1,9 +1,11 @@
 # Laravel Translatable
+
 The package provides possibility to translate your Eloquent models into different languages using a single database table.
 
 Inspired by [django-modeltranslation](https://github.com/deschler/django-modeltranslation)
 
 ## Features 
+
 - Simple and intuitive API.
 - All translations are resolved automatically for the current locale.
 - No need to rewrite existing migrations, models or views.
@@ -14,6 +16,7 @@ Inspired by [django-modeltranslation](https://github.com/deschler/django-modeltr
 
 
 ## Demo
+
 ```
 $book = Book::create(['title' => 'Book about giraffes']);
 
@@ -38,19 +41,20 @@ echo $book->title; // 'Book about giraffes'
 
 
 ## Installation
+
 1. Install a package via composer.
 ```
 composer require nevadskiy/laravel-translatable
 ```
 
-2. Optional. If you are going to use translations for models with UUID primary keys, make the following:
+2. Optional. If you are not going to use translations for models with UUID primary keys, make the following:
 
 - Publish package migration
 ```
 php artisan vendor:publish --tag=translatable
 ```
 
-- Replace the line `$table->morphs('translatable');` with `$table->uuidMorphs('translatable');` in the published migration.
+- Replace the line `$table->uuidMorphs('translatable');` with `$table->morphs('translatable');` in the published migration.
 
 3. Run the migration command.
 ```
@@ -59,6 +63,7 @@ php artisan migrate
 
 
 ## Making models translatable 
+
 1. Add the `HasTranslations` trait to your models which you want to make translatable.
 ```
 <?php
@@ -109,6 +114,7 @@ class Post extends Model
 
 
 ## Documentation
+
 Default locale values are stored in the original table as usual.
 
 Values in non-default locales of each translatable model are stored in the single `translations` table.
@@ -116,6 +122,7 @@ Values in non-default locales of each translatable model are stored in the singl
 The package takes the default locale from the `config('app.fallback_locale')` value.
 
 ##### Automatically store and retrieve translations of the model using translatable attributes
+
 ```
 $post = Post::where('title', 'Post about birds')->first();
 
@@ -131,6 +138,7 @@ echo $post->title; // 'Post about birds'
 ```
 
 ##### Manually store and retrieve translations of the model
+
 ```
 $post = Post::where('title', 'Post about dolphins')->first();
 
@@ -150,6 +158,7 @@ Method | Description
 
 
 ##### Translatable models creation
+
 Note that translatable models will always be created in **default** locale even when current locale is different.
 Any translations can be attached only to **existing** models.  
 
@@ -159,6 +168,7 @@ Book::create(...); // This will persist model as usual with the default locale.
 ```
 
 ##### Displaying collection of models
+
 The package automatically eager loads translations of the current locale for you, so you can easily retrieve collection of models as usual.
 ```
 // In a controller
@@ -172,6 +182,7 @@ $posts = Post::paginate(20);
 ```  
 
 ##### Translations work with model accessors
+
 ```
 class Post extends Model
 {
@@ -195,6 +206,7 @@ echo $post->getTranslation('title', 'ru'); // 'Пост о птицах'
 ```
 
 ##### Translations work with model mutators as well
+
 Note that mutators should return the model instances.
 
 ```
@@ -222,16 +234,19 @@ echo $post->getTranslation('description', 'ru'); // 'Очень длин'
 ```
 
 ##### Removing unused translations
+
 The package automatically remove translations of deleted models respecting softDeletes, but if translatable models have been removed using query builder, their translations would exist in the database.
 To manually remove all unused translations, run the `php artisan translatable:remove-unused` command.
 
 ##### Querying models without translations
+
 Sometimes you may need to query translatable model without the `translations` relation. You can do this using `withoutTranslations` scope.
 ```
 $books = Book::withoutTranslations()->get();
 ```
 
 ##### Available scopes 
+
 Query models by translatable attributes. It also includes values in the default locale.  
 ```
 $books = Book::whereTranslatable('title', 'Книга о жирафах')->get();
@@ -258,6 +273,7 @@ For more complex queries - feel free to use [Laravel relation queries](https://l
  
 
 ##### Route model binding
+
 Translatable model can be easily resolved using **Route Model Binding** feature.
 
 All you need to do to let Laravel resolve models by a translatable attribute is to set the needed locale which you want to be used for querying models **before** a request will reach `Illuminate\Routing\Middleware\SubstituteBindings::class` middleware.
@@ -305,6 +321,7 @@ public function show(Post $post)
 ```
 
 ##### Using morph map
+
 It is recommended to use `morph map` for all translatable models to minimize coupling between database and application structure.
 
 ```
