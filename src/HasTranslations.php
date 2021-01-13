@@ -5,6 +5,7 @@ namespace Nevadskiy\Translatable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Collection;
 use Nevadskiy\Translatable\Events\TranslationNotFoundEvent;
 use Nevadskiy\Translatable\Exceptions\NotTranslatableAttributeException;
 use Nevadskiy\Translatable\Models\Translation;
@@ -12,7 +13,7 @@ use Nevadskiy\Translatable\Scopes\TranslationsEagerLoadScope;
 
 /**
  * @mixin Model
- * @property Translation[] translations
+ * @property Collection|Translation[] translations
  */
 trait HasTranslations
 {
@@ -21,6 +22,7 @@ trait HasTranslations
 
     /**
      * The attributes that have loaded translation.
+     * TODO: probably rename into attributeTranslations
      *
      * @var array
      */
@@ -116,6 +118,30 @@ trait HasTranslations
     }
 
     /**
+     * Add a new translation to the model according to the given attribute and locale.
+     *
+     * @param mixed $value
+     */
+    public function addTranslation(string $attribute, $value, string $locale = null, bool $isPreferred = true): Translation
+    {
+         $this->assertTranslatableAttribute($attribute);
+
+        $locale = $locale ?: static::getTranslator()->getLocale();
+
+        if (static::getTranslator()->isDefaultLocale($locale)) {
+            $isPreferred = false;
+        }
+
+        $value = $this->applyAttributeMutator($attribute, $value);
+
+        if ($isPreferred) {
+            $this->translated[$locale][$attribute] = $value;
+        }
+
+        return static::getTranslator()->add($this, $attribute, $value, $locale, $isPreferred);
+    }
+
+    /**
      * Save many translations for the given attribute and locale.
      *
      * @return HasTranslations|mixed
@@ -152,7 +178,7 @@ trait HasTranslations
             return null;
         }
 
-        return $this->withGetAttribute($attribute, $rawTranslation);
+        return $this->applyAttributeAccessor($attribute, $rawTranslation);
     }
 
     /**
@@ -219,7 +245,7 @@ trait HasTranslations
             return $this->setDefaultAttribute($attribute, $value);
         }
 
-        $this->translated[$locale][$attribute] = $this->withSetAttribute($attribute, $value);
+        $this->translated[$locale][$attribute] = $this->applyAttributeMutator($attribute, $value);
 
         return $this;
     }
@@ -332,7 +358,7 @@ trait HasTranslations
      * @param mixed $value
      * @return mixed
      */
-    protected function withGetAttribute(string $attribute, $value)
+    protected function applyAttributeAccessor(string $attribute, $value)
     {
         $original = $this->attributes[$attribute];
 
@@ -351,7 +377,7 @@ trait HasTranslations
      * @param mixed $value
      * @return mixed
      */
-    protected function withSetAttribute(string $attribute, $value)
+    protected function applyAttributeMutator(string $attribute, $value)
     {
         $original = $this->attributes[$attribute];
 

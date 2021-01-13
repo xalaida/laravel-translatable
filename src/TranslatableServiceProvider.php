@@ -5,6 +5,7 @@ namespace Nevadskiy\Translatable;
 use Illuminate\Contracts\Events\Dispatcher;
 use Illuminate\Foundation\Events\LocaleUpdated;
 use Illuminate\Support\ServiceProvider;
+use Nevadskiy\Translatable\Events\TranslationSavedEvent;
 
 class TranslatableServiceProvider extends ServiceProvider
 {
@@ -16,6 +17,10 @@ class TranslatableServiceProvider extends ServiceProvider
     protected $listen = [
         LocaleUpdated::class => [
             Listeners\UpdateTranslatorLocale::class,
+        ],
+
+        TranslationSavedEvent::class => [
+            Listeners\SwitchPreferredTranslations::class,
         ],
     ];
 

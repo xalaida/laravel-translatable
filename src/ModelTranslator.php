@@ -66,10 +66,13 @@ class ModelTranslator
     {
         $locale = $locale ?: $this->getLocale();
 
-        return $translatable->translations->filter(static function (Translation $translation) use ($attribute, $locale) {
-            return $translation->locale === $locale
-                && $translation->translatable_attribute === $attribute;
-        })->first()->value ?? null;
+        foreach ($translatable->translations as $translation) {
+            if ($translation->translatable_attribute === $attribute && $translation->locale === $locale) {
+                return $translation->value;
+            }
+        }
+
+        return null;
     }
 
     /**
@@ -86,6 +89,27 @@ class ModelTranslator
         ], [
             'id' => Str::uuid()->toString(),
             'value' => $value,
+        ]);
+    }
+
+    /**
+     * Add a new translation for the given model.
+     *
+     * @param Model|HasTranslations $translatable
+     */
+    public function add(
+        Model $translatable,
+        string $attribute,
+        string $value,
+        string $locale = null,
+        bool $isPreferred = true
+    ): Translation
+    {
+        return $translatable->translations()->firstOrCreate([
+            'translatable_attribute' => $attribute,
+            'locale' => $locale ?: $this->getLocale(),
+            'value' => $value,
+            'is_preferred' => $isPreferred,
         ]);
     }
 }

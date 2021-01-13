@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Nevadskiy\Translatable\Events\TranslationSavedEvent;
+use Nevadskiy\Translatable\HasTranslations;
 use Nevadskiy\Uuid\Uuid;
 
 /**
@@ -14,7 +15,7 @@ use Nevadskiy\Uuid\Uuid;
  * @property string translatable_type
  * @property string translatable_id
  * @property string translatable_attribute
- * @property Model translatable
+ * @property Model|HasTranslations translatable
  * @property string value
  * @property string locale
  * @property bool is_preferred
