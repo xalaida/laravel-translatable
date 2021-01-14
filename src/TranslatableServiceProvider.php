@@ -17,10 +17,6 @@ class TranslatableServiceProvider extends ServiceProvider
         LocaleUpdated::class => [
             Listeners\UpdateTranslatorLocale::class,
         ],
-
-        Events\TranslationSaved::class => [
-            Listeners\ArchivePreviousTranslations::class,
-        ],
     ];
 
     /**
