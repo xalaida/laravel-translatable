@@ -11,7 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - Install UUID package
 - Feature to archived translations
-- Feature auto archive previous translations
+- Feature auto-archiving previous translations
 
 ### Changed
 - Rename `TranslationNotFoundEvent` into `TranslationNotFound`
