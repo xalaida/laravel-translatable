@@ -18,23 +18,13 @@ use Nevadskiy\Uuid\Uuid;
  * @property Model|HasTranslations translatable
  * @property string value
  * @property string locale
- * @property bool is_preferred
+ * @property bool is_archived
  * @property Carbon updated_at
  * @property Carbon created_at
  */
 class Translation extends Model
 {
     use Uuid;
-
-    /**
-     * Perform any actions required after the model boots.
-     */
-    protected static function booted(): void
-    {
-        static::addGlobalScope('preferredFirst', static function (Builder $query) {
-            $query->preferredFirst();
-        });
-    }
 
     /**
      * The attributes that aren't mass assignable.
@@ -49,7 +39,7 @@ class Translation extends Model
      * @var array
      */
     protected $casts = [
-        'is_preferred' => 'bool',
+        'is_archived' => 'bool',
     ];
 
     /**
@@ -94,13 +84,5 @@ class Translation extends Model
     public function scopeForAttribute(Builder $query, string $attribute): Builder
     {
         return $query->where('translatable_attribute', $attribute);
-    }
-
-    /**
-     * Scope translations by the preferred translations first.
-     */
-    public function scopePreferredFirst(Builder $query): Builder
-    {
-        return $query->orderByDesc('is_preferred');
     }
 }

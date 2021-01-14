@@ -4,7 +4,7 @@ namespace Nevadskiy\Translatable\Listeners;
 
 use Nevadskiy\Translatable\Events\TranslationSaved;
 
-class SwitchPreferredTranslations
+class ArchivePreviousTranslations
 {
     /**
      * Handle the given event.
@@ -12,7 +12,9 @@ class SwitchPreferredTranslations
     public function handle(TranslationSaved $event): void
     {
         $event->translation->translatable->translations()
+            ->forAttribute($event->translation->translatable_attribute)
+            ->forLocale($event->translation->locale)
             ->whereKeyNot($event->translation->id)
-            ->update(['is_preferred' => false]);
+            ->update(['is_archived' => true]);
     }
 }

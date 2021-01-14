@@ -19,7 +19,7 @@ class TranslatableServiceProvider extends ServiceProvider
         ],
 
         Events\TranslationSaved::class => [
-            Listeners\SwitchPreferredTranslations::class,
+            Listeners\ArchivePreviousTranslations::class,
         ],
     ];
 

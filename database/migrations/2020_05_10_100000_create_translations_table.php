@@ -18,7 +18,7 @@ class CreateTranslationsTable extends Migration
             $table->string('translatable_attribute');
             $table->text('value');
             $table->string('locale', 24)->comment('RFC 5646. See: http://www.rfc-editor.org/rfc/rfc5646.txt');
-            $table->boolean('is_preferred')->default(true)->comment('Determine whether the translation is preferred over the others.');
+            $table->boolean('is_archived')->default(false);
             $table->timestamps();
 
             // Indices
