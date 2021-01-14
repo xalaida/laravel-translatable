@@ -3,11 +3,11 @@
 namespace Nevadskiy\Translatable\Tests\Feature;
 
 use Illuminate\Support\Facades\Event;
-use Nevadskiy\Translatable\Events\TranslationNotFoundEvent;
+use Nevadskiy\Translatable\Events\TranslationNotFound;
 use Nevadskiy\Translatable\Tests\Support\Factories\BookFactory;
 use Nevadskiy\Translatable\Tests\TestCase;
 
-class FireTranslationNotFoundEventTest extends TestCase
+class FireTranslationNotFoundTest extends TestCase
 {
     /** @test */
     public function it_fires_an_event_when_translation_is_not_found_using_attribute(): void
@@ -16,11 +16,11 @@ class FireTranslationNotFoundEventTest extends TestCase
 
         $this->app->setLocale('ru');
 
-        Event::fake(TranslationNotFoundEvent::class);
+        Event::fake(TranslationNotFound::class);
 
         self::assertEquals('My original book', $book->title);
 
-        Event::assertDispatched(TranslationNotFoundEvent::class, static function (TranslationNotFoundEvent $event) use ($book) {
+        Event::assertDispatched(TranslationNotFound::class, static function (TranslationNotFound $event) use ($book) {
             return $event->attribute === 'title'
                 && $event->locale === 'ru'
                 && $event->model->is($book);
@@ -32,11 +32,11 @@ class FireTranslationNotFoundEventTest extends TestCase
     {
         $book = BookFactory::new()->create(['title' => 'My original book']);
 
-        Event::fake(TranslationNotFoundEvent::class);
+        Event::fake(TranslationNotFound::class);
 
         self::assertNull($book->getTranslation('title', 'ru'));
 
-        Event::assertDispatched(TranslationNotFoundEvent::class, static function (TranslationNotFoundEvent $event) use ($book) {
+        Event::assertDispatched(TranslationNotFound::class, static function (TranslationNotFound $event) use ($book) {
             return $event->attribute === 'title'
                 && $event->locale === 'ru'
                 && $event->model->is($book);
@@ -50,10 +50,10 @@ class FireTranslationNotFoundEventTest extends TestCase
 
         $book->translate('title', 'Моя оригинальная книга', 'ru');
 
-        Event::fake(TranslationNotFoundEvent::class);
+        Event::fake(TranslationNotFound::class);
 
         self::assertEquals('Моя оригинальная книга', $book->getTranslation('title', 'ru'));
 
-        Event::assertNotDispatched(TranslationNotFoundEvent::class);
+        Event::assertNotDispatched(TranslationNotFound::class);
     }
 }

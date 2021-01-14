@@ -6,34 +6,26 @@ use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
-use Nevadskiy\Translatable\Events\TranslationSavedEvent;
+use Nevadskiy\Translatable\Events\TranslationArchived;
+use Nevadskiy\Translatable\Events\TranslationCreated;
+use Nevadskiy\Translatable\HasTranslations;
+use Nevadskiy\Uuid\Uuid;
 
 /**
- * @property int id
+ * @property string id
  * @property string translatable_type
- * @property int translatable_id
+ * @property string translatable_id
  * @property string translatable_attribute
- * @property Model translatable
+ * @property-read Model|HasTranslations translatable
  * @property string value
- * @property string locale
+ * @property string|null locale
+ * @property bool is_archived
  * @property Carbon updated_at
  * @property Carbon created_at
  */
 class Translation extends Model
 {
-    /**
-     * The "type" of the primary key ID.
-     *
-     * @var string
-     */
-    protected $keyType = 'string';
-
-    /**
-     * Indicates if the IDs are auto-incrementing.
-     *
-     * @var bool
-     */
-    public $incrementing = false;
+    use Uuid;
 
     /**
      * The attributes that aren't mass assignable.
@@ -41,6 +33,15 @@ class Translation extends Model
      * @var array
      */
     protected $guarded = [];
+
+    /**
+     * The attributes that should be cast.
+     *
+     * @var array
+     */
+    protected $casts = [
+        'is_archived' => 'boolean',
+    ];
 
     /**
      * The relationships that should be touched on save.
@@ -59,7 +60,8 @@ class Translation extends Model
      * @var array
      */
     protected $dispatchesEvents = [
-        'saved' => TranslationSavedEvent::class,
+        'created' => TranslationCreated::class,
+        'archived' => TranslationArchived::class,
     ];
 
     /**
@@ -84,5 +86,14 @@ class Translation extends Model
     public function scopeForAttribute(Builder $query, string $attribute): Builder
     {
         return $query->where('translatable_attribute', $attribute);
+    }
+
+    /**
+     * Archive the translation.
+     */
+    public function archive(): void
+    {
+        $this->update(['is_archived' => true]);
+        $this->fireModelEvent('archived');
     }
 }

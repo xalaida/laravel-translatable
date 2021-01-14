@@ -6,6 +6,7 @@ use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Nevadskiy\Translatable\HasTranslations;
+use Nevadskiy\Uuid\Uuid;
 
 /**
  * @property int id
@@ -17,7 +18,8 @@ use Nevadskiy\Translatable\HasTranslations;
  */
 class Post extends Model
 {
-    use SoftDeletes,
+    use Uuid,
+        SoftDeletes,
         HasTranslations;
 
     /**

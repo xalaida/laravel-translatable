@@ -166,6 +166,16 @@ class TranslationsTest extends TestCase
     }
 
     /** @test */
+    public function it_does_not_translate_using_nulls(): void
+    {
+        $book = BookFactory::new()->create();
+
+        $book->translate('description', null, 'ru');
+
+        self::assertCount(0, Translation::all());
+    }
+
+    /** @test */
     public function it_updates_default_value_for_default_locale(): void
     {
         $book = BookFactory::new()->create(['title' => 'My book']);

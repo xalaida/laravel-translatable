@@ -2,6 +2,7 @@
 
 namespace Nevadskiy\Translatable\Tests\Feature;
 
+use Illuminate\Support\Facades\DB;
 use Nevadskiy\Translatable\Tests\Support\Factories\BookFactory;
 use Nevadskiy\Translatable\Tests\TestCase;
 
@@ -57,5 +58,23 @@ class AutoTranslationsGetTest extends TestCase
         $book = BookFactory::new()->create(['version' => 5]);
 
         self::assertEquals(5, $book->version);
+    }
+
+    /** @test */
+    public function it_does_not_store_resolved_values_back(): void
+    {
+        $book = BookFactory::new()->create(['title' => 'My best book']);
+
+        $book->translate('title', 'Моя лучшая книга', 'ru');
+
+        $this->app->setLocale('ru');
+
+        self::assertEquals('Моя лучшая книга', $book->title);
+
+        DB::connection()->enableQueryLog();
+
+        $book->save();
+
+        self::assertEmpty(DB::connection()->getQueryLog());
     }
 }

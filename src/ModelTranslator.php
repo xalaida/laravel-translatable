@@ -3,7 +3,6 @@
 namespace Nevadskiy\Translatable;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Str;
 use Nevadskiy\Translatable\Models\Translation;
 
 class ModelTranslator
@@ -47,6 +46,14 @@ class ModelTranslator
     }
 
     /**
+     * Get the default translator locale.
+     */
+    public function getDefaultLocale(): string
+    {
+        return $this->defaultLocale;
+    }
+
+    /**
      * Determine does the translator use the current or given locale as the default locale.
      */
     public function isDefaultLocale(string $locale = null): bool
@@ -66,14 +73,15 @@ class ModelTranslator
     {
         $locale = $locale ?: $this->getLocale();
 
-        return $translatable->translations->filter(static function (Translation $translation) use ($attribute, $locale) {
-            return $translation->locale === $locale
-                && $translation->translatable_attribute === $attribute;
-        })->first()->value ?? null;
+        return $translatable->translations->first(static function (Translation $translation) use ($attribute, $locale) {
+            return ! $translation->is_archived
+                && $translation->translatable_attribute === $attribute
+                && $translation->locale === $locale;
+        })->value ?? null;
     }
 
     /**
-     * Save the translation for the given model.
+     * Set the translation for the given model.
      *
      * @param Model|HasTranslations $translatable
      * @return Translation|Model
@@ -83,9 +91,72 @@ class ModelTranslator
         return $translatable->translations()->updateOrCreate([
             'translatable_attribute' => $attribute,
             'locale' => $locale ?: $this->getLocale(),
+            'is_archived' => false,
         ], [
-            'id' => Str::uuid()->toString(),
             'value' => $value,
         ]);
+    }
+
+    /**
+     * Save the given translations for the given model.
+     *
+     * @param Model|HasTranslations $model
+     */
+    public function save(Model $model, array $translations): void
+    {
+        foreach ($translations as $locale => $attributes) {
+            foreach (array_filter($attributes) as $attribute => $value) {
+                $this->archive($model, $attribute, $locale);
+                $this->set($model, $attribute, $value, $locale);
+            }
+        }
+    }
+
+    /**
+     * Add a new translation for the given model.
+     *
+     * @param Model|HasTranslations $translatable
+     */
+    public function add(
+        Model $translatable,
+        string $attribute,
+        string $value,
+        ?string $locale,
+        bool $isArchived = false
+    ): Translation {
+        return $translatable->translations()->firstOrCreate([
+            'translatable_attribute' => $attribute,
+            'locale' => $locale,
+            'value' => $value,
+            'is_archived' => $isArchived,
+        ]);
+    }
+
+    /**
+     * Archive model translations according to the given attribute and locale if the feature is enabled.
+     *
+     * @param Model|HasTranslations $model
+     */
+    protected function archive(Model $model, string $attribute, string $locale): void
+    {
+        if ($model->shouldAutoArchiveTranslations()) {
+            $this->performArchive($model, $attribute, $locale);
+        }
+    }
+
+    /**
+     * Archive all model translations according to the given attribute and locale.
+     *
+     * @param Model|HasTranslations $model
+     */
+    protected function performArchive(Model $model, string $attribute, string $locale): void
+    {
+        $model->fresh()->translations->filter(static function (Translation $translation) use ($attribute, $locale) {
+            return $translation->translatable_attribute === $attribute
+                && $translation->locale === $locale
+                && ! $translation->is_archived;
+        })->each(static function (Translation $translation) {
+            $translation->archive();
+        });
     }
 }

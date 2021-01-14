@@ -2,6 +2,7 @@
 
 namespace Nevadskiy\Translatable\Tests\Feature;
 
+use Illuminate\Support\Facades\DB;
 use Nevadskiy\Translatable\Models\Translation;
 use Nevadskiy\Translatable\Tests\Support\Factories\BookFactory;
 use Nevadskiy\Translatable\Tests\TestCase;
@@ -173,5 +174,55 @@ class AutoTranslationsSetTest extends TestCase
 
         self::assertEquals('Book about animals', $book->description);
         self::assertEmpty(Translation::all());
+    }
+
+    /** @test */
+    public function it_does_not_create_models_with_translations_on_not_default_locales(): void
+    {
+        $originalLocale = $this->app->getLocale();
+        $this->app->setLocale('ru');
+
+        $book = BookFactory::new()->create(['title' => 'Название на русском']);
+
+        $this->app->setLocale($originalLocale);
+
+        self::assertEmpty(Translation::all());
+        self::assertEquals('Название на русском', $book->title);
+    }
+
+    /** @test */
+    public function it_does_not_store_prepared_translations_twice(): void
+    {
+        $book = BookFactory::new()->create(['title' => 'My best book']);
+
+        $this->app->setLocale('ru');
+
+        $book->title = 'Моя лучшая книга';
+        $book->save();
+
+        DB::connection()->enableQueryLog();
+
+        $book->save();
+
+        self::assertEmpty(DB::connection()->getQueryLog());
+    }
+
+    /** @test */
+    public function it_does_not_duplicate_translations(): void
+    {
+        $book = BookFactory::new()->create(['title' => 'My best book']);
+
+        $this->app->setLocale('ru');
+
+        $book->title = 'Моя лучшая книга';
+        $book->save();
+
+        DB::connection()->enableQueryLog();
+
+        $book->title = 'Моя лучшая книга';
+        $book->save();
+
+        self::assertEmpty(DB::connection()->getQueryLog());
+        self::assertCount(1, Translation::all());
     }
 }
