@@ -11,13 +11,13 @@ class CreateTranslationsTable extends Migration
      */
     public function up(): void
     {
-        Schema::create('translations', function (Blueprint $table) {
+        Schema::create('translations', static function (Blueprint $table) {
             // Fields
             $table->uuid('id')->primary();
             $table->uuidMorphs('translatable');
             $table->string('translatable_attribute');
             $table->text('value');
-            $table->string('locale', 24)->comment('RFC 5646. See: http://www.rfc-editor.org/rfc/rfc5646.txt');
+            $table->string('locale', 24)->nullable()->comment('RFC 5646. See: http://www.rfc-editor.org/rfc/rfc5646.txt');
             $table->boolean('is_archived')->default(false);
             $table->timestamps();
 

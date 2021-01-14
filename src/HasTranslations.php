@@ -124,6 +124,27 @@ trait HasTranslations
         return $this;
     }
 
+    /**
+     * Archive the given translation.
+     *
+     * @param string $attribute
+     * @param $value
+     * @param string|null $locale
+     * @return Translation
+     */
+    public function archiveTranslation(string $attribute, $value, ?string $locale = null): Translation
+    {
+        $this->assertTranslatableAttribute($attribute);
+
+        if (count(func_get_args()) < 3) {
+            $locale = static::getTranslator()->getLocale();
+        }
+
+        return static::getTranslator()->add(
+            $this, $attribute, $this->withAttributeMutators($attribute, $value), $locale, true
+        );
+    }
+
 //    /**
 //     * Add a new translation to the model according to the given attribute and locale.
 //     *
@@ -249,12 +270,30 @@ trait HasTranslations
     }
 
     /**
+     * Determine whether the model has same resolved translation.
+     *
+     * @param string $attribute
+     * @param string $locale
+     * @param $value
+     * @return bool
+     */
+    protected function hasSameResolvedTranslation(string $attribute, string $locale, $value): bool
+    {
+        return $this->hasResolvedTranslation($attribute, $locale)
+            && $this->getResolvedTranslation($attribute, $locale) === $value;
+    }
+
+    /**
      * Prepare translation to be stored in the database.
      *
      * @return HasTranslations|mixed
      */
     protected function prepareTranslation(string $attribute, string $locale, $value)
     {
+        if ($this->hasSameResolvedTranslation($attribute, $locale, $value)) {
+            return $this;
+        }
+
         $this->preparedTranslations[$locale][$attribute] = $value;
         $this->setResolvedTranslation($attribute, $locale, $value);
 

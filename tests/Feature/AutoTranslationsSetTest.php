@@ -181,8 +181,9 @@ class AutoTranslationsSetTest extends TestCase
     {
         $book = BookFactory::new()->create(['title' => 'My best book']);
 
-        $book->setTranslation('title', 'Моя лучшая книга', 'ru');
+        $this->app->setLocale('ru');
 
+        $book->title = 'Моя лучшая книга';
         $book->save();
 
         DB::connection()->enableQueryLog();
@@ -190,5 +191,24 @@ class AutoTranslationsSetTest extends TestCase
         $book->save();
 
         self::assertEmpty(DB::connection()->getQueryLog());
+    }
+
+    /** @test */
+    public function it_does_not_duplicate_translations(): void
+    {
+        $book = BookFactory::new()->create(['title' => 'My best book']);
+
+        $this->app->setLocale('ru');
+
+        $book->title = 'Моя лучшая книга';
+        $book->save();
+
+        DB::connection()->enableQueryLog();
+
+        $book->title = 'Моя лучшая книга';
+        $book->save();
+
+        self::assertEmpty(DB::connection()->getQueryLog());
+        self::assertCount(1, Translation::all());
     }
 }

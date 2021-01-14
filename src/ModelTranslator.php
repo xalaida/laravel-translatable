@@ -3,7 +3,6 @@
 namespace Nevadskiy\Translatable;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Str;
 use Nevadskiy\Translatable\Models\Translation;
 
 class ModelTranslator
@@ -66,13 +65,27 @@ class ModelTranslator
     {
         $locale = $locale ?: $this->getLocale();
 
-        foreach ($translatable->translations as $translation) {
-            if ($translation->translatable_attribute === $attribute && $translation->locale === $locale) {
-                return $translation->value;
-            }
-        }
+        return $translatable->translations->first(static function (Translation $translation) use ($attribute, $locale) {
+            return ! $translation->is_archived
+                && $translation->translatable_attribute === $attribute
+                && $translation->locale === $locale;
+        })->value ?? null;
+    }
 
-        return null;
+    /**
+     * Set the translation for the given model.
+     *
+     * @param Model|HasTranslations $translatable
+     * @return Translation|Model
+     */
+    public function set(Model $translatable, string $attribute, string $value, string $locale = null): Translation
+    {
+        return $translatable->translations()->updateOrCreate([
+            'translatable_attribute' => $attribute,
+            'locale' => $locale ?: $this->getLocale(),
+        ], [
+            'value' => $value,
+        ]);
     }
 
     /**
@@ -91,23 +104,6 @@ class ModelTranslator
     }
 
     /**
-     * Save the translation for the given model.
-     *
-     * @param Model|HasTranslations $translatable
-     * @return Translation|Model
-     */
-    public function set(Model $translatable, string $attribute, string $value, string $locale = null): Translation
-    {
-        return $translatable->translations()->updateOrCreate([
-            'translatable_attribute' => $attribute,
-            'locale' => $locale ?: $this->getLocale(),
-        ], [
-            'id' => Str::uuid()->toString(),
-            'value' => $value,
-        ]);
-    }
-
-    /**
      * Add a new translation for the given model.
      *
      * @param Model|HasTranslations $translatable
@@ -116,14 +112,14 @@ class ModelTranslator
         Model $translatable,
         string $attribute,
         string $value,
-        string $locale = null,
-        bool $isPreferred = true
+        ?string $locale = null,
+        bool $isArchived = false
     ): Translation {
         return $translatable->translations()->firstOrCreate([
             'translatable_attribute' => $attribute,
-            'locale' => $locale ?: $this->getLocale(),
+            'locale' => $locale,
             'value' => $value,
-            'is_preferred' => $isPreferred,
+            'is_archived' => $isArchived,
         ]);
     }
 }
