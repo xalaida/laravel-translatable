@@ -45,7 +45,7 @@ class TranslationFactory
         $this->attributes = array_merge($this->attributes, array_filter([
             'translatable_id' => $model->getKey(),
             'translatable_type' => $model->getMorphClass(),
-            'translatable_attribute' => $attribute
+            'translatable_attribute' => $attribute,
         ]));
 
         return $this;
@@ -70,7 +70,7 @@ class TranslationFactory
     {
         return [
             'locale' => 'la',
-            'value' => 'lorem'
+            'value' => 'lorem',
         ];
     }
 }

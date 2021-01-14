@@ -97,9 +97,7 @@ trait HasTranslations
     }
 
     /**
-     * Determine whether the previous translations should be archived automatically
-     *
-     * @return bool
+     * Determine whether the previous translations should be archived automatically.
      */
     public function shouldAutoArchiveTranslations(): bool
     {
@@ -174,11 +172,6 @@ trait HasTranslations
 
     /**
      * Archive the given translation.
-     *
-     * @param string $attribute
-     * @param string $value
-     * @param string|null $locale
-     * @return Translation
      */
     public function archiveTranslation(string $attribute, string $value, ?string $locale = null): Translation
     {
@@ -292,10 +285,7 @@ trait HasTranslations
     /**
      * Determine whether the model has same resolved translation.
      *
-     * @param string $attribute
-     * @param string $locale
      * @param $value
-     * @return bool
      */
     protected function hasSameResolvedTranslation(string $attribute, string $locale, $value): bool
     {
@@ -367,7 +357,7 @@ trait HasTranslations
         $locale = $locale ?: static::getTranslator()->getLocale();
 
         if (static::getTranslator()->isDefaultLocale($locale)) {
-             $this->prepareArchivedTranslation($attribute);
+            $this->prepareArchivedTranslation($attribute);
 
             return $this->setDefaultAttribute($attribute, $value);
         }

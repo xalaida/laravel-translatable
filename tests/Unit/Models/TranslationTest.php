@@ -4,7 +4,6 @@ namespace Nevadskiy\Translatable\Tests\Unit\Models;
 
 use Illuminate\Support\Facades\Event;
 use Nevadskiy\Translatable\Events\TranslationArchived;
-use Nevadskiy\Translatable\Events\TranslationCreated;
 use Nevadskiy\Translatable\Models\Translation;
 use Nevadskiy\Translatable\Tests\Support\Factories\BookFactory;
 use Nevadskiy\Translatable\Tests\Support\Factories\TranslationFactory;

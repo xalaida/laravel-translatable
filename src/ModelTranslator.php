@@ -91,7 +91,7 @@ class ModelTranslator
         return $translatable->translations()->updateOrCreate([
             'translatable_attribute' => $attribute,
             'locale' => $locale ?: $this->getLocale(),
-            'is_archived' => false
+            'is_archived' => false,
         ], [
             'value' => $value,
         ]);
@@ -101,7 +101,6 @@ class ModelTranslator
      * Save the given translations for the given model.
      *
      * @param Model|HasTranslations $model
-     * @param array $translations
      */
     public function save(Model $model, array $translations): void
     {
