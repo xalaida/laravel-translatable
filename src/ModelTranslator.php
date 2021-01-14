@@ -76,6 +76,21 @@ class ModelTranslator
     }
 
     /**
+     * Save the given translations for the given model.
+     *
+     * @param Model|HasTranslations $model
+     * @param array $translations
+     */
+    public function save(Model $model, array $translations): void
+    {
+        foreach ($translations as $locale => $attributes) {
+            foreach (array_filter($attributes) as $attribute => $value) {
+                $this->set($model, $attribute, $value, $locale);
+            }
+        }
+    }
+
+    /**
      * Save the translation for the given model.
      *
      * @param Model|HasTranslations $translatable
