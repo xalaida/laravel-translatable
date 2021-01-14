@@ -118,7 +118,8 @@ trait HasTranslations
      */
     public function translate(string $attribute, $value, string $locale)
     {
-        $this->setTranslation($attribute, $value, $locale)->save();
+        $this->setTranslation($attribute, $value, $locale);
+        $this->save();
 
         return $this;
     }
@@ -214,19 +215,11 @@ trait HasTranslations
     }
 
     /**
-     * Determine whether the attribute has loaded translation.
+     * Determine whether the attribute has resolved translation according to the given locale.
      */
     protected function hasResolvedTranslation(string $attribute, string $locale): bool
     {
         return isset($this->resolvedTranslations[$locale][$attribute]);
-    }
-
-    /**
-     * Load the attribute translation.
-     */
-    protected function resolveTranslation(string $attribute, string $locale): void
-    {
-        $this->resolvedTranslations[$locale][$attribute] = static::getTranslator()->get($this, $attribute, $locale);
     }
 
     /**
@@ -248,16 +241,36 @@ trait HasTranslations
     }
 
     /**
+     * Resolve a translation for the given attribute and locale.
+     */
+    protected function resolveTranslation(string $attribute, string $locale): void
+    {
+        $this->setResolvedTranslation($attribute, $locale, static::getTranslator()->get($this, $attribute, $locale));
+    }
+
+    /**
      * Prepare translation to be stored in the database.
      *
      * @return HasTranslations|mixed
      */
-    protected function prepareTranslation(string $attribute, string $locale, string $value)
+    protected function prepareTranslation(string $attribute, string $locale, $value)
     {
         $this->preparedTranslations[$locale][$attribute] = $value;
         $this->setResolvedTranslation($attribute, $locale, $value);
 
         return $this;
+    }
+
+    /**
+     * Pull any prepared translations.
+     */
+    protected function pullPreparedTranslations(): array
+    {
+        $translations = $this->preparedTranslations;
+
+        $this->preparedTranslations = [];
+
+        return $translations;
     }
 
     /**
@@ -316,8 +329,7 @@ trait HasTranslations
      */
     protected function saveTranslations(): void
     {
-        static::getTranslator()->save($this, $this->preparedTranslations);
-        $this->preparedTranslations = [];
+        static::getTranslator()->save($this, $this->pullPreparedTranslations());
     }
 
     /**
