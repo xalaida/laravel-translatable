@@ -1,6 +1,6 @@
 <?php
 
-namespace Nevadskiy\Translatable\Tests\Unit;
+namespace Nevadskiy\Translatable\Tests\Unit\Listeners;
 
 use Nevadskiy\Translatable\ModelTranslator;
 use Nevadskiy\Translatable\Tests\TestCase;
@@ -16,6 +16,6 @@ class UpdateLocaleListenerTest extends TestCase
         $this->app->setLocale('ru');
 
         self::assertEquals('ru', $translator->getLocale());
-        $this->assertNotEquals('ru', $originalLocale);
+        self::assertNotEquals('ru', $originalLocale);
     }
 }
