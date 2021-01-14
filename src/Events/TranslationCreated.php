@@ -4,7 +4,7 @@ namespace Nevadskiy\Translatable\Events;
 
 use Nevadskiy\Translatable\Models\Translation;
 
-class TranslationSaved
+class TranslationCreated
 {
     /**
      * @var Translation

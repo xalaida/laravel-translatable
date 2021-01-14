@@ -6,7 +6,7 @@ use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
-use Nevadskiy\Translatable\Events\TranslationSaved;
+use Nevadskiy\Translatable\Events\TranslationCreated;
 use Nevadskiy\Translatable\HasTranslations;
 use Nevadskiy\Uuid\Uuid;
 
@@ -59,7 +59,7 @@ class Translation extends Model
      * @var array
      */
     protected $dispatchesEvents = [
-        'saved' => TranslationSaved::class,
+        'created' => TranslationCreated::class,
     ];
 
     /**
@@ -84,5 +84,10 @@ class Translation extends Model
     public function scopeForAttribute(Builder $query, string $attribute): Builder
     {
         return $query->where('translatable_attribute', $attribute);
+    }
+
+    public function archive(): void
+    {
+        $this->update(['is_archived' => true]);
     }
 }
