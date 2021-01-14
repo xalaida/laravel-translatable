@@ -37,17 +37,15 @@ trait TranslationScopes
                 $query->where($attribute, $operator, $value);
             }
 
-            if (is_null($locale) || ! static::getTranslator()->isDefaultLocale($locale)) {
-                $query->orWhereHas('translations', function (Builder $query) use ($attribute, $value, $locale, $operator) {
-                    $query->forAttribute($attribute);
+            $query->orWhereHas('translations', function (Builder $query) use ($attribute, $value, $locale, $operator) {
+                $query->forAttribute($attribute);
 
-                    if ($locale) {
-                        $query->forLocale($locale);
-                    }
+                if ($locale) {
+                    $query->forLocale($locale);
+                }
 
-                    $query->where('value', $operator, $value);
-                });
-            }
+                $query->where('value', $operator, $value);
+            });
         });
     }
 }

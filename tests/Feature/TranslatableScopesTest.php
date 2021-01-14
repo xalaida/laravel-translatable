@@ -108,12 +108,24 @@ class TranslatableScopesTest extends TestCase
 
         $book = BookFactory::new()->create();
         $book->translate('title', 'Книга про собак', 'ru');
-        $book->archiveTranslation('title', 'Устаревшая книга про собак', null);
+        $book->archiveTranslation('title', 'Старинная книга про собак', null);
 
         $anotherBook = BookFactory::new()->create();
         $anotherBook->translate('title', 'Книга о дельфинах', 'ru');
 
-        $books = Book::whereTranslatable('title', 'Устаревшая книга про собак')->get();
+        $books = Book::whereTranslatable('title', 'Старинная книга про собак')->get();
+
+        self::assertCount(1, $books);
+        self::assertTrue($books[0]->is($book));
+    }
+
+    /** @test */
+    public function it_can_retrieve_translatable_model_by_archived_translation_in_default_locale(): void
+    {
+        $book = BookFactory::new()->create();
+        $book->archiveTranslation('title', 'Old book');
+
+        $books = Book::whereTranslatable('title', 'Old book', 'en')->get();
 
         self::assertCount(1, $books);
         self::assertTrue($books[0]->is($book));
