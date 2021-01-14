@@ -177,6 +177,20 @@ class AutoTranslationsSetTest extends TestCase
     }
 
     /** @test */
+    public function it_does_not_create_models_with_translations_on_not_default_locales(): void
+    {
+        $originalLocale = $this->app->getLocale();
+        $this->app->setLocale('ru');
+
+        $book = BookFactory::new()->create(['title' => 'Название на русском']);
+
+        $this->app->setLocale($originalLocale);
+
+        self::assertEmpty(Translation::all());
+        self::assertEquals('Название на русском', $book->title);
+    }
+
+    /** @test */
     public function it_does_not_store_prepared_translations_twice(): void
     {
         $book = BookFactory::new()->create(['title' => 'My best book']);

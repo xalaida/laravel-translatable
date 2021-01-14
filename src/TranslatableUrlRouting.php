@@ -38,6 +38,7 @@ trait TranslatableUrlRouting
             ->whereDoesntHave('translations', function ($query) use ($field, $locale) {
                 $query->forAttribute($field);
                 $query->forLocale($locale);
+                $query->where('is_archived', false);
             })
             ->first();
     }

@@ -28,6 +28,13 @@ trait HasTranslations
     protected $preparedTranslations = [];
 
     /**
+     * Prepared archived translations to be saved into the database.
+     *
+     * @var array
+     */
+    protected $preparedArchivedTranslations = [];
+
+    /**
      * Resolved attribute translations from the database.
      *
      * @var array
@@ -73,6 +80,18 @@ trait HasTranslations
     public function enableAutoArchiveTranslations()
     {
         $this->autoArchiveTranslation = true;
+
+        return $this;
+    }
+
+    /**
+     * Disable auto archive for the previous translations.
+     *
+     * @return HasTranslations|mixed
+     */
+    public function disableAutoArchiveTranslations()
+    {
+        $this->autoArchiveTranslation = false;
 
         return $this;
     }
@@ -157,11 +176,11 @@ trait HasTranslations
      * Archive the given translation.
      *
      * @param string $attribute
-     * @param $value
+     * @param string $value
      * @param string|null $locale
      * @return Translation
      */
-    public function archiveTranslation(string $attribute, $value, ?string $locale = null): Translation
+    public function archiveTranslation(string $attribute, string $value, ?string $locale = null): Translation
     {
         $this->assertTranslatableAttribute($attribute);
 
@@ -302,6 +321,16 @@ trait HasTranslations
     }
 
     /**
+     * Prepare archived translations for the default locale.
+     */
+    protected function prepareArchivedTranslation(string $attribute): void
+    {
+        if ($this->shouldAutoArchiveTranslations()) {
+            $this->preparedArchivedTranslations[$attribute] = $this->getDefaultTranslation($attribute);
+        }
+    }
+
+    /**
      * Pull any prepared translations.
      */
     protected function pullPreparedTranslations(): array
@@ -309,6 +338,18 @@ trait HasTranslations
         $translations = $this->preparedTranslations;
 
         $this->preparedTranslations = [];
+
+        return $translations;
+    }
+
+    /**
+     * Pull any prepared archived translations.
+     */
+    protected function pullPreparedArchivedTranslations(): array
+    {
+        $translations = $this->preparedArchivedTranslations;
+
+        $this->preparedArchivedTranslations = [];
 
         return $translations;
     }
@@ -326,6 +367,8 @@ trait HasTranslations
         $locale = $locale ?: static::getTranslator()->getLocale();
 
         if (static::getTranslator()->isDefaultLocale($locale)) {
+             $this->prepareArchivedTranslation($attribute);
+
             return $this->setDefaultAttribute($attribute, $value);
         }
 
@@ -362,6 +405,7 @@ trait HasTranslations
     protected function handleSavingEvent(): void
     {
         $this->saveTranslations();
+        $this->archiveDefaultTranslations();
     }
 
     /**
@@ -370,6 +414,28 @@ trait HasTranslations
     protected function saveTranslations(): void
     {
         static::getTranslator()->save($this, $this->pullPreparedTranslations());
+    }
+
+    /**
+     * Archive default translations for the model if the feature is enabled.
+     */
+    protected function archiveDefaultTranslations(): void
+    {
+        if ($this->shouldAutoArchiveTranslations()) {
+            $this->performArchiveDefaultTranslations();
+        }
+    }
+
+    /**
+     * Archive default translations for the model.
+     */
+    protected function performArchiveDefaultTranslations(): void
+    {
+        foreach ($this->pullPreparedArchivedTranslations() as $attribute => $value) {
+            static::getTranslator()->add(
+                $this, $attribute, $value, static::getTranslator()->getDefaultLocale(), true
+            );
+        }
     }
 
     /**

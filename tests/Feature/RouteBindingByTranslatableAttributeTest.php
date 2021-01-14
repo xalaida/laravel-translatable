@@ -79,6 +79,40 @@ class RouteBindingByTranslatableAttributeTest extends TestCase
     }
 
     /** @test */
+    public function it_resolves_route_binding_model_by_default_value_when_translation_is_archived(): void
+    {
+        Route::middleware('bindings')->get('/posts/{post:slug}', static function (Post $post) {
+            return $post->id;
+        });
+
+        $post = PostFactory::new()->create(['slug' => 'post-about-penguins']);
+        $post->archiveTranslation('slug', 'пост-о-пингвинах', 'ru');
+
+        $this->app->setLocale('ru');
+        $response = $this->get('posts/post-about-penguins');
+
+        $response->assertOk();
+        self::assertEquals($post->id, $response->content());
+    }
+
+    /** @test */
+    public function it_resolves_route_binding_model_by_archived_translation(): void
+    {
+        Route::middleware('bindings')->get('/posts/{post:slug}', static function (Post $post) {
+            return $post->id;
+        });
+
+        $post = PostFactory::new()->create(['slug' => 'post-about-penguins']);
+        $post->archiveTranslation('slug', 'пост-о-пингвинах', 'ru');
+
+        $this->app->setLocale('ru');
+        $response = $this->get('posts/пост-о-пингвинах');
+
+        $response->assertOk();
+        self::assertEquals($post->id, $response->content());
+    }
+
+    /** @test */
     public function it_returns_404_for_default_value_when_translation_is_available(): void
     {
         Route::middleware('bindings')->get('/posts/{post:slug}', static function (Post $post) {

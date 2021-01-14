@@ -8,23 +8,6 @@ use Nevadskiy\Translatable\Tests\TestCase;
 
 class AutoArchivePreviousTranslationsTest extends TestCase
 {
-    // TODO: do not store same translations as archived (unarchive previous or what...)
-
-    // TODO: auto archive translations for default locale when overrides default attribute
-    // TODO: save archived translations directly
-    // TODO: check if search works for archived translations
-    // TODO: feature disabling archived translations and only override current or do nothing
-    // TODO: do not use it by default
-    // TODO: when new translation is added - archive others
-    // TODO: archived translations does not resolves automatically
-    // TODO: add method for retrieving archived translations
-    // TODO: test nullable values
-    // TODO: it_switches_previous_preferred_values_to_not_preferred is set feature is enabled
-
-    // TODO: it does not archive for different locale
-    // TODO: it does not archive for different attribute
-    // TODO: it does not archive for different model
-
     /** @test */
     public function it_does_not_archive_previous_translations_by_default(): void
     {
@@ -53,5 +36,91 @@ class AutoArchivePreviousTranslationsTest extends TestCase
         self::assertFalse($translations[1]->is_archived);
         self::assertEquals('Новое название книги', $translations[1]->value);
         self::assertEquals('Новое название книги', $book->getTranslation('title', 'ru'));
+    }
+
+    /** @test */
+    public function it_can_automatically_archive_translations_on_default_locale(): void
+    {
+        $book = BookFactory::new()->create(['title' => 'Original title']);
+
+        $book->enableAutoArchiveTranslations();
+        $this->app->setLocale('en');
+
+        $book->title = 'Updated title';
+        $book->save();
+
+        $translations = Translation::all();
+
+        self::assertCount(1, $translations);
+        self::assertTrue($translations[0]->is_archived);
+        self::assertEquals('Original title', $translations[0]->value);
+        self::assertEquals('en', $translations[0]->locale);
+        self::assertEquals('Updated title', $book->title);
+    }
+
+    /** @test */
+    public function it_does_not_automatically_archive_translations_on_default_locale_after_assignment(): void
+    {
+        $book = BookFactory::new()->create(['title' => 'Original title']);
+
+        $book->enableAutoArchiveTranslations();
+        $this->app->setLocale('en');
+
+        $book->title = 'Updated title';
+
+        self::assertEmpty(Translation::all());
+    }
+
+    /** @test */
+    public function it_does_not_archive_previous_translations_for_another_attribute(): void
+    {
+        $book = BookFactory::new()->create();
+
+        $book->enableAutoArchiveTranslations();
+
+        $book->translate('title', 'Название книги', 'ru');
+        $book->translate('description', 'Книга про животных', 'ru');
+
+        $translations = Translation::all();
+
+        self::assertCount(2, $translations);
+        self::assertFalse($translations[0]->is_archived);
+        self::assertFalse($translations[1]->is_archived);
+    }
+
+    /** @test */
+    public function it_does_not_archive_previous_translations_for_another_locale(): void
+    {
+        $book = BookFactory::new()->create();
+
+        $book->enableAutoArchiveTranslations();
+
+        $book->translate('title', 'Название книги', 'ru');
+        $book->translate('title', 'Book title', 'es');
+
+        $translations = Translation::all();
+
+        self::assertCount(2, $translations);
+        self::assertFalse($translations[0]->is_archived);
+        self::assertFalse($translations[1]->is_archived);
+    }
+
+    /** @test */
+    public function it_does_not_archive_previous_translations_for_another_model(): void
+    {
+        $book1 = BookFactory::new()->create();
+        $book2 = BookFactory::new()->create();
+
+        $book1->enableAutoArchiveTranslations();
+        $book2->enableAutoArchiveTranslations();
+
+        $book1->translate('title', 'Книга о животных', 'ru');
+        $book2->translate('title', 'Книга о растениях', 'ru');
+
+        $translations = Translation::all();
+
+        self::assertCount(2, $translations);
+        self::assertFalse($translations[0]->is_archived);
+        self::assertFalse($translations[1]->is_archived);
     }
 }

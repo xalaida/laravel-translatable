@@ -79,6 +79,18 @@ class AddArchivedTranslationsTest extends TestCase
     }
 
     /** @test */
+    public function it_can_add_archived_translations_for_default_locale(): void
+    {
+        $book = BookFactory::new()->create();
+
+        $translation = $book->archiveTranslation('title', 'lorem ipsum', 'en');
+
+        self::assertCount(1, Translation::all());
+        self::assertEquals('en', $translation->locale);
+        self::assertTrue($translation->is_archived);
+    }
+
+    /** @test */
     public function it_archives_translation_applying_attribute_mutators(): void
     {
         $book = BookFactory::new()->create();
