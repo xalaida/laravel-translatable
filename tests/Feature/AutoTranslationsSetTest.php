@@ -2,6 +2,7 @@
 
 namespace Nevadskiy\Translatable\Tests\Feature;
 
+use Illuminate\Support\Facades\DB;
 use Nevadskiy\Translatable\Models\Translation;
 use Nevadskiy\Translatable\Tests\Support\Factories\BookFactory;
 use Nevadskiy\Translatable\Tests\TestCase;
@@ -173,5 +174,21 @@ class AutoTranslationsSetTest extends TestCase
 
         self::assertEquals('Book about animals', $book->description);
         self::assertEmpty(Translation::all());
+    }
+
+    /** @test */
+    public function it_does_not_store_prepared_translations_twice(): void
+    {
+        $book = BookFactory::new()->create(['title' => 'My best book']);
+
+        $book->setTranslation('title', 'Моя лучшая книга', 'ru');
+
+        $book->save();
+
+        DB::connection()->enableQueryLog();
+
+        $book->save();
+
+        self::assertEmpty(DB::connection()->getQueryLog());
     }
 }
