@@ -2,6 +2,9 @@
 
 namespace Nevadskiy\Translatable\Tests\Unit\Models;
 
+use Illuminate\Support\Facades\Event;
+use Nevadskiy\Translatable\Events\TranslationArchived;
+use Nevadskiy\Translatable\Events\TranslationCreated;
 use Nevadskiy\Translatable\Models\Translation;
 use Nevadskiy\Translatable\Tests\Support\Factories\BookFactory;
 use Nevadskiy\Translatable\Tests\Support\Factories\TranslationFactory;
@@ -59,5 +62,25 @@ class TranslationTest extends TestCase
 
         self::assertCount(1, $translations);
         self::assertTrue($translations->first()->is($translation1));
+    }
+
+    /** @test */
+    public function it_can_be_archived(): void
+    {
+        $translation = TranslationFactory::new()
+            ->for(BookFactory::new()->create(), 'title')
+            ->create();
+
+        Event::fake(TranslationArchived::class);
+
+        self::assertFalse($translation->fresh()->is_archived);
+
+        $translation->archive();
+
+        self::assertTrue($translation->fresh()->is_archived);
+
+        Event::assertDispatched(TranslationArchived::class, static function (TranslationArchived $event) use ($translation) {
+            return $event->translation->is($translation);
+        });
     }
 }

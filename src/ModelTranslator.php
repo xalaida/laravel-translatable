@@ -83,6 +83,7 @@ class ModelTranslator
         return $translatable->translations()->updateOrCreate([
             'translatable_attribute' => $attribute,
             'locale' => $locale ?: $this->getLocale(),
+            'is_archived' => false
         ], [
             'value' => $value,
         ]);
@@ -98,6 +99,7 @@ class ModelTranslator
     {
         foreach ($translations as $locale => $attributes) {
             foreach (array_filter($attributes) as $attribute => $value) {
+                $this->archive($model, $attribute, $locale);
                 $this->set($model, $attribute, $value, $locale);
             }
         }
@@ -112,7 +114,7 @@ class ModelTranslator
         Model $translatable,
         string $attribute,
         string $value,
-        ?string $locale = null,
+        ?string $locale,
         bool $isArchived = false
     ): Translation {
         return $translatable->translations()->firstOrCreate([
@@ -121,5 +123,33 @@ class ModelTranslator
             'value' => $value,
             'is_archived' => $isArchived,
         ]);
+    }
+
+    /**
+     * Archive model translations according to the given attribute and locale if the feature is enabled.
+     *
+     * @param Model|HasTranslations $model
+     */
+    protected function archive(Model $model, string $attribute, string $locale): void
+    {
+        if ($model->shouldAutoArchiveTranslations()) {
+            $this->performArchive($model, $attribute, $locale);
+        }
+    }
+
+    /**
+     * Archive all model translations according to the given attribute and locale.
+     *
+     * @param Model|HasTranslations $model
+     */
+    protected function performArchive(Model $model, string $attribute, string $locale): void
+    {
+        $model->fresh()->translations->filter(static function (Translation $translation) use ($attribute, $locale) {
+            return $translation->translatable_attribute === $attribute
+                && $translation->locale === $locale
+                && ! $translation->is_archived;
+        })->each(static function (Translation $translation) {
+            $translation->archive();
+        });
     }
 }

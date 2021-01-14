@@ -35,6 +35,13 @@ trait HasTranslations
     protected $resolvedTranslations = [];
 
     /**
+     * The flag to check if the previous translations should be archived automatically.
+     *
+     * @var bool
+     */
+    protected $autoArchiveTranslation = false;
+
+    /**
      * Boot the trait.
      */
     protected static function bootHasTranslations(): void
@@ -56,6 +63,28 @@ trait HasTranslations
     public function translations(): MorphMany
     {
         return $this->morphMany(Translation::class, 'translatable');
+    }
+
+    /**
+     * Enable auto archive for the previous translations.
+     *
+     * @return HasTranslations|mixed
+     */
+    public function enableAutoArchiveTranslations()
+    {
+        $this->autoArchiveTranslation = true;
+
+        return $this;
+    }
+
+    /**
+     * Determine whether the previous translations should be archived automatically
+     *
+     * @return bool
+     */
+    public function shouldAutoArchiveTranslations(): bool
+    {
+        return $this->autoArchiveTranslation;
     }
 
     /**
@@ -144,34 +173,6 @@ trait HasTranslations
             $this, $attribute, $this->withAttributeMutators($attribute, $value), $locale, true
         );
     }
-
-//    /**
-//     * Add a new translation to the model according to the given attribute and locale.
-//     *
-//     * @param mixed $value
-//     */
-//    public function addTranslation(
-//        string $attribute,
-//        $value,
-//        string $locale = null,
-//        bool $isPreferred = true
-//    ): Translation {
-//        $this->assertTranslatableAttribute($attribute);
-//
-//        $locale = $locale ?: static::getTranslator()->getLocale();
-//
-//        if (static::getTranslator()->isDefaultLocale($locale)) {
-//            $isPreferred = false;
-//        }
-//
-//        $value = $this->withAttributeMutators($attribute, $value);
-//
-//        if ($isPreferred) {
-//            $this->attributeTranslations[$locale][$attribute] = $value;
-//        }
-//
-//        return static::getTranslator()->add($this, $attribute, $value, $locale, $isPreferred);
-//    }
 
     /**
      * Save many translations for the given attribute and locale.
