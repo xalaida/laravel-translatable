@@ -10,9 +10,12 @@ jobs:
     tests:
         runs-on: ${{ matrix.os }}
         strategy:
+            fail-fast: true
             matrix:
                 os: [ 'ubuntu-latest' ]
-                php: [ '7.2' ]
+                php: [ '7.2', '7.3', '7.4', '8.0' ]
+
+        name: PHP ${{ matrix.php }} - Laravel ${{ matrix.laravel }}
 
         steps:
             -   name: Checkout code
@@ -25,7 +28,7 @@ jobs:
                     coverage: none
 
             -   name: Install dependencies
-                run: composer install
+                run: composer install --no-interaction
 
             -   name: Run tests
                 run: vendor/bin/phpunit
