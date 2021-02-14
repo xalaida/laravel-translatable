@@ -15,6 +15,7 @@ RUN docker-php-ext-install bcmath
 
 # Xdebug
 RUN pecl install xdebug && docker-php-ext-enable xdebug
+ENV XDEBUG_MODE coverage
 
 # Composer installation
 ENV COMPOSER_ALLOW_SUPERUSER 1
