@@ -28,7 +28,7 @@ For convenience, common tasks are wrapped up in the [Makefile](Makefile) for usa
 1. Fork and clone the project
 
 2. Run the installation command
-```
+```bash
 # Using global composer
 composer install
 
@@ -38,7 +38,7 @@ make install
 
 ## Running Tests
 
-``` bash
+```bash
 # Using global composer
 composer test
 
@@ -50,7 +50,7 @@ make test
 
 Formatting is automated through [PHP-CS-Fixer](https://github.com/FriendsOfPHP/PHP-CS-Fixer)
 
-``` bash
+```bash
 # Using global composer
 composer fix
 
