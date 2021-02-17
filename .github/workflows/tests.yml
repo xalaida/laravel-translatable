@@ -14,6 +14,13 @@ jobs:
                 os: [ 'ubuntu-latest' ]
                 php: [ '7.2', '7.3', '7.4', '8.0' ]
                 laravel: [ '6.*', '7.*', '8.*' ]
+                include:
+                    -   laravel: 8.*
+                        testbench: 6.*
+                    -   laravel: 7.*
+                        testbench: 5.*
+                    -   laravel: 6.*
+                        testbench: 4.*
                 exclude:
                     -   laravel: 8.*
                         php: 7.2
@@ -39,7 +46,7 @@ jobs:
 
             -   name: Install dependencies
                 run: |
-                    composer require "laravel/framework:${{ matrix.laravel }}" --prefer-dist --no-interaction --no-progress --no-update
+                    composer require "laravel/framework:${{ matrix.laravel }}" "orchestra/testbench:${{ matrix.testbench }}" --prefer-dist --no-interaction --no-progress --no-update
                     composer update --prefer-dist --no-interaction --no-progress
 
             -   name: Execute tests
