@@ -8,8 +8,6 @@
 
 The package provides possibility to translate your Eloquent models into different languages using a single database table.
 
-Inspired by [django-modeltranslation](https://github.com/deschler/django-modeltranslation)
-
 ## Features 
 
 - Simple and intuitive API.
