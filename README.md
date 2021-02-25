@@ -296,7 +296,7 @@ The auto archiving translations feature allows to keep all previous translations
 It may be useful for some entities, which users are used to searching by the old name, when the new one should be displayed instead.
 For example, the place is renamed, and you may not know about this, but still can find it using the old name.
 
-To enable auto-archiving translations, override the `shouldAutoArchiveTranslations` method in your translatable model or instead use `enableAutoArchiveTranslations` method to enable it for only specific instance.
+To enable auto-archiving translations, override the `shouldArchiveTranslations` method in your translatable model or instead use `enableArchivingTranslations` method to enable it for only specific instance.
 It will also keep values as archived translations, when models have updated translatable attributes using the default application locale. 
 
 ##### Route model binding

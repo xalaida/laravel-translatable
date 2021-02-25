@@ -139,7 +139,7 @@ class ModelTranslator
      */
     protected function archive(Model $model, string $attribute, string $locale): void
     {
-        if ($model->shouldAutoArchiveTranslations()) {
+        if ($model->shouldArchiveTranslations()) {
             $this->performArchive($model, $attribute, $locale);
         }
     }

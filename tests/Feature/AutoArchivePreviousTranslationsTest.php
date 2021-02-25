@@ -24,7 +24,7 @@ class AutoArchivePreviousTranslationsTest extends TestCase
     {
         $book = BookFactory::new()->create();
 
-        $book->enableAutoArchiveTranslations();
+        $book->enableArchivingTranslations();
 
         $book->translate('title', 'Старое название книги', 'ru');
         $book->translate('title', 'Новое название книги', 'ru');
@@ -43,7 +43,7 @@ class AutoArchivePreviousTranslationsTest extends TestCase
     {
         $book = BookFactory::new()->create(['title' => 'Original title']);
 
-        $book->enableAutoArchiveTranslations();
+        $book->enableArchivingTranslations();
         $this->app->setLocale('en');
 
         $book->title = 'Updated title';
@@ -63,7 +63,7 @@ class AutoArchivePreviousTranslationsTest extends TestCase
     {
         $book = BookFactory::new()->create(['title' => 'Original title']);
 
-        $book->enableAutoArchiveTranslations();
+        $book->enableArchivingTranslations();
         $this->app->setLocale('en');
 
         $book->title = 'Updated title';
@@ -76,7 +76,7 @@ class AutoArchivePreviousTranslationsTest extends TestCase
     {
         $book = BookFactory::new()->create();
 
-        $book->enableAutoArchiveTranslations();
+        $book->enableArchivingTranslations();
 
         $book->translate('title', 'Название книги', 'ru');
         $book->translate('description', 'Книга про животных', 'ru');
@@ -93,7 +93,7 @@ class AutoArchivePreviousTranslationsTest extends TestCase
     {
         $book = BookFactory::new()->create();
 
-        $book->enableAutoArchiveTranslations();
+        $book->enableArchivingTranslations();
 
         $book->translate('title', 'Название книги', 'ru');
         $book->translate('title', 'Book title', 'es');
@@ -111,8 +111,8 @@ class AutoArchivePreviousTranslationsTest extends TestCase
         $book1 = BookFactory::new()->create();
         $book2 = BookFactory::new()->create();
 
-        $book1->enableAutoArchiveTranslations();
-        $book2->enableAutoArchiveTranslations();
+        $book1->enableArchivingTranslations();
+        $book2->enableArchivingTranslations();
 
         $book1->translate('title', 'Книга о животных', 'ru');
         $book2->translate('title', 'Книга о растениях', 'ru');

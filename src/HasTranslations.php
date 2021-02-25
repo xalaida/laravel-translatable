@@ -311,14 +311,14 @@ trait HasTranslations
      */
     protected function handleSavingEvent(): void
     {
-        $this->saveTranslations();
-        $this->archiveDefaultTranslations();
+        $this->savePreparedTranslations();
+        $this->savePreparedArchivedTranslations();
     }
 
     /**
      * Save the model translations.
      */
-    protected function saveTranslations(): void
+    protected function savePreparedTranslations(): void
     {
         static::getTranslator()->save($this, $this->pullPreparedTranslations());
     }

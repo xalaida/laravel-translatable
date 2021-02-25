@@ -24,11 +24,11 @@ trait ArchivingTranslations
     protected $autoArchiveTranslation = false;
 
     /**
-     * Enable auto archive for the previous translations.
+     * Enable auto archiving for the previous translations.
      *
      * @return HasTranslations|mixed
      */
-    public function enableAutoArchiveTranslations()
+    public function enableArchivingTranslations()
     {
         $this->autoArchiveTranslation = true;
 
@@ -36,11 +36,11 @@ trait ArchivingTranslations
     }
 
     /**
-     * Disable auto archive for the previous translations.
+     * Disable auto archiving for the previous translations.
      *
      * @return HasTranslations|mixed
      */
-    public function disableAutoArchiveTranslations()
+    public function disableArchivingTranslations()
     {
         $this->autoArchiveTranslation = false;
 
@@ -50,7 +50,7 @@ trait ArchivingTranslations
     /**
      * Determine whether the previous translations should be archived automatically.
      */
-    public function shouldAutoArchiveTranslations(): bool
+    public function shouldArchiveTranslations(): bool
     {
         return $this->autoArchiveTranslation;
     }
@@ -76,7 +76,7 @@ trait ArchivingTranslations
      */
     protected function prepareArchivedTranslation(string $attribute): void
     {
-        if ($this->shouldAutoArchiveTranslations()) {
+        if ($this->shouldArchiveTranslations()) {
             $this->preparedArchivedTranslations[$attribute] = $this->getDefaultTranslation($attribute);
         }
     }
@@ -96,17 +96,17 @@ trait ArchivingTranslations
     /**
      * Archive default translations for the model if the feature is enabled.
      */
-    protected function archiveDefaultTranslations(): void
+    protected function savePreparedArchivedTranslations(): void
     {
-        if ($this->shouldAutoArchiveTranslations()) {
-            $this->performArchiveDefaultTranslations();
+        if ($this->shouldArchiveTranslations()) {
+            $this->performSavePreparedArchivedTranslations();
         }
     }
 
     /**
      * Archive default translations for the model.
      */
-    protected function performArchiveDefaultTranslations(): void
+    protected function performSavePreparedArchivedTranslations(): void
     {
         foreach ($this->pullPreparedArchivedTranslations() as $attribute => $value) {
             static::getTranslator()->add(
