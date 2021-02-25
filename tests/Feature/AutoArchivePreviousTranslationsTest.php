@@ -20,6 +20,21 @@ class AutoArchivePreviousTranslationsTest extends TestCase
     }
 
     /** @test */
+    public function it_does_not_archive_previous_translations_when_feature_is_disabled(): void
+    {
+        $book = BookFactory::new()->create();
+
+        $book->translate('title', 'Старое название книги', 'ru');
+
+        $book->enableArchivingTranslations();
+        $book->disableArchivingTranslations();
+
+        $book->translate('title', 'Новое название книги', 'ru');
+
+        self::assertCount(1, Translation::all());
+    }
+
+    /** @test */
     public function it_can_automatically_archive_previous_translations(): void
     {
         $book = BookFactory::new()->create();
