@@ -14,7 +14,7 @@ The package provides possibility to translate your Eloquent models into differen
 - Store all translations in the single 'translations' table.
 - Works with model accessors & mutators & casts, even with JSON.
 - Works with route model binding.
-- Archive previous translations to improve searching experience.
+- Archive translations to improve searching experience.
 - Provides useful events.
 
 
@@ -283,12 +283,12 @@ $post = Post::first();
 $post->archiveTranslation('title', 'Old title', 'en');
 ```
 
-Now `Old title` is associated with the post that allows to find the post using `whereTranslatable` scope:
+Now `Old title` is associated with a post that allows to find the post using `whereTranslatable` scope:
 ```php
 Post::whereTranslatable('title', 'Old title')->get();
 ```
 
-You can also pass `null` as third argument to `archiveTranslation` method when the locale is unknown.
+You can also pass `null` as third argument to `archiveTranslation` method when a locale is unknown.
 
 ##### Auto-archiving translations
 
