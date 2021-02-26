@@ -274,8 +274,6 @@ trait HasTranslations
         $locale = $locale ?: static::getTranslator()->getLocale();
 
         if (static::getTranslator()->isDefaultLocale($locale)) {
-            $this->prepareArchivedTranslation($attribute);
-
             return $this->setDefaultAttribute($attribute, $value);
         }
 
@@ -312,7 +310,6 @@ trait HasTranslations
     protected function handleSavingEvent(): void
     {
         $this->savePreparedTranslations();
-        $this->savePreparedArchivedTranslations();
     }
 
     /**
