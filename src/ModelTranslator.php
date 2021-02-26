@@ -46,14 +46,6 @@ class ModelTranslator
     }
 
     /**
-     * Get the default translator locale.
-     */
-    public function getDefaultLocale(): string
-    {
-        return $this->defaultLocale;
-    }
-
-    /**
      * Determine does the translator use the current or given locale as the default locale.
      */
     public function isDefaultLocale(string $locale = null): bool
@@ -61,6 +53,20 @@ class ModelTranslator
         $locale = $locale ?: $this->getLocale();
 
         return $locale === $this->defaultLocale;
+    }
+
+    /**
+     * Save the given translations for the given model.
+     *
+     * @param Model|HasTranslations $model
+     */
+    public function save(Model $model, array $translations): void
+    {
+        foreach ($translations as $locale => $attributes) {
+            foreach (array_filter($attributes) as $attribute => $value) {
+                $this->set($model, $attribute, $value, $locale);
+            }
+        }
     }
 
     /**
@@ -98,21 +104,6 @@ class ModelTranslator
     }
 
     /**
-     * Save the given translations for the given model.
-     *
-     * @param Model|HasTranslations $model
-     */
-    public function save(Model $model, array $translations): void
-    {
-        foreach ($translations as $locale => $attributes) {
-            foreach (array_filter($attributes) as $attribute => $value) {
-                $this->archive($model, $attribute, $locale);
-                $this->set($model, $attribute, $value, $locale);
-            }
-        }
-    }
-
-    /**
      * Add a new translation for the given model.
      *
      * @param Model|HasTranslations $translatable
@@ -130,33 +121,5 @@ class ModelTranslator
             'value' => $value,
             'is_archived' => $isArchived,
         ]);
-    }
-
-    /**
-     * Archive model translations according to the given attribute and locale if the feature is enabled.
-     *
-     * @param Model|HasTranslations $model
-     */
-    protected function archive(Model $model, string $attribute, string $locale): void
-    {
-        if ($model->shouldArchiveTranslations()) {
-            $this->performArchive($model, $attribute, $locale);
-        }
-    }
-
-    /**
-     * Archive all model translations according to the given attribute and locale.
-     *
-     * @param Model|HasTranslations $model
-     */
-    protected function performArchive(Model $model, string $attribute, string $locale): void
-    {
-        $model->fresh()->translations->filter(static function (Translation $translation) use ($attribute, $locale) {
-            return $translation->translatable_attribute === $attribute
-                && $translation->locale === $locale
-                && ! $translation->is_archived;
-        })->each(static function (Translation $translation) {
-            $translation->archive();
-        });
     }
 }
