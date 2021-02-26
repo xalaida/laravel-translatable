@@ -9,7 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [0.7.0] - 2021-02-26
 ### Removed
-- The `auto archiving translations` feature.
+- The `auto archiving translations` feature
 
 ## [0.6.0] - 2021-01-14
 ### Added
