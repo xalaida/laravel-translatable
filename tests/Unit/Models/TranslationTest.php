@@ -82,4 +82,53 @@ class TranslationTest extends TestCase
             return $event->translation->is($translation);
         });
     }
+
+    /** @test */
+    public function it_can_be_scoped_by_archived(): void
+    {
+        $translation1 = TranslationFactory::new()
+            ->for(BookFactory::new()->create(), 'title')
+            ->create();
+
+        $translation2 = TranslationFactory::new()
+            ->for(BookFactory::new()->create(), 'title')
+            ->create();
+
+        $translation3 = TranslationFactory::new()
+            ->for(BookFactory::new()->create(), 'title')
+            ->create();
+
+        $translation2->archive();
+        $translation3->archive();
+
+        $archivedTranslations = Translation::query()->archived()->get();
+
+        self::assertFalse($archivedTranslations->contains($translation1));
+        self::assertTrue($archivedTranslations->contains($translation2));
+        self::assertTrue($archivedTranslations->contains($translation3));
+    }
+
+    /** @test */
+    public function it_can_be_scoped_by_active(): void
+    {
+        $translation1 = TranslationFactory::new()
+            ->for(BookFactory::new()->create(), 'title')
+            ->create();
+
+        $translation2 = TranslationFactory::new()
+            ->for(BookFactory::new()->create(), 'title')
+            ->create();
+
+        $translation3 = TranslationFactory::new()
+            ->for(BookFactory::new()->create(), 'title')
+            ->create();
+
+        $translation2->archive();
+
+        $archivedTranslations = Translation::query()->active()->get();
+
+        self::assertTrue($archivedTranslations->contains($translation1));
+        self::assertFalse($archivedTranslations->contains($translation2));
+        self::assertTrue($archivedTranslations->contains($translation3));
+    }
 }
