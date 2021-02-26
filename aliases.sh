@@ -5,4 +5,4 @@ alias app='docker run --rm -it -v ${PWD}:/app app'
 alias tf='docker run --rm -it -v ${PWD}:/app app vendor/bin/phpunit --filter'
 
 # Test by filter with coverage report
-alias tfc='docker run --rm -it -v ${PWD}:/app app vendor/bin/phpunit --coverage-html tests/report --filter'
+alias tfc='docker run --rm -it -v ${PWD}:/app app vendor/bin/phpunit --coverage-text --filter'

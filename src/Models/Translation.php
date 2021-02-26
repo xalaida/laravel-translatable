@@ -75,7 +75,7 @@ class Translation extends Model
     /**
      * Scope translations by the given locale.
      */
-    public function scopeForLocale(Builder $query, string $locale): Builder
+    public function scopeForLocale(Builder $query, ?string $locale): Builder
     {
         return $query->where('locale', $locale);
     }
@@ -86,6 +86,22 @@ class Translation extends Model
     public function scopeForAttribute(Builder $query, string $attribute): Builder
     {
         return $query->where('translatable_attribute', $attribute);
+    }
+
+    /**
+     * Scope translations to exclude not active translations.
+     */
+    public function scopeActive(Builder $query): Builder
+    {
+        return $query->where('is_archived', false);
+    }
+
+    /**
+     * Scope translations to exclude not archived translations.
+     */
+    public function scopeArchived(Builder $query): Builder
+    {
+        return $query->where('is_archived', true);
     }
 
     /**
