@@ -57,9 +57,9 @@ trait TranslationScopes
     {
         $locale = $locale ?: static::getTranslator()->getLocale();
 
-         if (static::getTranslator()->isDefaultLocale($locale)) {
-             return $query->orderBy($attribute, $direction);
-         }
+        if (static::getTranslator()->isDefaultLocale($locale)) {
+            return $query->orderBy($attribute, $direction);
+        }
 
         return $query->orderBy(
             Translation::query()

@@ -2,8 +2,6 @@
 
 namespace Nevadskiy\Translatable\Tests\Feature;
 
-use Illuminate\Database\Eloquent\Collection;
-use Nevadskiy\Translatable\Models\Translation;
 use Nevadskiy\Translatable\Tests\Support\Factories\BookFactory;
 use Nevadskiy\Translatable\Tests\Support\Models\Book;
 use Nevadskiy\Translatable\Tests\TestCase;
@@ -136,8 +134,8 @@ class TranslatableScopesTest extends TestCase
     /** @test */
     public function it_can_order_by_translatable_attribute_in_current_locale(): void
     {
-        $book1 = BookFactory::new()->create(['title' => 'First book',]);
-        $book2 = BookFactory::new()->create(['title' => 'Second book',]);
+        $book1 = BookFactory::new()->create(['title' => 'First book']);
+        $book2 = BookFactory::new()->create(['title' => 'Second book']);
 
         $book1->translate('title', 'Первая книга', 'ru');
         $book2->translate('title', 'Вторая книга', 'ru');
@@ -153,8 +151,8 @@ class TranslatableScopesTest extends TestCase
     /** @test */
     public function it_can_order_by_translatable_attribute_in_descending_order(): void
     {
-        $book1 = BookFactory::new()->create(['title' => 'First book',]);
-        $book2 = BookFactory::new()->create(['title' => 'Second book',]);
+        $book1 = BookFactory::new()->create(['title' => 'First book']);
+        $book2 = BookFactory::new()->create(['title' => 'Second book']);
 
         $book1->translate('title', 'Первая книга', 'ru');
         $book2->translate('title', 'Вторая книга', 'ru');
@@ -170,8 +168,8 @@ class TranslatableScopesTest extends TestCase
     /** @test */
     public function it_can_order_by_translatable_attribute_for_custom_locale(): void
     {
-        $book1 = BookFactory::new()->create(['title' => 'First book',]);
-        $book2 = BookFactory::new()->create(['title' => 'Second book',]);
+        $book1 = BookFactory::new()->create(['title' => 'First book']);
+        $book2 = BookFactory::new()->create(['title' => 'Second book']);
 
         $book1->translate('title', 'Первая книга', 'ru');
         $book2->translate('title', 'Вторая книга', 'ru');
