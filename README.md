@@ -19,7 +19,7 @@ The package provides possibility to translate your Eloquent models into differen
 - Provides useful events.
 
 
-## ⚙️Demo
+## ⚙️ Demo
 
 ```php
 $book = Book::create(['title' => 'Book about giraffes']);
