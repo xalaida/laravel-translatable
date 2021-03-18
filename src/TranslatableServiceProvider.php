@@ -24,6 +24,7 @@ class TranslatableServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
+        $this->registerPackage();
         $this->registerModelTranslator();
     }
 
@@ -32,10 +33,18 @@ class TranslatableServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        $this->publishMigrations();
-        $this->bootMigrations();
-        $this->bootEvents();
         $this->bootCommands();
+        $this->bootEvents();
+        $this->bootMigrations();
+        $this->publishMigrations();
+    }
+
+    /**
+     * Register the package configurator.
+     */
+    public function registerPackage(): void
+    {
+        $this->app->singleton(Translatable::class);
     }
 
     /**
@@ -51,21 +60,13 @@ class TranslatableServiceProvider extends ServiceProvider
     }
 
     /**
-     * Publish any package migrations.
+     * Boot any package commands.
      */
-    private function publishMigrations(): void
+    private function bootCommands(): void
     {
-        $this->publishes([
-            __DIR__.'/../database/migrations' => database_path('migrations'),
-        ], 'translatable');
-    }
-
-    /**
-     * Boot any package migrations.
-     */
-    public function bootMigrations(): void
-    {
-        $this->loadMigrationsFrom(__DIR__.'/../database/migrations');
+        $this->commands([
+            Console\RemoveUnusedTranslationsCommand::class,
+        ]);
     }
 
     /**
@@ -83,12 +84,22 @@ class TranslatableServiceProvider extends ServiceProvider
     }
 
     /**
-     * Boot any package commands.
+     * Boot any package migrations.
      */
-    private function bootCommands(): void
+    public function bootMigrations(): void
     {
-        $this->commands([
-            Console\RemoveUnusedTranslationsCommand::class,
-        ]);
+        if ($this->app[Translatable::class]->shouldBootMigrations()) {
+            $this->loadMigrationsFrom(__DIR__.'/../database/migrations');
+        }
+    }
+
+    /**
+     * Publish any package migrations.
+     */
+    private function publishMigrations(): void
+    {
+        $this->publishes([
+            __DIR__.'/../database/migrations' => database_path('migrations'),
+        ], 'translatable');
     }
 }
