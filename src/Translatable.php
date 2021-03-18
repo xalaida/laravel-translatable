@@ -14,7 +14,7 @@ class Translatable
     /**
      * Configure the package to not register its migrations.
      */
-    public function ignoreMigrations(): Translatable
+    public function ignoreMigrations(): self
     {
         $this->bootMigrations = false;
 
