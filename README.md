@@ -7,7 +7,8 @@
 
 The package provides possibility to translate your Eloquent models into different languages using a single database table.
 
-## Features 
+
+## 🍬 Features 
 
 - Auto-resolving model translations for the current locale.
 - No need to rewrite existing migrations, models or views.
@@ -18,7 +19,7 @@ The package provides possibility to translate your Eloquent models into differen
 - Provides useful events.
 
 
-## Demo
+## ⚙️Demo
 
 ```php
 $book = Book::create(['title' => 'Book about giraffes']);
@@ -37,13 +38,13 @@ echo $book->title; // 'Book about giraffes'
 ```
 
 
-## Requirements
+## ✅ Requirements
 
 - Laravel `7.0` or newer  
 - PHP `7.2` or newer
 
 
-## Installation
+## 🔌 Installation
 
 1. Install a package via composer.
 ```bash
@@ -65,7 +66,7 @@ php artisan migrate
 ```
 
 
-## Making models translatable 
+## 🔨 Making models translatable 
 
 1. Add the `HasTranslations` trait to your models which you want to make translatable.
 ```php
@@ -116,7 +117,7 @@ class Post extends Model
 ```
 
 
-## Documentation
+## 📄 Documentation
 
 Default locale values are stored in the original table as usual.
 
@@ -215,11 +216,9 @@ Note that mutators should return the model instances.
 ```php
 class Post extends Model
 {
-    // ...
-
-    public function setDesciptionAttribute($descrition)
+    public function setDescriptionAttribute($description)
     {
-        $this->attributes['descrition'] = Str::substr($description, 0, 10);
+        $this->attributes['description'] = Str::substr($description, 0, 10);
 
         return $this;
     }
@@ -244,20 +243,22 @@ To manually remove all unused translations, run the `php artisan translatable:re
 ##### Querying models without translations
 
 Sometimes you may need to query translatable model without the `translations` relation. You can do this using `withoutTranslations` scope.
+
 ```php
 $books = Book::withoutTranslations()->get();
 ```
 
-##### Available scopes 
+##### Querying translations 
 
 Query models by translatable attributes. It also includes values in the default locale.  
+
 ```php
 $books = Book::whereTranslatable('title', 'Книга о жирафах')->get();
 ```
 
-Note that there is not locale detection within the scopes. 
-If you want to query rows only by a specific locale, you should pass it yourself. 
+If you want to query rows only by a specific locale, you should pass it by yourself. 
 Otherwise, the scope will return matched rows within all locales.
+
 ```php
 $books = Book::whereTranslatable('title', 'Книга о жирафах', 'ru')->get();
 ``` 
@@ -270,6 +271,19 @@ $books = Book::whereTranslatable('title', 'Book about %', null, 'LIKE')->get();
 Or using a specific locale.
 ```php
 $books = Book::whereTranslatable('title', 'Книги о %', 'ru', 'LIKE')->get();
+```
+
+##### Ordering translations
+
+Ordering models by a translatable attribute.
+```php
+$books = Book::orderByTranslatable('title')->get();
+```
+
+Ordering models by a translatable attribute in the specific locale.
+
+```php
+$books = Book::orderByTranslatable('title', 'desc', 'de')->get();
 ```
 
 For more complex queries - feel free to use [Laravel relation queries](https://laravel.com/docs/7.x/eloquent-relationships#querying-relationship-existence).
@@ -353,23 +367,21 @@ Relation::morphMap([
 [Learn more](https://laravel.com/docs/7.x/eloquent-relationships#custom-polymorphic-types)
 
 
-## Changelog
+## 📑 Changelog
 
-Please see [CHANGELOG](CHANGELOG.md) for more information what has changed recently.
-
-
-## Contributing
-
-Any contribution is **Welcome**.
-
-Please see [CONTRIBUTING](CONTRIBUTING.md) for more information.
+Please see [CHANGELOG](.github/CHANGELOG.md) for more information what has changed recently.
 
 
-## Security
+## ☕ Contributing
+
+Please see [CONTRIBUTING](.github/CONTRIBUTING.md) for more information.
+
+
+## 🔓 Security
 
 If you discover any security related issues, please [e-mail me](mailto:nevadskiy@gmail.com) instead of using the issue tracker.
 
 
-## License
+## 📜 License
 
 The MIT License (MIT). Please see [LICENSE](LICENSE.md) for more information.
