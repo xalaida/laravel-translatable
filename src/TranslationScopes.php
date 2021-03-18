@@ -4,6 +4,7 @@ namespace Nevadskiy\Translatable;
 
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
+use Nevadskiy\Translatable\Models\Translation;
 use Nevadskiy\Translatable\Scopes\TranslationsEagerLoadScope;
 
 /**
@@ -47,5 +48,28 @@ trait TranslationScopes
                 $query->where('value', $operator, $value);
             });
         });
+    }
+
+    /**
+     * Scope to order models by translatable attribute.
+     */
+    protected function scopeOrderByTranslatable(Builder $query, string $attribute, string $direction = 'asc', string $locale = null): Builder
+    {
+        $locale = $locale ?: static::getTranslator()->getLocale();
+
+         if (static::getTranslator()->isDefaultLocale($locale)) {
+             return $query->orderBy($attribute, $direction);
+         }
+
+        return $query->orderBy(
+            Translation::query()
+                ->whereColumn('translatable_id', "{$this->getTable()}.{$this->getKeyName()}")
+                ->where('translatable_type', $this->getMorphClass())
+                ->forLocale($locale)
+                ->forAttribute($attribute)
+                ->active()
+                ->select('value'),
+            $direction
+        );
     }
 }

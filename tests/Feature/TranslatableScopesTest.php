@@ -2,6 +2,8 @@
 
 namespace Nevadskiy\Translatable\Tests\Feature;
 
+use Illuminate\Database\Eloquent\Collection;
+use Nevadskiy\Translatable\Models\Translation;
 use Nevadskiy\Translatable\Tests\Support\Factories\BookFactory;
 use Nevadskiy\Translatable\Tests\Support\Models\Book;
 use Nevadskiy\Translatable\Tests\TestCase;
@@ -129,5 +131,66 @@ class TranslatableScopesTest extends TestCase
 
         self::assertCount(1, $books);
         self::assertTrue($books[0]->is($book));
+    }
+
+    /** @test */
+    public function it_can_order_by_translatable_attribute_in_current_locale(): void
+    {
+        $book1 = BookFactory::new()->create(['title' => 'First book',]);
+        $book2 = BookFactory::new()->create(['title' => 'Second book',]);
+
+        $book1->translate('title', 'Первая книга', 'ru');
+        $book2->translate('title', 'Вторая книга', 'ru');
+
+        $this->app->setLocale('ru');
+
+        $books = Book::query()->orderByTranslatable('title')->get();
+
+        self::assertTrue($books[0]->is($book2));
+        self::assertTrue($books[1]->is($book1));
+    }
+
+    /** @test */
+    public function it_can_order_by_translatable_attribute_in_descending_order(): void
+    {
+        $book1 = BookFactory::new()->create(['title' => 'First book',]);
+        $book2 = BookFactory::new()->create(['title' => 'Second book',]);
+
+        $book1->translate('title', 'Первая книга', 'ru');
+        $book2->translate('title', 'Вторая книга', 'ru');
+
+        $this->app->setLocale('ru');
+
+        $books = Book::query()->orderByTranslatable('title', 'desc')->get();
+
+        self::assertTrue($books[0]->is($book1));
+        self::assertTrue($books[1]->is($book2));
+    }
+
+    /** @test */
+    public function it_can_order_by_translatable_attribute_for_custom_locale(): void
+    {
+        $book1 = BookFactory::new()->create(['title' => 'First book',]);
+        $book2 = BookFactory::new()->create(['title' => 'Second book',]);
+
+        $book1->translate('title', 'Первая книга', 'ru');
+        $book2->translate('title', 'Вторая книга', 'ru');
+
+        $books = Book::query()->orderByTranslatable('title', 'asc', 'ru')->get();
+
+        self::assertTrue($books[0]->is($book2));
+        self::assertTrue($books[1]->is($book1));
+    }
+
+    /** @test */
+    public function it_can_order_by_translatable_attribute_in_default_locale(): void
+    {
+        $book1 = BookFactory::new()->create(['title' => 'First book']);
+        $book2 = BookFactory::new()->create(['title' => 'Second book']);
+
+        $books = Book::query()->orderByTranslatable('title')->get();
+
+        self::assertTrue($books[0]->is($book1));
+        self::assertTrue($books[1]->is($book2));
     }
 }
