@@ -46,21 +46,23 @@ echo $book->title; // 'Book about giraffes'
 
 ## 🔌 Installation
 
-1. Install a package via composer.
+Install a package via composer.
+
 ```bash
 composer require nevadskiy/laravel-translatable
 ```
 
-2. Optional. If you are not going to use translations for models with UUID primary keys, make the following:
+Optional. If you are not going to use translations for models with UUID primary keys, make the following:
 
 - Publish package migration
+
 ```bash
 php artisan vendor:publish --tag=translatable
 ```
 
 - Replace the line `$table->uuidMorphs('translatable');` with `$table->morphs('translatable');` in the published migration.
 
-3. Run the migration command.
+Run the migration command.
 ```bash
 php artisan migrate
 ```
@@ -68,7 +70,8 @@ php artisan migrate
 
 ## 🔨 Making models translatable 
 
-1. Add the `HasTranslations` trait to your models which you want to make translatable.
+Add the `HasTranslations` trait to your models which you want to make translatable.
+
 ```php
 <?php
 
@@ -83,7 +86,8 @@ class Post extends Model
 }
 ```
 
-2. Add the `$translatable` array to your models with attributes you want to be translatable.
+Add the `$translatable` array to your models with attributes you want to be translatable.
+
 ```php
 /**
  * The attributes that can be translatable.
