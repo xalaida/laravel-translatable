@@ -8,7 +8,7 @@
 The package provides possibility to translate your Eloquent models into different languages using a single database table.
 
 
-## Features 
+## 🍬 Features 
 
 - Auto-resolving model translations for the current locale.
 - No need to rewrite existing migrations, models or views.
@@ -19,7 +19,7 @@ The package provides possibility to translate your Eloquent models into differen
 - Provides useful events.
 
 
-## Demo
+## ⚙️Demo
 
 ```php
 $book = Book::create(['title' => 'Book about giraffes']);
@@ -38,13 +38,13 @@ echo $book->title; // 'Book about giraffes'
 ```
 
 
-## Requirements
+## ✅ Requirements
 
 - Laravel `7.0` or newer  
 - PHP `7.2` or newer
 
 
-## Installation
+## 🔌 Installation
 
 1. Install a package via composer.
 ```bash
@@ -66,7 +66,7 @@ php artisan migrate
 ```
 
 
-## Making models translatable 
+## 🔨 Making models translatable 
 
 1. Add the `HasTranslations` trait to your models which you want to make translatable.
 ```php
@@ -117,7 +117,7 @@ class Post extends Model
 ```
 
 
-## Documentation
+## 📄 Documentation
 
 Default locale values are stored in the original table as usual.
 
@@ -367,23 +367,21 @@ Relation::morphMap([
 [Learn more](https://laravel.com/docs/7.x/eloquent-relationships#custom-polymorphic-types)
 
 
-## Changelog
+## 📑 Changelog
 
-Please see [CHANGELOG](CHANGELOG.md) for more information what has changed recently.
-
-
-## Contributing
-
-Any contribution is **Welcome**.
-
-Please see [CONTRIBUTING](CONTRIBUTING.md) for more information.
+Please see [CHANGELOG](.github/CHANGELOG.md) for more information what has changed recently.
 
 
-## Security
+## ☕ Contributing
+
+Please see [CONTRIBUTING](.github/CONTRIBUTING.md) for more information.
+
+
+## 🔓 Security
 
 If you discover any security related issues, please [e-mail me](mailto:nevadskiy@gmail.com) instead of using the issue tracker.
 
 
-## License
+## 📜 License
 
 The MIT License (MIT). Please see [LICENSE](LICENSE.md) for more information.
