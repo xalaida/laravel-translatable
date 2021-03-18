@@ -46,13 +46,13 @@ echo $book->title; // 'Book about giraffes'
 
 ## 🔌 Installation
 
-Install a package via composer.
+1. Install a package via composer.
 
 ```bash
 composer require nevadskiy/laravel-translatable
 ```
 
-Optional. If you are not going to use translations for models with UUID primary keys, make the following:
+2. Optional. If you are not going to use translations for models with UUID primary keys, make the following:
 
 - Publish package migration
 
@@ -62,7 +62,8 @@ php artisan vendor:publish --tag=translatable
 
 - Replace the line `$table->uuidMorphs('translatable');` with `$table->morphs('translatable');` in the published migration.
 
-Run the migration command.
+3. Run the migration command.
+
 ```bash
 php artisan migrate
 ```
@@ -70,7 +71,7 @@ php artisan migrate
 
 ## 🔨 Making models translatable 
 
-Add the `HasTranslations` trait to your models which you want to make translatable.
+1. Add the `HasTranslations` trait to your models which you want to make translatable.
 
 ```php
 <?php
@@ -86,7 +87,7 @@ class Post extends Model
 }
 ```
 
-Add the `$translatable` array to your models with attributes you want to be translatable.
+2. Add the `$translatable` array to your models with attributes you want to be translatable.
 
 ```php
 /**
@@ -101,6 +102,7 @@ protected $translatable = [
 ```
 
 #### Final model may look like this
+
 ```php
 <?php
 
@@ -178,6 +180,7 @@ Book::create(...); // This will persist model as usual with the default locale.
 ##### Displaying collection of models
 
 The package automatically eager loads translations of the current locale for you, so you can easily retrieve collection of models as usual.
+
 ```php
 // In a controller
 app()->setLocale('ru');
@@ -296,12 +299,14 @@ For more complex queries - feel free to use [Laravel relation queries](https://l
 
 Sometimes it can be useful to archive some translations that will not be resolved automatically in the views, but can be used for searching functionality.
 For example, you may store archived translation manually using the following code:
+
 ```php
 $post = Post::first();
 $post->archiveTranslation('title', 'Old title', 'en');
 ```
 
 Now `Old title` is associated with a post that allows to find the post using `whereTranslatable` scope:
+
 ```php
 Post::whereTranslatable('title', 'Old title')->get();
 ```
