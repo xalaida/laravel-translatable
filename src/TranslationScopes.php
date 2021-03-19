@@ -68,6 +68,7 @@ trait TranslationScopes
                 ->forLocale($locale)
                 ->forAttribute($attribute)
                 ->active()
+                ->limit(1)
                 ->select('value'),
             $direction
         );
