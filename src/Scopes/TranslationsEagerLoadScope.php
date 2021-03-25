@@ -21,12 +21,28 @@ class TranslationsEagerLoadScope implements Scope
             return;
         }
 
-        if (! $translatable->autoLoadTranslations()) {
+        if (! $this->shouldLoadTranslations($translatable)) {
             return;
         }
 
         $query->with(['translations' => static function (MorphMany $query) use ($translatable) {
             $query->forLocale($translatable::getTranslator()->getLocale());
         }]);
+    }
+
+    /**
+     * Determine whether the translations should be loaded.
+     *
+     * @param Model|HasTranslations $translatable
+     */
+    private function shouldLoadTranslations(Model $translatable): bool
+    {
+        foreach ($translatable->getTranslatable() as $attribute) {
+            if ($translatable->autoLoadTranslations($attribute)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 }
