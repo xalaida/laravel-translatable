@@ -71,7 +71,7 @@ trait HasTranslations
             return $this->getDefaultTranslation($attribute);
         }
 
-        if (! $this->autoLoadTranslations()) {
+        if (! $this->autoLoadTranslations($attribute)) {
             return $this->getDefaultTranslation($attribute);
         }
 
@@ -91,7 +91,7 @@ trait HasTranslations
             return $this->setDefaultAttribute($attribute, $value);
         }
 
-        if (! $this->autoSaveTranslations()) {
+        if (! $this->autoSaveTranslations($attribute)) {
             return $this->setDefaultAttribute($attribute, $value);
         }
 
@@ -122,7 +122,7 @@ trait HasTranslations
     /**
      * Determine if the model should automatically load translations on attribute get.
      */
-    public function autoLoadTranslations(): bool
+    public function autoLoadTranslations(string $attribute): bool
     {
         return resolve(Translatable::class)->shouldAutoLoadTranslations();
     }
@@ -130,7 +130,7 @@ trait HasTranslations
     /**
      * Determine if the model should automatically save translations on attribute set.
      */
-    public function autoSaveTranslations(): bool
+    public function autoSaveTranslations(string $attribute): bool
     {
         return resolve(Translatable::class)->shouldAutoSaveTranslations();
     }
