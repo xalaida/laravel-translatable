@@ -134,27 +134,27 @@ The package takes the default locale from the `config('app.fallback_locale')` va
 ##### Automatically store and retrieve translations of the model using translatable attributes
 
 ```php
-$post = Post::where('title', 'Post about birds')->first();
+$book = Book::where('title', 'Book about birds')->first();
 
 app()->setLocale('ru');
 
-$post->update(['title' => 'Пост о птицах']);
+$book->update(['title' => 'Книга о птицах']);
 
-echo $post->title; // 'Пост о птицах'
+echo $book->title; // 'Книга о птицах'
 
 app()->setLocale('en');
 
-echo $post->title; // 'Post about birds'
+echo $book->title; // 'Book about birds'
 ```
 
 ##### Manually store and retrieve translations of the model
 
 ```php
-$post = Post::where('title', 'Post about dolphins')->first();
+$book = Book::where('title', 'Book about dolphins')->first();
 
-$post->translate('title', 'Пост о дельфинах', 'ru');
+$book->translate('title', 'Книга о дельфинах', 'ru');
 
-echo $post->getTranslation('title', 'ru'); // 'Пост о дельфинах'
+echo $book->getTranslation('title', 'ru'); // 'Книга о дельфинах'
 ```
 
 ##### Methods for reading translation
@@ -174,7 +174,7 @@ Any translations can be attached only to **existing** models.
 
 ```php
 app()->setLocale('de');
-Book::create(...); // This will persist model as usual with the default locale.
+Book::create(...); // This will persist model as usual with the default application locale.
 ```
 
 ##### Displaying collection of models
@@ -184,18 +184,18 @@ The package automatically eager loads translations of the current locale for you
 ```php
 // In a controller
 app()->setLocale('ru');
-$posts = Post::paginate(20);
+$books = Book::paginate(20);
 
 // In a view
-@foreach ($posts as $post)
-    {{ $post->title }} // Shows title in the current locale OR in default locale if translation is missing.
+@foreach ($books as $book)
+    {{ $book->title }} // Shows a title in the current locale OR in the default locale if a translation is missing.
 @endforeach
 ```  
 
 ##### Translations work with model accessors
 
 ```php
-class Post extends Model
+class Book extends Model
 {
     // ...
 
@@ -205,46 +205,42 @@ class Post extends Model
     }
 }
 
-$post = Post::create(['title' => 'post about birds']);
-$post->translate('title', 'пост о птицах', 'ru');
+$book = Book::create(['title' => 'book about birds']);
+$book->translate('title', 'книга о птицах', 'ru');
 
 // Using attribute with the current locale
 app()->setLocale('ru');
-echo $post->title; // 'Пост о птицах'
+echo $book->title; // 'Книга о птицах'
 
 // Using getTranslate method
-echo $post->getTranslation('title', 'ru'); // 'Пост о птицах'
+echo $book->getTranslation('title', 'ru'); // 'Книга о птицах'
 ```
 
 ##### Translations work with model mutators as well
 
-Note that mutators should return the model instances.
-
 ```php
-class Post extends Model
+class Book extends Model
 {
     public function setDescriptionAttribute($description)
     {
         $this->attributes['description'] = Str::substr($description, 0, 10);
-
-        return $this;
     }
 }
 
-$post = Post::create(['description' => 'Very long description']);
-$post->translate('description', 'Очень длинное описание', 'ru');
+$book = Book::create(['description' => 'Very long description']);
+$book->translate('description', 'Очень длинное описание', 'ru');
 
 // Using attribute with the current locale
 app()->setLocale('ru');
-echo $post->description; // 'Очень длин'
+echo $book->description; // 'Очень длин'
 
 // Using getTranslation method
-echo $post->getTranslation('description', 'ru'); // 'Очень длин'
+echo $book->getTranslation('description', 'ru'); // 'Очень длин'
 ```
 
 ##### Removing unused translations
 
-The package automatically remove translations of deleted models respecting softDeletes, but if translatable models have been removed using query builder, their translations would exist in the database.
+The package automatically remove translations of deleted models respecting softDeletes, but if translatable models have been removed using query builder, their translations will exist in the database.
 To manually remove all unused translations, run the `php artisan translatable:remove-unused` command.
 
 ##### Querying models without translations
@@ -257,32 +253,32 @@ $books = Book::withoutTranslations()->get();
 
 ##### Querying translations 
 
-Query models by translatable attributes. It also includes values in the default locale.  
+You can execute queries on translatable models by translatable attributes.  
 
 ```php
 $books = Book::whereTranslatable('title', 'Книга о жирафах')->get();
 ```
 
-If you want to query rows only by a specific locale, you should pass it by yourself. 
-Otherwise, the scope will return matched rows within all locales.
+> It will also work with values in default locale.
 
-```php
+If you want to query rows only by a specific locale, you should pass it by yourself. 
+
 $books = Book::whereTranslatable('title', 'Книга о жирафах', 'ru')->get();
-``` 
+
+Otherwise, the query builder will return matched rows within all available locales.
 
 Also, you can use different operators for querying translations.
-```php
-$books = Book::whereTranslatable('title', 'Book about %', null, 'LIKE')->get();
-```
 
-Or using a specific locale.
 ```php
-$books = Book::whereTranslatable('title', 'Книги о %', 'ru', 'LIKE')->get();
+$books = Book::whereTranslatable('title', 'Book about%', null, 'LIKE')->get();
+// or
+$books = Book::whereTranslatable('title', 'Книги о%', 'ru', 'LIKE')->get();
 ```
 
 ##### Ordering translations
 
-Ordering models by a translatable attribute.
+Ordering models by a translatable attribute in the current locale.
+
 ```php
 $books = Book::orderByTranslatable('title')->get();
 ```
@@ -295,9 +291,50 @@ $books = Book::orderByTranslatable('title', 'desc', 'de')->get();
 
 For more complex queries - feel free to use [Laravel relation queries](https://laravel.com/docs/7.x/eloquent-relationships#querying-relationship-existence).
 
+##### Disable auto loading
+
+If you do not want to automatically load or save translations when you interact with a translatable property, you can disable the feature.
+
+To disable it for a specific model, override the `autoLoadTranslations` or `autoSaveTranslations` methods in your model like so.
+
+```php
+class Post extends Model
+{
+    use HasTranslations;
+
+    protected $translatable = ['title'];
+
+    public function autoLoadTranslations()
+    {
+        return false;
+    }
+
+    public function autoSaveTranslations()
+    {
+        return false;
+    }
+}
+```
+
+Or globally for every model.
+
+```php
+use Nevadskiy\Translatable\Translatable;
+
+class AppServiceProvider extends ServiceProvider
+{
+    public function boot()
+    {
+        $this->app[Translatable::class]->disableAutoLoading();
+        $this->app[Translatable::class]->disableAutoSaving();
+    }
+}
+```
+
+
 ##### Archiving translations
 
-Sometimes it can be useful to archive some translations that will not be resolved automatically in the views, but can be used for searching functionality.
+Sometimes it can be useful to archive some translations that will not be resolved automatically, but can be used for searching functionality.
 For example, you may store archived translation manually using the following code:
 
 ```php
@@ -311,15 +348,18 @@ Now `Old title` is associated with a post that allows to find the post using `wh
 Post::whereTranslatable('title', 'Old title')->get();
 ```
 
-You can also pass `null` as third argument to `archiveTranslation` method when a locale is unknown.
+You can also pass `null` as a third argument to the `archiveTranslation` method when a locale is unknown. 
+If you do not pass `null`, the current locale will be used instead.
 
 ##### Route model binding
 
 Translatable model can be easily resolved using **Route Model Binding** feature.
 
-All you need to do to let Laravel resolve models by a translatable attribute is to set the needed locale which you want to be used for querying models **before** a request will reach `Illuminate\Routing\Middleware\SubstituteBindings::class` middleware.
+All you need to do to let Laravel resolve models by a translatable attribute is to set the needed locale that you want to be used for querying models **before** a request will reach `Illuminate\Routing\Middleware\SubstituteBindings::class` middleware.
 
 The simplest solution is to create a new middleware, for example `SetLocaleMiddleware`, attach it to the route where you want to resolve translatable models, and register the middleware in the `$middlewarePriority` array of the `app/Http/Kernel.php` file above the `\Illuminate\Routing\Middleware\SubstituteBindings::class` class.
+
+
 It may look like this:
 
 ```php
@@ -348,22 +388,24 @@ protected $middlewarePriority = [
 ];
 ```
 
+More about sorting middleware [here](https://laravel.com/docs/8.x/middleware#sorting-middleware).
+
 ```php
 // routes/web.php
-Route::get('posts/{post:slug}', 'PostsController@show')
+Route::get('posts/{post:slug}', 'PostsController@show');
 ```
 
 ```php
 // app/Http/Controllers/PostController.php
 public function show(Post $post)
 {
-    // Post model is resolved by translated slug using the current locale   
+    // Post model is resolved by translated slug using the current locale.
 }
 ```
 
 ##### Using morph map
 
-It is recommended to use `morph map` for all translatable models to minimize coupling between database and application structure.
+It is recommended to use `morph map` for all translatable models to minimize coupling between a database and application structure.
 
 ```php
 use Illuminate\Database\Eloquent\Relations\Relation;
@@ -373,7 +415,7 @@ Relation::morphMap([
     'categories' => Category::class,
 ]);
 ```
-[Learn more](https://laravel.com/docs/7.x/eloquent-relationships#custom-polymorphic-types)
+More about morph maps [here](https://laravel.com/docs/7.x/eloquent-relationships#custom-polymorphic-types).
 
 
 ## 📑 Changelog
