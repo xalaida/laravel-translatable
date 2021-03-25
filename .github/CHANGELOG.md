@@ -13,6 +13,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 - A bit refactoring.
+- Documentation.
 
 ### Fixed
 - Soft delete detection for inherited models.
