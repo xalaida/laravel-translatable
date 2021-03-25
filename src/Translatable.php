@@ -45,8 +45,6 @@ class Translatable
 
     /**
      * Determine whether the translations should be automatically loaded.
-     *
-     * @return bool
      */
     public function shouldAutoLoadTranslations(): bool
     {
@@ -63,8 +61,6 @@ class Translatable
 
     /**
      * Determine whether the translations should be automatically saved.
-     *
-     * @return bool
      */
     public function shouldAutoSaveTranslations(): bool
     {
