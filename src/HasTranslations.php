@@ -375,7 +375,7 @@ trait HasTranslations
      */
     protected function isUsingSoftDeletes(): bool
     {
-        return in_array(SoftDeletes::class, class_uses($this), true);
+        return in_array(SoftDeletes::class, class_uses_recursive($this), true);
     }
 
     /**
