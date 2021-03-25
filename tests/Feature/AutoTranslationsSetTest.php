@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\DB;
 use Nevadskiy\Translatable\Models\Translation;
 use Nevadskiy\Translatable\Tests\Support\Factories\BookFactory;
 use Nevadskiy\Translatable\Tests\TestCase;
+use Nevadskiy\Translatable\Translatable;
 
 class AutoTranslationsSetTest extends TestCase
 {
@@ -224,5 +225,22 @@ class AutoTranslationsSetTest extends TestCase
 
         self::assertEmpty(DB::connection()->getQueryLog());
         self::assertCount(1, Translation::all());
+    }
+
+    /** @test */
+    public function it_does_not_auto_save_translations_when_feature_is_disabled(): void
+    {
+        $book = BookFactory::new()->create(['title' => 'My best book']);
+        $this->app->setLocale('ru');
+
+        $this->app[Translatable::class]->disableAutoSaving();
+
+        $book->title = 'Моя лучшая книга';
+        $book->save();
+
+        $this->app->setLocale('en');
+
+        self::assertEquals('Моя лучшая книга', $book->title);
+        self::assertEmpty(Translation::all());
     }
 }
