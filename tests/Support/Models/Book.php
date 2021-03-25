@@ -64,10 +64,8 @@ class Book extends Model
     /**
      * Set title attribute.
      */
-    public function setTitleAttribute(string $title): self
+    public function setTitleAttribute(string $title): void
     {
         $this->attributes['title'] = Str::limit($title, 30);
-
-        return $this;
     }
 }
