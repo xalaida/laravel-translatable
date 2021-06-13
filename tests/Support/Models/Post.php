@@ -9,7 +9,7 @@ use Nevadskiy\Translatable\HasTranslations;
 use Nevadskiy\Uuid\Uuid;
 
 /**
- * @property int id
+ * @property string id
  * @property string body
  * @property string slug
  * @property Carbon|null deleted_at
