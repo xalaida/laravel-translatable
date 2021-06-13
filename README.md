@@ -46,7 +46,7 @@ echo $book->title; // 'Book about giraffes'
 
 ## 🔌 Installation
 
-1. Install a package via composer.
+1. Install the package via composer.
 
 ```bash
 composer require nevadskiy/laravel-translatable
