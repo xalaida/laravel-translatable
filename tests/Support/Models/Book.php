@@ -10,7 +10,7 @@ use Nevadskiy\Translatable\HasTranslations;
 use Nevadskiy\Uuid\Uuid;
 
 /**
- * @property int id
+ * @property string id
  * @property string title
  * @property string description
  * @property array|null content
