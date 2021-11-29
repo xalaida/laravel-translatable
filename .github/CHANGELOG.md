@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.7.4] - 2021-11-29
+### Changed
+- Update uuid package.
+
 ## [0.7.3] - 2021-03-25
 ### Added
 - Possibility to disable auto-loading translations.
