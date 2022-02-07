@@ -31,6 +31,7 @@ class Product extends Model
         'description',
     ];
 
+    // TODO: extract into trait for this specific strategy and provide hook to configure the strategy
     public function translation(): Translator
     {
         return new Translator(
