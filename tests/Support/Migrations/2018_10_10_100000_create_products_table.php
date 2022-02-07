@@ -15,6 +15,7 @@ class CreateProductsTable extends Migration
             $table->uuid('id')->primary();
             $table->string('title');
             $table->text('description');
+            $table->integer('stock')->unsigned()->default(0);
             $table->timestamps();
         });
     }
