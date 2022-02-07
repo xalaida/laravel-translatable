@@ -11,7 +11,7 @@ class CreateProductTranslationsTable extends Migration
      */
     public function up(): void
     {
-        // TODO: introduce TranslationsSchemaBuilder that can define that structure by itself
+        // TODO: introduce TranslationsSchemaBuilder that can define that structure by itself (add possibility to tweak indexes)
         // TODO: add console command to generate tables with name (throw exception when no attributes found)
 
         Schema::create('product_translations', static function (Blueprint $table) {

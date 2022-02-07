@@ -23,6 +23,8 @@ class Translator
 
     public function get(string $attribute, string $locale)
     {
+        // TODO: add possibility to log out warnings with missing translations.
+
         return $this->strategy->get($attribute, $locale);
     }
 

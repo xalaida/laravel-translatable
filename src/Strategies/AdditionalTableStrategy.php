@@ -37,6 +37,9 @@ class AdditionalTableStrategy implements TranslatorStrategy
         $this->connection = $connection;
     }
 
+    // TODO: add possibility to use default values...
+    // TODO: add possibility configure where to put default/fallback locale values (own/original table, additional/translations table)
+
     public function get(string $attribute, string $locale)
     {
         return $this->table()->where([

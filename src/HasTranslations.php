@@ -137,6 +137,7 @@ trait HasTranslations
 
     /**
      * Save translation for the given attribute and locale.
+     * TODO: remove this method as not really clear if it sets or gets...
      *
      * @param mixed $value
      * @return HasTranslations|mixed
@@ -151,6 +152,7 @@ trait HasTranslations
 
     /**
      * Save many translations for the given attribute and locale.
+     * TODO: remove as well.
      *
      * @return HasTranslations
      */
