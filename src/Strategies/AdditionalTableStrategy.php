@@ -39,9 +39,11 @@ class AdditionalTableStrategy implements TranslatorStrategy
 
     public function get(string $attribute, string $locale)
     {
-        // $this->connection->table();
-
-        return 'Свитер с оленями';
+        return $this->table()->where([
+            // TODO: make the foreign key configurable.
+            $this->model->getForeignKey() => $this->model->getKey(),
+            'locale' => $locale
+        ])->value($attribute);
     }
 
     // TODO: possible 'nullable' insert error case here for multiple fields.

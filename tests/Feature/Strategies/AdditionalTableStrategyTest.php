@@ -8,16 +8,6 @@ use Nevadskiy\Translatable\Tests\TestCase;
 class AdditionalTableStrategyTest extends TestCase
 {
     /** @test */
-    public function it_can_handle_translations_for_translatable_field(): void
-    {
-        $product = ProductFactory::new()->create(['title' => 'Reindeer Sweater']);
-
-        $product->translation()->set('title', 'Свитер с оленями', 'ru');
-
-        self::assertEquals('Свитер с оленями', $product->translation()->get('title', 'ru'));
-    }
-
-    /** @test */
     public function it_stores_translation_in_additional_table(): void
     {
         $product = ProductFactory::new()->create(['title' => 'Reindeer Sweater']);
@@ -29,5 +19,15 @@ class AdditionalTableStrategyTest extends TestCase
             'title' => 'Свитер с оленями',
             'locale' => 'ru',
         ]);
+    }
+
+    /** @test */
+    public function it_can_retrieves_translation_from_additional_table(): void
+    {
+        $product = ProductFactory::new()->create(['title' => 'Reindeer Sweater']);
+
+        $product->translation()->set('title', 'Свитер с оленями', 'ru');
+
+        self::assertEquals('Свитер с оленями', $product->translation()->get('title', 'ru'));
     }
 }
