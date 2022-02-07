@@ -33,6 +33,6 @@ class Product extends Model
 
     public function translation(): Translator
     {
-        return new Translator(new AdditionalTableStrategy());
+        return new Translator(new AdditionalTableStrategy($this, $this->getConnection()));
     }
 }

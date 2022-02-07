@@ -16,4 +16,18 @@ class AdditionalTableStrategyTest extends TestCase
 
         self::assertEquals('Свитер с оленями', $product->translation()->get('title', 'ru'));
     }
+
+    /** @test */
+    public function it_stores_translation_in_additional_table(): void
+    {
+        $product = ProductFactory::new()->create(['title' => 'Reindeer Sweater']);
+
+        $product->translation()->set('title', 'Свитер с оленями', 'ru');
+
+        $this->assertDatabaseCount('product_translations', 1);
+        $this->assertDatabaseHas('product_translations', [
+            'title' => 'Свитер с оленями',
+            'locale' => 'ru',
+        ]);
+    }
 }
