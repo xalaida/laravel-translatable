@@ -15,7 +15,7 @@ class ProductFactory
     }
 
     /**
-     * Create a new book instance and save it into the database.
+     * Create a new model instance and save it into the database.
      */
     public function create(array $attributes = []): Product
     {
@@ -32,8 +32,8 @@ class ProductFactory
     private function getDefaults(): array
     {
         return [
-            'title' => 'Book testing title',
-            'description' => 'Book testing description',
+            'title' => 'Product testing title',
+            'description' => 'Product testing description',
         ];
     }
 }
