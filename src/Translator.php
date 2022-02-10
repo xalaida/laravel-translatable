@@ -62,8 +62,15 @@ class Translator
         return $this->strategy->get($attribute, $locale);
     }
 
-    public function set(string $attribute, $value, string $locale)
+    public function set(string $attribute, $value, string $locale = null)
     {
         return $this->strategy->set($attribute, $value, $locale);
+    }
+
+    public function setMany(array $translations, string $locale = null): void
+    {
+        foreach ($translations as $attribute => $value) {
+            $this->set($attribute, $value, $locale);
+        }
     }
 }
