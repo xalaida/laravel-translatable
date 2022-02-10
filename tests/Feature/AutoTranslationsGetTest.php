@@ -15,7 +15,7 @@ class AutoTranslationsGetTest extends TestCase
     {
         $book = BookFactory::new()->create();
 
-        $book->translate('title', 'Моя лучшая книга', 'ru');
+        $book->translation()->set('title', 'Моя лучшая книга', 'ru');
 
         $this->app->setLocale('ru');
 
@@ -37,7 +37,7 @@ class AutoTranslationsGetTest extends TestCase
     {
         $book = BookFactory::new()->create(['title' => 'My excellent book']);
 
-        $book->translate('title', 'Моя превосходная книга', 'ru');
+        $book->translation()->set('title', 'Моя превосходная книга', 'ru');
 
         $this->app->setLocale('ru');
 
@@ -49,7 +49,7 @@ class AutoTranslationsGetTest extends TestCase
     {
         $book = BookFactory::new()->create(['title' => 'My best book']);
 
-        $book->translate('title', 'Моя лучшая книга', 'ru');
+        $book->translation()->set('title', 'Моя лучшая книга', 'ru');
 
         self::assertEquals('My best book', $book->title);
     }
@@ -67,7 +67,7 @@ class AutoTranslationsGetTest extends TestCase
     {
         $book = BookFactory::new()->create(['title' => 'My best book']);
 
-        $book->translate('title', 'Моя лучшая книга', 'ru');
+        $book->translation()->set('title', 'Моя лучшая книга', 'ru');
 
         $this->app->setLocale('ru');
 
@@ -85,7 +85,7 @@ class AutoTranslationsGetTest extends TestCase
     {
         $book = BookFactory::new()->create(['title' => 'My best book']);
 
-        $book->translate('title', 'Моя лучшая книга', 'ru');
+        $book->translation()->set('title', 'Моя лучшая книга', 'ru');
 
         $this->app[Translatable::class]->disableAutoLoading();
 
@@ -99,7 +99,7 @@ class AutoTranslationsGetTest extends TestCase
     {
         $book = BookFactory::new()->create(['title' => 'My best book']);
 
-        $book->translate('title', 'Моя лучшая книга', 'ru');
+        $book->translation()->set('title', 'Моя лучшая книга', 'ru');
 
         $this->app[Translatable::class]->disableAutoLoading();
 

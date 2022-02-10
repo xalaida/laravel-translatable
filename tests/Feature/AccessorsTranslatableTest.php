@@ -12,7 +12,7 @@ class AccessorsTranslatableTest extends TestCase
     {
         $book = BookFactory::new()->create();
 
-        $book->translate('title', 'моя книга', 'ru');
+        $book->translation()->set('title', 'моя книга', 'ru');
 
         self::assertEquals('Моя книга', $book->getTranslation('title', 'ru'));
     }
@@ -30,7 +30,7 @@ class AccessorsTranslatableTest extends TestCase
     {
         $book = BookFactory::new()->create(['title' => 'my book']);
 
-        $book->translate('title', 'моя книга', 'ru');
+        $book->translation()->set('title', 'моя книга', 'ru');
 
         $this->app->setLocale('ru');
 
@@ -42,7 +42,7 @@ class AccessorsTranslatableTest extends TestCase
     {
         $book = BookFactory::new()->create(['title' => 'my book']);
 
-        $book->translate('title', 'моя книга', 'ru');
+        $book->translation()->set('title', 'моя книга', 'ru');
 
         $book->getTranslation('title', 'ru');
 
@@ -66,7 +66,7 @@ class AccessorsTranslatableTest extends TestCase
     {
         $book = BookFactory::new()->create();
 
-        $book->translate('title', 'моя книга', 'ru');
+        $book->translation()->set('title', 'моя книга', 'ru');
 
         $this->app->setLocale('ru');
 
@@ -96,7 +96,7 @@ class AccessorsTranslatableTest extends TestCase
     {
         $book = BookFactory::new()->create();
 
-        $book->translate('description', 'Книга о собаках', 'ru');
+        $book->translation()->set('description', 'Книга о собаках', 'ru');
 
         $this->app->setLocale('ru');
 
