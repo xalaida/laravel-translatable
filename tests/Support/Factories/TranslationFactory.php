@@ -14,9 +14,7 @@ class TranslationFactory
     private $attributes = [];
 
     /**
-     * Static constructor.
-     *
-     * @return static
+     * Make a new factory instance.
      */
     public static function new(): self
     {

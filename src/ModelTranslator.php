@@ -27,7 +27,7 @@ class ModelTranslator
     protected $locale;
 
     /**
-     * ModelTranslator constructor.
+     * Make a new translator instance.
      */
     public function __construct(string $defaultLocale)
     {

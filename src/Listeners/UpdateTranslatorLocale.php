@@ -13,7 +13,7 @@ class UpdateTranslatorLocale
     private $translator;
 
     /**
-     * UpdateLocaleListener constructor.
+     * Make a new listener instance.
      */
     public function __construct(ModelTranslator $translator)
     {

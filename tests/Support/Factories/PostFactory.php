@@ -7,9 +7,7 @@ use Nevadskiy\Translatable\Tests\Support\Models\Post;
 class PostFactory
 {
     /**
-     * Static constructor.
-     *
-     * @return static
+     * Make a new factory instance.
      */
     public static function new(): self
     {
