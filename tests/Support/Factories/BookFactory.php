@@ -2,6 +2,7 @@
 
 namespace Nevadskiy\Translatable\Tests\Support\Factories;
 
+use Illuminate\Support\Collection;
 use Nevadskiy\Translatable\Tests\Support\Models\Book;
 
 class BookFactory
@@ -26,6 +27,20 @@ class BookFactory
         $book->save();
 
         return $book;
+    }
+
+    /**
+     * Create many models at once.
+     */
+    public function createMany(int $count = 1): Collection
+    {
+        $records = collect();
+
+        for ($i = 0; $i < $count; $i++) {
+            $records[] = $this->create();
+        }
+
+        return $records;
     }
 
     /**

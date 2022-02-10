@@ -65,7 +65,7 @@ class AutoTranslationsSetTest extends TestCase
     {
         $book = BookFactory::new()->create(['title' => 'My book']);
 
-        $book->translate('title', 'Ошибочное название книги', 'ru');
+        $book->translation()->set('title', 'Ошибочное название книги', 'ru');
 
         $this->app->setLocale('ru');
 
@@ -120,8 +120,8 @@ class AutoTranslationsSetTest extends TestCase
         $originalLocale = $this->app->getLocale();
 
         $book = BookFactory::new()->create(['title' => 'My original title']);
-        $book->translate('title', 'Min ursprungliga titel', 'sv');
-        $book->translate('title', 'Mi titulo original', 'es');
+        $book->translation()->set('title', 'Min ursprungliga titel', 'sv');
+        $book->translation()->set('title', 'Mi titulo original', 'es');
 
         $this->app->setLocale('sv');
         self::assertEquals('Min ursprungliga titel', $book->title);

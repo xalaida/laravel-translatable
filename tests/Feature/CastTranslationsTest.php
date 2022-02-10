@@ -18,7 +18,7 @@ class CastTranslationsTest extends TestCase
             ],
         ]);
 
-        $book->translate('content', ['title' => 'Глава 1', 'body' => 'Глава о птицах'], 'ru');
+        $book->translation()->set('content', ['title' => 'Глава 1', 'body' => 'Глава о птицах'], 'ru');
 
         $this->app->setLocale('ru');
 

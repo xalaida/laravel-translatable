@@ -14,9 +14,9 @@ class EagerLoadingTranslationsTest extends TestCase
     {
         $book = BookFactory::new()->create();
 
-        $book->translate('title', 'Книга про черепах', 'ru');
-        $book->translate('title', 'En bok om sköldpaddor', 'sv');
-        $book->translate('title', 'Ein Buch über Schildkröten', 'de');
+        $book->translation()->set('title', 'Книга про черепах', 'ru');
+        $book->translation()->set('title', 'En bok om sköldpaddor', 'sv');
+        $book->translation()->set('title', 'Ein Buch über Schildkröten', 'de');
 
         $this->app->setLocale('ru');
 
@@ -30,9 +30,11 @@ class EagerLoadingTranslationsTest extends TestCase
     /** @test */
     public function it_performs_only_two_queries_for_translations_eager_loading(): void
     {
-        BookFactory::new()->create()->translate('title', 'Первая книга', 'ru');
-        BookFactory::new()->create()->translate('title', 'Вторая книга', 'ru');
-        BookFactory::new()->create()->translate('title', 'Третья книга', 'ru');
+        [$book1, $book2, $book3] = BookFactory::new()->createMany(3);
+
+        $book1->translation()->set('title', 'Первая книга', 'ru');
+        $book2->translation()->set('title', 'Вторая книга', 'ru');
+        $book3->translation()->set('title', 'Третья книга', 'ru');
 
         $this->app->setLocale('ru');
 
@@ -50,7 +52,9 @@ class EagerLoadingTranslationsTest extends TestCase
     /** @test */
     public function it_allows_to_remove_translations_scope_from_query_builder(): void
     {
-        BookFactory::new()->create()->translate('title', 'Книга о черепахах', 'ru');
+        $book = BookFactory::new()->create();
+
+        $book->translation()->set('title', 'Книга про черепах', 'ru');
 
         [$book] = Book::withoutTranslations()->get();
 
