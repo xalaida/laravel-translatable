@@ -102,7 +102,7 @@ class TranslationsTest extends TestCase
     {
         $book = BookFactory::new()->create();
 
-        $book->translateMany([
+        $book->translation()->setMany([
             'title' => 'Тестовое название книги',
             'description' => 'Тестовое описание книги',
         ], 'ru');
@@ -116,7 +116,7 @@ class TranslationsTest extends TestCase
     {
         $book = BookFactory::new()->create();
 
-        $book->translateMany([
+        $book->translation()->setMany([
             'title' => 'Моя новая книга',
             'description' => 'Как хранить переводы для Laravel',
         ], 'ru');
@@ -163,16 +163,6 @@ class TranslationsTest extends TestCase
 
         self::assertCount(1, Translation::all());
         self::assertEquals('Правильное название книги', $book->getTranslation('title', 'ru'));
-    }
-
-    /** @test */
-    public function it_does_not_translate_using_nulls(): void
-    {
-        $book = BookFactory::new()->create();
-
-        $book->translation()->set('description', null, 'ru');
-
-        self::assertCount(0, Translation::all());
     }
 
     /** @test */
