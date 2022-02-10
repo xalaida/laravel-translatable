@@ -69,7 +69,7 @@ trait HasTranslations
     }
 
     /**
-     * Morph many translations relation.
+     * Get the translations' relation.
      */
     public function translations(): MorphMany
     {
