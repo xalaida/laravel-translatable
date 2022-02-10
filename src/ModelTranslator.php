@@ -5,6 +5,11 @@ namespace Nevadskiy\Translatable;
 use Illuminate\Database\Eloquent\Model;
 use Nevadskiy\Translatable\Models\Translation;
 
+/**
+ * TODO: replace with Translator class.
+ *
+ * @deprecated
+ */
 class ModelTranslator
 {
     /**
