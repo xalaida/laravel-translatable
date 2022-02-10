@@ -8,8 +8,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - Strategy to store translations in the separate table for specific model.
 
+### Changed
+- Rename `NotTranslatableAttributeException` into `AttributeNotTranslatableException`.
+
 ### Removed
-- `translate` method on the model.
+- `translate` and `translateMany` methods on the model.
+- Archiving translations feature.
 
 ## [0.7.4] - 2021-11-29
 ### Changed
