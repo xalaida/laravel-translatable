@@ -17,10 +17,10 @@ trait ArchivingTranslations
         $this->assertTranslatableAttribute($attribute);
 
         if (count(func_get_args()) < 3) {
-            $locale = static::getTranslator()->getLocale();
+            $locale = static::translation()->getLocale();
         }
 
-        return static::getTranslator()->add(
+        return static::translation()->add(
             $this, $attribute, $this->withAttributeMutators($attribute, $value), $locale, true
         );
     }

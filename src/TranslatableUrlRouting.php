@@ -25,7 +25,7 @@ trait TranslatableUrlRouting
             return parent::resolveRouteBinding($value, $field);
         }
 
-        $locale = static::getTranslator()->getLocale();
+        $locale = static::translation()->getLocale();
 
         $model = $this->whereTranslatable($field, $value, $locale)->first();
 
@@ -49,6 +49,6 @@ trait TranslatableUrlRouting
     protected function shouldResolveBindingUsingTranslations(string $field): bool
     {
         return $this->isTranslatable($field)
-            && ! static::getTranslator()->isDefaultLocale();
+            && ! static::translation()->isDefaultLocale();
     }
 }

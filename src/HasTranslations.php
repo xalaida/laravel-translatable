@@ -52,6 +52,14 @@ trait HasTranslations
     }
 
     /**
+     * Get the translator instance for the model.
+     */
+    protected static function translation(): ModelTranslator
+    {
+        return app(ModelTranslator::class);
+    }
+
+    /**
      * Morph many translations relation.
      */
     public function translations(): MorphMany
@@ -176,9 +184,9 @@ trait HasTranslations
     {
         $this->assertTranslatableAttribute($attribute);
 
-        $locale = $locale ?: static::getTranslator()->getLocale();
+        $locale = $locale ?: static::translation()->getLocale();
 
-        if (static::getTranslator()->isDefaultLocale($locale)) {
+        if (static::translation()->isDefaultLocale($locale)) {
             return $this->getDefaultTranslation($attribute);
         }
 
@@ -198,7 +206,7 @@ trait HasTranslations
      */
     public function getRawTranslation(string $attribute, string $locale = null)
     {
-        $locale = $locale ?: static::getTranslator()->getLocale();
+        $locale = $locale ?: static::translation()->getLocale();
 
         if (! $this->hasResolvedTranslation($attribute, $locale)) {
             $this->resolveTranslation($attribute, $locale);
@@ -244,7 +252,7 @@ trait HasTranslations
      */
     protected function resolveTranslation(string $attribute, string $locale): void
     {
-        $this->setResolvedTranslation($attribute, $locale, static::getTranslator()->get($this, $attribute, $locale));
+        $this->setResolvedTranslation($attribute, $locale, static::translation()->get($this, $attribute, $locale));
     }
 
     /**
@@ -297,9 +305,9 @@ trait HasTranslations
     {
         $this->assertTranslatableAttribute($attribute);
 
-        $locale = $locale ?: static::getTranslator()->getLocale();
+        $locale = $locale ?: static::translation()->getLocale();
 
-        if (static::getTranslator()->isDefaultLocale($locale)) {
+        if (static::translation()->isDefaultLocale($locale)) {
             return $this->setDefaultAttribute($attribute, $value);
         }
 
@@ -343,7 +351,7 @@ trait HasTranslations
      */
     protected function savePreparedTranslations(): void
     {
-        static::getTranslator()->save($this, $this->pullPreparedTranslations());
+        static::translation()->save($this, $this->pullPreparedTranslations());
     }
 
     /**
@@ -443,14 +451,6 @@ trait HasTranslations
     }
 
     /**
-     * Get the model translator instance.
-     */
-    protected static function getTranslator(): ModelTranslator
-    {
-        return app(ModelTranslator::class);
-    }
-
-    /**
      * Assert that attribute is translatable.
      */
     protected function assertTranslatableAttribute(string $attribute): void
@@ -473,7 +473,7 @@ trait HasTranslations
      */
     public function getTranslations(string $locale = null): array
     {
-        $locale = $locale ?: static::getTranslator()->getLocale();
+        $locale = $locale ?: static::translation()->getLocale();
 
         $translations = [];
 

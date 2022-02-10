@@ -34,7 +34,7 @@ trait TranslationScopes
         string $operator = '='
     ): Builder {
         return $query->where(function (Builder $query) use ($attribute, $value, $locale, $operator) {
-            if (is_null($locale) || static::getTranslator()->isDefaultLocale($locale)) {
+            if (is_null($locale) || static::translation()->isDefaultLocale($locale)) {
                 $query->where($attribute, $operator, $value);
             }
 
@@ -55,9 +55,9 @@ trait TranslationScopes
      */
     protected function scopeOrderByTranslatable(Builder $query, string $attribute, string $direction = 'asc', string $locale = null): Builder
     {
-        $locale = $locale ?: static::getTranslator()->getLocale();
+        $locale = $locale ?: static::translation()->getLocale();
 
-        if (static::getTranslator()->isDefaultLocale($locale)) {
+        if (static::translation()->isDefaultLocale($locale)) {
             return $query->orderBy($attribute, $direction);
         }
 
