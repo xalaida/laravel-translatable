@@ -67,7 +67,6 @@ trait TranslationScopes
                 ->where('translatable_type', $this->getMorphClass())
                 ->forLocale($locale)
                 ->forAttribute($attribute)
-                ->active()
                 ->limit(1)
                 ->select('value'),
             $direction
