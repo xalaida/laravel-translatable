@@ -11,6 +11,7 @@ use Nevadskiy\Translatable\Exceptions\NotTranslatableAttributeException;
 use Nevadskiy\Translatable\Models\Translation;
 use Nevadskiy\Translatable\Scopes\TranslationsEagerLoadScope;
 use Nevadskiy\Translatable\Strategies\SingleTableStrategy;
+use Nevadskiy\Translatable\Strategies\TranslatorStrategy;
 
 /**
  * @mixin Model
@@ -57,7 +58,15 @@ trait HasTranslations
      */
     public function translation(): Translator
     {
-        return new Translator(new SingleTableStrategy($this));
+        return new Translator($this->getTranslationStrategy());
+    }
+
+    /**
+     * Get the translation strategy.
+     */
+    protected function getTranslationStrategy(): TranslatorStrategy
+    {
+        return new SingleTableStrategy($this);
     }
 
     /**
@@ -185,9 +194,9 @@ trait HasTranslations
     {
         $this->assertTranslatableAttribute($attribute);
 
-        $locale = $locale ?: static::translation()->getLocale();
+        $locale = $locale ?: $this->translation()->getLocale();
 
-        if (static::translation()->isDefaultLocale($locale)) {
+        if ($this->translation()->isDefaultLocale($locale)) {
             return $this->getDefaultTranslation($attribute);
         }
 
@@ -207,7 +216,7 @@ trait HasTranslations
      */
     public function getRawTranslation(string $attribute, string $locale = null)
     {
-        $locale = $locale ?: static::translation()->getLocale();
+        $locale = $locale ?: $this->translation()->getLocale();
 
         if (! $this->hasResolvedTranslation($attribute, $locale)) {
             $this->resolveTranslation($attribute, $locale);
@@ -253,7 +262,7 @@ trait HasTranslations
      */
     protected function resolveTranslation(string $attribute, string $locale): void
     {
-        $this->setResolvedTranslation($attribute, $locale, static::translation()->get($this, $attribute, $locale));
+        $this->setResolvedTranslation($attribute, $locale, $this->translation()->get($attribute, $locale));
     }
 
     /**
@@ -306,9 +315,9 @@ trait HasTranslations
     {
         $this->assertTranslatableAttribute($attribute);
 
-        $locale = $locale ?: static::translation()->getLocale();
+        $locale = $locale ?: $this->translation()->getLocale();
 
-        if (static::translation()->isDefaultLocale($locale)) {
+        if ($this->translation()->isDefaultLocale($locale)) {
             return $this->setDefaultAttribute($attribute, $value);
         }
 
@@ -352,7 +361,12 @@ trait HasTranslations
      */
     protected function savePreparedTranslations(): void
     {
-        static::translation()->save($this, $this->pullPreparedTranslations());
+        foreach ($this->pullPreparedTranslations() as $locale => $attributes) {
+            // TODO: check if it needs to array_filter here. if it is clear, there is no loop.
+            foreach (array_filter($attributes) as $attribute => $value) {
+                $this->translation()->set($attribute, $value, $locale);
+            }
+        }
     }
 
     /**
@@ -474,7 +488,7 @@ trait HasTranslations
      */
     public function getTranslations(string $locale = null): array
     {
-        $locale = $locale ?: static::translation()->getLocale();
+        $locale = $locale ?: $this->translation()->getLocale();
 
         $translations = [];
 

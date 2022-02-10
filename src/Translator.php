@@ -14,11 +14,45 @@ class Translator
     private $strategy;
 
     /**
+     * The default locale.
+     *
+     * @var string
+     */
+    protected $defaultLocale;
+
+    /**
+     * The current locale.
+     *
+     * @var string
+     */
+    protected $locale;
+
+    /**
      * Make a new translator instance.
      */
     public function __construct(TranslatorStrategy $strategy)
     {
         $this->strategy = $strategy;
+        $this->locale = app()->getLocale();
+        $this->defaultLocale = 'en';
+    }
+
+    /**
+     * Get the translator locale.
+     */
+    public function getLocale(): string
+    {
+        return $this->locale ?: $this->defaultLocale;
+    }
+
+    /**
+     * Determine does the translator use the current or given locale as the default locale.
+     */
+    public function isDefaultLocale(string $locale = null): bool
+    {
+        $locale = $locale ?: $this->getLocale();
+
+        return $locale === $this->defaultLocale;
     }
 
     public function get(string $attribute, string $locale)
