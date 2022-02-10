@@ -18,7 +18,7 @@ class TouchParentOnSaveTest extends TestCase
 
         $translatedTime = $this->freezeTime(now()->addMonth());
 
-        $book->translate('title', 'Переведенное название', 'ru');
+        $book->translation()->set('title', 'Переведенное название', 'ru');
 
         $book = $book->fresh();
 

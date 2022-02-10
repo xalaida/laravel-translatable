@@ -13,10 +13,10 @@ class RemoveTranslationsOfDeletedModelTest extends TestCase
     public function it_removes_translations_when_model_is_deleted(): void
     {
         $book1 = BookFactory::new()->create();
-        $book1->translateMany(['title' => 'Птицы', 'description' => 'Книга о птицах'], 'ru');
+        $book1->translation()->setMany(['title' => 'Птицы', 'description' => 'Книга про птиц'], 'ru');
 
         $book2 = BookFactory::new()->create();
-        $book2->translateMany(['title' => 'Дельфины', 'description' => 'Книга о дельфинах'], 'ru');
+        $book2->translation()->setMany(['title' => 'Дельфины', 'description' => 'Книга о дельфинах'], 'ru');
 
         self::assertCount(4, Translation::all());
 
@@ -30,7 +30,7 @@ class RemoveTranslationsOfDeletedModelTest extends TestCase
     public function it_does_not_remove_translations_when_model_is_soft_deleted(): void
     {
         $post1 = PostFactory::new()->create();
-        $post1->translate('body', 'Удаленный пост', 'ru');
+        $post1->translation()->set('body', 'Удаленный пост', 'ru');
 
         self::assertCount(1, Translation::all());
 
@@ -43,7 +43,7 @@ class RemoveTranslationsOfDeletedModelTest extends TestCase
     public function it_removes_translations_of_force_deleted_models(): void
     {
         $post1 = PostFactory::new()->create();
-        $post1->translate('body', 'Удаленный пост', 'ru');
+        $post1->translation()->set('body', 'Удаленный пост', 'ru');
 
         self::assertCount(1, Translation::all());
 

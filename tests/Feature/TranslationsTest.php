@@ -14,7 +14,7 @@ class TranslationsTest extends TestCase
     {
         $book = BookFactory::new()->create();
 
-        $book->translate('title', 'Моя тестовая книга', 'ru');
+        $book->translation()->set('title', 'Моя тестовая книга', 'ru');
 
         self::assertEquals('Моя тестовая книга', $book->getTranslation('title', 'ru'));
     }
@@ -24,9 +24,9 @@ class TranslationsTest extends TestCase
     {
         $book = BookFactory::new()->create();
 
-        $book->translate('title', 'Моя блестящая книга', 'ru');
-        $book->translate('title', 'Mi brillante libro', 'es');
-        $book->translate('title', 'Mon brillant livre', 'fr');
+        $book->translation()->set('title', 'Моя блестящая книга', 'ru');
+        $book->translation()->set('title', 'Mi brillante libro', 'es');
+        $book->translation()->set('title', 'Mon brillant livre', 'fr');
 
         self::assertEquals('Mi brillante libro', $book->getTranslation('title', 'es'));
     }
@@ -44,8 +44,8 @@ class TranslationsTest extends TestCase
     {
         $book = BookFactory::new()->create();
 
-        $book->translate('title', 'Книга о птицах', 'ru');
-        $book->translate('description', 'Livre sur les oiseaux', 'fr');
+        $book->translation()->set('title', 'Книга о птицах', 'ru');
+        $book->translation()->set('description', 'Livre sur les oiseaux', 'fr');
 
         self::assertEquals('Книга о птицах', $book->getTranslation('title', 'ru'));
     }
@@ -55,7 +55,7 @@ class TranslationsTest extends TestCase
     {
         $book = BookFactory::new()->create(['title' => 'My original book']);
 
-        $book->translate('title', 'Моя оригинальная книга', 'ru');
+        $book->translation()->set('title', 'Моя оригинальная книга', 'ru');
 
         $book = $book->fresh();
 
@@ -84,7 +84,7 @@ class TranslationsTest extends TestCase
     {
         $book = BookFactory::new()->create();
 
-        $book->translate('title', 'Моя новая книга', 'ru');
+        $book->translation()->set('title', 'Моя новая книга', 'ru');
 
         self::assertCount(1, Translation::all());
 
@@ -145,8 +145,8 @@ class TranslationsTest extends TestCase
     {
         $book = BookFactory::new()->create(['title' => 'My original title']);
 
-        $book->translate('title', 'Min ursprungliga titel', 'sv');
-        $book->translate('title', 'Mi titulo original', 'es');
+        $book->translation()->set('title', 'Min ursprungliga titel', 'sv');
+        $book->translation()->set('title', 'Mi titulo original', 'es');
 
         self::assertEquals('Min ursprungliga titel', $book->getTranslation('title', 'sv'));
         self::assertEquals('Mi titulo original', $book->getTranslation('title', 'es'));
@@ -158,8 +158,8 @@ class TranslationsTest extends TestCase
     {
         $book = BookFactory::new()->create();
 
-        $book->translate('title', 'Неправильное название книги', 'ru');
-        $book->translate('title', 'Правильное название книги', 'ru');
+        $book->translation()->set('title', 'Неправильное название книги', 'ru');
+        $book->translation()->set('title', 'Правильное название книги', 'ru');
 
         self::assertCount(1, Translation::all());
         self::assertEquals('Правильное название книги', $book->getTranslation('title', 'ru'));
@@ -170,7 +170,7 @@ class TranslationsTest extends TestCase
     {
         $book = BookFactory::new()->create();
 
-        $book->translate('description', null, 'ru');
+        $book->translation()->set('description', null, 'ru');
 
         self::assertCount(0, Translation::all());
     }
@@ -180,7 +180,7 @@ class TranslationsTest extends TestCase
     {
         $book = BookFactory::new()->create(['title' => 'My book']);
 
-        $book->translate('title', 'My english book', $this->app->getLocale());
+        $book->translation()->set('title', 'My english book', $this->app->getLocale());
 
         self::assertEquals('My english book', $book->getAttribute('title'));
         self::assertEmpty(Translation::all());
@@ -192,7 +192,7 @@ class TranslationsTest extends TestCase
         $book = BookFactory::new()->create(['title' => 'My book']);
 
         try {
-            $book->translate('version', '5', $this->app->getLocale());
+            $book->translation()->set('version', '5', $this->app->getLocale());
             self::fail('Exception was not thrown for not translatable attribute');
         } catch (NotTranslatableAttributeException $e) {
             self::assertCount(0, Translation::all());

@@ -48,7 +48,7 @@ class FireTranslationNotFoundTest extends TestCase
     {
         $book = BookFactory::new()->create(['title' => 'My original book']);
 
-        $book->translate('title', 'Моя оригинальная книга', 'ru');
+        $book->translation()->set('title', 'Моя оригинальная книга', 'ru');
 
         Event::fake(TranslationNotFound::class);
 

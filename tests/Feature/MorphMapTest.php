@@ -10,14 +10,14 @@ use Nevadskiy\Translatable\Tests\TestCase;
 class MorphMapTest extends TestCase
 {
     /** @test */
-    public function it_can_use_morph_map_as_normal_for_storing_translations(): void
+    public function it_stores_translations_using_morph_map(): void
     {
         Relation::morphMap([
             'books' => Book::class,
         ]);
 
         $book = BookFactory::new()->create(['title' => 'Book about dolphins']);
-        $book->translate('title', 'Книга про дельфинов', 'ru');
+        $book->translation()->set('title', 'Книга про дельфинов', 'ru');
 
         $this->assertDatabaseHas('translations', [
             'translatable_type' => 'books',
