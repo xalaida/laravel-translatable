@@ -9,6 +9,18 @@ use Nevadskiy\Translatable\Strategies\TranslatorStrategy;
 class Translator
 {
     /**
+     * @TODO rename
+     * @var array
+     */
+    protected $attributesToSet = [];
+
+    /**
+     * @TODO rename
+     * @var array
+     */
+    protected $attributesToGet = [];
+
+    /**
      * The translatable model instance.
      *
      * @var Model|HasTranslations
@@ -73,14 +85,32 @@ class Translator
         return $this->strategy->get($attribute, $locale);
     }
 
+    public function save()
+    {
+
+    }
+
+    public function unset()
+    {
+
+    }
+
+    public function delete()
+    {
+
+    }
+
+    // TODO: rewrite to either save or just set prepared value.
     public function set(string $attribute, $value, string $locale = null)
     {
         $this->assertTranslatableAttribute($attribute);
 
         if ($this->isDefaultLocale($locale)) {
+            // TODO: it is not saving method.
             return $this->model->setAttribute($attribute, $value);
         }
 
+        // TODO: it is saving method. (probably add flush method)
         return $this->strategy->set($attribute, $this->model->withAttributeMutators($attribute, $value), $locale);
     }
 
