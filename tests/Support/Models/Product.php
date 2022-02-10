@@ -6,7 +6,7 @@ use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Nevadskiy\Translatable\HasTranslations;
 use Nevadskiy\Translatable\Strategies\AdditionalTableStrategy;
-use Nevadskiy\Translatable\Translator;
+use Nevadskiy\Translatable\Strategies\TranslatorStrategy;
 use Nevadskiy\Uuid\Uuid;
 
 /**
@@ -31,11 +31,11 @@ class Product extends Model
         'description',
     ];
 
-    // TODO: extract into trait for this specific strategy and provide hook to configure the strategy
-    public function translation(): Translator
+    /**
+     * Get the translation strategy.
+     */
+    protected function getTranslationStrategy(): TranslatorStrategy
     {
-        return new Translator(
-            new AdditionalTableStrategy($this, $this->getConnection())
-        );
+        return new AdditionalTableStrategy($this, $this->getConnection());
     }
 }
