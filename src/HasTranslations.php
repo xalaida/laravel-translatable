@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Collection;
 use Nevadskiy\Translatable\Events\TranslationNotFound;
-use Nevadskiy\Translatable\Exceptions\NotTranslatableAttributeException;
+use Nevadskiy\Translatable\Exceptions\AttributeNotTranslatableException;
 use Nevadskiy\Translatable\Models\Translation;
 use Nevadskiy\Translatable\Scopes\TranslationsEagerLoadScope;
 use Nevadskiy\Translatable\Strategies\SingleTableStrategy;
@@ -438,7 +438,7 @@ trait HasTranslations
     protected function assertTranslatableAttribute(string $attribute): void
     {
         if (! $this->isTranslatable($attribute)) {
-            throw NotTranslatableAttributeException::fromAttribute($attribute);
+            throw AttributeNotTranslatableException::fromAttribute($attribute);
         }
     }
 

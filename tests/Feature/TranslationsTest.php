@@ -2,7 +2,7 @@
 
 namespace Nevadskiy\Translatable\Tests\Feature;
 
-use Nevadskiy\Translatable\Exceptions\NotTranslatableAttributeException;
+use Nevadskiy\Translatable\Exceptions\AttributeNotTranslatableException;
 use Nevadskiy\Translatable\Models\Translation;
 use Nevadskiy\Translatable\Tests\Support\Factories\BookFactory;
 use Nevadskiy\Translatable\Tests\TestCase;
@@ -194,7 +194,7 @@ class TranslationsTest extends TestCase
         try {
             $book->translation()->set('version', '5', $this->app->getLocale());
             self::fail('Exception was not thrown for not translatable attribute');
-        } catch (NotTranslatableAttributeException $e) {
+        } catch (AttributeNotTranslatableException $e) {
             self::assertCount(0, Translation::all());
         }
     }

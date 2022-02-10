@@ -4,10 +4,10 @@ namespace Nevadskiy\Translatable\Exceptions;
 
 use DomainException;
 
-class NotTranslatableAttributeException extends DomainException
+class AttributeNotTranslatableException extends DomainException
 {
     /**
-     * Exception constructor.
+     * Make a new exception instance.
      */
     protected function __construct(string $attribute)
     {
@@ -16,8 +16,6 @@ class NotTranslatableAttributeException extends DomainException
 
     /**
      * Create the exception instance from the attribute.
-     *
-     * @return static
      */
     public static function fromAttribute(string $attribute): self
     {

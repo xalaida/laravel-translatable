@@ -2,7 +2,7 @@
 
 namespace Nevadskiy\Translatable\Tests\Feature;
 
-use Nevadskiy\Translatable\Exceptions\NotTranslatableAttributeException;
+use Nevadskiy\Translatable\Exceptions\AttributeNotTranslatableException;
 use Nevadskiy\Translatable\Tests\Support\Factories\BookFactory;
 use Nevadskiy\Translatable\Tests\TestCase;
 
@@ -22,7 +22,7 @@ class GetTranslationTest extends TestCase
     {
         $book = BookFactory::new()->create();
 
-        $this->expectException(NotTranslatableAttributeException::class);
+        $this->expectException(AttributeNotTranslatableException::class);
 
         $book->getTranslation('id');
     }
