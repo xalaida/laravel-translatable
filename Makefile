@@ -10,7 +10,7 @@ rebuild:
 	docker build --no-cache -t app .
 
 # Install app dependencies
-deps:
+vendor:
 	docker run --rm -it -v ${PWD}:/app app composer install
 
 # Update app dependencies
