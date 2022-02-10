@@ -154,38 +154,6 @@ trait HasTranslations
     }
 
     /**
-     * Save translation for the given attribute and locale.
-     * TODO: remove this method as not really clear if it sets or gets...
-     *
-     * @param mixed $value
-     * @return HasTranslations|mixed
-     */
-    public function translate(string $attribute, $value, string $locale)
-    {
-        $this->setTranslation($attribute, $value, $locale);
-        $this->save();
-
-        return $this;
-    }
-
-    /**
-     * Save many translations for the given attribute and locale.
-     * TODO: remove as well.
-     *
-     * @return HasTranslations
-     */
-    public function translateMany(array $translations, string $locale)
-    {
-        foreach ($translations as $attribute => $value) {
-            $this->setTranslation($attribute, $value, $locale);
-        }
-
-        $this->save();
-
-        return $this;
-    }
-
-    /**
      * Get translation value for the attribute.
      *
      * @return mixed
