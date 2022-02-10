@@ -57,7 +57,7 @@ trait HasTranslations
      */
     public function translation(): Translator
     {
-        return new Translator($this->getTranslationStrategy());
+        return new Translator($this, $this->getTranslationStrategy());
     }
 
     /**
@@ -155,6 +155,7 @@ trait HasTranslations
     /**
      * Get translation value for the attribute.
      *
+     * @deprecated use $this->translate()->get() method instead.
      * @return mixed
      */
     public function getTranslation(string $attribute, string $locale = null)
@@ -275,6 +276,7 @@ trait HasTranslations
     /**
      * Set translation to the attribute.
      *
+     * @deprecated use $this->translate()->set() method instead.
      * @param mixed $value
      * @return HasTranslations|mixed
      */
@@ -302,9 +304,9 @@ trait HasTranslations
     /**
      * Determine whether the attribute is translatable.
      */
-    protected function isTranslatable(string $attribute): bool
+    public function isTranslatable(string $attribute): bool
     {
-        return in_array($attribute, $this->getTranslatable(), true);
+        return collect($this->getTranslatable())->contains($attribute);
     }
 
     /**
@@ -400,7 +402,7 @@ trait HasTranslations
      * @param mixed $value
      * @return mixed
      */
-    protected function withAttributeAccessors(string $attribute, $value)
+    public function withAttributeAccessors(string $attribute, $value)
     {
         $original = $this->attributes[$attribute];
 
@@ -419,7 +421,7 @@ trait HasTranslations
      * @param mixed $value
      * @return mixed
      */
-    protected function withAttributeMutators(string $attribute, $value)
+    public function withAttributeMutators(string $attribute, $value)
     {
         $original = $this->attributes[$attribute];
 

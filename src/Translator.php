@@ -2,10 +2,19 @@
 
 namespace Nevadskiy\Translatable;
 
+use Illuminate\Database\Eloquent\Model;
+use Nevadskiy\Translatable\Exceptions\AttributeNotTranslatableException;
 use Nevadskiy\Translatable\Strategies\TranslatorStrategy;
 
 class Translator
 {
+    /**
+     * The translatable model instance.
+     *
+     * @var Model|HasTranslations
+     */
+    private $model;
+
     /**
      * The translator strategy instance.
      *
@@ -30,10 +39,12 @@ class Translator
     /**
      * Make a new translator instance.
      */
-    public function __construct(TranslatorStrategy $strategy)
+    public function __construct(Model $model, TranslatorStrategy $strategy)
     {
+        $this->model = $model;
         $this->strategy = $strategy;
         $this->locale = app()->getLocale();
+        // TODO: maybe rename into 'fallback' locale (as laravel config name).
         $this->defaultLocale = 'en';
     }
 
@@ -42,7 +53,7 @@ class Translator
      */
     public function getLocale(): string
     {
-        return $this->locale ?: $this->defaultLocale;
+        return app()->getLocale();
     }
 
     /**
@@ -64,7 +75,23 @@ class Translator
 
     public function set(string $attribute, $value, string $locale = null)
     {
-        return $this->strategy->set($attribute, $value, $locale);
+        $this->assertTranslatableAttribute($attribute);
+
+        if ($this->isDefaultLocale($locale)) {
+            return $this->model->setAttribute($attribute, $value);
+        }
+
+        return $this->strategy->set($attribute, $this->model->withAttributeMutators($attribute, $value), $locale);
+    }
+
+    /**
+     * Assert that the given attribute is translatable.
+     */
+    protected function assertTranslatableAttribute(string $attribute): void
+    {
+        if (! $this->model->isTranslatable($attribute)) {
+            throw AttributeNotTranslatableException::fromAttribute($attribute);
+        }
     }
 
     public function setMany(array $translations, string $locale = null): void
