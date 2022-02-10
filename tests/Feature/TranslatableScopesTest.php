@@ -102,36 +102,6 @@ class TranslatableScopesTest extends TestCase
     }
 
     /** @test */
-    public function it_can_retrieve_translatable_model_by_archived_translation(): void
-    {
-        $this->app->setLocale('ru');
-
-        $book = BookFactory::new()->create();
-        $book->translation()->set('title', 'Книга про собак', 'ru');
-        $book->archiveTranslation('title', 'Старинная книга про собак', null);
-
-        $anotherBook = BookFactory::new()->create();
-        $anotherBook->translation()->set('title', 'Книга о дельфинах', 'ru');
-
-        $books = Book::whereTranslatable('title', 'Старинная книга про собак')->get();
-
-        self::assertCount(1, $books);
-        self::assertTrue($books[0]->is($book));
-    }
-
-    /** @test */
-    public function it_can_retrieve_translatable_model_by_archived_translation_in_default_locale(): void
-    {
-        $book = BookFactory::new()->create();
-        $book->archiveTranslation('title', 'Old book');
-
-        $books = Book::whereTranslatable('title', 'Old book', 'en')->get();
-
-        self::assertCount(1, $books);
-        self::assertTrue($books[0]->is($book));
-    }
-
-    /** @test */
     public function it_can_order_by_translatable_attribute_in_current_locale(): void
     {
         $book1 = BookFactory::new()->create(['title' => 'First book']);

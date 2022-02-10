@@ -6,7 +6,6 @@ use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
-use Nevadskiy\Translatable\Events\TranslationArchived;
 use Nevadskiy\Translatable\Events\TranslationCreated;
 use Nevadskiy\Translatable\HasTranslations;
 use Nevadskiy\Uuid\Uuid;
@@ -19,7 +18,6 @@ use Nevadskiy\Uuid\Uuid;
  * @property-read Model|HasTranslations translatable
  * @property string value
  * @property string|null locale
- * @property bool is_archived
  * @property Carbon updated_at
  * @property Carbon created_at
  */
@@ -33,15 +31,6 @@ class Translation extends Model
      * @var array
      */
     protected $guarded = [];
-
-    /**
-     * The attributes that should be cast.
-     *
-     * @var array
-     */
-    protected $casts = [
-        'is_archived' => 'boolean',
-    ];
 
     /**
      * The relationships that should be touched on save.
@@ -61,7 +50,6 @@ class Translation extends Model
      */
     protected $dispatchesEvents = [
         'created' => TranslationCreated::class,
-        'archived' => TranslationArchived::class,
     ];
 
     /**
@@ -86,30 +74,5 @@ class Translation extends Model
     public function scopeForAttribute(Builder $query, string $attribute): Builder
     {
         return $query->where('translatable_attribute', $attribute);
-    }
-
-    /**
-     * Scope translations to exclude not active translations.
-     */
-    public function scopeActive(Builder $query): Builder
-    {
-        return $query->where('is_archived', false);
-    }
-
-    /**
-     * Scope translations to exclude not archived translations.
-     */
-    public function scopeArchived(Builder $query): Builder
-    {
-        return $query->where('is_archived', true);
-    }
-
-    /**
-     * Archive the translation.
-     */
-    public function archive(): void
-    {
-        $this->update(['is_archived' => true]);
-        $this->fireModelEvent('archived');
     }
 }

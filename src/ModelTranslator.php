@@ -85,8 +85,7 @@ class ModelTranslator
         $locale = $locale ?: $this->getLocale();
 
         return $translatable->translations->first(static function (Translation $translation) use ($attribute, $locale) {
-            return ! $translation->is_archived
-                && $translation->translatable_attribute === $attribute
+            return $translation->translatable_attribute === $attribute
                 && $translation->locale === $locale;
         })->value ?? null;
     }
@@ -102,7 +101,6 @@ class ModelTranslator
         return $translatable->translations()->updateOrCreate([
             'translatable_attribute' => $attribute,
             'locale' => $locale ?: $this->getLocale(),
-            'is_archived' => false,
         ], [
             'value' => $value,
         ]);
@@ -117,14 +115,12 @@ class ModelTranslator
         Model $translatable,
         string $attribute,
         string $value,
-        ?string $locale,
-        bool $isArchived = false
+        ?string $locale
     ): Translation {
         return $translatable->translations()->firstOrCreate([
             'translatable_attribute' => $attribute,
             'locale' => $locale,
             'value' => $value,
-            'is_archived' => $isArchived,
         ]);
     }
 }

@@ -331,26 +331,6 @@ class AppServiceProvider extends ServiceProvider
 }
 ```
 
-
-##### Archiving translations
-
-Sometimes it can be useful to archive some translations that will not be resolved automatically, but can be used for searching functionality.
-For example, you may store archived translation manually using the following code:
-
-```php
-$post = Post::first();
-$post->archiveTranslation('title', 'Old title', 'en');
-```
-
-Now `Old title` is associated with a post that allows to find the post using `whereTranslatable` scope:
-
-```php
-Post::whereTranslatable('title', 'Old title')->get();
-```
-
-You can also pass `null` as a third argument to the `archiveTranslation` method when a locale is unknown. 
-If you do not pass `null`, the current locale will be used instead.
-
 ##### Route model binding
 
 Translatable model can be easily resolved using **Route Model Binding** feature.
@@ -426,7 +406,7 @@ More about morph maps [here](https://laravel.com/docs/7.x/eloquent-relationships
 
 ## 📑 Changelog
 
-Please see [CHANGELOG](.github/CHANGELOG.md) for more information what has changed recently.
+Please see [CHANGELOG](CHANGELOG.md) for more information what has changed recently.
 
 
 ## ☕ Contributing

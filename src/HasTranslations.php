@@ -20,8 +20,7 @@ use Nevadskiy\Translatable\Strategies\TranslatorStrategy;
 trait HasTranslations
 {
     use TranslationScopes,
-        TranslatableUrlRouting,
-        ArchivingTranslations;
+        TranslatableUrlRouting;
 
     /**
      * Prepared translations to be saved into the database.
