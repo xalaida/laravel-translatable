@@ -10,6 +10,7 @@ use Nevadskiy\Translatable\Events\TranslationNotFound;
 use Nevadskiy\Translatable\Exceptions\NotTranslatableAttributeException;
 use Nevadskiy\Translatable\Models\Translation;
 use Nevadskiy\Translatable\Scopes\TranslationsEagerLoadScope;
+use Nevadskiy\Translatable\Strategies\SingleTableStrategy;
 
 /**
  * @mixin Model
@@ -54,9 +55,9 @@ trait HasTranslations
     /**
      * Get the translator instance for the model.
      */
-    protected static function translation(): ModelTranslator
+    public function translation(): Translator
     {
-        return app(ModelTranslator::class);
+        return new Translator(new SingleTableStrategy($this));
     }
 
     /**
