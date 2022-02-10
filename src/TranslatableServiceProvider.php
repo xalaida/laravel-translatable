@@ -3,29 +3,16 @@
 namespace Nevadskiy\Translatable;
 
 use Illuminate\Contracts\Events\Dispatcher;
-use Illuminate\Foundation\Events\LocaleUpdated;
 use Illuminate\Support\ServiceProvider;
 
 class TranslatableServiceProvider extends ServiceProvider
 {
-    /**
-     * The event listener mappings for the package.
-     *
-     * @var array
-     */
-    protected $listen = [
-        LocaleUpdated::class => [
-            Listeners\UpdateTranslatorLocale::class,
-        ],
-    ];
-
     /**
      * Register any package services.
      */
     public function register(): void
     {
         $this->registerPackage();
-        $this->registerModelTranslator();
     }
 
     /**
@@ -34,7 +21,6 @@ class TranslatableServiceProvider extends ServiceProvider
     public function boot(): void
     {
         $this->bootCommands();
-        $this->bootEvents();
         $this->bootMigrations();
         $this->publishMigrations();
     }
@@ -48,18 +34,6 @@ class TranslatableServiceProvider extends ServiceProvider
     }
 
     /**
-     * Register the model translator.
-     */
-    private function registerModelTranslator(): void
-    {
-        $this->app->singleton(ModelTranslator::class, function () {
-            return new ModelTranslator(
-                $this->app['config']['app']['fallback_locale']
-            );
-        });
-    }
-
-    /**
      * Boot any package commands.
      */
     private function bootCommands(): void
@@ -67,20 +41,6 @@ class TranslatableServiceProvider extends ServiceProvider
         $this->commands([
             Console\RemoveUnusedTranslationsCommand::class,
         ]);
-    }
-
-    /**
-     * Boot any package events.
-     */
-    private function bootEvents(): void
-    {
-        $dispatcher = $this->app[Dispatcher::class];
-
-        foreach ($this->listen as $event => $listeners) {
-            foreach ($listeners as $listener) {
-                $dispatcher->listen($event, $listener);
-            }
-        }
     }
 
     /**
