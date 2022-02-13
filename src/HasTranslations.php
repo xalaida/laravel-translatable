@@ -23,6 +23,11 @@ trait HasTranslations
         TranslatableUrlRouting;
 
     /**
+     * The model translator instance.
+     */
+    protected $translator;
+
+    /**
      * Prepared translations to be saved into the database.
      *
      * @var array
@@ -43,8 +48,8 @@ trait HasTranslations
     {
         static::addGlobalScope(new TranslationsEagerLoadScope());
 
-        static::saving(static function (self $translatable) {
-            $translatable->handleSavingEvent();
+        static::saved(static function (self $translatable) {
+            $translatable->handleSavedEvent();
         });
 
         static::deleted(static function (self $translatable) {
@@ -53,11 +58,28 @@ trait HasTranslations
     }
 
     /**
+     * Init the trait.
+     */
+    protected function initializeHasTranslations(): void
+    {
+        $this->translator = $this->newTranslation();
+    }
+
+    /**
+     * Make a new translator instance for the model.
+     */
+    public function newTranslation(): Translator
+    {
+        return new Translator($this, $this->getTranslationStrategy());
+    }
+
+    /**
      * Get the translator instance for the model.
      */
     public function translation(): Translator
     {
-        return new Translator($this, $this->getTranslationStrategy());
+        // TODO: maybe consider lazy initialization $this->translator ?: $this->newTranslator();
+        return $this->translator;
     }
 
     /**
@@ -112,7 +134,9 @@ trait HasTranslations
             return $this->setDefaultAttribute($attribute, $value);
         }
 
-        return $this->setTranslation($attribute, $value);
+        $this->translation()->set($attribute, $value);
+
+        return $this;
     }
 
     /**
@@ -261,17 +285,17 @@ trait HasTranslations
         return $this;
     }
 
-    /**
-     * Pull any prepared translations.
-     */
-    protected function pullPreparedTranslations(): array
-    {
-        $translations = $this->preparedTranslations;
-
-        $this->preparedTranslations = [];
-
-        return $translations;
-    }
+//    /**
+//     * Pull any prepared translations.
+//     */
+//    protected function pullPreparedTranslations(): array
+//    {
+//        $translations = $this->preparedTranslations;
+//
+//        $this->preparedTranslations = [];
+//
+//        return $translations;
+//    }
 
     /**
      * Set translation to the attribute.
@@ -318,25 +342,25 @@ trait HasTranslations
     }
 
     /**
-     * Handle the model saving event.
+     * Handle the model "saved" event.
      */
-    protected function handleSavingEvent(): void
+    protected function handleSavedEvent(): void
     {
-        $this->savePreparedTranslations();
+        $this->translation()->save();
     }
 
-    /**
-     * Save the model translations.
-     */
-    protected function savePreparedTranslations(): void
-    {
-        foreach ($this->pullPreparedTranslations() as $locale => $attributes) {
-            // TODO: check if it needs to array_filter here. if it is clear, there is no loop.
-            foreach (array_filter($attributes) as $attribute => $value) {
-                $this->translation()->set($attribute, $value, $locale);
-            }
-        }
-    }
+//    /**
+//     * Save the model translations.
+//     */
+//    protected function savePreparedTranslations(): void
+//    {
+//        foreach ($this->pullPreparedTranslations() as $locale => $attributes) {
+//            // TODO: check if it needs to array_filter here. if it is clear, there is no loop.
+//            foreach (array_filter($attributes) as $attribute => $value) {
+//                $this->translation()->set($attribute, $value, $locale);
+//            }
+//        }
+//    }
 
     /**
      * Handle the model deleted event.

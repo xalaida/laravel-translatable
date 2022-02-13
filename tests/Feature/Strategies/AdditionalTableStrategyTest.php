@@ -2,23 +2,64 @@
 
 namespace Nevadskiy\Translatable\Tests\Feature\Strategies;
 
+use Illuminate\Support\Facades\DB;
 use Nevadskiy\Translatable\Tests\Support\Factories\ProductFactory;
 use Nevadskiy\Translatable\Tests\TestCase;
 
 class AdditionalTableStrategyTest extends TestCase
 {
     /** @test */
-    public function it_stores_translation_in_additional_table(): void
+    public function it_stores_translations_in_additional_table(): void
     {
-        $product = ProductFactory::new()->create(['title' => 'Reindeer Sweater']);
+        $product = ProductFactory::new()->create([
+            'title' => 'Reindeer Sweater',
+            'description' => 'Warm winter sweater',
+        ]);
 
         $product->translation()->set('title', 'Свитер с оленями', 'ru');
+        $product->translation()->set('description', 'Теплый зимний свитер', 'ru');
+        $product->translation()->save();
 
         $this->assertDatabaseCount('product_translations', 1);
         $this->assertDatabaseHas('product_translations', [
             'title' => 'Свитер с оленями',
+            'description' => 'Теплый зимний свитер',
             'locale' => 'ru',
         ]);
+    }
+
+    /** @test */
+    public function it_does_not_store_translations_without_save_call(): void
+    {
+        $product = ProductFactory::new()->create([
+            'title' => 'Reindeer Sweater',
+            'description' => 'Warm winter sweater',
+        ]);
+
+        $product->translation()->set('title', 'Свитер с оленями', 'ru');
+        $product->translation()->set('description', 'Теплый зимний свитер', 'ru');
+
+        $this->assertDatabaseCount('product_translations', 0);
+    }
+
+    /** @test */
+    public function it_does_not_override_translations_on_double_save_call(): void
+    {
+        $product = ProductFactory::new()->create([
+            'title' => 'Reindeer Sweater',
+            'description' => 'Warm winter sweater',
+        ]);
+
+        $product->translation()->set('title', 'Свитер с оленями', 'ru');
+        $product->translation()->set('description', 'Теплый зимний свитер', 'ru');
+        $product->translation()->save();
+
+        DB::enableQueryLog();
+
+        $product->translation()->save();
+
+        self::assertEmpty(DB::connection()->getQueryLog());
+        $this->assertDatabaseCount('product_translations', 1);
     }
 
     /** @test */

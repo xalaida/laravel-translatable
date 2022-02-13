@@ -78,6 +78,27 @@ class Translator
         return $locale === $this->defaultLocale;
     }
 
+    /**
+     * Set the translation for the model.
+     */
+    public function set(string $attribute, $value, string $locale = null): Translator
+    {
+        $this->assertTranslatableAttribute($attribute);
+
+        if ($this->isDefaultLocale($locale)) {
+            $this->model->setAttribute($attribute, $value);
+        } else {
+            $this->attributesToSet[$locale][$attribute] = $this->model->withAttributeMutators($attribute, $value);
+        }
+
+        return $this;
+    }
+
+    public function add(string $attribute, $value, string $locale): void
+    {
+        $this->set($attribute, $value, $locale)->save();
+    }
+
     public function get(string $attribute, string $locale)
     {
         // TODO: add possibility to log out warnings with missing translations.
@@ -85,9 +106,18 @@ class Translator
         return $this->strategy->get($attribute, $locale);
     }
 
-    public function save()
+    /**
+     * Save translations into the database.
+     */
+    public function save(): void
     {
+        foreach ($this->attributesToSet as $locale => $attributes) {
+            foreach ($attributes as $attribute => $value) {
+                $this->strategy->set($attribute, $value, $locale);
+            }
+        }
 
+        $this->attributesToSet = [];
     }
 
     public function unset()
@@ -98,20 +128,6 @@ class Translator
     public function delete()
     {
 
-    }
-
-    // TODO: rewrite to either save or just set prepared value.
-    public function set(string $attribute, $value, string $locale = null)
-    {
-        $this->assertTranslatableAttribute($attribute);
-
-        if ($this->isDefaultLocale($locale)) {
-            // TODO: it is not saving method.
-            return $this->model->setAttribute($attribute, $value);
-        }
-
-        // TODO: it is saving method. (probably add flush method)
-        return $this->strategy->set($attribute, $this->model->withAttributeMutators($attribute, $value), $locale);
     }
 
     /**
