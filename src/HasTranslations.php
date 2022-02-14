@@ -107,11 +107,11 @@ trait HasTranslations
     public function getAttribute($attribute)
     {
         if (! $this->shouldBeTranslated($attribute)) {
-            return $this->getDefaultTranslation($attribute);
+            return $this->getOriginal($attribute);
         }
 
         if (! $this->autoLoadTranslations($attribute)) {
-            return $this->getDefaultTranslation($attribute);
+            return $this->getOriginal($attribute);
         }
 
         return $this->getTranslationOrDefault($attribute);
@@ -184,21 +184,7 @@ trait HasTranslations
      */
     public function getTranslation(string $attribute, string $locale = null)
     {
-        $this->assertTranslatableAttribute($attribute);
-
-        $locale = $locale ?: $this->translation()->getLocale();
-
-        if ($this->translation()->isDefaultLocale($locale)) {
-            return $this->getDefaultTranslation($attribute);
-        }
-
-        $rawTranslation = $this->getRawTranslation($attribute, $locale);
-
-        if (is_null($rawTranslation)) {
-            return null;
-        }
-
-        return $this->withAttributeAccessors($attribute, $rawTranslation);
+        return $this->translation()->get($attribute, $locale);
     }
 
     /**

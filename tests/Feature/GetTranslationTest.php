@@ -12,7 +12,7 @@ class GetTranslationTest extends TestCase
     public function it_retrieves_default_attribute_for_default_locale(): void
     {
         $book = BookFactory::new()->create(['title' => 'My best book']);
-        $book->translation()->set('title', 'Моя лучшая книга', 'ru');
+        $book->translation()->add('title', 'Моя лучшая книга', 'ru');
 
         self::assertEquals('My best book', $book->getTranslation('title', 'en'));
     }

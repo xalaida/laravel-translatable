@@ -17,7 +17,7 @@ class MorphMapTest extends TestCase
         ]);
 
         $book = BookFactory::new()->create(['title' => 'Book about dolphins']);
-        $book->translation()->set('title', 'Книга про дельфинов', 'ru');
+        $book->translation()->add('title', 'Книга про дельфинов', 'ru');
 
         $this->assertDatabaseHas('translations', [
             'translatable_type' => 'books',

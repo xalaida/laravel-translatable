@@ -3,6 +3,7 @@
 namespace Nevadskiy\Translatable;
 
 use Illuminate\Database\Eloquent\Model;
+use Nevadskiy\Translatable\Events\TranslationNotFound;
 use Nevadskiy\Translatable\Exceptions\AttributeNotTranslatableException;
 use Nevadskiy\Translatable\Strategies\TranslatorStrategy;
 
@@ -88,7 +89,10 @@ class Translator
         if ($this->isDefaultLocale($locale)) {
             $this->model->setAttribute($attribute, $value);
         } else {
-            $this->attributesToSet[$locale][$attribute] = $this->model->withAttributeMutators($attribute, $value);
+            $value = $this->model->withAttributeMutators($attribute, $value);
+
+            $this->attributesToSet[$locale][$attribute] = $value;
+            $this->attributesToGet[$locale][$attribute] = $value;
         }
 
         return $this;
@@ -99,11 +103,68 @@ class Translator
         $this->set($attribute, $value, $locale)->save();
     }
 
-    public function get(string $attribute, string $locale)
+    public function get(string $attribute, string $locale = null)
     {
-        // TODO: add possibility to log out warnings with missing translations.
+        $this->assertTranslatableAttribute($attribute);
 
-        return $this->strategy->get($attribute, $locale);
+        if ($this->isDefaultLocale($locale)) {
+            return $this->model->getAttribute($attribute);
+        }
+
+        $rawTranslation = $this->getRaw($attribute, $locale);
+
+        if (is_null($rawTranslation)) {
+            return null;
+        }
+
+        return $this->model->withAttributeAccessors($attribute, $rawTranslation);
+
+//        // TODO: add possibility to log out warnings with missing translations.
+//
+//        return $this->strategy->get($attribute, $locale);
+    }
+
+    /**
+     * Get raw translation value for the attribute.
+     */
+    public function getRaw(string $attribute, string $locale = null)
+    {
+        $locale = $locale ?: $this->getLocale();
+
+        if (! $this->hasResolvedTranslation($attribute, $locale)) {
+            $this->resolveTranslation($attribute, $locale);
+        }
+
+        $translation = $this->getResolvedTranslation($attribute, $locale);
+
+        if (is_null($translation)) {
+            event(new TranslationNotFound($this->model, $attribute, $locale));
+        }
+
+        return $translation;
+    }
+
+    /**
+     * Determine whether the attribute has resolved translation according to the given locale.
+     */
+    protected function hasResolvedTranslation(string $attribute, string $locale): bool
+    {
+        return isset($this->resolvedTranslations[$locale][$attribute]);
+    }
+
+    /**
+     * Get the loaded attribute translation.
+     *
+     * @return mixed
+     */
+    protected function getResolvedTranslation(string $attribute, string $locale)
+    {
+        return $this->attributesToGet[$locale][$attribute];
+    }
+
+    protected function resolveTranslation(string $attribute, string $locale): void
+    {
+        $this->attributesToGet[$locale][$attribute] = $this->strategy->get($attribute, $locale);
     }
 
     /**
@@ -140,10 +201,17 @@ class Translator
         }
     }
 
-    public function setMany(array $translations, string $locale = null): void
+    public function setMany(array $translations, string $locale = null): Translator
     {
         foreach ($translations as $attribute => $value) {
             $this->set($attribute, $value, $locale);
         }
+
+        return $this;
+    }
+
+    public function addMany(array $translations, string $locale = null): void
+    {
+        $this->setMany($translations, $locale)->save();
     }
 }

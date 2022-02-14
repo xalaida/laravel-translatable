@@ -13,10 +13,10 @@ class RemoveTranslationsOfDeletedModelTest extends TestCase
     public function it_removes_translations_when_model_is_deleted(): void
     {
         $book1 = BookFactory::new()->create();
-        $book1->translation()->setMany(['title' => 'Птицы', 'description' => 'Книга про птиц'], 'ru');
+        $book1->translation()->addMany(['title' => 'Птицы', 'description' => 'Книга про птиц'], 'ru');
 
         $book2 = BookFactory::new()->create();
-        $book2->translation()->setMany(['title' => 'Дельфины', 'description' => 'Книга о дельфинах'], 'ru');
+        $book2->translation()->addMany(['title' => 'Дельфины', 'description' => 'Книга о дельфинах'], 'ru');
 
         self::assertCount(4, Translation::all());
 

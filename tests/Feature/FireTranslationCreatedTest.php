@@ -16,7 +16,7 @@ class FireTranslationCreatedTest extends TestCase
 
         Event::fake(TranslationCreated::class);
 
-        $book->translation()->set('title', 'Моя книга', 'ru');
+        $book->translation()->add('title', 'Моя книга', 'ru');
 
         Event::assertDispatched(TranslationCreated::class, static function (TranslationCreated $event) use ($book) {
             return $event->translation->translatable->is($book)

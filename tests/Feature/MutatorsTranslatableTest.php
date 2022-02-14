@@ -12,7 +12,7 @@ class MutatorsTranslatableTest extends TestCase
     {
         $book = BookFactory::new()->create();
 
-        $book->translation()->set('title', 'Очень очень длинное название для книги', 'ru');
+        $book->translation()->add('title', 'Очень очень длинное название для книги', 'ru');
 
         $this->assertDatabaseHas('translations', [
             'value' => 'Очень очень длинное название д...',
@@ -24,7 +24,7 @@ class MutatorsTranslatableTest extends TestCase
     {
         $book = BookFactory::new()->create(['title' => 'My book']);
 
-        $book->translation()->set('title', 'Очень очень длинное название для книги', 'ru');
+        $book->translation()->add('title', 'Очень очень длинное название для книги', 'ru');
 
         self::assertEquals('My book', $book->title);
     }
