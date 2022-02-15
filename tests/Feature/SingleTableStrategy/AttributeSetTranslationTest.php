@@ -1,6 +1,6 @@
 <?php
 
-namespace Nevadskiy\Translatable\Tests\Feature;
+namespace Nevadskiy\Translatable\Tests\Feature\SingleTableStrategy;
 
 use Illuminate\Support\Facades\DB;
 use Nevadskiy\Translatable\Models\Translation;
@@ -8,10 +8,10 @@ use Nevadskiy\Translatable\Tests\Support\Factories\BookFactory;
 use Nevadskiy\Translatable\Tests\TestCase;
 use Nevadskiy\Translatable\Translatable;
 
-class AutoTranslationsSetTest extends TestCase
+class AttributeSetTranslationTest extends TestCase
 {
     /** @test */
-    public function it_automatically_saves_translations_for_attributes_using_the_current_locale(): void
+    public function it_automatically_saves_translations_for_attributes_using_current_locale(): void
     {
         $book = BookFactory::new()->create(['title' => 'My first book']);
 
@@ -23,8 +23,8 @@ class AutoTranslationsSetTest extends TestCase
         $book = $book->fresh();
 
         self::assertCount(1, Translation::all());
-        self::assertEquals('Моя первая книга', $book->getTranslation('title', 'ru'));
-        self::assertEquals('My first book', $book->getDefaultTranslation('title'));
+        self::assertEquals('Моя первая книга', $book->translation()->get('title', 'ru'));
+        self::assertEquals('My first book', $book->getOriginalAttribute('title'));
     }
 
     /** @test */
@@ -40,8 +40,8 @@ class AutoTranslationsSetTest extends TestCase
         $book = $book->fresh();
 
         self::assertCount(1, Translation::all());
-        self::assertEquals('Моя книга', $book->getTranslation('title', 'ru'));
-        self::assertEquals('My first book', $book->getDefaultTranslation('title'));
+        self::assertEquals('Моя книга', $book->translation()->get('title', 'ru'));
+        self::assertEquals('My first book', $book->getOriginalAttribute('title'));
     }
 
     /** @test */
@@ -56,7 +56,7 @@ class AutoTranslationsSetTest extends TestCase
         $book = $book->fresh();
 
         self::assertEmpty(Translation::all());
-        self::assertNull($book->getTranslation('title', 'ru'));
+        self::assertNull($book->translation()->get('title', 'ru'));
         self::assertEquals('My first book', $book->title);
     }
 
@@ -73,7 +73,8 @@ class AutoTranslationsSetTest extends TestCase
         $book->save();
 
         self::assertEquals('Исправленное название книги', $book->translation()->get('title'));
-        self::assertEquals('My book', $book->getDefaultTranslation('title'));
+        self::assertEquals('My book', $book->getOriginalAttribute('title'));
+        self::assertCount(1, Translation::all());
     }
 
     /** @test */
@@ -178,7 +179,7 @@ class AutoTranslationsSetTest extends TestCase
     }
 
     /** @test */
-    public function it_does_not_create_models_with_translations_on_not_default_locales(): void
+    public function it_does_not_store_translations_during_model_creation(): void
     {
         $originalLocale = $this->app->getLocale();
         $this->app->setLocale('ru');
@@ -192,7 +193,7 @@ class AutoTranslationsSetTest extends TestCase
     }
 
     /** @test */
-    public function it_does_not_store_prepared_translations_twice(): void
+    public function it_does_not_store_pending_translations_twice(): void
     {
         $book = BookFactory::new()->create(['title' => 'My best book']);
 
@@ -206,6 +207,7 @@ class AutoTranslationsSetTest extends TestCase
         $book->save();
 
         self::assertEmpty(DB::connection()->getQueryLog());
+        self::assertCount(1, Translation::all());
     }
 
     /** @test */
@@ -218,12 +220,9 @@ class AutoTranslationsSetTest extends TestCase
         $book->title = 'Моя лучшая книга';
         $book->save();
 
-        DB::connection()->enableQueryLog();
-
         $book->title = 'Моя лучшая книга';
         $book->save();
 
-        self::assertEmpty(DB::connection()->getQueryLog());
         self::assertCount(1, Translation::all());
     }
 
@@ -233,6 +232,7 @@ class AutoTranslationsSetTest extends TestCase
         $book = BookFactory::new()->create(['title' => 'My best book']);
         $this->app->setLocale('ru');
 
+        // TODO: change API.
         $this->app[Translatable::class]->disableAutoSaving();
 
         $book->title = 'Моя лучшая книга';

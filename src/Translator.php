@@ -150,13 +150,20 @@ class Translator
      */
     public function save(): void
     {
-        foreach ($this->pendingTranslations as $locale => $attributes) {
-            foreach ($attributes as $attribute => $value) {
+        foreach ($this->pullPendingTranslations() as $locale => $attributes) {
+            foreach (array_filter($attributes) as $attribute => $value) {
                 $this->strategy->set($attribute, $value, $locale);
             }
         }
+    }
+
+    private function pullPendingTranslations(): array
+    {
+        $pendingTranslations = $this->pendingTranslations;
 
         $this->pendingTranslations = [];
+
+        return $pendingTranslations;
     }
 
     public function unset()
