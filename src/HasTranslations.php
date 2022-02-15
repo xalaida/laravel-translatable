@@ -28,20 +28,6 @@ trait HasTranslations
     protected $translator;
 
     /**
-     * Prepared translations to be saved into the database.
-     *
-     * @var array
-     */
-    protected $preparedTranslations = [];
-
-    /**
-     * Resolved attribute translations from the database.
-     *
-     * @var array
-     */
-    protected $resolvedTranslations = [];
-
-    /**
      * Boot the trait.
      */
     protected static function bootHasTranslations(): void
@@ -188,102 +174,6 @@ trait HasTranslations
     }
 
     /**
-     * Get raw translation value for the attribute.
-     *
-     * @return mixed
-     */
-    public function getRawTranslation(string $attribute, string $locale = null)
-    {
-        $locale = $locale ?: $this->translation()->getLocale();
-
-        if (! $this->hasResolvedTranslation($attribute, $locale)) {
-            $this->resolveTranslation($attribute, $locale);
-        }
-
-        $translation = $this->getResolvedTranslation($attribute, $locale);
-
-        if (is_null($translation)) {
-            event(new TranslationNotFound($this, $attribute, $locale));
-        }
-
-        return $translation;
-    }
-
-    /**
-     * Determine whether the attribute has resolved translation according to the given locale.
-     */
-    protected function hasResolvedTranslation(string $attribute, string $locale): bool
-    {
-        return isset($this->resolvedTranslations[$locale][$attribute]);
-    }
-
-    /**
-     * Set the given value as the resolved attribute translation.
-     */
-    protected function setResolvedTranslation(string $attribute, string $locale, $value): void
-    {
-        $this->resolvedTranslations[$locale][$attribute] = $value;
-    }
-
-    /**
-     * Get the loaded attribute translation.
-     *
-     * @return mixed
-     */
-    protected function getResolvedTranslation(string $attribute, string $locale)
-    {
-        return $this->resolvedTranslations[$locale][$attribute];
-    }
-
-    /**
-     * Resolve a translation for the given attribute and locale.
-     */
-    protected function resolveTranslation(string $attribute, string $locale): void
-    {
-        $this->setResolvedTranslation($attribute, $locale, $this->translation()->get($attribute, $locale));
-    }
-
-    /**
-     * Determine whether the model has same resolved translation.
-     *
-     * @param $value
-     */
-    protected function hasSameResolvedTranslation(string $attribute, string $locale, $value): bool
-    {
-        return $this->hasResolvedTranslation($attribute, $locale)
-            && $this->getResolvedTranslation($attribute, $locale) === $value;
-    }
-
-    /**
-     * Prepare translation to be stored in the database.
-     *
-     * @return HasTranslations|mixed
-     */
-    protected function prepareTranslation(string $attribute, string $locale, $value)
-    {
-        if ($this->hasSameResolvedTranslation($attribute, $locale, $value)) {
-            return $this;
-        }
-
-        $this->preparedTranslations[$locale][$attribute] = $value;
-        $this->setResolvedTranslation($attribute, $locale, $value);
-
-        return $this;
-    }
-
-//    /**
-//     * Pull any prepared translations.
-//     */
-//    protected function pullPreparedTranslations(): array
-//    {
-//        $translations = $this->preparedTranslations;
-//
-//        $this->preparedTranslations = [];
-//
-//        return $translations;
-//    }
-
-    /**
      * Set translation to the attribute.
      *
      * @deprecated use $this->translate()->set() method instead.
@@ -328,19 +218,6 @@ trait HasTranslations
     {
         $this->translation()->save();
     }
-
-//    /**
-//     * Save the model translations.
-//     */
-//    protected function savePreparedTranslations(): void
-//    {
-//        foreach ($this->pullPreparedTranslations() as $locale => $attributes) {
-//            // TODO: check if it needs to array_filter here. if it is clear, there is no loop.
-//            foreach (array_filter($attributes) as $attribute => $value) {
-//                $this->translation()->set($attribute, $value, $locale);
-//            }
-//        }
-//    }
 
     /**
      * Handle the model deleted event.

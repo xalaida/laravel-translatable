@@ -17,15 +17,6 @@ class Translator
     protected $pendingTranslations = [];
 
     /**
-     * A list of translations that have been already retrieved.
-     *
-     * @TODO: review if it really needed here. maybe not, will be easier to sync.
-     *
-     * @var array
-     */
-    protected $cachedTranslations = [];
-
-    /**
      * The translatable model instance.
      *
      * @var Model|HasTranslations
@@ -91,12 +82,9 @@ class Translator
         $this->assertTranslatableAttribute($attribute);
 
         if ($this->isDefaultLocale($locale)) {
-            $this->model->setAttribute($attribute, $value);
+            $this->model->setOriginalAttribute($attribute, $value);
         } else {
-            $value = $this->model->withAttributeSetter($attribute, $value);
-
-            $this->pendingTranslations[$locale][$attribute] = $value;
-            $this->cachedTranslations[$locale][$attribute] = $value;
+            $this->pendingTranslations[$locale][$attribute] = $this->model->withAttributeSetter($attribute, $value);
         }
 
         return $this;
@@ -108,23 +96,6 @@ class Translator
     }
 
     // TODO: add possibility to log out warnings with missing translations.
-
-    public function get(string $attribute, string $locale = null)
-    {
-        $this->assertTranslatableAttribute($attribute);
-
-        if ($this->isDefaultLocale($locale)) {
-            return $this->model->getAttribute($attribute);
-        }
-
-        $raw = $this->raw($attribute, $locale);
-
-        if (is_null($raw)) {
-            return null;
-        }
-
-        return $this->model->withAttributeGetter($attribute, $raw);
-    }
 
     /**
      * Get the translation value of the given attribute or the original value if it is missing.
@@ -142,6 +113,23 @@ class Translator
         return $value;
     }
 
+    public function get(string $attribute, string $locale = null)
+    {
+        $this->assertTranslatableAttribute($attribute);
+
+        if ($this->isDefaultLocale($locale)) {
+            return $this->model->getOriginalAttribute($attribute);
+        }
+
+        $raw = $this->raw($attribute, $locale);
+
+        if (is_null($raw)) {
+            return null;
+        }
+
+        return $this->model->withAttributeGetter($attribute, $raw);
+    }
+
     /**
      * Get raw translation value for the attribute.
      */
@@ -149,40 +137,14 @@ class Translator
     {
         $locale = $locale ?: $this->getLocale();
 
-        if (! $this->hasCachedTranslation($attribute, $locale)) {
-            $this->resolveTranslation($attribute, $locale);
-        }
-
-        $translation = $this->getResolvedTranslation($attribute, $locale);
+        $translation = $this->strategy->get($attribute, $locale);
 
         if (is_null($translation)) {
+            // TODO: use DI model dispatcher.
             event(new TranslationNotFound($this->model, $attribute, $locale));
         }
 
         return $translation;
-    }
-
-    /**
-     * Determine whether the attribute has resolved translation according to the given locale.
-     */
-    protected function hasCachedTranslation(string $attribute, string $locale): bool
-    {
-        return isset($this->cachedTranslations[$locale][$attribute]);
-    }
-
-    /**
-     * Get the loaded attribute translation.
-     *
-     * @return mixed
-     */
-    protected function getResolvedTranslation(string $attribute, string $locale)
-    {
-        return $this->cachedTranslations[$locale][$attribute];
-    }
-
-    protected function resolveTranslation(string $attribute, string $locale): void
-    {
-        $this->cachedTranslations[$locale][$attribute] = $this->strategy->get($attribute, $locale);
     }
 
     /**
