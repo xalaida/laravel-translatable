@@ -1,6 +1,6 @@
 <?php
 
-namespace Nevadskiy\Translatable\Tests\Feature;
+namespace Nevadskiy\Translatable\Tests\Feature\SingleTableStrategy;
 
 use Illuminate\Support\Facades\DB;
 use Nevadskiy\Translatable\Tests\Support\Factories\BookFactory;
@@ -14,9 +14,9 @@ class EagerLoadingTranslationsTest extends TestCase
     {
         $book = BookFactory::new()->create();
 
-        $book->translation()->set('title', 'Книга про черепах', 'ru');
-        $book->translation()->set('title', 'En bok om sköldpaddor', 'sv');
-        $book->translation()->set('title', 'Ein Buch über Schildkröten', 'de');
+        $book->translation()->add('title', 'Книга про черепах', 'ru');
+        $book->translation()->add('title', 'En bok om sköldpaddor', 'sv');
+        $book->translation()->add('title', 'Ein Buch über Schildkröten', 'de');
 
         $this->app->setLocale('ru');
 
@@ -32,9 +32,9 @@ class EagerLoadingTranslationsTest extends TestCase
     {
         [$book1, $book2, $book3] = BookFactory::new()->createMany(3);
 
-        $book1->translation()->set('title', 'Первая книга', 'ru');
-        $book2->translation()->set('title', 'Вторая книга', 'ru');
-        $book3->translation()->set('title', 'Третья книга', 'ru');
+        $book1->translation()->add('title', 'Первая книга', 'ru');
+        $book2->translation()->add('title', 'Вторая книга', 'ru');
+        $book3->translation()->add('title', 'Третья книга', 'ru');
 
         $this->app->setLocale('ru');
 
@@ -54,7 +54,7 @@ class EagerLoadingTranslationsTest extends TestCase
     {
         $book = BookFactory::new()->create();
 
-        $book->translation()->set('title', 'Книга про черепах', 'ru');
+        $book->translation()->add('title', 'Книга про черепах', 'ru');
 
         [$book] = Book::withoutTranslations()->get();
 

@@ -1,6 +1,6 @@
 <?php
 
-namespace Nevadskiy\Translatable\Tests\Feature;
+namespace Nevadskiy\Translatable\Tests\Feature\SingleTableStrategy;
 
 use Nevadskiy\Translatable\Models\Translation;
 use Nevadskiy\Translatable\Tests\Support\Factories\BookFactory;
@@ -18,7 +18,7 @@ class CastTranslationsTest extends TestCase
             ],
         ]);
 
-        $book->translation()->set('content', ['title' => 'Глава 1', 'body' => 'Глава о птицах'], 'ru');
+        $book->translation()->add('content', ['title' => 'Глава 1', 'body' => 'Глава о птицах'], 'ru');
 
         $this->app->setLocale('ru');
 

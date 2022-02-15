@@ -179,20 +179,6 @@ class AttributeSetTranslationTest extends TestCase
     }
 
     /** @test */
-    public function it_does_not_store_translations_during_model_creation(): void
-    {
-        $originalLocale = $this->app->getLocale();
-        $this->app->setLocale('ru');
-
-        $book = BookFactory::new()->create(['title' => 'Название на русском']);
-
-        $this->app->setLocale($originalLocale);
-
-        self::assertEmpty(Translation::all());
-        self::assertEquals('Название на русском', $book->title);
-    }
-
-    /** @test */
     public function it_does_not_store_pending_translations_twice(): void
     {
         $book = BookFactory::new()->create(['title' => 'My best book']);
