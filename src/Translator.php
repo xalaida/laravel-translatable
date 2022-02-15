@@ -126,6 +126,22 @@ class Translator
     }
 
     /**
+     * Get list of translations for all translatable attributes for the given locale.
+     */
+    public function all(string $locale = null): array
+    {
+        $locale = $locale ?: $this->getLocale();
+
+        $translations = [];
+
+        foreach ($this->model->getTranslatable() as $attribute) {
+            $translations[$attribute] = $this->getOrOriginal($attribute, $locale);
+        }
+
+        return $translations;
+    }
+
+    /**
      * Get raw translation value for the attribute.
      */
     public function raw(string $attribute, string $locale = null)

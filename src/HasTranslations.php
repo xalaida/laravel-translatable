@@ -6,8 +6,6 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Collection;
-use Nevadskiy\Translatable\Events\TranslationNotFound;
-use Nevadskiy\Translatable\Exceptions\AttributeNotTranslatableException;
 use Nevadskiy\Translatable\Models\Translation;
 use Nevadskiy\Translatable\Scopes\TranslationsEagerLoadScope;
 use Nevadskiy\Translatable\Strategies\SingleTableStrategy;
@@ -48,13 +46,13 @@ trait HasTranslations
      */
     protected function initializeHasTranslations(): void
     {
-        $this->translator = $this->newTranslation();
+        $this->translator = $this->newTranslator();
     }
 
     /**
      * Make a new translator instance for the model.
      */
-    public function newTranslation(): Translator
+    public function newTranslator(): Translator
     {
         return new Translator($this, $this->getTranslationStrategy());
     }
@@ -283,22 +281,6 @@ trait HasTranslations
      */
     public function attributesToArray(): array
     {
-        return array_merge(parent::attributesToArray(), $this->getTranslations());
-    }
-
-    /**
-     * Get model translations.
-     */
-    public function getTranslations(string $locale = null): array
-    {
-        $locale = $locale ?: $this->translation()->getLocale();
-
-        $translations = [];
-
-        foreach ($this->getTranslatable() as $attribute) {
-            $translations[$attribute] = $this->translation()->getOrOriginal($attribute, $locale);
-        }
-
-        return $translations;
+        return array_merge(parent::attributesToArray(), $this->translation()->all());
     }
 }
