@@ -125,4 +125,6 @@ class AdditionalTableStrategyTest extends TestCase
 
         self::assertEmpty(DB::getQueryLog());
     }
+
+    // TODO: feature auto eager loading translations for current locale.
 }
