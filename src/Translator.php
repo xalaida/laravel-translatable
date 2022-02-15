@@ -38,20 +38,12 @@ class Translator
     protected $defaultLocale;
 
     /**
-     * The current locale.
-     *
-     * @var string
-     */
-    protected $locale;
-
-    /**
      * Make a new translator instance.
      */
     public function __construct(Model $model, TranslatorStrategy $strategy)
     {
         $this->model = $model;
         $this->strategy = $strategy;
-        $this->locale = app()->getLocale();
         // TODO: maybe rename into 'fallback' locale (as laravel config name).
         $this->defaultLocale = 'en';
     }
@@ -80,6 +72,8 @@ class Translator
     public function set(string $attribute, $value, string $locale = null): Translator
     {
         $this->assertTranslatableAttribute($attribute);
+
+        $locale = $locale ?: $this->getLocale();
 
         if ($this->isDefaultLocale($locale)) {
             $this->model->setOriginalAttribute($attribute, $value);
@@ -136,6 +130,10 @@ class Translator
     public function raw(string $attribute, string $locale = null)
     {
         $locale = $locale ?: $this->getLocale();
+
+        if (isset($this->pendingTranslations[$locale][$attribute])) {
+            return $this->pendingTranslations[$locale][$attribute];
+        }
 
         $translation = $this->strategy->get($attribute, $locale);
 

@@ -1,6 +1,6 @@
 <?php
 
-namespace Nevadskiy\Translatable\Tests\Feature;
+namespace Nevadskiy\Translatable\Tests\Feature\SingleTableStrategy;
 
 use Nevadskiy\Translatable\Tests\Support\Factories\BookFactory;
 use Nevadskiy\Translatable\Tests\TestCase;
@@ -14,7 +14,7 @@ class AccessorsTranslatableTest extends TestCase
 
         $book->translation()->add('title', 'моя книга', 'ru');
 
-        self::assertEquals('Моя книга', $book->getTranslation('title', 'ru'));
+        self::assertEquals('Моя книга', $book->translation()->get('title', 'ru'));
     }
 
     /** @test */
@@ -34,7 +34,7 @@ class AccessorsTranslatableTest extends TestCase
 
         $this->app->setLocale('ru');
 
-        self::assertEquals('My book', $book->getDefaultTranslation('title'));
+        self::assertEquals('My book', $book->getOriginalAttribute('title'));
     }
 
     /** @test */
@@ -44,7 +44,8 @@ class AccessorsTranslatableTest extends TestCase
 
         $book->translation()->add('title', 'моя книга', 'ru');
 
-        $book->getTranslation('title', 'ru');
+        $book->translation()->get('title', 'ru');
+        $book->save();
 
         self::assertEquals('my book', $book->getRawOriginal('title'));
     }
@@ -70,11 +71,11 @@ class AccessorsTranslatableTest extends TestCase
 
         $this->app->setLocale('ru');
 
-        self::assertEquals('моя книга', $book->getRawTranslation('title', 'ru'));
+        self::assertEquals('моя книга', $book->translation()->raw('title', 'ru'));
     }
 
     /** @test */
-    public function it_stores_correctly_values_after_applied_accessors(): void
+    public function it_correctly_stores_values_after_applied_accessors(): void
     {
         $book = BookFactory::new()->create();
 
@@ -88,11 +89,11 @@ class AccessorsTranslatableTest extends TestCase
 
         $book = $book->fresh();
 
-        self::assertEquals('моя книга', $book->getRawTranslation('title', 'ru'));
+        self::assertEquals('моя книга', $book->translation()->raw('title', 'ru'));
     }
 
     /** @test */
-    public function it_uses_model_accessors_which_is_not_translatable_correctly(): void
+    public function it_correctly_uses_model_accessors_for_non_translatable_attributes(): void
     {
         $book = BookFactory::new()->create();
 
