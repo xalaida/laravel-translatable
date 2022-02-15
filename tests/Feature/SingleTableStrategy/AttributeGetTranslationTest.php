@@ -1,6 +1,6 @@
 <?php
 
-namespace Nevadskiy\Translatable\Tests\Feature;
+namespace Nevadskiy\Translatable\Tests\Feature\SingleTableStrategy;
 
 use Illuminate\Support\Facades\DB;
 use Nevadskiy\Translatable\Tests\Support\Factories\BookFactory;
@@ -8,10 +8,10 @@ use Nevadskiy\Translatable\Tests\Support\Models\Book;
 use Nevadskiy\Translatable\Tests\TestCase;
 use Nevadskiy\Translatable\Translatable;
 
-class AutoTranslationsGetTest extends TestCase
+class AttributeGetTranslationTest extends TestCase
 {
     /** @test */
-    public function it_automatically_retrieves_translations_for_attributes_using_the_current_locale(): void
+    public function it_automatically_retrieves_translations_for_attributes_using_current_locale(): void
     {
         $book = BookFactory::new()->create();
 
@@ -41,11 +41,11 @@ class AutoTranslationsGetTest extends TestCase
 
         $this->app->setLocale('ru');
 
-        self::assertEquals('My excellent book', $book->getDefaultTranslation('title'));
+        self::assertEquals('My excellent book', $book->getOriginalAttribute('title'));
     }
 
     /** @test */
-    public function it_returns_default_attribute_for_default_locale(): void
+    public function it_returns_original_attribute_for_default_locale(): void
     {
         $book = BookFactory::new()->create(['title' => 'My best book']);
 
@@ -55,7 +55,7 @@ class AutoTranslationsGetTest extends TestCase
     }
 
     /** @test */
-    public function it_retrieves_correctly_values_for_not_translatable_attributes(): void
+    public function it_correctly_retrieves_values_for_not_translatable_attributes(): void
     {
         $book = BookFactory::new()->create(['version' => 5]);
 
@@ -63,7 +63,7 @@ class AutoTranslationsGetTest extends TestCase
     }
 
     /** @test */
-    public function it_does_not_store_resolved_values_back(): void
+    public function it_does_not_store_retrieved_values_again(): void
     {
         $book = BookFactory::new()->create(['title' => 'My best book']);
 
@@ -81,12 +81,13 @@ class AutoTranslationsGetTest extends TestCase
     }
 
     /** @test */
-    public function it_does_not_auto_load_translations_when_feature_is_disabled(): void
+    public function it_does_not_substitute_value_with_translation_when_feature_is_disabled(): void
     {
         $book = BookFactory::new()->create(['title' => 'My best book']);
 
         $book->translation()->add('title', 'Моя лучшая книга', 'ru');
 
+        // TODO: change API.
         $this->app[Translatable::class]->disableAutoLoading();
 
         $this->app->setLocale('ru');
@@ -101,6 +102,7 @@ class AutoTranslationsGetTest extends TestCase
 
         $book->translation()->add('title', 'Моя лучшая книга', 'ru');
 
+        // TODO: change API.
         $this->app[Translatable::class]->disableAutoLoading();
 
         $this->app->setLocale('ru');
