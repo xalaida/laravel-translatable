@@ -1,6 +1,6 @@
 <?php
 
-namespace Nevadskiy\Translatable\Tests\Feature;
+namespace Nevadskiy\Translatable\Tests\Feature\SingleTableStrategy;
 
 use Illuminate\Support\Facades\Event;
 use Nevadskiy\Translatable\Events\TranslationCreated;
