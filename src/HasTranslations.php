@@ -96,11 +96,12 @@ trait HasTranslations
             return $this->getOriginalAttribute($attribute);
         }
 
+        // TODO: change API.
         if (! $this->autoLoadTranslations($attribute)) {
             return $this->getOriginalAttribute($attribute);
         }
 
-        return $this->getTranslationOrOriginal($attribute);
+        return $this->translation()->getOrOriginal($attribute);
     }
 
     /**
@@ -126,6 +127,7 @@ trait HasTranslations
             return $this->setOriginalAttribute($attribute, $value);
         }
 
+        // TODO: change API.
         if (! $this->autoSaveTranslations($attribute)) {
             return $this->setOriginalAttribute($attribute, $value);
         }
@@ -160,29 +162,6 @@ trait HasTranslations
     public function autoSaveTranslations(string $attribute): bool
     {
         return resolve(Translatable::class)->shouldAutoSaveTranslations();
-    }
-
-    /**
-     * Get translation value for the attribute.
-     *
-     * @deprecated use $this->translate()->get() method instead.
-     * @return mixed
-     */
-    public function getTranslation(string $attribute, string $locale = null)
-    {
-        return $this->translation()->get($attribute, $locale);
-    }
-
-    /**
-     * Set translation to the attribute.
-     *
-     * @deprecated use $this->translate()->set() method instead.
-     * @param mixed $value
-     * @return HasTranslations|mixed
-     */
-    public function setTranslation(string $attribute, $value, string $locale = null)
-    {
-        return $this->translation()->set($attribute, $value, $locale);
     }
 
     /**
@@ -262,16 +241,6 @@ trait HasTranslations
     }
 
     /**
-     * Get a translation of the attribute or default value if translation is missing.
-     *
-     * @return mixed
-     */
-    public function getTranslationOrOriginal(string $attribute, string $locale = null)
-    {
-        return $this->translation()->getOrOriginal($attribute, $locale);
-    }
-
-    /**
      * Get the attribute value with all accessors and casts applied.
      *
      * @param mixed $value
@@ -327,7 +296,7 @@ trait HasTranslations
         $translations = [];
 
         foreach ($this->getTranslatable() as $attribute) {
-            $translations[$attribute] = $this->getTranslationOrOriginal($attribute, $locale);
+            $translations[$attribute] = $this->translation()->getOrOriginal($attribute, $locale);
         }
 
         return $translations;

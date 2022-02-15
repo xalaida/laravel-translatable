@@ -84,7 +84,7 @@ class Translator
         return $this;
     }
 
-    public function add(string $attribute, $value, string $locale): void
+    public function add(string $attribute, $value, string $locale = null): void
     {
         $this->set($attribute, $value, $locale)->save();
     }
@@ -107,6 +107,7 @@ class Translator
         return $value;
     }
 
+    // TODO: make it always to return original value if translation is missing and introduce separate method for null return.
     public function get(string $attribute, string $locale = null)
     {
         $this->assertTranslatableAttribute($attribute);

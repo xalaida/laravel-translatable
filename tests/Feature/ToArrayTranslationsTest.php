@@ -16,8 +16,8 @@ class ToArrayTranslationsTest extends TestCase
             'content' => null,
         ]);
 
-        $book->translation()->set('title', 'Моя первая книга', 'ru');
-        $book->translation()->set('description', 'Книга о дельфинах', 'ru');
+        $book->translation()->add('title', 'Моя первая книга', 'ru');
+        $book->translation()->add('description', 'Книга о дельфинах', 'ru');
 
         $this->app->setLocale('ru');
 
@@ -36,8 +36,8 @@ class ToArrayTranslationsTest extends TestCase
             'description' => 'Book about dolphins',
         ]);
 
-        $book->translation()->set('title', 'Моя первая книга', 'ru');
-        $book->translation()->set('description', 'Книга о дельфинах', 'ru');
+        $book->translation()->add('title', 'Моя первая книга', 'ru');
+        $book->translation()->add('description', 'Книга о дельфинах', 'ru');
 
         $this->app->setLocale('ru');
 
@@ -55,7 +55,7 @@ class ToArrayTranslationsTest extends TestCase
             'description' => 'Book about dolphins',
         ]);
 
-        $book->translation()->set('title', 'первая книга', 'ru');
+        $book->translation()->add('title', 'первая книга', 'ru');
 
         $this->app->setLocale('ru');
 

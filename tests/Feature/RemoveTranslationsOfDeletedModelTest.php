@@ -30,7 +30,7 @@ class RemoveTranslationsOfDeletedModelTest extends TestCase
     public function it_does_not_remove_translations_when_model_is_soft_deleted(): void
     {
         $post1 = PostFactory::new()->create();
-        $post1->translation()->set('body', 'Удаленный пост', 'ru');
+        $post1->translation()->add('body', 'Удаленный пост', 'ru');
 
         self::assertCount(1, Translation::all());
 
@@ -43,7 +43,7 @@ class RemoveTranslationsOfDeletedModelTest extends TestCase
     public function it_removes_translations_of_force_deleted_models(): void
     {
         $post1 = PostFactory::new()->create();
-        $post1->translation()->set('body', 'Удаленный пост', 'ru');
+        $post1->translation()->add('body', 'Удаленный пост', 'ru');
 
         self::assertCount(1, Translation::all());
 

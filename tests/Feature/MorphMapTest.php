@@ -22,6 +22,6 @@ class MorphMapTest extends TestCase
         $this->assertDatabaseHas('translations', [
             'translatable_type' => 'books',
         ]);
-        self::assertEquals('Книга про дельфинов', $book->getTranslation('title', 'ru'));
+        self::assertEquals('Книга про дельфинов', $book->translation()->get('title', 'ru'));
     }
 }

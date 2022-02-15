@@ -1,6 +1,6 @@
 <?php
 
-namespace Nevadskiy\Translatable\Tests\Feature\SingleTableStrategy;
+namespace Nevadskiy\Translatable\Tests\Feature;
 
 use Nevadskiy\Translatable\Tests\Support\Factories\BookFactory;
 use Nevadskiy\Translatable\Tests\TestCase;

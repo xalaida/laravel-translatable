@@ -1,6 +1,6 @@
 <?php
 
-namespace Nevadskiy\Translatable\Tests\Feature\SingleTableStrategy;
+namespace Nevadskiy\Translatable\Tests\Feature;
 
 use Illuminate\Support\Facades\Event;
 use Nevadskiy\Translatable\Events\TranslationNotFound;
@@ -34,7 +34,7 @@ class FireTranslationNotFoundTest extends TestCase
 
         Event::fake(TranslationNotFound::class);
 
-        self::assertNull($book->getTranslation('title', 'ru'));
+        self::assertNull($book->translation()->get('title', 'ru'));
 
         Event::assertDispatched(TranslationNotFound::class, static function (TranslationNotFound $event) use ($book) {
             return $event->attribute === 'title'
@@ -52,7 +52,7 @@ class FireTranslationNotFoundTest extends TestCase
 
         Event::fake(TranslationNotFound::class);
 
-        self::assertEquals('Моя оригинальная книга', $book->getTranslation('title', 'ru'));
+        self::assertEquals('Моя оригинальная книга', $book->translation()->get('title', 'ru'));
 
         Event::assertNotDispatched(TranslationNotFound::class);
     }

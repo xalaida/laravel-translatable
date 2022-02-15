@@ -14,7 +14,7 @@ class SetTranslationTest extends TestCase
     {
         $book = BookFactory::new()->create();
 
-        $book->setTranslation('title', 'Book title in English', 'en');
+        $book->translation()->add('title', 'Book title in English', 'en');
         $book->save();
 
         self::assertEquals('Book title in English', $book->title);
@@ -22,12 +22,12 @@ class SetTranslationTest extends TestCase
     }
 
     /** @test */
-    public function it_throws_en_exception_for_not_translatable_attribute(): void
+    public function it_throws_an_exception_for_not_translatable_attribute(): void
     {
         $book = BookFactory::new()->create();
 
         $this->expectException(AttributeNotTranslatableException::class);
 
-        $book->setTranslation('id', 'English ID');
+        $book->translation()->add('id', 'English ID');
     }
 }

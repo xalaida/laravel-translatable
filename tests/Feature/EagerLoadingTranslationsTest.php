@@ -1,6 +1,6 @@
 <?php
 
-namespace Nevadskiy\Translatable\Tests\Feature\SingleTableStrategy;
+namespace Nevadskiy\Translatable\Tests\Feature;
 
 use Illuminate\Support\Facades\DB;
 use Nevadskiy\Translatable\Tests\Support\Factories\BookFactory;

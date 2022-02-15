@@ -14,10 +14,10 @@ class RemoveUnusedTranslationsTest extends TestCase
     public function it_removes_all_unused_translations_from_the_database(): void
     {
         $book1 = BookFactory::new()->create();
-        $book1->translation()->setMany(['title' => 'Птицы', 'description' => 'Книга о птицах'], 'ru');
+        $book1->translation()->addMany(['title' => 'Птицы', 'description' => 'Книга о птицах'], 'ru');
 
         $book2 = BookFactory::new()->create();
-        $book2->translation()->setMany(['title' => 'Дельфины', 'description' => 'Книга о дельфинах'], 'ru');
+        $book2->translation()->addMany(['title' => 'Дельфины', 'description' => 'Книга о дельфинах'], 'ru');
 
         self::assertCount(4, Translation::all());
 
@@ -36,11 +36,11 @@ class RemoveUnusedTranslationsTest extends TestCase
     public function it_does_not_remove_translations_as_unused_for_soft_deleted_models(): void
     {
         $post1 = PostFactory::new()->create();
-        $post1->translation()->set('body', 'Удаленный пост', 'ru');
+        $post1->translation()->add('body', 'Удаленный пост', 'ru');
         $post1->delete();
 
         $post2 = PostFactory::new()->create();
-        $post2->translation()->set('body', 'Тестовый пост', 'ru');
+        $post2->translation()->add('body', 'Тестовый пост', 'ru');
 
         self::assertCount(2, Translation::all());
 
@@ -48,4 +48,6 @@ class RemoveUnusedTranslationsTest extends TestCase
 
         self::assertCount(2, Translation::all());
     }
+
+    // TODO: feature for additional strategy.
 }

@@ -102,10 +102,10 @@ class TranslationsTest extends TestCase
     {
         $book = BookFactory::new()->create();
 
-        $book->translation()->setMany([
+        $book->translation()->addMany([
             'title' => 'Тестовое название книги',
             'description' => 'Тестовое описание книги',
-        ], 'ru')->save();
+        ], 'ru');
 
         self::assertEquals('Тестовое название книги', $book->translation()->get('title', 'ru'));
         self::assertEquals('Тестовое описание книги', $book->translation()->get('description', 'ru'));
@@ -170,19 +170,19 @@ class TranslationsTest extends TestCase
     {
         $book = BookFactory::new()->create(['title' => 'My book']);
 
-        $book->translation()->set('title', 'My english book', $this->app->getLocale());
+        $book->translation()->add('title', 'My english book', $this->app->getLocale());
 
         self::assertEquals('My english book', $book->getAttribute('title'));
         self::assertEmpty(Translation::all());
     }
 
     /** @test */
-    public function it_throws_en_exception_during_translation_not_translatable_attributes(): void
+    public function it_throws_an_exception_during_translation_not_translatable_attributes(): void
     {
         $book = BookFactory::new()->create(['title' => 'My book']);
 
         try {
-            $book->translation()->set('version', '5', $this->app->getLocale());
+            $book->translation()->add('version', '5', $this->app->getLocale());
             self::fail('Exception was not thrown for not translatable attribute');
         } catch (AttributeNotTranslatableException $e) {
             self::assertCount(0, Translation::all());
