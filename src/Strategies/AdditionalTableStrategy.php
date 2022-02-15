@@ -6,6 +6,7 @@ use Illuminate\Database\ConnectionInterface;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Query\Builder;
 use Illuminate\Support\Str;
+use Nevadskiy\Translatable\HasTranslations;
 
 /**
  * TODO: make it configurable to use timestamps or no.
@@ -30,6 +31,7 @@ class AdditionalTableStrategy implements TranslatorStrategy
      * Make a new strategy instance.
      *
      * TODO: probably swap Model with 'Translatable' interface to decouple dependencies.
+     * @param Model|HasTranslations $model
      */
     public function __construct(Model $model, ConnectionInterface $connection)
     {
@@ -40,13 +42,27 @@ class AdditionalTableStrategy implements TranslatorStrategy
     // TODO: add possibility to use default values...
     // TODO: add possibility configure where to put default/fallback locale values (own/original table, additional/translations table)
 
+//    public function get(string $attribute, string $locale)
+//    {
+//        return $this->table()->where([
+//            // TODO: make the foreign key configurable.
+//            $this->model->getForeignKey() => $this->model->getKey(),
+//            'locale' => $locale
+//        ])->value($attribute);
+//    }
+
+    /**
+     * Get the translation value from the collection of translations.
+     */
     public function get(string $attribute, string $locale)
     {
-        return $this->table()->where([
-            // TODO: make the foreign key configurable.
-            $this->model->getForeignKey() => $this->model->getKey(),
-            'locale' => $locale
-        ])->value($attribute);
+        $translation = $this->model->translations->where('locale', $locale)->first();
+
+        if (! $translation) {
+            return null;
+        }
+
+        return $translation->getAttribute($attribute);
     }
 
     // TODO: possible 'nullable' insert error case here for multiple fields.

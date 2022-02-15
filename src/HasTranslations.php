@@ -107,11 +107,11 @@ trait HasTranslations
     public function getAttribute($attribute)
     {
         if (! $this->shouldBeTranslated($attribute)) {
-            return $this->getOriginal($attribute);
+            return parent::getAttribute($attribute);
         }
 
         if (! $this->autoLoadTranslations($attribute)) {
-            return $this->getOriginal($attribute);
+            return parent::getAttribute($attribute);
         }
 
         return $this->getTranslationOrDefault($attribute);
