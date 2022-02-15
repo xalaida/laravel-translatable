@@ -10,16 +10,20 @@ use Nevadskiy\Translatable\Strategies\TranslatorStrategy;
 class Translator
 {
     /**
-     * @TODO rename
+     * A list of pending translation insertions.
+     *
      * @var array
      */
-    protected $attributesToSet = [];
+    protected $pendingTranslations = [];
 
     /**
-     * @TODO rename
+     * A list of translations that have been already retrieved.
+     *
+     * @TODO: review if it really needed here. maybe not, will be easier to sync.
+     *
      * @var array
      */
-    protected $attributesToGet = [];
+    protected $cachedTranslations = [];
 
     /**
      * The translatable model instance.
@@ -89,10 +93,10 @@ class Translator
         if ($this->isDefaultLocale($locale)) {
             $this->model->setAttribute($attribute, $value);
         } else {
-            $value = $this->model->withAttributeMutators($attribute, $value);
+            $value = $this->model->withAttributeSetter($attribute, $value);
 
-            $this->attributesToSet[$locale][$attribute] = $value;
-            $this->attributesToGet[$locale][$attribute] = $value;
+            $this->pendingTranslations[$locale][$attribute] = $value;
+            $this->cachedTranslations[$locale][$attribute] = $value;
         }
 
         return $this;
@@ -103,6 +107,8 @@ class Translator
         $this->set($attribute, $value, $locale)->save();
     }
 
+    // TODO: add possibility to log out warnings with missing translations.
+
     public function get(string $attribute, string $locale = null)
     {
         $this->assertTranslatableAttribute($attribute);
@@ -111,27 +117,39 @@ class Translator
             return $this->model->getAttribute($attribute);
         }
 
-        $rawTranslation = $this->getRaw($attribute, $locale);
+        $raw = $this->raw($attribute, $locale);
 
-        if (is_null($rawTranslation)) {
+        if (is_null($raw)) {
             return null;
         }
 
-        return $this->model->withAttributeAccessors($attribute, $rawTranslation);
+        return $this->model->withAttributeGetter($attribute, $raw);
+    }
 
-//        // TODO: add possibility to log out warnings with missing translations.
-//
-//        return $this->strategy->get($attribute, $locale);
+    /**
+     * Get the translation value of the given attribute or the original value if it is missing.
+     *
+     * TODO: support original values to be stored within translations table.
+     */
+    public function getOrOriginal(string $attribute, string $locale = null)
+    {
+        $value = $this->get($attribute, $locale);
+
+        if (is_null($value)) {
+            return $this->model->getOriginalAttribute($attribute);
+        }
+
+        return $value;
     }
 
     /**
      * Get raw translation value for the attribute.
      */
-    public function getRaw(string $attribute, string $locale = null)
+    public function raw(string $attribute, string $locale = null)
     {
         $locale = $locale ?: $this->getLocale();
 
-        if (! $this->hasResolvedTranslation($attribute, $locale)) {
+        if (! $this->hasCachedTranslation($attribute, $locale)) {
             $this->resolveTranslation($attribute, $locale);
         }
 
@@ -147,9 +165,9 @@ class Translator
     /**
      * Determine whether the attribute has resolved translation according to the given locale.
      */
-    protected function hasResolvedTranslation(string $attribute, string $locale): bool
+    protected function hasCachedTranslation(string $attribute, string $locale): bool
     {
-        return isset($this->resolvedTranslations[$locale][$attribute]);
+        return isset($this->cachedTranslations[$locale][$attribute]);
     }
 
     /**
@@ -159,12 +177,12 @@ class Translator
      */
     protected function getResolvedTranslation(string $attribute, string $locale)
     {
-        return $this->attributesToGet[$locale][$attribute];
+        return $this->cachedTranslations[$locale][$attribute];
     }
 
     protected function resolveTranslation(string $attribute, string $locale): void
     {
-        $this->attributesToGet[$locale][$attribute] = $this->strategy->get($attribute, $locale);
+        $this->cachedTranslations[$locale][$attribute] = $this->strategy->get($attribute, $locale);
     }
 
     /**
@@ -172,13 +190,13 @@ class Translator
      */
     public function save(): void
     {
-        foreach ($this->attributesToSet as $locale => $attributes) {
+        foreach ($this->pendingTranslations as $locale => $attributes) {
             foreach ($attributes as $attribute => $value) {
                 $this->strategy->set($attribute, $value, $locale);
             }
         }
 
-        $this->attributesToSet = [];
+        $this->pendingTranslations = [];
     }
 
     public function unset()
