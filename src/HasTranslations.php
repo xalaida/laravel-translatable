@@ -17,14 +17,9 @@ use Nevadskiy\Translatable\Strategies\TranslatorStrategy;
  */
 trait HasTranslations
 {
-    use TranslationScopes,
+    use Concerns\Translations,
+        TranslationScopes,
         TranslatableUrlRouting;
-
-    /**
-     * The model translator instance.
-     */
-    protected $translator;
-
     /**
      * Boot the trait.
      */
@@ -42,31 +37,6 @@ trait HasTranslations
     }
 
     /**
-     * Init the trait.
-     */
-    protected function initializeHasTranslations(): void
-    {
-        $this->translator = $this->newTranslator();
-    }
-
-    /**
-     * Make a new translator instance for the model.
-     */
-    public function newTranslator(): Translator
-    {
-        return new Translator($this, $this->getTranslationStrategy());
-    }
-
-    /**
-     * Get the translator instance for the model.
-     */
-    public function translation(): Translator
-    {
-        // TODO: maybe consider lazy initialization $this->translator ?: $this->newTranslator();
-        return $this->translator;
-    }
-
-    /**
      * Get the translation strategy.
      */
     protected function getTranslationStrategy(): TranslatorStrategy
@@ -80,112 +50,6 @@ trait HasTranslations
     public function translations(): MorphMany
     {
         return $this->morphMany(Translation::class, 'translatable');
-    }
-
-    /**
-     * Get an attribute from the model.
-     *
-     * @param string $attribute
-     * @return mixed
-     */
-    public function getAttribute($attribute)
-    {
-        if (! $this->shouldBeTranslated($attribute)) {
-            return $this->getOriginalAttribute($attribute);
-        }
-
-        // TODO: change API.
-        if (! $this->autoLoadTranslations($attribute)) {
-            return $this->getOriginalAttribute($attribute);
-        }
-
-        return $this->translation()->getOrOriginal($attribute);
-    }
-
-    /**
-     * Get attribute's default value without translation.
-     *
-     * @return mixed
-     */
-    public function getOriginalAttribute(string $attribute)
-    {
-        return parent::getAttribute($attribute);
-    }
-
-    /**
-     * Set a given attribute on the model.
-     *
-     * @param string $attribute
-     * @param mixed $value
-     * @return mixed
-     */
-    public function setAttribute($attribute, $value)
-    {
-        if (! $this->shouldBeTranslated($attribute)) {
-            return $this->setOriginalAttribute($attribute, $value);
-        }
-
-        // TODO: change API.
-        if (! $this->autoSaveTranslations($attribute)) {
-            return $this->setOriginalAttribute($attribute, $value);
-        }
-
-        $this->translation()->set($attribute, $value);
-
-        return $this;
-    }
-
-    /**
-     * Set attribute's value without translation.
-     *
-     * @param mixed $value
-     * @return mixed
-     */
-    public function setOriginalAttribute(string $attribute, $value)
-    {
-        return parent::setAttribute($attribute, $value);
-    }
-
-    /**
-     * Determine if the model should automatically load translations on attribute get.
-     */
-    public function autoLoadTranslations(string $attribute): bool
-    {
-        return resolve(Translatable::class)->shouldAutoLoadTranslations();
-    }
-
-    /**
-     * Determine if the model should automatically save translations on attribute set.
-     */
-    public function autoSaveTranslations(string $attribute): bool
-    {
-        return resolve(Translatable::class)->shouldAutoSaveTranslations();
-    }
-
-    /**
-     * Determine whether the attribute should be translated.
-     */
-    protected function shouldBeTranslated(string $attribute): bool
-    {
-        // TODO: review this. probably translation can be associated with a model that does not exist yet?
-
-        return $this->exists && $this->isTranslatable($attribute);
-    }
-
-    /**
-     * Determine whether the attribute is translatable.
-     */
-    public function isTranslatable(string $attribute): bool
-    {
-        return collect($this->getTranslatable())->contains($attribute);
-    }
-
-    /**
-     * Get translatable attributes.
-     */
-    public function getTranslatable(): array
-    {
-        return $this->translatable ?? [];
     }
 
     /**
@@ -236,51 +100,5 @@ trait HasTranslations
     protected function deleteTranslations(): void
     {
         $this->translations()->delete();
-    }
-
-    /**
-     * Get the attribute value with all accessors and casts applied.
-     *
-     * @param mixed $value
-     * @return mixed
-     */
-    public function withAttributeGetter(string $key, $value)
-    {
-        $original = $this->attributes[$key];
-
-        $this->attributes[$key] = $value;
-
-        $processed = parent::getAttribute($key);
-
-        $this->attributes[$key] = $original;
-
-        return $processed;
-    }
-
-    /**
-     * Get the attribute value with all mutators and casts applied.
-     *
-     * @param mixed $value
-     * @return mixed
-     */
-    public function withAttributeSetter(string $key, $value)
-    {
-        $original = $this->attributes[$key];
-
-        parent::setAttribute($key, $value);
-
-        $processed = $this->attributes[$key];
-
-        $this->attributes[$key] = $original;
-
-        return $processed;
-    }
-
-    /**
-     * Convert the model's attributes to an array.
-     */
-    public function attributesToArray(): array
-    {
-        return array_merge(parent::attributesToArray(), $this->translation()->toArray());
     }
 }

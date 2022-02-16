@@ -29,13 +29,11 @@ trait HasEntityTranslations
         static::addGlobalScope(new TranslationsEagerLoadScope());
 
         static::saved(static function (self $translatable) {
-            $translatable->translation()->save();
+            $translatable->handleSavedEvent();
         });
 
         static::deleted(static function (self $translatable) {
-            if ($translatable->shouldDeleteTranslations()) {
-                $translatable->deleteTranslations();
-            }
+            $translatable->handleDeletedEvent();
         });
     }
 
@@ -88,6 +86,24 @@ trait HasEntityTranslations
     protected function getEntityTranslationForeignKey(): string
     {
         return $this->getForeignKey();
+    }
+
+    /**
+     * Handle the model "saved" event.
+     */
+    protected function handleSavedEvent(): void
+    {
+        $this->translation()->save();
+    }
+
+    /**
+     * Handle the model deleted event.
+     */
+    protected function handleDeletedEvent(): void
+    {
+        if ($this->shouldDeleteTranslations()) {
+            $this->deleteTranslations();
+        }
     }
 
     /**
