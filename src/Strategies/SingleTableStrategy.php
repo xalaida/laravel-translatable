@@ -17,26 +17,29 @@ class SingleTableStrategy implements TranslatorStrategy
 
     /**
      * Make a new strategy instance.
-     *
-     * TODO: probably swap Model with 'Translatable' interface to decouple dependencies.
      */
     public function __construct(Model $model)
     {
         $this->model = $model;
     }
 
+    /**
+     * @inheritdoc
+     */
     public function get(string $attribute, string $locale)
     {
-        // TODO Reduce the amount of fields using partition selects.
         return $this->model->translations->first(static function (Translation $translation) use ($attribute, $locale) {
             return $translation->translatable_attribute === $attribute
                 && $translation->locale === $locale;
         })->value ?? null;
     }
 
-    public function set(string $attribute, $value, string $locale)
+    /**
+     * @inheritdoc
+     */
+    public function set(string $attribute, $value, string $locale): void
     {
-        return $this->model->translations()->updateOrCreate([
+        $this->model->translations()->updateOrCreate([
             'translatable_attribute' => $attribute,
             'locale' => $locale,
         ], [

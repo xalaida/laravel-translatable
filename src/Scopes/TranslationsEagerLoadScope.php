@@ -25,6 +25,8 @@ class TranslationsEagerLoadScope implements Scope
             return;
         }
 
+
+        // TODO Reduce the amount of fields using partition selects.
         // TODO: load only translatable attributes here.
         $query->with(['translations' => static function (Relation $query) use ($translatable) {
             $query->forLocale($translatable->translation()->getLocale());

@@ -4,7 +4,6 @@ namespace Nevadskiy\Translatable\Strategies;
 
 use Illuminate\Database\Eloquent\Model;
 use Nevadskiy\Translatable\HasTranslations;
-use Nevadskiy\Translatable\Models\EntityTranslation;
 
 class AdditionalTableStrategy implements TranslatorStrategy
 {
@@ -29,7 +28,7 @@ class AdditionalTableStrategy implements TranslatorStrategy
     // TODO: add possibility configure where to put default/fallback locale values (own/original table, additional/translations table)
 
     /**
-     * Get the translation value from the collection of translations.
+     * @inheritdoc
      */
     public function get(string $attribute, string $locale)
     {
@@ -43,14 +42,12 @@ class AdditionalTableStrategy implements TranslatorStrategy
     }
 
     /**
-     * Set the translation value for the given attribute with the given locale.
-     *
-     * @param mixed $value
+     * @inheritdoc
      */
-    public function set(string $attribute, $value, string $locale): EntityTranslation
+    public function set(string $attribute, $value, string $locale): void
     {
         // TODO: possible 'nullable' insert error case here for multiple fields (we setting translation for only one field but actually required two).
-        return $this->model->translations()->updateOrCreate([
+        $this->model->translations()->updateOrCreate([
             'locale' => $locale
         ], [
             $attribute => $value
