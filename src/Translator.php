@@ -128,7 +128,7 @@ class Translator
     /**
      * Get list of translations for all translatable attributes for the given locale.
      */
-    public function all(string $locale = null): array
+    public function toArray(string $locale = null): array
     {
         $locale = $locale ?: $this->getLocale();
 
