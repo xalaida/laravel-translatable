@@ -19,7 +19,7 @@ use Nevadskiy\Translatable\Strategies\TranslatorStrategy;
  */
 trait HasEntityTranslations
 {
-    use Concerns\Translations;
+    use Concerns\InteractsWithTranslations;
 
     /**
      * Boot the trait.

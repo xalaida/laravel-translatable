@@ -17,7 +17,7 @@ use Nevadskiy\Translatable\Strategies\TranslatorStrategy;
  */
 trait HasTranslations
 {
-    use Concerns\Translations,
+    use Concerns\InteractsWithTranslations,
         TranslationScopes,
         TranslatableUrlRouting;
 

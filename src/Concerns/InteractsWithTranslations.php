@@ -13,7 +13,7 @@ use function resolve;
 /**
  * @mixin Model
  */
-trait Translations
+trait InteractsWithTranslations
 {
     /**
      * The model translator instance.
