@@ -4,7 +4,7 @@ namespace Nevadskiy\Translatable\Scopes;
 
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\MorphMany;
+use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Database\Eloquent\Scope;
 use Nevadskiy\Translatable\HasTranslations;
 
@@ -26,7 +26,7 @@ class TranslationsEagerLoadScope implements Scope
         }
 
         // TODO: load only translatable attributes here.
-        $query->with(['translations' => static function (MorphMany $query) use ($translatable) {
+        $query->with(['translations' => static function (Relation $query) use ($translatable) {
             $query->forLocale($translatable->translation()->getLocale());
         }]);
     }

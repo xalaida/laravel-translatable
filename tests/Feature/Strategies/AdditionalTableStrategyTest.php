@@ -113,7 +113,7 @@ class AdditionalTableStrategyTest extends TestCase
         $product2->translation()->add('title', 'Sony ИгроваяСтанция', 'ru');
         $product3->translation()->add('title', 'LG чайник', 'ru');
 
-        $products = Product::query()->with('translations')->get();
+        $products = Product::query()->withoutGlobalScopes()->with('translations')->get();
 
         $this->app->setLocale('ru');
 
@@ -126,5 +126,27 @@ class AdditionalTableStrategyTest extends TestCase
         self::assertEmpty(DB::getQueryLog());
     }
 
-    // TODO: feature auto eager loading translations for current locale.
+    /** @test */
+    public function it_automatically_eager_loads_translations_for_current_locale(): void
+    {
+        $product1 = ProductFactory::new()->create(['title' => 'Reindeer Sweater']);
+        $product2 = ProductFactory::new()->create(['title' => 'Sony PlayStation']);
+        $product3 = ProductFactory::new()->create(['title' => 'LG Boiler']);
+
+        $product1->translation()->add('title', 'Свитер с оленями', 'ru');
+        $product2->translation()->add('title', 'Sony ИгроваяСтанция', 'ru');
+        $product3->translation()->add('title', 'LG чайник', 'ru');
+
+        $this->app->setLocale('ru');
+
+        $products = Product::query()->get();
+
+        DB::enableQueryLog();
+
+        self::assertEquals('Свитер с оленями', $products[0]->title);
+        self::assertEquals('Sony ИгроваяСтанция', $products[1]->title);
+        self::assertEquals('LG чайник', $products[2]->title);
+
+        self::assertEmpty(DB::getQueryLog());
+    }
 }
