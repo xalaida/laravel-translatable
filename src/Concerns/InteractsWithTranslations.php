@@ -23,7 +23,7 @@ trait InteractsWithTranslations
     /**
      * Init the trait.
      */
-    protected function initializeTranslations(): void
+    protected function initializeInteractsWithTranslations(): void
     {
         $this->translator = $this->newTranslator();
     }
