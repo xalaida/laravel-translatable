@@ -65,7 +65,7 @@ trait InteractsWithTranslations
         }
 
         // TODO: change API.
-        if (! $this->autoLoadTranslations($attribute)) {
+        if (! $this->getterAsTranslation($attribute)) {
             return $this->getOriginalAttribute($attribute);
         }
 
@@ -115,7 +115,7 @@ trait InteractsWithTranslations
         }
 
         // TODO: change API.
-        if (! $this->autoSaveTranslations($attribute)) {
+        if (! $this->setterAsTranslation($attribute)) {
             return $this->setOriginalAttribute($attribute, $value);
         }
 
@@ -157,7 +157,7 @@ trait InteractsWithTranslations
     /**
      * Determine if the model should automatically load translations on attribute get.
      */
-    public function autoLoadTranslations(string $attribute): bool
+    public function getterAsTranslation(string $attribute): bool
     {
         return resolve(Translatable::class)->shouldAutoLoadTranslations();
     }
@@ -165,7 +165,7 @@ trait InteractsWithTranslations
     /**
      * Determine if the model should automatically save translations on attribute set.
      */
-    public function autoSaveTranslations(string $attribute): bool
+    public function setterAsTranslation(string $attribute): bool
     {
         return resolve(Translatable::class)->shouldAutoSaveTranslations();
     }
