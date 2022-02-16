@@ -25,7 +25,7 @@ class ToArrayTranslationsTest extends TestCase
            'title' => 'Моя первая книга',
            'description' => 'Книга о дельфинах',
            'content' => null,
-        ], $book->translation()->all());
+        ], $book->translation()->toArray());
     }
 
     /** @test */

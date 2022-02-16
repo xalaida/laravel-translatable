@@ -281,6 +281,6 @@ trait HasTranslations
      */
     public function attributesToArray(): array
     {
-        return array_merge(parent::attributesToArray(), $this->translation()->all());
+        return array_merge(parent::attributesToArray(), $this->translation()->toArray());
     }
 }
