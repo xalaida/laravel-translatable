@@ -20,6 +20,7 @@ trait HasTranslations
     use Concerns\Translations,
         TranslationScopes,
         TranslatableUrlRouting;
+
     /**
      * Boot the trait.
      */
