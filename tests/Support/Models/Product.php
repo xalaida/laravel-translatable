@@ -4,11 +4,7 @@ namespace Nevadskiy\Translatable\Tests\Support\Models;
 
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\HasMany;
-use Nevadskiy\Translatable\HasTranslations;
-use Nevadskiy\Translatable\Models\EntityTranslation;
-use Nevadskiy\Translatable\Strategies\AdditionalTableStrategy;
-use Nevadskiy\Translatable\Strategies\TranslatorStrategy;
+use Nevadskiy\Translatable\HasEntityTranslations;
 use Nevadskiy\Uuid\Uuid;
 
 /**
@@ -21,7 +17,7 @@ use Nevadskiy\Uuid\Uuid;
 class Product extends Model
 {
     use Uuid;
-    use HasTranslations;
+    use HasEntityTranslations;
 
     /**
      * The attributes that can be translatable.
@@ -32,25 +28,4 @@ class Product extends Model
         'title',
         'description',
     ];
-
-    /**
-     * Get the translation strategy.
-     */
-    protected function getTranslationStrategy(): TranslatorStrategy
-    {
-        return new AdditionalTableStrategy($this, $this->getConnection());
-    }
-
-    /**
-     * Get the entity translations' relation.
-     */
-    public function translations(): HasMany
-    {
-        /** @var EntityTranslation $instance */
-        $instance = $this->newRelatedInstance(EntityTranslation::class)->setTable('product_translations');
-
-        return $this->newHasMany(
-            $instance->newQuery(), $this, $instance->getTable().'.'.$this->getForeignKey(), $this->getKeyName()
-        );
-    }
 }
