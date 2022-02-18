@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 use Nevadskiy\Translatable\HasTranslations;
 use Nevadskiy\Translatable\Models\Translation;
 
+// TODO: add possibility to trigger an exception when creating model in non-default locale.
 class SingleTableStrategy implements TranslatorStrategy
 {
     /**
@@ -50,7 +51,7 @@ class SingleTableStrategy implements TranslatorStrategy
      */
     public function set(string $attribute, $value, string $locale): void
     {
-        if ($this->isFallbackLocale($locale)) {
+        if ($this->shouldSetAsOriginalAttribute($locale)) {
             $this->model->setOriginalAttribute($attribute, $value);
         } else {
             $this->pendingTranslations[$locale][$attribute] = $this->model->withAttributeSetter($attribute, $value);
@@ -86,5 +87,18 @@ class SingleTableStrategy implements TranslatorStrategy
         $this->pendingTranslations = [];
 
         return $pendingTranslations;
+    }
+
+    /**
+     * @param string $locale
+     * @return bool
+     */
+    private function shouldSetAsOriginalAttribute(string $locale): bool
+    {
+        if (! $this->model->exists) {
+            return true;
+        }
+
+        return $this->isFallbackLocale($locale);
     }
 }
