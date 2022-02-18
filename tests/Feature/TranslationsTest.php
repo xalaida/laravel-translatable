@@ -52,7 +52,7 @@ class TranslationsTest extends TestCase
     }
 
     /** @test */
-    public function it_throws_an_exception_when_trying_to_get_translation_for_not_translatable_attribute(): void
+    public function it_throws_an_exception_when_trying_to_get_translation_for_non_translatable_attribute(): void
     {
         $book = BookFactory::new()->create();
 
@@ -73,7 +73,7 @@ class TranslationsTest extends TestCase
     }
 
     /** @test */
-    public function it_throws_an_exception_when_trying_to_add_translation_for_not_translatable_attribute(): void
+    public function it_throws_an_exception_when_trying_to_add_translation_for_non_translatable_attribute(): void
     {
         $book = BookFactory::new()->create();
 
@@ -219,7 +219,7 @@ class TranslationsTest extends TestCase
     }
 
     /** @test */
-    public function it_throws_an_exception_during_translation_not_translatable_attributes(): void
+    public function it_throws_an_exception_during_translation_non_translatable_attributes(): void
     {
         $book = BookFactory::new()->create(['title' => 'My book']);
 

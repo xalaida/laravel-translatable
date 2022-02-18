@@ -47,7 +47,7 @@ class RouteBindingByTranslatableAttributeTest extends TestCase
     }
 
     /** @test */
-    public function it_still_resolves_route_binding_by_not_translatable_attributes(): void
+    public function it_still_resolves_route_binding_by_non_translatable_attributes(): void
     {
         Route::middleware('bindings')->get('/posts/{post:id}', static function (Post $post) {
             return $post->id;

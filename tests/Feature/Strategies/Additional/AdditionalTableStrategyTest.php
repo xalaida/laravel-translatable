@@ -1,6 +1,6 @@
 <?php
 
-namespace Nevadskiy\Translatable\Tests\Feature\Strategies;
+namespace Nevadskiy\Translatable\Tests\Feature\Strategies\Additional;
 
 use Illuminate\Support\Facades\DB;
 use Nevadskiy\Translatable\Tests\Support\Factories\ProductFactory;

@@ -147,7 +147,7 @@ class SetterTranslationTest extends TestCase
     }
 
     /** @test */
-    public function it_does_not_save_translations_for_not_translatable_attributes(): void
+    public function it_does_not_save_translations_for_non_translatable_attributes(): void
     {
         $book = BookFactory::new()->create();
 

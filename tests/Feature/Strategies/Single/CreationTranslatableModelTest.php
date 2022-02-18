@@ -1,6 +1,6 @@
 <?php
 
-namespace Nevadskiy\Translatable\Tests\Feature;
+namespace Nevadskiy\Translatable\Tests\Feature\Strategies\Single;
 
 use Nevadskiy\Translatable\Models\Translation;
 use Nevadskiy\Translatable\Tests\Support\Factories\BookFactory;
@@ -9,7 +9,7 @@ use Nevadskiy\Translatable\Tests\TestCase;
 class CreationTranslatableModelTest extends TestCase
 {
     /** @test */
-    public function it_creates_model_in_non_default_without_translations(): void
+    public function it_creates_model_in_custom_locale_without_translations(): void
     {
         $this->app->setLocale('ru');
 

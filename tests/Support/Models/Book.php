@@ -46,14 +46,6 @@ class Book extends Model
     ];
 
     /**
-     * Get description short attribute.
-     */
-    public function getDescriptionShortAttribute(): string
-    {
-        return Str::limit($this->description, 3);
-    }
-
-    /**
      * Get title attribute.
      */
     public function getTitleAttribute(string $title): string

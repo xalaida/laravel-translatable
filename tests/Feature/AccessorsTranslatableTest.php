@@ -2,105 +2,176 @@
 
 namespace Nevadskiy\Translatable\Tests\Feature;
 
-use Nevadskiy\Translatable\Tests\Support\Factories\BookFactory;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Str;
+use Nevadskiy\Translatable\HasTranslations;
 use Nevadskiy\Translatable\Tests\TestCase;
 
 class AccessorsTranslatableTest extends TestCase
 {
-    /** @test */
-    public function it_uses_model_accessors_for_translatable_attributes(): void
+    /**
+     * Set up the test environment.
+     */
+    protected function setUp(): void
     {
-        $book = BookFactory::new()->create();
+        parent::setUp();
 
-        $book->translation()->add('title', 'моя книга', 'ru');
+        $this->createSchema();
+    }
 
-        self::assertEquals('Моя книга', $book->translation()->get('title', 'ru'));
+    /**
+     * Set up the database schema.
+     */
+    private function createSchema(): void
+    {
+        $this->schema()->create('articles', function (Blueprint $table) {
+            $table->id();
+            $table->string('title');
+            $table->timestamps();
+        });
     }
 
     /** @test */
-    public function it_still_applies_accessors_to_original_attributes(): void
+    public function it_applies_accessors_to_translatable_attributes(): void
     {
-        $book = BookFactory::new()->create(['title' => 'my book']);
+        $article = new Article();
+        $article->title = 'My article';
+        $article->save();
 
-        self::assertEquals('My book', $book->title);
+        $article->translation()->add('title', 'моя статья', 'ru');
+
+        self::assertEquals('Моя статья', $article->translation()->get('title', 'ru'));
     }
 
     /** @test */
-    public function it_applies_accessors_to_attributes_with_default_locale(): void
+    public function it_applies_accessors_to_translatable_attributes_using_getters(): void
     {
-        $book = BookFactory::new()->create(['title' => 'my book']);
-
-        $book->translation()->add('title', 'моя книга', 'ru');
+        $article = new Article();
+        $article->title = 'My article';
+        $article->save();
 
         $this->app->setLocale('ru');
 
-        self::assertEquals('My book', $book->getOriginalAttribute('title'));
+        $article->title = 'моя статья';
+
+        self::assertEquals('Моя статья', $article->title);
     }
 
     /** @test */
-    public function it_does_not_override_original_attribute_after_applying_accessor_to_translation(): void
+    public function it_still_applies_accessors_to_original_attributes_using_getters(): void
     {
-        $book = BookFactory::new()->create(['title' => 'my book']);
+        $article = new Article();
+        $article->title = 'my article';
+        $article->save();
 
-        $book->translation()->add('title', 'моя книга', 'ru');
-
-        $book->translation()->get('title', 'ru');
-        $book->save();
-
-        self::assertEquals('my book', $book->getRawOriginal('title'));
+        self::assertEquals('My article', $article->title);
     }
 
     /** @test */
-    public function it_applies_accessors_using_auto_translatable_getter(): void
+    public function it_still_applies_accessors_to_original_attributes_in_fallback_locale(): void
     {
-        $book = BookFactory::new()->create();
+        $article = new Article();
+        $article->title = 'my article';
+        $article->save();
+
+        $article->translation()->add('title', 'моя статья', 'ru');
 
         $this->app->setLocale('ru');
 
-        $book->title = 'моя книга';
-
-        self::assertEquals('Моя книга', $book->title);
+        self::assertEquals('My article', $article->getOriginalAttribute('title'));
     }
 
     /** @test */
-    public function it_returns_raw_translation_value_using_the_current_locale(): void
+    public function it_does_not_override_original_attribute_after_applying_accessors(): void
     {
-        $book = BookFactory::new()->create();
+        $article = new Article();
+        $article->title = 'my article';
+        $article->save();
+        $article->translation()->add('title', 'моя статья', 'ru');
 
-        $book->translation()->add('title', 'моя книга', 'ru');
+        $article->translation()->get('title', 'ru');
+        $article->save();
 
-        $this->app->setLocale('ru');
-
-        self::assertEquals('моя книга', $book->translation()->raw('title', 'ru'));
+        self::assertEquals('my article', $article->getRawOriginal('title'));
     }
 
     /** @test */
-    public function it_correctly_stores_values_after_applied_accessors(): void
+    public function it_returns_raw_translation_value_for_given_locale(): void
     {
-        $book = BookFactory::new()->create();
+        $article = new Article();
+        $article->title = 'my article';
+        $article->save();
 
-        $this->app->setLocale('ru');
+        $article->translation()->add('title', 'моя статья', 'ru');
 
-        $book->title = 'моя книга';
-        $book->save();
-
-        self::assertEquals('Моя книга', $book->title);
-        $book->save();
-
-        $book = $book->fresh();
-
-        self::assertEquals('моя книга', $book->translation()->raw('title', 'ru'));
+        self::assertEquals('моя статья', $article->translation()->raw('title', 'ru'));
     }
 
     /** @test */
-    public function it_correctly_uses_model_accessors_for_non_translatable_attributes(): void
+    public function it_correctly_stores_translations_after_applied_accessors(): void
     {
-        $book = BookFactory::new()->create();
-
-        $book->translation()->add('description', 'Книга о собаках', 'ru');
+        $article = new Article();
+        $article->title = 'my article';
+        $article->save();
 
         $this->app->setLocale('ru');
 
-        self::assertEquals('Кни...', $book->description_short);
+        $article->title = 'моя статья';
+        $article->save();
+
+        self::assertEquals('Моя статья', $article->title);
+        $article->save();
+
+        self::assertEquals('моя статья', $article->fresh()->translation()->raw('title', 'ru'));
+    }
+
+    /** @test */
+    public function it_still_applies_accessors_for_non_translatable_attributes(): void
+    {
+        $article = new Article();
+        $article->title = 'my article';
+        $article->save();
+
+        $article->translation()->add('description', 'Статья про собак', 'ru');
+
+        $this->app->setLocale('ru');
+
+        self::assertEquals('Ста...', $article->description_short);
+    }
+
+    /**
+     * Tear down the test.
+     */
+    protected function tearDown(): void
+    {
+        $this->schema()->drop('articles');
+
+        parent::tearDown();
+    }
+}
+
+/**
+ * @property string title
+ * @property string description
+ * @property string description_short
+ */
+class Article extends Model
+{
+    use HasTranslations;
+
+    protected $translatable = [
+        'title',
+        'description'
+    ];
+
+    public function getDescriptionShortAttribute(): string
+    {
+        return Str::limit($this->description, 3);
+    }
+
+    public function getTitleAttribute(string $title): string
+    {
+        return Str::ucfirst($title);
     }
 }

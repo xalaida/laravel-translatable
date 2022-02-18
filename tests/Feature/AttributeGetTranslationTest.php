@@ -55,7 +55,7 @@ class AttributeGetTranslationTest extends TestCase
     }
 
     /** @test */
-    public function it_correctly_retrieves_values_for_not_translatable_attributes(): void
+    public function it_correctly_retrieves_values_for_non_translatable_attributes(): void
     {
         $book = BookFactory::new()->create(['version' => 5]);
 
