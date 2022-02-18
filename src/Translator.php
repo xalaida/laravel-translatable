@@ -10,13 +10,6 @@ use Nevadskiy\Translatable\Strategies\TranslatorStrategy;
 class Translator
 {
     /**
-     * A list of pending translation insertions.
-     *
-     * @var array
-     */
-    protected $pendingTranslations = [];
-
-    /**
      * The translatable model instance.
      *
      * @var Model|HasTranslations
@@ -73,13 +66,7 @@ class Translator
     {
         $this->assertTranslatableAttribute($attribute);
 
-        $locale = $locale ?: $this->getLocale();
-
-        if ($this->isDefaultLocale($locale)) {
-            $this->model->setOriginalAttribute($attribute, $value);
-        } else {
-            $this->pendingTranslations[$locale][$attribute] = $this->model->withAttributeSetter($attribute, $value);
-        }
+        $this->strategy->set($attribute, $value, $locale ?: $this->getLocale());
 
         return $this;
     }
@@ -148,10 +135,6 @@ class Translator
     {
         $locale = $locale ?: $this->getLocale();
 
-        if (isset($this->pendingTranslations[$locale][$attribute])) {
-            return $this->pendingTranslations[$locale][$attribute];
-        }
-
         $translation = $this->strategy->get($attribute, $locale);
 
         if (is_null($translation)) {
@@ -167,20 +150,7 @@ class Translator
      */
     public function save(): void
     {
-        foreach ($this->pullPendingTranslations() as $locale => $attributes) {
-            foreach (array_filter($attributes) as $attribute => $value) {
-                $this->strategy->set($attribute, $value, $locale);
-            }
-        }
-    }
-
-    private function pullPendingTranslations(): array
-    {
-        $pendingTranslations = $this->pendingTranslations;
-
-        $this->pendingTranslations = [];
-
-        return $pendingTranslations;
+        $this->strategy->save();
     }
 
     public function unset()
