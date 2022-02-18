@@ -79,14 +79,15 @@ class Translator
     // TODO: add possibility to log out warnings with missing translations.
 
     /**
-     * Get the translation value of the given attribute or the original value if it is missing.
+     * Get the translation value of the given attribute or the fallback value if it is missing.
      *
-     * TODO: support original values to be stored within translations table.
+     * @return mixed
      */
-    public function getOrOriginal(string $attribute, string $locale = null)
+    public function getOrFallback(string $attribute, string $locale = null)
     {
         $value = $this->get($attribute, $locale);
 
+        // TODO: make the strategy to be responsible how to retrieve fallback translation.
         if (is_null($value)) {
             return $this->model->getOriginalAttribute($attribute);
         }
@@ -94,7 +95,11 @@ class Translator
         return $value;
     }
 
-    // TODO: make it always to return original value if translation is missing and introduce separate method for null return.
+    /**
+     * Get the translation value of the given attribute to the given locale.
+     *
+     * @return mixed
+     */
     public function get(string $attribute, string $locale = null)
     {
         $this->assertTranslatableAttribute($attribute);
@@ -118,7 +123,7 @@ class Translator
         $translations = [];
 
         foreach ($this->model->getTranslatable() as $attribute) {
-            $translations[$attribute] = $this->getOrOriginal($attribute, $locale);
+            $translations[$attribute] = $this->getOrFallback($attribute, $locale);
         }
 
         return $translations;

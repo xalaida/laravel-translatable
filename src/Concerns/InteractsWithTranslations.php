@@ -68,8 +68,7 @@ trait InteractsWithTranslations
             return $this->getOriginalAttribute($attribute);
         }
 
-        // TODO: probably rename this method.
-        return $this->translation()->getOrOriginal($attribute);
+        return $this->translation()->getOrFallback($attribute);
     }
 
     /**
