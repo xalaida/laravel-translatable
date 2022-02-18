@@ -36,14 +36,15 @@ class SingleTableStrategy implements TranslatorStrategy
      */
     public function get(string $attribute, string $locale)
     {
+        if ($this->shouldGetFromOriginalAttribute($locale)) {
+            return $this->model->getOriginalAttribute($attribute);
+        }
+
         if (isset($this->pendingTranslations[$locale][$attribute])) {
             return $this->pendingTranslations[$locale][$attribute];
         }
 
-        return $this->model->translations->first(static function (Translation $translation) use ($attribute, $locale) {
-            return $translation->translatable_attribute === $attribute
-                && $translation->locale === $locale;
-        })->value ?? null;
+        return $this->getFromRelation($attribute, $locale);
     }
 
     /**
@@ -100,5 +101,29 @@ class SingleTableStrategy implements TranslatorStrategy
         }
 
         return $this->isFallbackLocale($locale);
+    }
+
+    private function shouldGetFromOriginalAttribute(string $locale): bool
+    {
+        return $this->isFallbackLocale($locale);
+    }
+
+    /**
+     * @param string $attribute
+     * @param string $locale
+     * @return mixed
+     */
+    private function getFromRelation(string $attribute, string $locale)
+    {
+        $translation = $this->model->translations->first(function (Translation $translation) use ($attribute, $locale) {
+            return $translation->translatable_attribute === $attribute
+                && $translation->locale === $locale;
+        });
+
+        if (! $translation) {
+            return null;
+        }
+
+        return $translation->getAttribute('value');
     }
 }

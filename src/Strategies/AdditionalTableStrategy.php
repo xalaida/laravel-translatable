@@ -4,6 +4,7 @@ namespace Nevadskiy\Translatable\Strategies;
 
 use Illuminate\Database\Eloquent\Model;
 use Nevadskiy\Translatable\HasTranslations;
+use Nevadskiy\Translatable\Models\EntityTranslation;
 
 /**
  * @TODO: add 'subscribe' hook to register model events (boot, saving, saved, deleting, deleted, etc).
@@ -45,17 +46,15 @@ class AdditionalTableStrategy implements TranslatorStrategy
      */
     public function get(string $attribute, string $locale)
     {
+        if ($this->shouldGetFromOriginalAttribute($locale)) {
+            return $this->model->getOriginalAttribute($attribute);
+        }
+
         if (isset($this->pendingTranslations[$locale][$attribute])) {
             return $this->pendingTranslations[$locale][$attribute];
         }
 
-        $translation = $this->model->translations->where('locale', $locale)->first();
-
-        if (! $translation) {
-            return null;
-        }
-
-        return $translation->getAttribute($attribute);
+        return $this->getFromRelation($locale, $attribute);
     }
 
     /**
@@ -124,5 +123,30 @@ class AdditionalTableStrategy implements TranslatorStrategy
         }
 
         return $this->isFallbackLocale($locale);
+    }
+
+    private function shouldGetFromOriginalAttribute(string $locale): bool
+    {
+        if (! $this->copyingStructure) {
+            return false;
+        }
+
+        return $this->isFallbackLocale($locale);
+    }
+
+    /**
+     * Find the translation value in the translations' relation.
+     */
+    private function getFromRelation(string $locale, string $attribute)
+    {
+        $translation = $this->model->translations->first(function (EntityTranslation $translation) use ($locale) {
+            return $translation->locale === $locale;
+        });
+
+        if (! $translation) {
+            return null;
+        }
+
+        return $translation->getAttribute($attribute);
     }
 }

@@ -99,10 +99,6 @@ class Translator
     {
         $this->assertTranslatableAttribute($attribute);
 
-        if ($this->isDefaultLocale($locale)) {
-            return $this->model->getOriginalAttribute($attribute);
-        }
-
         $raw = $this->raw($attribute, $locale);
 
         if (is_null($raw)) {
