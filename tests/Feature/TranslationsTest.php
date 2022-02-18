@@ -10,17 +10,28 @@ use Nevadskiy\Translatable\Tests\TestCase;
 class TranslationsTest extends TestCase
 {
     /** @test */
-    public function it_saves_translations_for_translatable_attributes(): void
+    public function it_handles_translations_for_translatable_attributes(): void
     {
         $book = BookFactory::new()->create();
 
-        $book->translation()->add('title', 'Моя тестовая книга', 'ru');
+        $book->translation()->add('title', 'Моя первая книга', 'ru');
 
-        self::assertEquals('Моя тестовая книга', $book->translation()->get('title', 'ru'));
+        self::assertEquals('Моя первая книга', $book->translation()->get('title', 'ru'));
     }
 
     /** @test */
-    public function it_returns_correct_value_from_multiple_translations(): void
+    public function it_retrieves_correct_value_from_multiple_translations(): void
+    {
+        $book = BookFactory::new()->create();
+
+        $book->translation()->add('title', 'Книга о птицах', 'ru');
+        $book->translation()->add('description', 'Livre sur les oiseaux', 'fr');
+
+        self::assertEquals('Книга о птицах', $book->translation()->get('title', 'ru'));
+    }
+
+    /** @test */
+    public function it_retrieves_translation_for_specified_locale(): void
     {
         $book = BookFactory::new()->create();
 
@@ -32,6 +43,46 @@ class TranslationsTest extends TestCase
     }
 
     /** @test */
+    public function it_retrieves_original_value_for_fallback_locale(): void
+    {
+        $book = BookFactory::new()->create(['title' => 'My best book']);
+        $book->translation()->add('title', 'Моя лучшая книга', 'ru');
+
+        self::assertEquals('My best book', $book->translation()->get('title', 'en'));
+    }
+
+    /** @test */
+    public function it_throws_an_exception_when_trying_to_get_translation_for_not_translatable_attribute(): void
+    {
+        $book = BookFactory::new()->create();
+
+        $this->expectException(AttributeNotTranslatableException::class);
+
+        $book->translation()->get('id');
+    }
+
+    /** @test */
+    public function it_updates_original_attribute_for_fallback_locale(): void
+    {
+        $book = BookFactory::new()->create();
+
+        $book->translation()->add('title', 'Book title in English', 'en');
+
+        self::assertEquals('Book title in English', $book->title);
+        self::assertEmpty(Translation::all());
+    }
+
+    /** @test */
+    public function it_throws_an_exception_when_trying_to_add_translation_for_not_translatable_attribute(): void
+    {
+        $book = BookFactory::new()->create();
+
+        $this->expectException(AttributeNotTranslatableException::class);
+
+        $book->translation()->add('id', 'Spanish ID', 'es');
+    }
+
+    /** @test */
     public function it_does_not_break_anything_for_default_attributes(): void
     {
         $book = BookFactory::new()->create(['version' => 24]);
@@ -40,18 +91,7 @@ class TranslationsTest extends TestCase
     }
 
     /** @test */
-    public function it_returns_correct_value_from_multiple_attributes(): void
-    {
-        $book = BookFactory::new()->create();
-
-        $book->translation()->add('title', 'Книга о птицах', 'ru');
-        $book->translation()->add('description', 'Livre sur les oiseaux', 'fr');
-
-        self::assertEquals('Книга о птицах', $book->translation()->get('title', 'ru'));
-    }
-
-    /** @test */
-    public function it_does_not_override_default_values(): void
+    public function it_does_not_override_original_values(): void
     {
         $book = BookFactory::new()->create(['title' => 'My original book']);
 
@@ -72,12 +112,14 @@ class TranslationsTest extends TestCase
     }
 
     /** @test */
-    public function it_returns_default_value_correctly_if_translation_does_not_exist(): void
+    public function it_returns_fallback_value_if_translation_does_not_exist(): void
     {
         $book = BookFactory::new()->create(['title' => 'English title']);
 
-        self::assertEquals('English title', $book->getAttribute('title'));
+        self::assertEquals('English title', $book->translation()->getOrFallback('title', 'ua'));
     }
+
+    // TODO: probably move to strategy specific test.
 
     /** @test */
     public function it_saves_translations_to_the_database(): void

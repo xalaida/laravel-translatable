@@ -8,7 +8,7 @@ use Nevadskiy\Translatable\Tests\Support\Factories\BookFactory;
 use Nevadskiy\Translatable\Tests\TestCase;
 use Nevadskiy\Translatable\Translatable;
 
-class AttributeSetTranslationTest extends TestCase
+class SetterTranslationTest extends TestCase
 {
     /** @test */
     public function it_automatically_saves_translations_for_attributes_using_current_locale(): void
