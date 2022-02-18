@@ -41,7 +41,7 @@ class TranslationsEagerLoadScope implements Scope
     private function shouldLoadTranslations(Model $translatable): bool
     {
         foreach ($translatable->getTranslatable() as $attribute) {
-            if ($translatable->autoLoadTranslations($attribute)) {
+            if ($translatable->getterAsTranslation($attribute)) {
                 return true;
             }
         }
