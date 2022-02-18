@@ -295,7 +295,7 @@ For more complex queries - feel free to use [Laravel relation queries](https://l
 
 If you do not want to automatically load or save translations when you interact with a translatable property, you can disable the feature.
 
-To disable it for a specific model, override the `autoLoadTranslations` or `autoSaveTranslations` methods in your model like so.
+To disable it for a specific model, override the `getterAsTranslation` or `autoSaveTranslations` methods in your model like so.
 
 ```php
 class Post extends Model
@@ -304,7 +304,7 @@ class Post extends Model
 
     protected $translatable = ['title'];
 
-    public function autoLoadTranslations()
+    public function getterAsTranslation()
     {
         return false;
     }
