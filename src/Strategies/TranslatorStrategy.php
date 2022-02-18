@@ -15,4 +15,9 @@ interface TranslatorStrategy
      * @param mixed $value
      */
     public function set(string $attribute, $value, string $locale): void;
+
+    /**
+     * Save all pending translations into the database.
+     */
+    public function save(): void;
 }
