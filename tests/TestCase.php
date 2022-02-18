@@ -3,6 +3,8 @@
 namespace Nevadskiy\Translatable\Tests;
 
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Schema\Builder;
 use Illuminate\Foundation\Application;
 use Nevadskiy\Translatable\TranslatableServiceProvider;
 use Orchestra\Testbench\TestCase as OrchestraTestCase;
@@ -60,5 +62,13 @@ class TestCase extends OrchestraTestCase
         Carbon::setTestNow($time);
 
         return $time;
+    }
+
+    /**
+     * Get a schema builder instance.
+     */
+    protected function schema(): Builder
+    {
+        return Model::getConnectionResolver()->connection()->getSchemaBuilder();
     }
 }
