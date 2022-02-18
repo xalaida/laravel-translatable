@@ -90,13 +90,19 @@ trait InteractsWithTranslations
      */
     public function withAttributeGetter(string $key, $value)
     {
-        $original = $this->attributes[$key];
+        if (isset($this->attributes[$key])) {
+            $original = $this->attributes[$key];
+        }
 
         $this->attributes[$key] = $value;
 
         $processed = parent::getAttribute($key);
 
-        $this->attributes[$key] = $original;
+        if (isset($original)) {
+            $this->attributes[$key] = $original;
+        } else {
+            unset($this->attributes[$key]);
+        }
 
         return $processed;
     }
@@ -143,13 +149,19 @@ trait InteractsWithTranslations
      */
     public function withAttributeSetter(string $key, $value)
     {
-        $original = $this->attributes[$key];
+        if (isset($this->attributes[$key])) {
+            $original = $this->attributes[$key];
+        }
 
         parent::setAttribute($key, $value);
 
         $processed = $this->attributes[$key];
 
-        $this->attributes[$key] = $original;
+        if (isset($original)) {
+            $this->attributes[$key] = $original;
+        } else {
+            unset($this->attributes[$key]);
+        }
 
         return $processed;
     }
