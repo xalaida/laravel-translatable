@@ -13,7 +13,7 @@ class AdditionalTableStrategy implements TranslatorStrategy
     /**
      * @TODO: add description.
      */
-    private $copyingStructure = false;
+    private $copyingStructure = true;
 
     /**
      * The translatable model instance.

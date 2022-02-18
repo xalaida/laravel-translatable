@@ -10,6 +10,21 @@ use Nevadskiy\Translatable\Tests\TestCase;
 class AdditionalTableStrategyTest extends TestCase
 {
     /** @test */
+    public function it_stores_translatable_model_correctly(): void
+    {
+        ProductFactory::new()->create([
+            'title' => 'Reindeer Sweater',
+            'description' => 'Warm winter sweater',
+        ]);
+
+        $this->assertDatabaseHas('products', [
+            'title' => 'Reindeer Sweater',
+            'description' => 'Warm winter sweater',
+        ]);
+        $this->assertDatabaseCount('product_translations', 0);
+    }
+
+    /** @test */
     public function it_stores_translations_in_additional_table(): void
     {
         $product = ProductFactory::new()->create([
