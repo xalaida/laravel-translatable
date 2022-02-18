@@ -12,7 +12,7 @@ use Nevadskiy\Translatable\HasTranslations;
 class AdditionalTableStrategy implements TranslatorStrategy
 {
     /**
-     * @TODO: add description.
+     * @TODO: add description. (probably just extract into separate strategy to provide simpler approach with trait and only related scoped)
      */
     private $copyingStructure = true;
 
@@ -39,9 +39,6 @@ class AdditionalTableStrategy implements TranslatorStrategy
     {
         $this->model = $model;
     }
-
-    // TODO: add possibility to use default values...
-    // TODO: add possibility configure where to put default/fallback locale values (own/original table, additional/translations table)
 
     /**
      * @inheritdoc
@@ -118,6 +115,14 @@ class AdditionalTableStrategy implements TranslatorStrategy
      */
     private function shouldSetAsOriginalAttribute(string $locale): bool
     {
-        return $this->copyingStructure && $this->isFallbackLocale($locale);
+        if (! $this->copyingStructure) {
+            return false;
+        }
+
+        if (! $this->model->exists) {
+            return true;
+        }
+
+        return $this->isFallbackLocale($locale);
     }
 }

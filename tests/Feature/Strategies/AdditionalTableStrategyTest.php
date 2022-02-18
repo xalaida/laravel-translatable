@@ -10,6 +10,23 @@ use Nevadskiy\Translatable\Tests\TestCase;
 class AdditionalTableStrategyTest extends TestCase
 {
     /** @test */
+    public function it_can_create_models_in_custom_locale_correctly(): void
+    {
+        $this->app->setLocale('ru');
+
+        $product = new Product();
+        $product->title = 'Свитер с оленями';
+        $product->description = 'Теплый зимний свитер';
+        $product->save();
+
+        $this->assertDatabaseHas('products', [
+            'title' => 'Свитер с оленями',
+            'description' => 'Теплый зимний свитер',
+        ]);
+        $this->assertDatabaseCount('product_translations', 0);
+    }
+
+    /** @test */
     public function it_stores_translatable_model_correctly(): void
     {
         ProductFactory::new()->create([
