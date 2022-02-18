@@ -182,16 +182,6 @@ trait InteractsWithTranslations
     }
 
     /**
-     * Determine whether the attribute should be translated.
-     */
-    protected function shouldBeTranslated(string $attribute): bool
-    {
-        // TODO: review this. probably translation can be associated with a model that does not exist yet?
-
-        return $this->exists && $this->isTranslatable($attribute);
-    }
-
-    /**
      * Determine whether the attribute is translatable.
      */
     public function isTranslatable(string $attribute): bool
