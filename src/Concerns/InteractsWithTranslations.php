@@ -60,15 +60,15 @@ trait InteractsWithTranslations
      */
     public function getAttribute($attribute)
     {
-        if (! $this->shouldBeTranslated($attribute)) {
-            return $this->getOriginalAttribute($attribute);
-        }
-
-        // TODO: change API.
         if (! $this->getterAsTranslation($attribute)) {
             return $this->getOriginalAttribute($attribute);
         }
 
+        if (! $this->isTranslatable($attribute)) {
+            return $this->getOriginalAttribute($attribute);
+        }
+
+        // TODO: probably rename this method.
         return $this->translation()->getOrOriginal($attribute);
     }
 
@@ -116,12 +116,11 @@ trait InteractsWithTranslations
      */
     public function setAttribute($attribute, $value)
     {
-        if (! $this->shouldBeTranslated($attribute)) {
+        if (! $this->setterAsTranslation($attribute)) {
             return $this->setOriginalAttribute($attribute, $value);
         }
 
-        // TODO: change API.
-        if (! $this->setterAsTranslation($attribute)) {
+        if (! $this->isTranslatable($attribute)) {
             return $this->setOriginalAttribute($attribute, $value);
         }
 

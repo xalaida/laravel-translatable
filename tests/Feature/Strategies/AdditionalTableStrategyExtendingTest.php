@@ -42,6 +42,52 @@ class AdditionalTableStrategyExtendingTest extends TestCase
     }
 
     /** @test */
+    public function it_can_store_model_correctly_in_extending_translatable_attributes_mode_using_fallback_locale(): void
+    {
+        $article = new Article();
+        $article->title = 'Article about parrots';
+        $article->description = 'How to teach a parrot to talk';
+        $article->save();
+
+        $this->assertDatabaseCount('articles', 1);
+        $this->assertDatabaseHas('articles', [
+            'id' => $article->getKey()
+        ]);
+
+        $this->assertDatabaseCount('article_translations', 1);
+        $this->assertDatabaseHas('article_translations', [
+            'article_id' => $article->getKey(),
+            'title' => 'Article about parrots',
+            'description' => 'How to teach a parrot to talk',
+            'locale' => 'en',
+        ]);
+    }
+
+    /** @test */
+    public function it_can_store_model_correctly_in_extending_translatable_attributes_mode_using_custom_locale(): void
+    {
+        $this->app->setLocale('ru');
+
+        $article = new Article();
+        $article->title = 'Статья о попугаях';
+        $article->description = 'Как научить разговаривать попугая';
+        $article->save();
+
+        $this->assertDatabaseCount('articles', 1);
+        $this->assertDatabaseHas('articles', [
+            'id' => $article->getKey()
+        ]);
+
+        $this->assertDatabaseCount('article_translations', 1);
+        $this->assertDatabaseHas('article_translations', [
+            'article_id' => $article->getKey(),
+            'title' => 'Статья о попугаях',
+            'description' => 'Как научить разговаривать попугая',
+            'locale' => 'ru',
+        ]);
+    }
+
+    /** @test */
     public function it_can_handle_translations_using_extending_translatable_attributes_mode(): void
     {
         $article = new Article();
@@ -60,6 +106,25 @@ class AdditionalTableStrategyExtendingTest extends TestCase
         ]);
     }
 
+    /** @test */
+    public function it_can_handle_translations_with_fallback_locale_using_extending_translatable_attributes_mode(): void
+    {
+        $article = new Article();
+        $article->save();
+
+        $article->translation()->set('title', 'Article about parrots', 'en');
+        $article->translation()->set('description', 'How to teach a parrot to talk', 'en');
+        $article->translation()->save();
+
+        $this->assertDatabaseCount('article_translations', 1);
+        $this->assertDatabaseHas('article_translations', [
+            'article_id' => $article->getKey(),
+            'title' => 'Article about parrots',
+            'description' => 'How to teach a parrot to talk',
+            'locale' => 'en',
+        ]);
+    }
+
     /**
      * Tear down the test.
      */
@@ -72,6 +137,10 @@ class AdditionalTableStrategyExtendingTest extends TestCase
     }
 }
 
+/**
+ * @property string title
+ * @property string description
+ */
 class Article extends Model
 {
     use HasEntityTranslations;
