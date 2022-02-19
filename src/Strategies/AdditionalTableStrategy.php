@@ -83,6 +83,11 @@ class AdditionalTableStrategy implements TranslatorStrategy
         foreach ($this->pullPendingTranslations() as $locale => $attributes) {
             $this->model->translations()->updateOrCreate(['locale' => $locale], $attributes);
         }
+
+//        // TODO: make this configurable OR probably remove completely that feature (think what if only fallback locale attributes are translated? its broken here)
+//        if ($translations) {
+//            $this->model->touch();
+//        }
     }
 
     private function pullPendingTranslations(): array
