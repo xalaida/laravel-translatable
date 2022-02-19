@@ -52,7 +52,7 @@ class Translator
     /**
      * Determine does the translator use the current or given locale as the default locale.
      */
-    public function isDefaultLocale(string $locale = null): bool
+    public function isFallbackLocale(string $locale = null): bool
     {
         $locale = $locale ?: $this->getLocale();
 

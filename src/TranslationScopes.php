@@ -34,7 +34,7 @@ trait TranslationScopes
         string $operator = '='
     ): Builder {
         return $query->where(function (Builder $query) use ($attribute, $value, $locale, $operator) {
-            if (is_null($locale) || $this->translation()->isDefaultLocale($locale)) {
+            if (is_null($locale) || $this->translation()->isFallbackLocale($locale)) {
                 $query->where($attribute, $operator, $value);
             }
 
@@ -57,7 +57,7 @@ trait TranslationScopes
     {
         $locale = $locale ?: $this->translation()->getLocale();
 
-        if ($this->translation()->isDefaultLocale($locale)) {
+        if ($this->translation()->isFallbackLocale($locale)) {
             return $query->orderBy($attribute, $direction);
         }
 

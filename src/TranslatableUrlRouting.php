@@ -48,6 +48,6 @@ trait TranslatableUrlRouting
     protected function shouldResolveBindingUsingTranslations(string $field): bool
     {
         return $this->isTranslatable($field)
-            && ! $this->translation()->isDefaultLocale();
+            && ! $this->translation()->isFallbackLocale();
     }
 }
