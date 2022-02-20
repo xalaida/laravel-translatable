@@ -20,7 +20,6 @@ class TranslatableServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        $this->bootCommands();
         $this->bootMigrations();
         $this->publishMigrations();
     }
@@ -31,16 +30,6 @@ class TranslatableServiceProvider extends ServiceProvider
     public function registerPackage(): void
     {
         $this->app->singleton(Translatable::class);
-    }
-
-    /**
-     * Boot any package commands.
-     */
-    private function bootCommands(): void
-    {
-        $this->commands([
-            Console\RemoveUnusedTranslationsCommand::class,
-        ]);
     }
 
     /**
