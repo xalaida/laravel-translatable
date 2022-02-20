@@ -33,15 +33,6 @@ class Translation extends Model
     protected $guarded = [];
 
     /**
-     * The relationships that should be touched on save.
-     *
-     * @var array
-     */
-    protected $touches = [
-        'translatable',
-    ];
-
-    /**
      * The event map for the model.
      *
      * Allows for object-based events for native Eloquent events.
