@@ -16,7 +16,6 @@ class CreateBooksTable extends Migration
             $table->string('title');
             $table->string('description');
             $table->integer('version')->default(1);
-            $table->json('content')->nullable();
             $table->timestamps();
         });
     }

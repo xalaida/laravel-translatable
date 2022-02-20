@@ -13,7 +13,6 @@ class ToArrayTranslationsTest extends TestCase
         $book = BookFactory::new()->create([
             'title' => 'My first book',
             'description' => 'Book about dolphins',
-            'content' => null,
         ]);
 
         $book->translation()->add('title', 'Моя первая книга', 'ru');
@@ -24,7 +23,6 @@ class ToArrayTranslationsTest extends TestCase
         self::assertEquals([
            'title' => 'Моя первая книга',
            'description' => 'Книга о дельфинах',
-           'content' => null,
         ], $book->translation()->toArray());
     }
 

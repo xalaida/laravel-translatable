@@ -16,7 +16,6 @@ class AccessorsTranslatableTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-
         $this->createSchema();
     }
 
@@ -35,7 +34,7 @@ class AccessorsTranslatableTest extends TestCase
     /** @test */
     public function it_applies_accessors_to_translatable_attributes(): void
     {
-        $article = new Article();
+        $article = new ArticleWithAccessors();
         $article->title = 'My article';
         $article->save();
 
@@ -47,7 +46,7 @@ class AccessorsTranslatableTest extends TestCase
     /** @test */
     public function it_applies_accessors_to_translatable_attributes_using_getters(): void
     {
-        $article = new Article();
+        $article = new ArticleWithAccessors();
         $article->title = 'My article';
         $article->save();
 
@@ -61,7 +60,7 @@ class AccessorsTranslatableTest extends TestCase
     /** @test */
     public function it_still_applies_accessors_to_original_attributes_using_getters(): void
     {
-        $article = new Article();
+        $article = new ArticleWithAccessors();
         $article->title = 'my article';
         $article->save();
 
@@ -71,7 +70,7 @@ class AccessorsTranslatableTest extends TestCase
     /** @test */
     public function it_still_applies_accessors_to_original_attributes_in_fallback_locale(): void
     {
-        $article = new Article();
+        $article = new ArticleWithAccessors();
         $article->title = 'my article';
         $article->save();
 
@@ -85,7 +84,7 @@ class AccessorsTranslatableTest extends TestCase
     /** @test */
     public function it_does_not_override_original_attribute_after_applying_accessors(): void
     {
-        $article = new Article();
+        $article = new ArticleWithAccessors();
         $article->title = 'my article';
         $article->save();
         $article->translation()->add('title', 'моя статья', 'ru');
@@ -99,7 +98,7 @@ class AccessorsTranslatableTest extends TestCase
     /** @test */
     public function it_returns_raw_translation_value_for_given_locale(): void
     {
-        $article = new Article();
+        $article = new ArticleWithAccessors();
         $article->title = 'my article';
         $article->save();
 
@@ -111,7 +110,7 @@ class AccessorsTranslatableTest extends TestCase
     /** @test */
     public function it_correctly_stores_translations_after_applied_accessors(): void
     {
-        $article = new Article();
+        $article = new ArticleWithAccessors();
         $article->title = 'my article';
         $article->save();
 
@@ -129,7 +128,7 @@ class AccessorsTranslatableTest extends TestCase
     /** @test */
     public function it_still_applies_accessors_for_non_translatable_attributes(): void
     {
-        $article = new Article();
+        $article = new ArticleWithAccessors();
         $article->title = 'my article';
         $article->save();
 
@@ -156,9 +155,11 @@ class AccessorsTranslatableTest extends TestCase
  * @property string description
  * @property string description_short
  */
-class Article extends Model
+class ArticleWithAccessors extends Model
 {
     use HasTranslations;
+
+    protected $table = 'articles';
 
     protected $translatable = [
         'title',
