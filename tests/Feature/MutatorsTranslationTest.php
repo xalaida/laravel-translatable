@@ -8,7 +8,7 @@ use Illuminate\Support\Str;
 use Nevadskiy\Translatable\HasTranslations;
 use Nevadskiy\Translatable\Tests\TestCase;
 
-class MutatorsTranslatableTest extends TestCase
+class MutatorsTranslationTest extends TestCase
 {
     /**
      * Set up the test environment.

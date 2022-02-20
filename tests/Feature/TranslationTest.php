@@ -7,7 +7,7 @@ use Nevadskiy\Translatable\Models\Translation;
 use Nevadskiy\Translatable\Tests\Support\Factories\BookFactory;
 use Nevadskiy\Translatable\Tests\TestCase;
 
-class TranslationsTest extends TestCase
+class TranslationTest extends TestCase
 {
     /** @test */
     public function it_handles_translations_for_translatable_attributes(): void

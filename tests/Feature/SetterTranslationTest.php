@@ -3,7 +3,6 @@
 namespace Nevadskiy\Translatable\Tests\Feature;
 
 use Illuminate\Support\Facades\DB;
-use Nevadskiy\Translatable\Models\Translation;
 use Nevadskiy\Translatable\Tests\Support\Factories\BookFactory;
 use Nevadskiy\Translatable\Tests\TestCase;
 use Nevadskiy\Translatable\Translatable;
@@ -22,9 +21,9 @@ class SetterTranslationTest extends TestCase
 
         $book = $book->fresh();
 
-        self::assertCount(1, Translation::all());
         self::assertEquals('Моя первая книга', $book->translation()->get('title', 'ru'));
         self::assertEquals('My first book', $book->getOriginalAttribute('title'));
+        $this->assertDatabaseCount('translations', 1);
     }
 
     /** @test */
@@ -39,9 +38,9 @@ class SetterTranslationTest extends TestCase
 
         $book = $book->fresh();
 
-        self::assertCount(1, Translation::all());
         self::assertEquals('Моя книга', $book->translation()->get('title', 'ru'));
         self::assertEquals('My first book', $book->getOriginalAttribute('title'));
+        $this->assertDatabaseCount('translations', 1);
     }
 
     /** @test */
@@ -55,9 +54,9 @@ class SetterTranslationTest extends TestCase
 
         $book = $book->fresh();
 
-        self::assertEmpty(Translation::all());
         self::assertNull($book->translation()->get('title', 'ru'));
         self::assertEquals('My first book', $book->title);
+        $this->assertDatabaseCount('translations', 0);
     }
 
     /** @test */
@@ -74,7 +73,7 @@ class SetterTranslationTest extends TestCase
 
         self::assertEquals('Исправленное название книги', $book->translation()->get('title'));
         self::assertEquals('My book', $book->getOriginalAttribute('title'));
-        self::assertCount(1, Translation::all());
+        $this->assertDatabaseCount('translations', 1);
     }
 
     /** @test */
@@ -88,7 +87,7 @@ class SetterTranslationTest extends TestCase
 
         $book->save();
 
-        self::assertEmpty(Translation::all());
+        $this->assertDatabaseCount('translations', 0);
     }
 
     /** @test */
@@ -112,7 +111,7 @@ class SetterTranslationTest extends TestCase
         self::assertEquals('Книга о птицах', $book->description);
         self::assertEquals(12, $book->version);
 
-        self::assertCount(2, Translation::all());
+        $this->assertDatabaseCount('translations', 2);
     }
 
     /** @test */
@@ -143,7 +142,7 @@ class SetterTranslationTest extends TestCase
         $book->save();
 
         self::assertEquals('New test book title', $book->title);
-        self::assertEmpty(Translation::all());
+        $this->assertDatabaseCount('translations', 0);
     }
 
     /** @test */
@@ -159,7 +158,7 @@ class SetterTranslationTest extends TestCase
         $book = $book->fresh();
 
         self::assertEquals(3, $book->version);
-        self::assertEmpty(Translation::all());
+        $this->assertDatabaseCount('translations', 0);
     }
 
     /** @test */
@@ -175,7 +174,7 @@ class SetterTranslationTest extends TestCase
         $book = $book->fresh();
 
         self::assertEquals('Book about animals', $book->description);
-        self::assertEmpty(Translation::all());
+        $this->assertDatabaseCount('translations', 0);
     }
 
     /** @test */
@@ -193,7 +192,7 @@ class SetterTranslationTest extends TestCase
         $book->save();
 
         self::assertEmpty(DB::connection()->getQueryLog());
-        self::assertCount(1, Translation::all());
+        $this->assertDatabaseCount('translations', 1);
     }
 
     /** @test */
@@ -209,7 +208,7 @@ class SetterTranslationTest extends TestCase
         $book->title = 'Моя лучшая книга';
         $book->save();
 
-        self::assertCount(1, Translation::all());
+        $this->assertDatabaseCount('translations', 1);
     }
 
     /** @test */
@@ -227,6 +226,6 @@ class SetterTranslationTest extends TestCase
         $this->app->setLocale('en');
 
         self::assertEquals('Моя лучшая книга', $book->title);
-        self::assertEmpty(Translation::all());
+        $this->assertDatabaseCount('translations', 0);
     }
 }

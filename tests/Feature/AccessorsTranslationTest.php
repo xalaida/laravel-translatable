@@ -8,7 +8,7 @@ use Illuminate\Support\Str;
 use Nevadskiy\Translatable\HasTranslations;
 use Nevadskiy\Translatable\Tests\TestCase;
 
-class AccessorsTranslatableTest extends TestCase
+class AccessorsTranslationTest extends TestCase
 {
     /**
      * Set up the test environment.

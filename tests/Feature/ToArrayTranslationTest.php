@@ -5,7 +5,7 @@ namespace Nevadskiy\Translatable\Tests\Feature;
 use Nevadskiy\Translatable\Tests\Support\Factories\BookFactory;
 use Nevadskiy\Translatable\Tests\TestCase;
 
-class ToArrayTranslationsTest extends TestCase
+class ToArrayTranslationTest extends TestCase
 {
     /** @test */
     public function it_returns_an_array_with_model_translations(): void
