@@ -1,11 +1,12 @@
 <?php
 
-namespace Nevadskiy\Translatable\Tests\Feature;
+namespace Nevadskiy\Translatable\Tests\Feature\Strategies\Single;
 
 use Illuminate\Support\Facades\Route;
 use Nevadskiy\Translatable\Tests\Support\Factories\PostFactory;
 use Nevadskiy\Translatable\Tests\Support\Models\Post;
 use Nevadskiy\Translatable\Tests\TestCase;
+use function route;
 
 class RouteBindingByTranslatableAttributeTest extends TestCase
 {
