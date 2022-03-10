@@ -5,18 +5,16 @@
 [![License](https://poser.pugx.org/nevadskiy/laravel-translatable/license)](https://packagist.org/packages/nevadskiy/laravel-translatable)
 [![Latest Stable Version](https://poser.pugx.org/nevadskiy/laravel-translatable/v)](https://packagist.org/packages/nevadskiy/laravel-translatable)
 
-The package provides possibility to translate your Eloquent models into different languages using a single database table.
+The package provides possibility to store translations for your Eloquent models.
 
 
 ## 🍬 Features 
 
+- Storing model translations in the database.
+- Supporting model accessors & mutators & casts (even JSON).
 - Auto-resolving model translations for the current locale.
-- No need to rewrite existing migrations, models or views.
-- Store all translations in the single 'translations' table.
-- Works with model accessors & mutators & casts, even with JSON.
-- Works with route model binding.
-- Archive translations to improve searching experience.
-- Provides useful events.
+- No need to rewrite existing code to make a model translatable.
+- Useful scopes to query translatable models.
 
 
 ## ⚙️ Demo
