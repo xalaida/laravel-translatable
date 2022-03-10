@@ -53,35 +53,35 @@ composer require nevadskiy/laravel-translatable
 
 ## Strategies
 
+There are few strategies that affect how translations will be saved in the database. 
+
 ### Single table strategy
 
-With this strategy, translations for every model will be stored in the same table.
+With this strategy, translations for every model will be stored in the same `translations` table.
 
-Table structure
+The table structure:
 
-| Column                 | Type                                 |
-|------------------------|--------------------------------------|
-| id                     | ID of the translation                |
-| translatable_id        | Morph ID of the translatable model   |
-| translatable_type      | Morph type of the translatable model |
-| translatable_attribute | Attribute of the translatable model  |
-| locale                 | Locale of the translation value      |
-| value                  | Translation value                    |
+| Column                 | Description                               |
+|------------------------|-------------------------------------------|
+| id                     | ID of the translation                     |
+| translatable_id        | Morph ID of the translatable model        |
+| translatable_type      | Morph type of the translatable model      |
+| translatable_attribute | Attribute of the translatable model       |
+| locale                 | Locale of the translation value           |
+| value                  | The translation value                     |
+| created_at             | The timestamp the translation was created |
+| updated_at             | The timestamp the translation was updated |
 
 
+#### Usage
 
-
-2. Optional. If you are not going to use translations for models with UUID primary keys, make the following:
-
-- Publish package migration
+- Publish package migration.
 
 ```bash
 php artisan vendor:publish --tag=translatable
 ```
 
-- Replace the line `$table->uuidMorphs('translatable');` with `$table->morphs('translatable');` in the published migration.
-
-3. Run the migration command.
+- Run the migration command.
 
 ```bash
 php artisan migrate
@@ -90,7 +90,7 @@ php artisan migrate
 
 ## 🔨 Making models translatable 
 
-1. Add the `HasTranslations` trait to your models which you want to make translatable.
+- Add a trait of the strategy you want to use to your models which you want to make translatable. For example, the `HasTranslations` trait.
 
 ```php
 <?php
@@ -106,7 +106,7 @@ class Post extends Model
 }
 ```
 
-2. Add the `$translatable` array to your models with attributes you want to be translatable.
+- Add the `$translatable` array to your models with attributes you want to be translatable.
 
 ```php
 /**
