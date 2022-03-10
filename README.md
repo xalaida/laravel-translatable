@@ -17,7 +17,7 @@ The package provides possibility to store translations for your Eloquent models.
 - Useful scopes to query translatable models.
 
 
-## ⚙️ Demo
+## ⚙ Demo
 
 ```php
 $book = Book::create(['title' => 'Book about giraffes']);
@@ -90,7 +90,7 @@ php artisan migrate
 
 ## 🔨 Making models translatable 
 
-- Add a trait of the strategy you want to use to your models which you want to make translatable. For example, the `HasTranslations` trait.
+- Add a trait of the strategy you want to use to your model that you want to make translatable. For example, usage of the `HasTranslations` trait.
 
 ```php
 <?php

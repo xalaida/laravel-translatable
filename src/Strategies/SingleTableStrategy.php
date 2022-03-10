@@ -7,6 +7,7 @@ use Nevadskiy\Translatable\HasTranslations;
 use Nevadskiy\Translatable\Models\Translation;
 
 // TODO: add possibility to trigger an exception when creating model in non-default locale.
+// TODO: add possibility to extract translatable attributes out of the model into single table (allows to create models in custom locale)
 class SingleTableStrategy implements TranslatorStrategy
 {
     /**
