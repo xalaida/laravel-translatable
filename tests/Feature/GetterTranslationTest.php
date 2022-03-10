@@ -8,7 +8,7 @@ use Nevadskiy\Translatable\Tests\Support\Models\Book;
 use Nevadskiy\Translatable\Tests\TestCase;
 use Nevadskiy\Translatable\Translatable;
 
-class AttributeGetTranslationTest extends TestCase
+class GetterTranslationTest extends TestCase
 {
     /** @test */
     public function it_automatically_retrieves_translations_for_attributes_using_current_locale(): void
