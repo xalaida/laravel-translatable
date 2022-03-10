@@ -39,7 +39,7 @@ class TranslatableServiceProvider extends ServiceProvider
     private function bootCommands(): void
     {
         $this->commands([
-            Console\RemoveUnusedTranslationsCommand::class,
+            //
         ]);
     }
 

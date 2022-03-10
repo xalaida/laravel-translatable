@@ -14,6 +14,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Removed
 - `translate` and `translateMany` methods on the model.
 - Archiving translations feature.
+- `translations:remove-unused` command.
 
 ## [0.7.4] - 2021-11-29
 ### Changed
