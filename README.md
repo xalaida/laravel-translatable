@@ -44,11 +44,32 @@ echo $book->title; // 'Book about giraffes'
 
 ## 🔌 Installation
 
-1. Install the package via composer.
+Install the package via composer.
 
 ```bash
 composer require nevadskiy/laravel-translatable
 ```
+
+
+## Strategies
+
+### Single table strategy
+
+With this strategy, translations for every model will be stored in the same table.
+
+Table structure
+
+| Column                 | Type                                 |
+|------------------------|--------------------------------------|
+| id                     | ID of the translation                |
+| translatable_id        | Morph ID of the translatable model   |
+| translatable_type      | Morph type of the translatable model |
+| translatable_attribute | Attribute of the translatable model  |
+| locale                 | Locale of the translation value      |
+| value                  | Translation value                    |
+
+
+
 
 2. Optional. If you are not going to use translations for models with UUID primary keys, make the following:
 
