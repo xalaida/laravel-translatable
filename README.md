@@ -78,7 +78,7 @@ The table structure:
 - Publish package migration.
 
 ```bash
-php artisan vendor:publish --tag=translatable
+php artisan vendor:publish --tag=translations
 ```
 
 - Run the migration command.
