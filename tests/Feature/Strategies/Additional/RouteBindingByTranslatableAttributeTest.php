@@ -5,7 +5,7 @@ namespace Nevadskiy\Translatable\Tests\Feature\Strategies\Additional;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Route;
-use Nevadskiy\Translatable\HasEntityTranslations;
+use Nevadskiy\Translatable\Behaviours\Entity\HasTranslations;
 use Nevadskiy\Translatable\Tests\TestCase;
 
 class RouteBindingByTranslatableAttributeTest extends TestCase
@@ -196,7 +196,7 @@ class RouteBindingByTranslatableAttributeTest extends TestCase
  */
 class ArticleWithSlug extends Model
 {
-    use HasEntityTranslations;
+    use HasTranslations;
 
     protected $table = 'articles';
 

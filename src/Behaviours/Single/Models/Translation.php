@@ -1,13 +1,13 @@
 <?php
 
-namespace Nevadskiy\Translatable\Models;
+namespace Nevadskiy\Translatable\Behaviours\Single\Models;
 
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
+use Nevadskiy\Translatable\Behaviours\Single\HasTranslations;
 use Nevadskiy\Translatable\Events\TranslationCreated;
-use Nevadskiy\Translatable\HasTranslations;
 use Nevadskiy\Uuid\Uuid;
 
 /**

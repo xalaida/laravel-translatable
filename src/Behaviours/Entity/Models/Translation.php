@@ -1,6 +1,6 @@
 <?php
 
-namespace Nevadskiy\Translatable\Models;
+namespace Nevadskiy\Translatable\Behaviours\Entity\Models;
 
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
@@ -13,7 +13,7 @@ use Nevadskiy\Uuid\Uuid;
  * @property Carbon updated_at
  * @property Carbon created_at
  */
-class EntityTranslation extends Model
+class Translation extends Model
 {
     use Uuid;
 

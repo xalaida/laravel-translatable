@@ -4,7 +4,7 @@ namespace Nevadskiy\Translatable\Tests\Support\Models;
 
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
-use Nevadskiy\Translatable\HasEntityTranslations;
+use Nevadskiy\Translatable\Behaviours\Entity\HasTranslations;
 use Nevadskiy\Uuid\Uuid;
 
 /**
@@ -17,7 +17,7 @@ use Nevadskiy\Uuid\Uuid;
 class Product extends Model
 {
     use Uuid;
-    use HasEntityTranslations;
+    use HasTranslations;
 
     /**
      * The attributes that can be translatable.

@@ -3,7 +3,7 @@
 namespace Nevadskiy\Translatable\Tests\Feature;
 
 use Illuminate\Support\Facades\DB;
-use Nevadskiy\Translatable\Models\Translation;
+use Nevadskiy\Translatable\Behaviours\Single\Models\Translation;
 use Nevadskiy\Translatable\Tests\Support\Factories\BookFactory;
 use Nevadskiy\Translatable\Tests\TestCase;
 use Nevadskiy\Translatable\Translatable;

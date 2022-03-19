@@ -1,6 +1,6 @@
 <?php
 
-namespace Nevadskiy\Translatable\Concerns;
+namespace Nevadskiy\Translatable\Behaviours;
 
 use Illuminate\Database\Eloquent\Model;
 use Nevadskiy\Translatable\Strategies\SingleTableStrategy;

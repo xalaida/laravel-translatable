@@ -2,8 +2,9 @@
 
 namespace Nevadskiy\Translatable\Events;
 
-use Nevadskiy\Translatable\Models\Translation;
+use Nevadskiy\Translatable\Behaviours\Single\Models\Translation;
 
+// TODO: refactor to make it convenient for both strategies
 class TranslationCreated
 {
     /**

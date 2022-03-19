@@ -1,25 +1,26 @@
 <?php
 
-namespace Nevadskiy\Translatable;
+namespace Nevadskiy\Translatable\Behaviours\Entity;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Collection;
-use Nevadskiy\Translatable\Models\EntityTranslation;
-use Nevadskiy\Translatable\Models\Translation;
-use Nevadskiy\Translatable\Scopes\TranslationsEagerLoadScope;
+use Nevadskiy\Translatable\Behaviours\Entity\Models\Translation;
+use Nevadskiy\Translatable\Behaviours\Single\Scopes\TranslationsEagerLoadScope;
+use Nevadskiy\Translatable\Concerns;
 use Nevadskiy\Translatable\Strategies\AdditionalTableStrategy;
 use Nevadskiy\Translatable\Strategies\TranslatorStrategy;
+use function collect;
 
 /**
  * @mixin Model
  * @mixin SoftDeletes
  * @property Collection|Translation[] translations
  */
-trait HasEntityTranslations
+trait HasTranslations
 {
-    use Concerns\InteractsWithTranslations;
+    use \Nevadskiy\Translatable\Behaviours\InteractsWithTranslations;
 
     /**
      * Boot the trait.
@@ -63,9 +64,9 @@ trait HasEntityTranslations
     /**
      * Get the entity translation model instance.
      */
-    protected function getEntityTranslationInstance(): EntityTranslation
+    protected function getEntityTranslationInstance(): Translation
     {
-        $instance = $this->newRelatedInstance(EntityTranslation::class);
+        $instance = $this->newRelatedInstance(Translation::class);
 
         $instance->setTable($this->getEntityTranslationTable());
 

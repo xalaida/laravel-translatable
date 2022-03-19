@@ -4,7 +4,7 @@ namespace Nevadskiy\Translatable\Tests\Feature\Strategies\Additional;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Schema\Blueprint;
-use Nevadskiy\Translatable\HasEntityTranslations;
+use Nevadskiy\Translatable\Behaviours\Entity\HasTranslations;
 use Nevadskiy\Translatable\Strategies\AdditionalTableStrategy;
 use Nevadskiy\Translatable\Strategies\TranslatorStrategy;
 use Nevadskiy\Translatable\Tests\TestCase;
@@ -143,7 +143,7 @@ class AdditionalTableStrategyExtendingTest extends TestCase
  */
 class Article extends Model
 {
-    use HasEntityTranslations;
+    use HasTranslations;
 
     protected $translatable = [
         'title',

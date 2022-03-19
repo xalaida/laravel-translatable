@@ -1,14 +1,15 @@
 <?php
 
-namespace Nevadskiy\Translatable;
+namespace Nevadskiy\Translatable\Behaviours\Single;
 
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Collection;
-use Nevadskiy\Translatable\Models\Translation;
-use Nevadskiy\Translatable\Scopes\TranslationsEagerLoadScope;
+use Nevadskiy\Translatable\Behaviours\InteractsWithTranslations;
+use Nevadskiy\Translatable\Behaviours\Single\Models\Translation;
+use Nevadskiy\Translatable\Behaviours\Single\Scopes\TranslationsEagerLoadScope;
 use Nevadskiy\Translatable\Strategies\SingleTableStrategy;
 use Nevadskiy\Translatable\Strategies\TranslatorStrategy;
 
@@ -18,8 +19,7 @@ use Nevadskiy\Translatable\Strategies\TranslatorStrategy;
  */
 trait HasTranslations
 {
-    use Concerns\InteractsWithTranslations,
-        TranslatableUrlRouting;
+    use InteractsWithTranslations;
 
     /**
      * Boot the trait.
@@ -92,7 +92,7 @@ trait HasTranslations
      */
     protected function isUsingSoftDeletes(): bool
     {
-        return collect(class_uses_recursive($this))->contains(SoftDeletes::class);
+        return in_array(SoftDeletes::class, class_uses_recursive($this), true);
     }
 
     /**
@@ -102,6 +102,8 @@ trait HasTranslations
     {
         $this->translations()->delete();
     }
+
+    // TODO: refactor below.
 
     /**
      * Scope to remove the 'translations' relation from a query.
