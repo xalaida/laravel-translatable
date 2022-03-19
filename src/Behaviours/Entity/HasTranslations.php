@@ -8,7 +8,6 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Collection;
 use Nevadskiy\Translatable\Behaviours\Entity\Models\Translation;
 use Nevadskiy\Translatable\Behaviours\Single\Scopes\TranslationsEagerLoadScope;
-use Nevadskiy\Translatable\Concerns;
 use Nevadskiy\Translatable\Strategies\AdditionalTableStrategy;
 use Nevadskiy\Translatable\Strategies\TranslatorStrategy;
 use function collect;

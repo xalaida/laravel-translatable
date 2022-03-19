@@ -7,11 +7,9 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Nevadskiy\Translatable\Behaviours\Single\HasTranslations;
-use Nevadskiy\Translatable\Events\TranslationCreated;
-use Nevadskiy\Uuid\Uuid;
 
 /**
- * @property string id
+ * @property int id
  * @property string translatable_type
  * @property string translatable_id
  * @property string translatable_attribute
@@ -23,8 +21,6 @@ use Nevadskiy\Uuid\Uuid;
  */
 class Translation extends Model
 {
-    use Uuid;
-
     /**
      * The attributes that aren't mass assignable.
      *
@@ -42,17 +38,6 @@ class Translation extends Model
     ];
 
     /**
-     * The event map for the model.
-     *
-     * Allows for object-based events for native Eloquent events.
-     *
-     * @var array
-     */
-    protected $dispatchesEvents = [
-        'created' => TranslationCreated::class,
-    ];
-
-    /**
      * Translatable morph relation.
      */
     public function translatable(): MorphTo
@@ -63,7 +48,7 @@ class Translation extends Model
     /**
      * Scope translations by the given locale.
      */
-    public function scopeForLocale(Builder $query, ?string $locale): Builder
+    public function scopeForLocale(Builder $query, string $locale): Builder
     {
         return $query->where('locale', $locale);
     }
