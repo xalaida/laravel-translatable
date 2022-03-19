@@ -19,6 +19,8 @@ The package provides possibility to store translations for your Eloquent models.
 
 ## ⚙ Demo
 
+### Using attribute and current locale
+
 ```php
 $book = Book::create(['title' => 'Book about giraffes']);
 
@@ -33,6 +35,20 @@ echo $book->title; // 'Libro sobre jirafas'
 
 app()->setLocale('en');
 echo $book->title; // 'Book about giraffes'
+```
+
+### Using "translation" method
+
+```php
+$book = Book::create(['title' => 'Book about giraffes']);
+
+// Storing translation
+$book->translation()->set('title', 'Libro sobre jirafas', 'es');
+$book->translation()->save();
+
+// Reading translations
+echo $book->translation()->get('title', 'es'); // 'Libro sobre jirafas'
+echo $book->translation()->get('title', 'en'); // 'Book about giraffes'
 ```
 
 
