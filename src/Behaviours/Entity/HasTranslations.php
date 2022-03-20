@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Collection;
 use Nevadskiy\Translatable\Behaviours\Entity\Models\Translation;
+use Nevadskiy\Translatable\Behaviours\InteractsWithTranslations;
 use Nevadskiy\Translatable\Behaviours\Single\Scopes\TranslationsEagerLoadScope;
 use Nevadskiy\Translatable\Strategies\AdditionalTableStrategy;
 use Nevadskiy\Translatable\Strategies\TranslatorStrategy;
@@ -19,7 +20,7 @@ use function collect;
  */
 trait HasTranslations
 {
-    use \Nevadskiy\Translatable\Behaviours\InteractsWithTranslations;
+    use InteractsWithTranslations;
 
     /**
      * Boot the trait.
