@@ -29,15 +29,6 @@ class Translation extends Model
     protected $guarded = [];
 
     /**
-     * The relationships that should be touched on save.
-     *
-     * @var array
-     */
-    protected $touches = [
-        'translatable',
-    ];
-
-    /**
      * Translatable morph relation.
      */
     public function translatable(): MorphTo

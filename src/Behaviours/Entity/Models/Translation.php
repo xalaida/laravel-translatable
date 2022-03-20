@@ -5,18 +5,15 @@ namespace Nevadskiy\Translatable\Behaviours\Entity\Models;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
-use Nevadskiy\Uuid\Uuid;
 
 /**
- * @property string id
+ * @property int id
  * @property string|null locale
  * @property Carbon updated_at
  * @property Carbon created_at
  */
 class Translation extends Model
 {
-    use Uuid;
-
     /**
      * The attributes that aren't mass assignable.
      *
