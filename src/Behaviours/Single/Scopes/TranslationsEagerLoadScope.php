@@ -21,7 +21,7 @@ class TranslationsEagerLoadScope implements Scope
             return;
         }
 
-        if (! $this->shouldLoadTranslations($translatable)) {
+        if (! $this->shouldEagerLoadTranslations($translatable)) {
             return;
         }
 
@@ -38,10 +38,10 @@ class TranslationsEagerLoadScope implements Scope
      *
      * @param Model|HasTranslations $translatable
      */
-    private function shouldLoadTranslations(Model $translatable): bool
+    private function shouldEagerLoadTranslations(Model $translatable): bool
     {
         foreach ($translatable->getTranslatable() as $attribute) {
-            if ($translatable->getterAsTranslation($attribute)) {
+            if ($translatable->shouldProxyAttributeToTranslation($attribute)) {
                 return true;
             }
         }

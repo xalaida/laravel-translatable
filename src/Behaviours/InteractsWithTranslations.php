@@ -58,7 +58,7 @@ trait InteractsWithTranslations
      */
     public function getAttribute($attribute)
     {
-        if (! $this->attributeAsTranslation($attribute)) {
+        if (! $this->shouldProxyAttributeToTranslation($attribute)) {
             return $this->getOriginalAttribute($attribute);
         }
 
@@ -113,7 +113,7 @@ trait InteractsWithTranslations
      */
     public function setAttribute($attribute, $value)
     {
-        if (! $this->attributeAsTranslation($attribute)) {
+        if (! $this->shouldProxyAttributeToTranslation($attribute)) {
             return $this->setOriginalAttribute($attribute, $value);
         }
 
@@ -165,7 +165,7 @@ trait InteractsWithTranslations
     /**
      * Determine if the model should proxy the attribute to a translation bag.
      */
-    public function attributeAsTranslation(string $attribute): bool
+    public function shouldProxyAttributeToTranslation(string $attribute): bool
     {
         return true;
     }
