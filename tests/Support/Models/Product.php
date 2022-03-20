@@ -5,10 +5,9 @@ namespace Nevadskiy\Translatable\Tests\Support\Models;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Nevadskiy\Translatable\Behaviours\Entity\HasTranslations;
-use Nevadskiy\Uuid\Uuid;
 
 /**
- * @property string id
+ * @property int id
  * @property string title
  * @property string description
  * @property Carbon created_at
@@ -16,7 +15,6 @@ use Nevadskiy\Uuid\Uuid;
  */
 class Product extends Model
 {
-    use Uuid;
     use HasTranslations;
 
     /**
