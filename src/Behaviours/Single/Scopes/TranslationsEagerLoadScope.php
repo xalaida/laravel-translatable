@@ -40,7 +40,7 @@ class TranslationsEagerLoadScope implements Scope
     private function shouldEagerLoadTranslations(Model $translatable): bool
     {
         foreach ($translatable->getTranslatable() as $attribute) {
-            if ($translatable->shouldProxyAttributeToTranslation($attribute)) {
+            if ($translatable->shouldProxyAttributeToTranslator($attribute)) {
                 return true;
             }
         }
