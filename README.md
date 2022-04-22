@@ -17,7 +17,7 @@ The package provides possibility to store translations for your Eloquent models.
 - Useful scopes to query translatable models.
 
 
-## ⚙ Demo
+## 📺 Demo
 
 ### Using attribute and current locale
 
