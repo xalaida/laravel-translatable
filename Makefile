@@ -1,5 +1,5 @@
 # Install the app
-install: build deps test
+install: build vendor test
 
 # Build the app container
 build:
