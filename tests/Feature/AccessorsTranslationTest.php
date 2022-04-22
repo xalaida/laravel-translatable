@@ -5,7 +5,7 @@ namespace Nevadskiy\Translatable\Tests\Feature;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Str;
-use Nevadskiy\Translatable\HasTranslations;
+use Nevadskiy\Translatable\Behaviours\Single\HasTranslations;
 use Nevadskiy\Translatable\Tests\TestCase;
 
 class AccessorsTranslationTest extends TestCase

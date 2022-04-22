@@ -5,21 +5,21 @@
 [![License](https://poser.pugx.org/nevadskiy/laravel-translatable/license)](https://packagist.org/packages/nevadskiy/laravel-translatable)
 [![Latest Stable Version](https://poser.pugx.org/nevadskiy/laravel-translatable/v)](https://packagist.org/packages/nevadskiy/laravel-translatable)
 
-The package provides possibility to translate your Eloquent models into different languages using a single database table.
+The package provides possibility to store translations for your Eloquent models.
 
 
 ## 🍬 Features 
 
+- Storing model translations in the database.
+- Supporting model accessors & mutators & casts (even JSON).
 - Auto-resolving model translations for the current locale.
-- No need to rewrite existing migrations, models or views.
-- Store all translations in the single 'translations' table.
-- Works with model accessors & mutators & casts, even with JSON.
-- Works with route model binding.
-- Archive translations to improve searching experience.
-- Provides useful events.
+- No need to rewrite existing code to make a model translatable.
+- Useful scopes to query translatable models.
 
 
-## ⚙️ Demo
+## ⚙ Demo
+
+### Using attribute and current locale
 
 ```php
 $book = Book::create(['title' => 'Book about giraffes']);
@@ -37,6 +37,20 @@ app()->setLocale('en');
 echo $book->title; // 'Book about giraffes'
 ```
 
+### Using "translation" method
+
+```php
+$book = Book::create(['title' => 'Book about giraffes']);
+
+// Storing translation
+$book->translation()->set('title', 'Libro sobre jirafas', 'es');
+$book->translation()->save();
+
+// Reading translations
+echo $book->translation()->get('title', 'es'); // 'Libro sobre jirafas'
+echo $book->translation()->get('title', 'en'); // 'Book about giraffes'
+```
+
 
 ## ✅ Requirements
 
@@ -46,23 +60,44 @@ echo $book->title; // 'Book about giraffes'
 
 ## 🔌 Installation
 
-1. Install the package via composer.
+Install the package via composer.
 
 ```bash
 composer require nevadskiy/laravel-translatable
 ```
 
-2. Optional. If you are not going to use translations for models with UUID primary keys, make the following:
 
-- Publish package migration
+## Strategies
+
+There are few strategies that affect how translations will be saved in the database. 
+
+### Single table strategy
+
+With this strategy, translations for every model will be stored in the same `translations` table.
+
+The table structure:
+
+| Column                 | Description                               |
+|------------------------|-------------------------------------------|
+| id                     | ID of the translation                     |
+| translatable_id        | Morph ID of the translatable model        |
+| translatable_type      | Morph type of the translatable model      |
+| translatable_attribute | Attribute of the translatable model       |
+| locale                 | Locale of the translation value           |
+| value                  | The translation value                     |
+| created_at             | The timestamp the translation was created |
+| updated_at             | The timestamp the translation was updated |
+
+
+#### Usage
+
+- Publish package migration.
 
 ```bash
-php artisan vendor:publish --tag=translatable
+php artisan vendor:publish --tag=translations
 ```
 
-- Replace the line `$table->uuidMorphs('translatable');` with `$table->morphs('translatable');` in the published migration.
-
-3. Run the migration command.
+- Run the migration command.
 
 ```bash
 php artisan migrate
@@ -71,7 +106,7 @@ php artisan migrate
 
 ## 🔨 Making models translatable 
 
-1. Add the `HasTranslations` trait to your models which you want to make translatable.
+- Add a trait of the strategy you want to use to your model that you want to make translatable. For example, usage of the `HasTranslations` trait.
 
 ```php
 <?php
@@ -87,7 +122,7 @@ class Post extends Model
 }
 ```
 
-2. Add the `$translatable` array to your models with attributes you want to be translatable.
+- Add the `$translatable` array to your models with attributes you want to be translatable.
 
 ```php
 /**

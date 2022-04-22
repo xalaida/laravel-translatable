@@ -1,12 +1,12 @@
 <?php
 
-namespace Nevadskiy\Translatable\Scopes;
+namespace Nevadskiy\Translatable\Behaviours\Single\Scopes;
 
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Database\Eloquent\Scope;
-use Nevadskiy\Translatable\HasTranslations;
+use Nevadskiy\Translatable\Behaviours\Single\HasTranslations;
 
 class TranslationsEagerLoadScope implements Scope
 {
@@ -21,10 +21,9 @@ class TranslationsEagerLoadScope implements Scope
             return;
         }
 
-        if (! $this->shouldLoadTranslations($translatable)) {
+        if (! $this->shouldEagerLoadTranslations($translatable)) {
             return;
         }
-
 
         // TODO Reduce the amount of fields using partition selects.
         // TODO: load only translatable attributes here.
@@ -38,10 +37,10 @@ class TranslationsEagerLoadScope implements Scope
      *
      * @param Model|HasTranslations $translatable
      */
-    private function shouldLoadTranslations(Model $translatable): bool
+    private function shouldEagerLoadTranslations(Model $translatable): bool
     {
         foreach ($translatable->getTranslatable() as $attribute) {
-            if ($translatable->getterAsTranslation($attribute)) {
+            if ($translatable->shouldProxyAttributeToTranslation($attribute)) {
                 return true;
             }
         }

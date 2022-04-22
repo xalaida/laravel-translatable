@@ -5,7 +5,6 @@ namespace Nevadskiy\Translatable\Tests\Feature;
 use Illuminate\Support\Facades\DB;
 use Nevadskiy\Translatable\Tests\Support\Factories\BookFactory;
 use Nevadskiy\Translatable\Tests\TestCase;
-use Nevadskiy\Translatable\Translatable;
 
 class SetterTranslationTest extends TestCase
 {
@@ -209,23 +208,5 @@ class SetterTranslationTest extends TestCase
         $book->save();
 
         $this->assertDatabaseCount('translations', 1);
-    }
-
-    /** @test */
-    public function it_does_not_auto_save_translations_when_feature_is_disabled(): void
-    {
-        $book = BookFactory::new()->create(['title' => 'My best book']);
-        $this->app->setLocale('ru');
-
-        // TODO: change API.
-        $this->app[Translatable::class]->disableAutoSaving();
-
-        $book->title = 'Моя лучшая книга';
-        $book->save();
-
-        $this->app->setLocale('en');
-
-        self::assertEquals('Моя лучшая книга', $book->title);
-        $this->assertDatabaseCount('translations', 0);
     }
 }

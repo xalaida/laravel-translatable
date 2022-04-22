@@ -3,12 +3,11 @@
 namespace Nevadskiy\Translatable\Events;
 
 use Illuminate\Database\Eloquent\Model;
-use Nevadskiy\Translatable\HasTranslations;
 
 class TranslationNotFound
 {
     /**
-     * @var Model|HasTranslations
+     * @var Model
      */
     public $model;
 
@@ -24,8 +23,6 @@ class TranslationNotFound
 
     /**
      * Create a new event instance.
-     *
-     * @param Model|HasTranslations $model
      */
     public function __construct(Model $model, string $attribute, string $locale)
     {

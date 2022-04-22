@@ -1,14 +1,11 @@
 <?php
 
-namespace Nevadskiy\Translatable\Concerns;
+namespace Nevadskiy\Translatable\Behaviours;
 
 use Illuminate\Database\Eloquent\Model;
 use Nevadskiy\Translatable\Strategies\SingleTableStrategy;
 use Nevadskiy\Translatable\Strategies\TranslatorStrategy;
-use Nevadskiy\Translatable\Translatable;
 use Nevadskiy\Translatable\Translator;
-use function collect;
-use function resolve;
 
 /**
  * @mixin Model
@@ -46,6 +43,7 @@ trait InteractsWithTranslations
 
     /**
      * Get the translation strategy.
+     * TODO: probably make it an abstract.
      */
     protected function getTranslationStrategy(): TranslatorStrategy
     {
@@ -60,7 +58,7 @@ trait InteractsWithTranslations
      */
     public function getAttribute($attribute)
     {
-        if (! $this->getterAsTranslation($attribute)) {
+        if (! $this->shouldProxyAttributeToTranslation($attribute)) {
             return $this->getOriginalAttribute($attribute);
         }
 
@@ -115,7 +113,7 @@ trait InteractsWithTranslations
      */
     public function setAttribute($attribute, $value)
     {
-        if (! $this->setterAsTranslation($attribute)) {
+        if (! $this->shouldProxyAttributeToTranslation($attribute)) {
             return $this->setOriginalAttribute($attribute, $value);
         }
 
@@ -165,19 +163,11 @@ trait InteractsWithTranslations
     }
 
     /**
-     * Determine if the model should automatically load translations on attribute get.
+     * Determine if the model should proxy the attribute to a translation bag.
      */
-    public function getterAsTranslation(string $attribute): bool
+    public function shouldProxyAttributeToTranslation(string $attribute): bool
     {
-        return resolve(Translatable::class)->shouldAutoLoadTranslations();
-    }
-
-    /**
-     * Determine if the model should automatically save translations on attribute set.
-     */
-    public function setterAsTranslation(string $attribute): bool
-    {
-        return resolve(Translatable::class)->shouldAutoSaveTranslations();
+        return true;
     }
 
     /**
@@ -185,7 +175,7 @@ trait InteractsWithTranslations
      */
     public function isTranslatable(string $attribute): bool
     {
-        return collect($this->getTranslatable())->contains($attribute);
+        return in_array($attribute, $this->getTranslatable(), true);
     }
 
     /**

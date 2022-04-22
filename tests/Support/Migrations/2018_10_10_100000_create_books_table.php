@@ -12,7 +12,7 @@ class CreateBooksTable extends Migration
     public function up(): void
     {
         Schema::create('books', static function (Blueprint $table) {
-            $table->uuid('id')->primary();
+            $table->id();
             $table->string('title');
             $table->string('description');
             $table->integer('version')->default(1);

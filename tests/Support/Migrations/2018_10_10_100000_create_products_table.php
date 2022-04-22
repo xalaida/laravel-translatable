@@ -12,7 +12,7 @@ class CreateProductsTable extends Migration
     public function up(): void
     {
         Schema::create('products', static function (Blueprint $table) {
-            $table->uuid('id')->primary();
+            $table->id();
             $table->string('title');
             $table->text('description');
             $table->integer('stock')->unsigned()->default(0);

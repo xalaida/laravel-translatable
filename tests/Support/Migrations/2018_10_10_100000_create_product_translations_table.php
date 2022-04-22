@@ -15,8 +15,8 @@ class CreateProductTranslationsTable extends Migration
         // TODO: add console command to generate tables with name (throw exception when no attributes found)
 
         Schema::create('product_translations', static function (Blueprint $table) {
-            $table->uuid('id')->primary();
-            $table->foreignUuid('product_id')->references('id')->on('products')->cascadeOnDelete();
+            $table->id();
+            $table->foreignId('product_id')->references('id')->on('products')->cascadeOnDelete();
             $table->string('title')->nullable();
             $table->text('description')->nullable();
             $table->string('locale', 2)->index();

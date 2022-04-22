@@ -1,19 +1,17 @@
 <?php
 
-namespace Nevadskiy\Translatable\Models;
+namespace Nevadskiy\Translatable\Behaviours\Single\Models;
 
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
-use Nevadskiy\Translatable\Events\TranslationCreated;
-use Nevadskiy\Translatable\HasTranslations;
-use Nevadskiy\Uuid\Uuid;
+use Nevadskiy\Translatable\Behaviours\Single\HasTranslations;
 
 /**
- * @property string id
+ * @property int id
  * @property string translatable_type
- * @property string translatable_id
+ * @property int translatable_id
  * @property string translatable_attribute
  * @property-read Model|HasTranslations translatable
  * @property string value
@@ -23,8 +21,6 @@ use Nevadskiy\Uuid\Uuid;
  */
 class Translation extends Model
 {
-    use Uuid;
-
     /**
      * The attributes that aren't mass assignable.
      *
@@ -33,18 +29,7 @@ class Translation extends Model
     protected $guarded = [];
 
     /**
-     * The event map for the model.
-     *
-     * Allows for object-based events for native Eloquent events.
-     *
-     * @var array
-     */
-    protected $dispatchesEvents = [
-        'created' => TranslationCreated::class,
-    ];
-
-    /**
-     * Translatable morph relation.
+     * Get the translatable entity.
      */
     public function translatable(): MorphTo
     {
@@ -54,7 +39,7 @@ class Translation extends Model
     /**
      * Scope translations by the given locale.
      */
-    public function scopeForLocale(Builder $query, ?string $locale): Builder
+    public function scopeForLocale(Builder $query, string $locale): Builder
     {
         return $query->where('locale', $locale);
     }

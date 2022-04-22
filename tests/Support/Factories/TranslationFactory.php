@@ -3,8 +3,8 @@
 namespace Nevadskiy\Translatable\Tests\Support\Factories;
 
 use Illuminate\Database\Eloquent\Model;
-use Nevadskiy\Translatable\HasTranslations;
-use Nevadskiy\Translatable\Models\Translation;
+use Nevadskiy\Translatable\Behaviours\Single\HasTranslations;
+use Nevadskiy\Translatable\Behaviours\Single\Models\Translation;
 
 class TranslationFactory
 {

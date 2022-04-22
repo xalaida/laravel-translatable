@@ -2,7 +2,6 @@
 
 namespace Nevadskiy\Translatable;
 
-use Illuminate\Contracts\Events\Dispatcher;
 use Illuminate\Support\ServiceProvider;
 
 class TranslatableServiceProvider extends ServiceProvider
@@ -12,7 +11,7 @@ class TranslatableServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        $this->registerPackage();
+        //
     }
 
     /**
@@ -20,26 +19,18 @@ class TranslatableServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        $this->bootMigrations();
+        $this->bootCommands();
         $this->publishMigrations();
     }
 
     /**
-     * Register the package configurator.
+     * Boot any package commands.
      */
-    public function registerPackage(): void
+    private function bootCommands(): void
     {
-        $this->app->singleton(Translatable::class);
-    }
-
-    /**
-     * Boot any package migrations.
-     */
-    public function bootMigrations(): void
-    {
-        if ($this->app[Translatable::class]->shouldBootMigrations()) {
-            $this->loadMigrationsFrom(__DIR__.'/../database/migrations');
-        }
+        $this->commands([
+            //
+        ]);
     }
 
     /**
@@ -49,6 +40,6 @@ class TranslatableServiceProvider extends ServiceProvider
     {
         $this->publishes([
             __DIR__.'/../database/migrations' => database_path('migrations'),
-        ], 'translatable');
+        ], 'translatable-migrations');
     }
 }

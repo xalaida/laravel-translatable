@@ -3,8 +3,8 @@
 namespace Nevadskiy\Translatable\Strategies;
 
 use Illuminate\Database\Eloquent\Model;
-use Nevadskiy\Translatable\HasTranslations;
-use Nevadskiy\Translatable\Models\EntityTranslation;
+use Nevadskiy\Translatable\Behaviours\Entity\HasTranslations;
+use Nevadskiy\Translatable\Behaviours\Entity\Models\Translation;
 
 /**
  * @TODO: add 'subscribe' hook to register model events (boot, saving, saved, deleting, deleted, etc).
@@ -144,7 +144,7 @@ class AdditionalTableStrategy implements TranslatorStrategy
      */
     private function getFromRelation(string $locale, string $attribute)
     {
-        $translation = $this->model->translations->first(function (EntityTranslation $translation) use ($locale) {
+        $translation = $this->model->translations->first(function (Translation $translation) use ($locale) {
             return $translation->locale === $locale;
         });
 

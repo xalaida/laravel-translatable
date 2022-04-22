@@ -6,11 +6,10 @@ use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
-use Nevadskiy\Translatable\HasTranslations;
-use Nevadskiy\Uuid\Uuid;
+use Nevadskiy\Translatable\Behaviours\Single\HasTranslations;
 
 /**
- * @property string id
+ * @property int id
  * @property string title
  * @property string description
  * @property int version
@@ -21,8 +20,7 @@ use Nevadskiy\Uuid\Uuid;
  */
 class Book extends Model
 {
-    use Uuid,
-        HasTranslations;
+    use HasTranslations;
 
     /**
      * The attributes that can be translatable.

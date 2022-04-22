@@ -1,8 +1,9 @@
 <?php
 
-namespace Nevadskiy\Translatable;
+namespace Nevadskiy\Translatable\Behaviours\Single;
 
 use Illuminate\Database\Eloquent\Model;
+use Nevadskiy\Translatable\HasTranslations;
 
 /**
  * @mixin Model

@@ -4,9 +4,7 @@ namespace Nevadskiy\Translatable\Tests\Feature;
 
 use Illuminate\Support\Facades\DB;
 use Nevadskiy\Translatable\Tests\Support\Factories\BookFactory;
-use Nevadskiy\Translatable\Tests\Support\Models\Book;
 use Nevadskiy\Translatable\Tests\TestCase;
-use Nevadskiy\Translatable\Translatable;
 
 class GetterTranslationTest extends TestCase
 {
@@ -78,38 +76,5 @@ class GetterTranslationTest extends TestCase
         $book->save();
 
         self::assertEmpty(DB::connection()->getQueryLog());
-    }
-
-    /** @test */
-    public function it_does_not_substitute_value_with_translation_when_feature_is_disabled(): void
-    {
-        $book = BookFactory::new()->create(['title' => 'My best book']);
-
-        $book->translation()->add('title', 'Моя лучшая книга', 'ru');
-
-        // TODO: change API.
-        $this->app[Translatable::class]->disableAutoLoading();
-
-        $this->app->setLocale('ru');
-
-        self::assertEquals('My best book', $book->title);
-    }
-
-    /** @test */
-    public function it_does_not_perform_additional_queries_for_loading_translations_when_feature_is_disabled(): void
-    {
-        $book = BookFactory::new()->create(['title' => 'My best book']);
-
-        $book->translation()->add('title', 'Моя лучшая книга', 'ru');
-
-        // TODO: change API.
-        $this->app[Translatable::class]->disableAutoLoading();
-
-        $this->app->setLocale('ru');
-
-        DB::connection()->enableQueryLog();
-
-        self::assertEquals('My best book', Book::first()->title);
-        self::assertCount(1, DB::connection()->getQueryLog());
     }
 }

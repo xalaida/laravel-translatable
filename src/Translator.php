@@ -3,16 +3,19 @@
 namespace Nevadskiy\Translatable;
 
 use Illuminate\Database\Eloquent\Model;
+use Nevadskiy\Translatable\Behaviours\InteractsWithTranslations;
 use Nevadskiy\Translatable\Events\TranslationNotFound;
 use Nevadskiy\Translatable\Exceptions\AttributeNotTranslatableException;
 use Nevadskiy\Translatable\Strategies\TranslatorStrategy;
+use function app;
+use function event;
 
 class Translator
 {
     /**
      * The translatable model instance.
      *
-     * @var Model|HasTranslations
+     * @var Model|InteractsWithTranslations
      */
     private $model;
 
@@ -64,7 +67,7 @@ class Translator
      */
     public function set(string $attribute, $value, string $locale = null): Translator
     {
-        $this->assertTranslatableAttribute($attribute);
+        $this->assertAttributeIsTranslatable($attribute);
 
         $this->strategy->set($attribute, $value, $locale ?: $this->getLocale());
 
@@ -102,7 +105,7 @@ class Translator
      */
     public function get(string $attribute, string $locale = null)
     {
-        $this->assertTranslatableAttribute($attribute);
+        $this->assertAttributeIsTranslatable($attribute);
 
         $raw = $this->raw($attribute, $locale);
 
@@ -167,7 +170,7 @@ class Translator
     /**
      * Assert that the given attribute is translatable.
      */
-    protected function assertTranslatableAttribute(string $attribute): void
+    protected function assertAttributeIsTranslatable(string $attribute): void
     {
         if (! $this->model->isTranslatable($attribute)) {
             throw AttributeNotTranslatableException::fromAttribute($attribute);
