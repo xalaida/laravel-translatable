@@ -58,7 +58,7 @@ trait HasTranslations
      */
     protected function handleSavedEvent(): void
     {
-        $this->translation()->save();
+        $this->translator()->save();
     }
 
     /**
@@ -121,7 +121,7 @@ trait HasTranslations
     protected function scopeWhereTranslatable(Builder $query, string $attribute, $value, string $locale = null, string $operator = '='): Builder
     {
         return $query->where(function (Builder $query) use ($attribute, $value, $locale, $operator) {
-            if (is_null($locale) || $this->translation()->isFallbackLocale($locale)) {
+            if (is_null($locale) || $this->translator()->isFallbackLocale($locale)) {
                 $query->where($attribute, $operator, $value);
             }
 
@@ -142,9 +142,9 @@ trait HasTranslations
      */
     protected function scopeOrderByTranslatable(Builder $query, string $attribute, string $direction = 'asc', string $locale = null): Builder
     {
-        $locale = $locale ?: $this->translation()->getLocale();
+        $locale = $locale ?: $this->translator()->getLocale();
 
-        if ($this->translation()->isFallbackLocale($locale)) {
+        if ($this->translator()->isFallbackLocale($locale)) {
             return $query->orderBy($attribute, $direction);
         }
 

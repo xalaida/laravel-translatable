@@ -17,7 +17,7 @@ class TranslationsEagerLoadScope implements Scope
      */
     public function apply(Builder $query, Model $translatable): void
     {
-        if ($translatable->translation()->isFallbackLocale()) {
+        if ($translatable->translator()->isFallbackLocale()) {
             return;
         }
 
@@ -28,7 +28,7 @@ class TranslationsEagerLoadScope implements Scope
         // TODO Reduce the amount of fields using partition selects.
         // TODO: load only translatable attributes here.
         $query->with(['translations' => static function (Relation $query) use ($translatable) {
-            $query->forLocale($translatable->translation()->getLocale());
+            $query->forLocale($translatable->translator()->getLocale());
         }]);
     }
 

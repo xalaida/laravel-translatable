@@ -49,9 +49,9 @@ class AdditionalTableStrategyTest extends TestCase
             'description' => 'Warm winter sweater',
         ]);
 
-        $product->translation()->set('title', 'Свитер с оленями', 'ru');
-        $product->translation()->set('description', 'Теплый зимний свитер', 'ru');
-        $product->translation()->save();
+        $product->translator()->set('title', 'Свитер с оленями', 'ru');
+        $product->translator()->set('description', 'Теплый зимний свитер', 'ru');
+        $product->translator()->save();
 
         $this->assertDatabaseCount('product_translations', 1);
         $this->assertDatabaseHas('product_translations', [
@@ -69,8 +69,8 @@ class AdditionalTableStrategyTest extends TestCase
             'description' => 'Warm winter sweater',
         ]);
 
-        $product->translation()->set('title', 'Свитер с оленями', 'ru');
-        $product->translation()->set('description', 'Теплый зимний свитер', 'ru');
+        $product->translator()->set('title', 'Свитер с оленями', 'ru');
+        $product->translator()->set('description', 'Теплый зимний свитер', 'ru');
 
         $this->assertDatabaseCount('product_translations', 0);
     }
@@ -83,13 +83,13 @@ class AdditionalTableStrategyTest extends TestCase
             'description' => 'Warm winter sweater',
         ]);
 
-        $product->translation()->set('title', 'Свитер с оленями', 'ru');
-        $product->translation()->set('description', 'Теплый зимний свитер', 'ru');
-        $product->translation()->save();
+        $product->translator()->set('title', 'Свитер с оленями', 'ru');
+        $product->translator()->set('description', 'Теплый зимний свитер', 'ru');
+        $product->translator()->save();
 
         DB::enableQueryLog();
 
-        $product->translation()->save();
+        $product->translator()->save();
 
         self::assertEmpty(DB::connection()->getQueryLog());
         $this->assertDatabaseCount('product_translations', 1);
@@ -100,9 +100,9 @@ class AdditionalTableStrategyTest extends TestCase
     {
         $product = ProductFactory::new()->create(['title' => 'Reindeer Sweater']);
 
-        $product->translation()->set('title', 'Свитер с оленями', 'ru');
+        $product->translator()->set('title', 'Свитер с оленями', 'ru');
 
-        self::assertEquals('Свитер с оленями', $product->translation()->get('title', 'ru'));
+        self::assertEquals('Свитер с оленями', $product->translator()->get('title', 'ru'));
     }
 
     /** @test */
@@ -127,7 +127,7 @@ class AdditionalTableStrategyTest extends TestCase
     {
         $product = ProductFactory::new()->create(['title' => 'Reindeer Sweater']);
 
-        $product->translation()->set('title', 'Свитер с оленями', 'ru');
+        $product->translator()->set('title', 'Свитер с оленями', 'ru');
 
         $this->app->setLocale('ru');
 
@@ -141,9 +141,9 @@ class AdditionalTableStrategyTest extends TestCase
         $product2 = ProductFactory::new()->create(['title' => 'Sony PlayStation']);
         $product3 = ProductFactory::new()->create(['title' => 'LG Boiler']);
 
-        $product1->translation()->add('title', 'Свитер с оленями', 'ru');
-        $product2->translation()->add('title', 'Sony ИгроваяСтанция', 'ru');
-        $product3->translation()->add('title', 'LG чайник', 'ru');
+        $product1->translator()->add('title', 'Свитер с оленями', 'ru');
+        $product2->translator()->add('title', 'Sony ИгроваяСтанция', 'ru');
+        $product3->translator()->add('title', 'LG чайник', 'ru');
 
         $products = Product::query()->withoutGlobalScopes()->with('translations')->get();
 
@@ -165,9 +165,9 @@ class AdditionalTableStrategyTest extends TestCase
         $product2 = ProductFactory::new()->create(['title' => 'Sony PlayStation']);
         $product3 = ProductFactory::new()->create(['title' => 'LG Boiler']);
 
-        $product1->translation()->add('title', 'Свитер с оленями', 'ru');
-        $product2->translation()->add('title', 'Sony ИгроваяСтанция', 'ru');
-        $product3->translation()->add('title', 'LG чайник', 'ru');
+        $product1->translator()->add('title', 'Свитер с оленями', 'ru');
+        $product2->translator()->add('title', 'Sony ИгроваяСтанция', 'ru');
+        $product3->translator()->add('title', 'LG чайник', 'ru');
 
         $this->app->setLocale('ru');
 

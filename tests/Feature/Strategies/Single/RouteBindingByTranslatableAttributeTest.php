@@ -22,7 +22,7 @@ class RouteBindingByTranslatableAttributeTest extends TestCase
         $postAboutGiraffes = PostFactory::new()->create(['slug' => 'post-about-giraffes']);
 
         $postAboutPenguins = PostFactory::new()->create(['slug' => 'post-about-penguins']);
-        $postAboutPenguins->translation()->add('slug', 'пост-о-пингвинах', 'ru');
+        $postAboutPenguins->translator()->add('slug', 'пост-о-пингвинах', 'ru');
 
         $this->app->setLocale('ru');
         $response = $this->get('posts/пост-о-пингвинах');
@@ -87,7 +87,7 @@ class RouteBindingByTranslatableAttributeTest extends TestCase
         });
 
         $post = PostFactory::new()->create(['slug' => 'post-about-penguins']);
-        $post->translation()->add('slug', 'пост-о-пингвинах', 'ru');
+        $post->translator()->add('slug', 'пост-о-пингвинах', 'ru');
 
         $this->app->setLocale('ru');
         $response = $this->get('posts/post-about-penguins');
@@ -103,7 +103,7 @@ class RouteBindingByTranslatableAttributeTest extends TestCase
         });
 
         $post = PostFactory::new()->create(['slug' => 'post-about-penguins']);
-        $post->translation()->add('slug', 'пост-о-пингвинах', 'ru');
+        $post->translator()->add('slug', 'пост-о-пингвинах', 'ru');
 
         $this->app->setLocale('es');
         $response = $this->get('posts/пост-о-пингвинах');
@@ -117,7 +117,7 @@ class RouteBindingByTranslatableAttributeTest extends TestCase
         Route::get('/posts/{post}')->name('posts.show');
 
         $post = PostFactory::new()->create(['slug' => 'post-about-penguins']);
-        $post->translation()->add('slug', 'пост-о-пингвинах', 'ru');
+        $post->translator()->add('slug', 'пост-о-пингвинах', 'ru');
 
         $this->app->setLocale('ru');
         $url = route('posts.show', $post, false);

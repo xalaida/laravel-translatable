@@ -20,7 +20,7 @@ class SetterTranslationTest extends TestCase
 
         $book = $book->fresh();
 
-        self::assertEquals('Моя первая книга', $book->translation()->get('title', 'ru'));
+        self::assertEquals('Моя первая книга', $book->translator()->get('title', 'ru'));
         self::assertEquals('My first book', $book->getOriginalAttribute('title'));
         $this->assertDatabaseCount('translations', 1);
     }
@@ -37,7 +37,7 @@ class SetterTranslationTest extends TestCase
 
         $book = $book->fresh();
 
-        self::assertEquals('Моя книга', $book->translation()->get('title', 'ru'));
+        self::assertEquals('Моя книга', $book->translator()->get('title', 'ru'));
         self::assertEquals('My first book', $book->getOriginalAttribute('title'));
         $this->assertDatabaseCount('translations', 1);
     }
@@ -53,7 +53,7 @@ class SetterTranslationTest extends TestCase
 
         $book = $book->fresh();
 
-        self::assertNull($book->translation()->get('title', 'ru'));
+        self::assertNull($book->translator()->get('title', 'ru'));
         self::assertEquals('My first book', $book->title);
         $this->assertDatabaseCount('translations', 0);
     }
@@ -63,14 +63,14 @@ class SetterTranslationTest extends TestCase
     {
         $book = BookFactory::new()->create(['title' => 'My book']);
 
-        $book->translation()->add('title', 'Ошибочное название книги', 'ru');
+        $book->translator()->add('title', 'Ошибочное название книги', 'ru');
 
         $this->app->setLocale('ru');
 
         $book->title = 'Исправленное название книги';
         $book->save();
 
-        self::assertEquals('Исправленное название книги', $book->translation()->get('title'));
+        self::assertEquals('Исправленное название книги', $book->translator()->get('title'));
         self::assertEquals('My book', $book->getOriginalAttribute('title'));
         $this->assertDatabaseCount('translations', 1);
     }
@@ -119,8 +119,8 @@ class SetterTranslationTest extends TestCase
         $originalLocale = $this->app->getLocale();
 
         $book = BookFactory::new()->create(['title' => 'My original title']);
-        $book->translation()->set('title', 'Min ursprungliga titel', 'sv');
-        $book->translation()->set('title', 'Mi titulo original', 'es');
+        $book->translator()->set('title', 'Min ursprungliga titel', 'sv');
+        $book->translator()->set('title', 'Mi titulo original', 'es');
 
         $this->app->setLocale('sv');
         self::assertEquals('Min ursprungliga titel', $book->title);

@@ -34,7 +34,7 @@ class FireTranslationNotFoundTest extends TestCase
 
         Event::fake(TranslationNotFound::class);
 
-        self::assertNull($book->translation()->get('title', 'ru'));
+        self::assertNull($book->translator()->get('title', 'ru'));
 
         Event::assertDispatched(TranslationNotFound::class, static function (TranslationNotFound $event) use ($book) {
             return $event->attribute === 'title'
@@ -48,11 +48,11 @@ class FireTranslationNotFoundTest extends TestCase
     {
         $book = BookFactory::new()->create(['title' => 'My original book']);
 
-        $book->translation()->add('title', 'Моя оригинальная книга', 'ru');
+        $book->translator()->add('title', 'Моя оригинальная книга', 'ru');
 
         Event::fake(TranslationNotFound::class);
 
-        self::assertEquals('Моя оригинальная книга', $book->translation()->get('title', 'ru'));
+        self::assertEquals('Моя оригинальная книга', $book->translator()->get('title', 'ru'));
 
         Event::assertNotDispatched(TranslationNotFound::class);
     }

@@ -94,7 +94,7 @@ trait HasTranslations
      */
     protected function handleSavedEvent(): void
     {
-        $this->translation()->save();
+        $this->translator()->save();
     }
 
     /**
@@ -156,7 +156,7 @@ trait HasTranslations
 
         // TODO: feature resolving model by translatable attribute. (possible two ways: if missing use fallback or 404) so maybe do not implement this method.
 
-        $locale = $this->translation()->getLocale();
+        $locale = $this->translator()->getLocale();
 
         $model = $this->whereTranslatable($field, $value, $locale)->first();
 
@@ -179,6 +179,6 @@ trait HasTranslations
             return false;
         }
 
-        return ! $this->translation()->isFallbackLocale();
+        return ! $this->translator()->isFallbackLocale();
     }
 }

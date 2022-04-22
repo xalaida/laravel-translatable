@@ -38,9 +38,9 @@ class AccessorsTranslationTest extends TestCase
         $article->title = 'My article';
         $article->save();
 
-        $article->translation()->add('title', 'моя статья', 'ru');
+        $article->translator()->add('title', 'моя статья', 'ru');
 
-        self::assertEquals('Моя статья', $article->translation()->get('title', 'ru'));
+        self::assertEquals('Моя статья', $article->translator()->get('title', 'ru'));
     }
 
     /** @test */
@@ -74,7 +74,7 @@ class AccessorsTranslationTest extends TestCase
         $article->title = 'my article';
         $article->save();
 
-        $article->translation()->add('title', 'моя статья', 'ru');
+        $article->translator()->add('title', 'моя статья', 'ru');
 
         $this->app->setLocale('ru');
 
@@ -87,9 +87,9 @@ class AccessorsTranslationTest extends TestCase
         $article = new ArticleWithAccessors();
         $article->title = 'my article';
         $article->save();
-        $article->translation()->add('title', 'моя статья', 'ru');
+        $article->translator()->add('title', 'моя статья', 'ru');
 
-        $article->translation()->get('title', 'ru');
+        $article->translator()->get('title', 'ru');
         $article->save();
 
         self::assertEquals('my article', $article->getRawOriginal('title'));
@@ -102,9 +102,9 @@ class AccessorsTranslationTest extends TestCase
         $article->title = 'my article';
         $article->save();
 
-        $article->translation()->add('title', 'моя статья', 'ru');
+        $article->translator()->add('title', 'моя статья', 'ru');
 
-        self::assertEquals('моя статья', $article->translation()->raw('title', 'ru'));
+        self::assertEquals('моя статья', $article->translator()->raw('title', 'ru'));
     }
 
     /** @test */
@@ -122,7 +122,7 @@ class AccessorsTranslationTest extends TestCase
         self::assertEquals('Моя статья', $article->title);
         $article->save();
 
-        self::assertEquals('моя статья', $article->fresh()->translation()->raw('title', 'ru'));
+        self::assertEquals('моя статья', $article->fresh()->translator()->raw('title', 'ru'));
     }
 
     /** @test */
@@ -132,7 +132,7 @@ class AccessorsTranslationTest extends TestCase
         $article->title = 'my article';
         $article->save();
 
-        $article->translation()->add('description', 'Статья про собак', 'ru');
+        $article->translator()->add('description', 'Статья про собак', 'ru');
 
         $this->app->setLocale('ru');
 

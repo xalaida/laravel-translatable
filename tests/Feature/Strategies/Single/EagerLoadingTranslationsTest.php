@@ -14,9 +14,9 @@ class EagerLoadingTranslationsTest extends TestCase
     {
         $book = BookFactory::new()->create();
 
-        $book->translation()->add('title', 'Книга про черепах', 'ru');
-        $book->translation()->add('title', 'En bok om sköldpaddor', 'sv');
-        $book->translation()->add('title', 'Ein Buch über Schildkröten', 'de');
+        $book->translator()->add('title', 'Книга про черепах', 'ru');
+        $book->translator()->add('title', 'En bok om sköldpaddor', 'sv');
+        $book->translator()->add('title', 'Ein Buch über Schildkröten', 'de');
 
         $this->app->setLocale('ru');
 
@@ -58,7 +58,7 @@ class EagerLoadingTranslationsTest extends TestCase
     {
         $book = BookFactory::new()->create();
 
-        $book->translation()->add('title', 'Книга про черепах', 'ru');
+        $book->translator()->add('title', 'Книга про черепах', 'ru');
 
         [$book] = Book::query()->withoutTranslations()->get();
 

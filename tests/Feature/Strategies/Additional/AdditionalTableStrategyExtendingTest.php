@@ -92,9 +92,9 @@ class AdditionalTableStrategyExtendingTest extends TestCase
         $article = new Article();
         $article->save();
 
-        $article->translation()->set('title', 'Статья о попугаях', 'ru');
-        $article->translation()->set('description', 'Как научить разговаривать попугая', 'ru');
-        $article->translation()->save();
+        $article->translator()->set('title', 'Статья о попугаях', 'ru');
+        $article->translator()->set('description', 'Как научить разговаривать попугая', 'ru');
+        $article->translator()->save();
 
         $this->assertDatabaseCount('article_translations', 1);
         $this->assertDatabaseHas('article_translations', [
@@ -111,9 +111,9 @@ class AdditionalTableStrategyExtendingTest extends TestCase
         $article = new Article();
         $article->save();
 
-        $article->translation()->set('title', 'Article about parrots', 'en');
-        $article->translation()->set('description', 'How to teach a parrot to talk', 'en');
-        $article->translation()->save();
+        $article->translator()->set('title', 'Article about parrots', 'en');
+        $article->translator()->set('description', 'How to teach a parrot to talk', 'en');
+        $article->translator()->save();
 
         $this->assertDatabaseCount('article_translations', 1);
         $this->assertDatabaseHas('article_translations', [

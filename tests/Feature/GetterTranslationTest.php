@@ -13,7 +13,7 @@ class GetterTranslationTest extends TestCase
     {
         $book = BookFactory::new()->create();
 
-        $book->translation()->add('title', 'Моя лучшая книга', 'ru');
+        $book->translator()->add('title', 'Моя лучшая книга', 'ru');
 
         $this->app->setLocale('ru');
 
@@ -35,7 +35,7 @@ class GetterTranslationTest extends TestCase
     {
         $book = BookFactory::new()->create(['title' => 'My excellent book']);
 
-        $book->translation()->add('title', 'Моя превосходная книга', 'ru');
+        $book->translator()->add('title', 'Моя превосходная книга', 'ru');
 
         $this->app->setLocale('ru');
 
@@ -47,7 +47,7 @@ class GetterTranslationTest extends TestCase
     {
         $book = BookFactory::new()->create(['title' => 'My best book']);
 
-        $book->translation()->add('title', 'Моя лучшая книга', 'ru');
+        $book->translator()->add('title', 'Моя лучшая книга', 'ru');
 
         self::assertEquals('My best book', $book->title);
     }
@@ -65,7 +65,7 @@ class GetterTranslationTest extends TestCase
     {
         $book = BookFactory::new()->create(['title' => 'My best book']);
 
-        $book->translation()->add('title', 'Моя лучшая книга', 'ru');
+        $book->translator()->add('title', 'Моя лучшая книга', 'ru');
 
         $this->app->setLocale('ru');
 

@@ -42,7 +42,7 @@ class MorphMapTest extends TestCase
         $article->title = 'Book about dolphins';
         $article->save();
 
-        $article->translation()->add('title', 'Книга про дельфинов', 'ru');
+        $article->translator()->add('title', 'Книга про дельфинов', 'ru');
 
         $this->assertDatabaseHas('translations', [
             'translatable_type' => 'articles',

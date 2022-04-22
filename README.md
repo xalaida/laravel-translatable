@@ -43,12 +43,12 @@ echo $book->title; // 'Book about giraffes'
 $book = Book::create(['title' => 'Book about giraffes']);
 
 // Storing translation
-$book->translation()->set('title', 'Libro sobre jirafas', 'es');
-$book->translation()->save();
+$book->translator()->set('title', 'Libro sobre jirafas', 'es');
+$book->translator()->save();
 
 // Reading translations
-echo $book->translation()->get('title', 'es'); // 'Libro sobre jirafas'
-echo $book->translation()->get('title', 'en'); // 'Book about giraffes'
+echo $book->translator()->get('title', 'es'); // 'Libro sobre jirafas'
+echo $book->translator()->get('title', 'en'); // 'Book about giraffes'
 ```
 
 

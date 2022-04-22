@@ -56,7 +56,7 @@ class RouteBindingByTranslatableAttributeTest extends TestCase
         $article->slug = 'article-about-penguins';
         $article->save();
 
-        $article->translation()->add('slug', 'статья-о-пингвинах', 'ru');
+        $article->translator()->add('slug', 'статья-о-пингвинах', 'ru');
 
         $this->app->setLocale('ru');
 

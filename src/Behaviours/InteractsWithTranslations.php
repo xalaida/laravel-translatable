@@ -3,7 +3,6 @@
 namespace Nevadskiy\Translatable\Behaviours;
 
 use Illuminate\Database\Eloquent\Model;
-use Nevadskiy\Translatable\Strategies\SingleTableStrategy;
 use Nevadskiy\Translatable\Strategies\TranslatorStrategy;
 use Nevadskiy\Translatable\Translator;
 
@@ -28,7 +27,7 @@ trait InteractsWithTranslations
     /**
      * Get the translator instance for the model.
      */
-    public function translation(): Translator
+    public function translator(): Translator
     {
         return $this->translator;
     }
@@ -43,12 +42,8 @@ trait InteractsWithTranslations
 
     /**
      * Get the translation strategy.
-     * TODO: probably make it an abstract.
      */
-    protected function getTranslationStrategy(): TranslatorStrategy
-    {
-        return new SingleTableStrategy($this);
-    }
+    abstract protected function getTranslationStrategy(): TranslatorStrategy;
 
     /**
      * Get an attribute from the model.
@@ -66,7 +61,7 @@ trait InteractsWithTranslations
             return $this->getOriginalAttribute($attribute);
         }
 
-        return $this->translation()->getOrFallback($attribute);
+        return $this->translator()->getOrFallback($attribute);
     }
 
     /**
@@ -121,7 +116,7 @@ trait InteractsWithTranslations
             return $this->setOriginalAttribute($attribute, $value);
         }
 
-        $this->translation()->set($attribute, $value);
+        $this->translator()->set($attribute, $value);
 
         return $this;
     }
@@ -175,7 +170,7 @@ trait InteractsWithTranslations
      */
     public function isTranslatable(string $attribute): bool
     {
-        return in_array($attribute, $this->getTranslatable(), true);
+        return collect($this->getTranslatable())->contains($attribute);
     }
 
     /**
@@ -191,6 +186,6 @@ trait InteractsWithTranslations
      */
     public function attributesToArray(): array
     {
-        return array_merge(parent::attributesToArray(), $this->translation()->toArray());
+        return array_merge(parent::attributesToArray(), $this->translator()->toArray());
     }
 }
