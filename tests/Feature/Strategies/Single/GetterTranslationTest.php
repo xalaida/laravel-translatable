@@ -2,79 +2,140 @@
 
 namespace Nevadskiy\Translatable\Tests\Feature\Strategies\Single;
 
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\DB;
-use Nevadskiy\Translatable\Tests\Support\Factories\BookFactory;
+use Nevadskiy\Translatable\Strategies\Single\HasTranslations;
 use Nevadskiy\Translatable\Tests\TestCase;
 
 class GetterTranslationTest extends TestCase
 {
-    /** @test */
-    public function it_automatically_retrieves_translations_for_attributes_using_current_locale(): void
+    /**
+     * @inheritdoc
+     */
+    protected function setUp(): void
     {
-        $article = BookFactory::new()->create();
+        parent::setUp();
+        $this->createSchema();
+    }
 
-        $article->translator()->add('title', 'Моя лучшая книга', 'ru');
-
-        $this->app->setLocale('ru');
-
-        self::assertEquals('Моя лучшая книга', $article->title);
+    /**
+     * Set up the database schema.
+     */
+    private function createSchema(): void
+    {
+        $this->schema()->create('books', function (Blueprint $table) {
+            $table->id();
+            $table->string('title');
+            $table->integer('size')->default(0);
+            $table->timestamps();
+        });
     }
 
     /** @test */
-    public function it_uses_original_value_for_attribute_if_translation_is_missing(): void
+    public function it_retrieves_translations_for_current_locale_using_model_getter(): void
     {
-        $article = BookFactory::new()->create(['title' => 'My legendary article']);
+        $book = new BookWithGetters();
+        $book->title = 'The Bear Book';
+        $book->save();
 
-        $this->app->setLocale('ru');
+        $book->translator()->add('title', 'Ведмежа книга', 'uk');
 
-        self::assertEquals('My legendary article', $article->title);
+        $this->app->setLocale('uk');
+
+        self::assertEquals('Ведмежа книга', $book->title);
     }
 
     /** @test */
-    public function it_can_return_an_attribute_without_translation(): void
+    public function it_uses_original_value_for_getter_if_translation_is_missing(): void
     {
-        $article = BookFactory::new()->create(['title' => 'My excellent article']);
+        $book = new BookWithGetters();
+        $book->title = 'The Bear Book';
+        $book->save();
 
-        $article->translator()->add('title', 'Моя превосходная книга', 'ru');
+        $this->app->setLocale('uk');
 
-        $this->app->setLocale('ru');
-
-        self::assertEquals('My excellent article', $article->getOriginalAttribute('title'));
+        self::assertEquals('The Bear Book', $book->title);
     }
 
     /** @test */
-    public function it_returns_original_attribute_for_default_locale(): void
+    public function it_can_return_original_attribute(): void
     {
-        $article = BookFactory::new()->create(['title' => 'My best article']);
+        $book = new BookWithGetters();
+        $book->title = 'The Bear Book';
+        $book->save();
 
-        $article->translator()->add('title', 'Моя лучшая книга', 'ru');
+        $book->translator()->add('title', 'Ведмежа книга', 'uk');
 
-        self::assertEquals('My best article', $article->title);
+        $this->app->setLocale('uk');
+
+        self::assertEquals('The Bear Book', $book->getOriginalAttribute('title'));
     }
 
     /** @test */
-    public function it_correctly_retrieves_values_for_non_translatable_attributes(): void
+    public function it_returns_original_attribute_for_fallback_locale(): void
     {
-        $article = BookFactory::new()->create(['version' => 5]);
+        $book = new BookWithGetters();
+        $book->title = 'The Bear Book';
+        $book->save();
 
-        self::assertEquals(5, $article->version);
+        $book->translator()->add('title', 'Ведмежа книга', 'uk');
+
+        self::assertEquals('The Bear Book', $book->title);
+    }
+
+    /** @test */
+    public function it_still_retrieves_values_for_non_translatable_attributes(): void
+    {
+        $book = new BookWithGetters();
+        $book->title = 'The Bear Book';
+        $book->size = 25;
+        $book->save();
+
+        self::assertEquals(25, $book->size);
     }
 
     /** @test */
     public function it_does_not_store_retrieved_values_again(): void
     {
-        $article = BookFactory::new()->create(['title' => 'My best article']);
+        $book = new BookWithGetters();
+        $book->title = 'The Bear Book';
+        $book->save();
 
-        $article->translator()->add('title', 'Моя лучшая книга', 'ru');
+        $book->translator()->add('title', 'Ведмежа книга', 'uk');
 
-        $this->app->setLocale('ru');
+        $this->app->setLocale('uk');
 
-        self::assertEquals('Моя лучшая книга', $article->title);
+        self::assertEquals('Ведмежа книга', $book->title);
 
         DB::connection()->enableQueryLog();
 
-        $article->save();
+        $book->save();
 
         self::assertEmpty(DB::connection()->getQueryLog());
     }
+
+    /**
+     * @inheritdoc
+     */
+    protected function tearDown(): void
+    {
+        $this->schema()->drop('books');
+        parent::tearDown();
+    }
+}
+
+/**
+ * @property string title
+ * @property int size
+ */
+class BookWithGetters extends Model
+{
+    use HasTranslations;
+
+    protected $table = 'books';
+
+    protected $translatable = [
+        'title',
+    ];
 }
