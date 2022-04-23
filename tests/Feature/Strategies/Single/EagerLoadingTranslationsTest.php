@@ -103,6 +103,8 @@ class EagerLoadingTranslationsTest extends TestCase
      * @skipped
      * TODO: implement this (need to tweak laravel internals).
      * This is possible only if the eloquent 'retrieved' event was fired AFTER eager loading.
+     * Similar approach: https://github.com/laravel-enso/versioning/blob/master/src/Traits/Versionable.php#L33
+     * Related to this: https://github.com/laravel/framework/issues/29658 (#29658)
      * Probably PR this behaviour.
      */
     public function it_can_lazy_load_translation_on_model_with_eager_loaded_translations_after_switching_locale(): void
