@@ -8,6 +8,9 @@ use Illuminate\Support\Str;
 use Nevadskiy\Translatable\Strategies\Single\HasTranslations;
 use Nevadskiy\Translatable\Tests\TestCase;
 
+/**
+ * TODO: test it using in-memory array strategy and simplify database test to just test attributes and originals
+ */
 class AccessorsTranslationTest extends TestCase
 {
     /**
@@ -35,108 +38,106 @@ class AccessorsTranslationTest extends TestCase
     public function it_applies_accessors_to_translatable_attributes(): void
     {
         $book = new BookWithAccessors();
-        $book->title = 'My book';
+        $book->title = 'Forest song';
         $book->save();
 
-        $book->translator()->add('title', 'моя статья', 'ru');
+        $book->translator()->add('title', 'лісова пісня', 'uk');
 
-        self::assertEquals('Моя статья', $book->translator()->get('title', 'ru'));
+        self::assertEquals('Лісова пісня', $book->translator()->get('title', 'uk'));
     }
 
     /** @test */
     public function it_applies_accessors_to_translatable_attributes_using_getters(): void
     {
         $book = new BookWithAccessors();
-        $book->title = 'My book';
+        $book->title = 'Forest song';
         $book->save();
 
-        $this->app->setLocale('ru');
+        $this->app->setLocale('uk');
 
-        $book->title = 'моя статья';
+        $book->title = 'лісова пісня';
 
-        self::assertEquals('Моя статья', $book->title);
+        self::assertEquals('Лісова пісня', $book->title);
     }
 
     /** @test */
     public function it_still_applies_accessors_to_original_attributes_using_getters(): void
     {
         $book = new BookWithAccessors();
-        $book->title = 'my book';
+        $book->title = 'forest song';
         $book->save();
 
-        self::assertEquals('My book', $book->title);
+        self::assertEquals('Forest song', $book->title);
     }
 
     /** @test */
     public function it_still_applies_accessors_to_original_attributes_in_fallback_locale(): void
     {
         $book = new BookWithAccessors();
-        $book->title = 'my book';
+        $book->title = 'forest song';
         $book->save();
 
-        $book->translator()->add('title', 'моя статья', 'ru');
+        $this->app->setLocale('uk');
 
-        $this->app->setLocale('ru');
-
-        self::assertEquals('My book', $book->getOriginalAttribute('title'));
+        self::assertEquals('Forest song', $book->translator()->getOrFallback('title'));
     }
 
     /** @test */
     public function it_does_not_override_original_attribute_after_applying_accessors(): void
     {
         $book = new BookWithAccessors();
-        $book->title = 'my book';
-        $book->save();
-        $book->translator()->add('title', 'моя статья', 'ru');
-
-        $book->translator()->get('title', 'ru');
+        $book->title = 'forest song';
         $book->save();
 
-        self::assertEquals('my book', $book->getRawOriginal('title'));
+        $book->translator()->add('title', 'Лісова пісня', 'uk');
+        $book->translator()->get('title', 'uk');
+        $book->save();
+
+        self::assertEquals('forest song', $book->getRawOriginal('title'));
     }
 
     /** @test */
     public function it_returns_raw_translation_value_for_given_locale(): void
     {
         $book = new BookWithAccessors();
-        $book->title = 'my book';
+        $book->title = 'forest song';
         $book->save();
 
-        $book->translator()->add('title', 'моя статья', 'ru');
+        $book->translator()->add('title', 'лісова пісня', 'uk');
 
-        self::assertEquals('моя статья', $book->translator()->raw('title', 'ru'));
+        self::assertEquals('лісова пісня', $book->translator()->raw('title', 'uk'));
     }
 
     /** @test */
     public function it_correctly_stores_translations_after_applied_accessors(): void
     {
         $book = new BookWithAccessors();
-        $book->title = 'my book';
+        $book->title = 'forest song';
         $book->save();
 
-        $this->app->setLocale('ru');
+        $this->app->setLocale('uk');
 
-        $book->title = 'моя статья';
+        $book->title = 'лісова пісня';
         $book->save();
 
-        self::assertEquals('Моя статья', $book->title);
+        self::assertEquals('Лісова пісня', $book->title);
         $book->save();
 
-        self::assertEquals('моя статья', $book->fresh()->translator()->raw('title', 'ru'));
+        self::assertEquals('лісова пісня', $book->fresh()->translator()->raw('title', 'uk'));
     }
 
     /** @test */
     public function it_still_applies_accessors_for_non_translatable_attributes(): void
     {
         $book = new BookWithAccessors();
-        $book->title = 'my book';
+        $book->title = 'forest song';
         $book->save();
 
-        $book->translator()->add('description', 'Статья про собак', 'ru');
+        $book->translator()->add('description', 'Прекрасний предковічний ліс на Волині', 'uk');
 
-        $this->app->setLocale('ru');
+        $this->app->setLocale('uk');
 
-        self::assertEquals('Ста...', $book->description_short);
+        self::assertEquals('Пре...', $book->description_short);
     }
 
     /**
