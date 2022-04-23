@@ -1,6 +1,6 @@
 <?php
 
-namespace Nevadskiy\Translatable\Behaviours\Single;
+namespace Nevadskiy\Translatable\Strategies\Single;
 
 use Illuminate\Database\Eloquent\Model;
 use Nevadskiy\Translatable\HasTranslations;

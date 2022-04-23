@@ -5,7 +5,7 @@ namespace Nevadskiy\Translatable\Tests\Feature\Strategies\Single;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Database\Schema\Blueprint;
-use Nevadskiy\Translatable\Behaviours\Single\HasTranslations;
+use Nevadskiy\Translatable\Strategies\Single\HasTranslations;
 use Nevadskiy\Translatable\Tests\TestCase;
 
 class MorphMapTest extends TestCase

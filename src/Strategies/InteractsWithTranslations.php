@@ -1,9 +1,8 @@
 <?php
 
-namespace Nevadskiy\Translatable\Behaviours;
+namespace Nevadskiy\Translatable\Strategies;
 
 use Illuminate\Database\Eloquent\Model;
-use Nevadskiy\Translatable\Strategies\TranslatorStrategy;
 use Nevadskiy\Translatable\Translator;
 
 /**

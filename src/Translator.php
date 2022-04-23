@@ -3,10 +3,10 @@
 namespace Nevadskiy\Translatable;
 
 use Illuminate\Database\Eloquent\Model;
-use Nevadskiy\Translatable\Behaviours\InteractsWithTranslations;
+use Nevadskiy\Translatable\Strategies\InteractsWithTranslations;
+use Nevadskiy\Translatable\Strategies\TranslatorStrategy;
 use Nevadskiy\Translatable\Events\TranslationNotFound;
 use Nevadskiy\Translatable\Exceptions\AttributeNotTranslatableException;
-use Nevadskiy\Translatable\Strategies\TranslatorStrategy;
 use function app;
 use function event;
 

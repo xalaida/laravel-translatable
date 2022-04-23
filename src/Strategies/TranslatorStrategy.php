@@ -4,6 +4,8 @@ namespace Nevadskiy\Translatable\Strategies;
 
 interface TranslatorStrategy
 {
+    // TODO: add load method
+
     /**
      * Get the translation value for the given attribute and locale.
      */

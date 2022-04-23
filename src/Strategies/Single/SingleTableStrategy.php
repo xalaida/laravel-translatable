@@ -1,10 +1,10 @@
 <?php
 
-namespace Nevadskiy\Translatable\Strategies;
+namespace Nevadskiy\Translatable\Strategies\Single;
 
 use Illuminate\Database\Eloquent\Model;
-use Nevadskiy\Translatable\Behaviours\Single\HasTranslations;
-use Nevadskiy\Translatable\Behaviours\Single\Models\Translation;
+use Nevadskiy\Translatable\Strategies\Single\Models\Translation;
+use Nevadskiy\Translatable\Strategies\TranslatorStrategy;
 
 // TODO: add possibility to trigger an exception when creating model in non-default locale.
 // TODO: add possibility to extract translatable attributes out of the model into single table (allows to create models in custom locale)

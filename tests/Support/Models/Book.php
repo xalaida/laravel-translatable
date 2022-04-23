@@ -6,7 +6,7 @@ use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
-use Nevadskiy\Translatable\Behaviours\Single\HasTranslations;
+use Nevadskiy\Translatable\Strategies\Single\HasTranslations;
 
 /**
  * @property int id

@@ -4,8 +4,8 @@ namespace Nevadskiy\Translatable\Tests\Feature\Strategies\Additional;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Schema\Blueprint;
-use Nevadskiy\Translatable\Behaviours\Entity\HasTranslations;
-use Nevadskiy\Translatable\Strategies\AdditionalTableStrategy;
+use Nevadskiy\Translatable\Strategies\Entity\AdditionalTableStrategy;
+use Nevadskiy\Translatable\Strategies\Entity\HasTranslations;
 use Nevadskiy\Translatable\Strategies\TranslatorStrategy;
 use Nevadskiy\Translatable\Tests\TestCase;
 

@@ -1,6 +1,6 @@
 <?php
 
-namespace Nevadskiy\Translatable\Tests\Feature;
+namespace Nevadskiy\Translatable\Tests\Feature\Strategies\Single;
 
 use Nevadskiy\Translatable\Strategies\Single\Models\Translation;
 use Nevadskiy\Translatable\Exceptions\AttributeNotTranslatableException;
@@ -9,6 +9,15 @@ use Nevadskiy\Translatable\Tests\TestCase;
 
 class TranslationTest extends TestCase
 {
+    /**
+     * Set up the test environment.
+     */
+    protected function setUp(): void
+    {
+        parent::setUp();
+        $this->createSchema();
+    }
+
     /** @test */
     public function it_handles_translations_for_translatable_attributes(): void
     {

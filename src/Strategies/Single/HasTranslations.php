@@ -1,16 +1,15 @@
 <?php
 
-namespace Nevadskiy\Translatable\Behaviours\Single;
+namespace Nevadskiy\Translatable\Strategies\Single;
 
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Collection;
-use Nevadskiy\Translatable\Behaviours\InteractsWithTranslations;
-use Nevadskiy\Translatable\Behaviours\Single\Models\Translation;
-use Nevadskiy\Translatable\Behaviours\Single\Scopes\TranslationsEagerLoadScope;
-use Nevadskiy\Translatable\Strategies\SingleTableStrategy;
+use Nevadskiy\Translatable\Strategies\InteractsWithTranslations;
+use Nevadskiy\Translatable\Strategies\Single\Models\Translation;
+use Nevadskiy\Translatable\Strategies\Single\Scopes\TranslationsEagerLoadScope;
 use Nevadskiy\Translatable\Strategies\TranslatorStrategy;
 
 /**

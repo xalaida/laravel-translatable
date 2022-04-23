@@ -1,12 +1,12 @@
 <?php
 
-namespace Nevadskiy\Translatable\Behaviours\Single\Scopes;
+namespace Nevadskiy\Translatable\Strategies\Single\Scopes;
 
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Database\Eloquent\Scope;
-use Nevadskiy\Translatable\Behaviours\Single\HasTranslations;
+use Nevadskiy\Translatable\Strategies\Single\HasTranslations;
 
 class TranslationsEagerLoadScope implements Scope
 {

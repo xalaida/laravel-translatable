@@ -1,10 +1,10 @@
 <?php
 
-namespace Nevadskiy\Translatable\Strategies;
+namespace Nevadskiy\Translatable\Strategies\Entity;
 
 use Illuminate\Database\Eloquent\Model;
-use Nevadskiy\Translatable\Behaviours\Entity\HasTranslations;
-use Nevadskiy\Translatable\Behaviours\Entity\Models\Translation;
+use Nevadskiy\Translatable\Strategies\Entity\Models\Translation;
+use Nevadskiy\Translatable\Strategies\TranslatorStrategy;
 
 /**
  * @TODO: add 'subscribe' hook to register model events (boot, saving, saved, deleting, deleted, etc).

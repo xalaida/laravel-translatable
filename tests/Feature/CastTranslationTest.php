@@ -5,11 +5,11 @@ namespace Nevadskiy\Translatable\Tests\Feature;
 use DateTimeInterface;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Schema\Blueprint;
-use Nevadskiy\Translatable\HasTranslations;
-use Nevadskiy\Translatable\Models\Translation;
+use Nevadskiy\Translatable\Strategies\Single\HasTranslations;
+use Nevadskiy\Translatable\Strategies\Single\Models\Translation;
 use Nevadskiy\Translatable\Tests\TestCase;
 
-class CastTranslationsTest extends TestCase
+class CastTranslationTest extends TestCase
 {
     /**
      * Set up the test environment.
@@ -43,7 +43,7 @@ class CastTranslationsTest extends TestCase
         ];
         $article->save();
 
-        $article->translation()->add('content', ['title' => 'Глава 1', 'body' => 'Глава о птицах'], 'ru');
+        $article->translator()->add('content', ['title' => 'Глава 1', 'body' => 'Глава о птицах'], 'ru');
 
         $this->app->setLocale('ru');
 
@@ -91,7 +91,6 @@ class CastTranslationsTest extends TestCase
     protected function tearDown(): void
     {
         $this->schema()->drop('articles');
-
         parent::tearDown();
     }
 }
