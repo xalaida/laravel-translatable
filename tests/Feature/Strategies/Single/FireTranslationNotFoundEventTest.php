@@ -45,7 +45,7 @@ class FireTranslationNotFoundEventTest extends TestCase
 
         self::assertNull($book->translator()->get('title'));
 
-        Event::assertDispatched(TranslationNotFound::class, function (TranslationNotFound $event) use ($book) {
+        Event::assertDispatched(TranslationNotFound::class, static function (TranslationNotFound $event) use ($book) {
             return $event->attribute === 'title'
                 && $event->locale === 'uk'
                 && $event->model->is($book);
@@ -65,7 +65,7 @@ class FireTranslationNotFoundEventTest extends TestCase
 
         self::assertEquals('Nature clock', $book->translator()->getOrFallback('title'));
 
-        Event::assertDispatched(TranslationNotFound::class, function (TranslationNotFound $event) use ($book) {
+        Event::assertDispatched(TranslationNotFound::class, static function (TranslationNotFound $event) use ($book) {
             return $event->attribute === 'title'
                 && $event->locale === 'uk'
                 && $event->model->is($book);
