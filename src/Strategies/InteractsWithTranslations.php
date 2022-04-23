@@ -60,6 +60,7 @@ trait InteractsWithTranslations
     }
 
     /**
+     * TODO: get fallback translation
      * Get attribute's default value without translation.
      *
      * @return mixed

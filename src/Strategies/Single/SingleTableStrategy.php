@@ -3,6 +3,7 @@
 namespace Nevadskiy\Translatable\Strategies\Single;
 
 use Illuminate\Database\Eloquent\Model;
+use Nevadskiy\Translatable\Exceptions\TranslationMissingException;
 use Nevadskiy\Translatable\Strategies\Single\Models\Translation;
 use Nevadskiy\Translatable\Strategies\TranslatorStrategy;
 
@@ -81,11 +82,7 @@ class SingleTableStrategy implements TranslatorStrategy
     {
         foreach ($this->pullPendingTranslations() as $locale => $attributes) {
             foreach ($attributes as $attribute => $value) {
-                if (is_null($value)) {
-                    $this->deleteTranslation($attribute, $locale);
-                } else {
-                    $this->updateOrCreateTranslation($attribute, $locale, $value);
-                }
+                $this->updateOrCreate($attribute, $locale, $value);
             }
         }
     }
@@ -130,7 +127,7 @@ class SingleTableStrategy implements TranslatorStrategy
         });
 
         if (! $translation) {
-            return null;
+            return throw new TranslationMissingException($this->model, $attribute, $locale);
         }
 
         return $translation->getAttribute('value');
@@ -139,7 +136,7 @@ class SingleTableStrategy implements TranslatorStrategy
     /**
      * Update existing translation on the model or create a new one if it is missing.
      */
-    protected function updateOrCreateTranslation(string $attribute, string $locale, $value): void
+    public function updateOrCreate(string $attribute, string $locale, $value): void
     {
         $this->model->translations()->updateOrCreate([
             'translatable_attribute' => $attribute,
@@ -150,13 +147,31 @@ class SingleTableStrategy implements TranslatorStrategy
     }
 
     /**
-     * Delete translation from the model.
+     * Delete translation from the model for the given attribute and locale.
      */
-    protected function deleteTranslation(string $attribute, string $locale): void
+    public function delete(string $attribute, string $locale)
     {
         $this->model->translations()
             ->forAttribute($attribute)
             ->forLocale($locale)
             ->delete();
+    }
+
+    /**
+     * Delete all translations from the model for the given locale.
+     */
+    public function deleteForLocale(string $locale = null)
+    {
+        $this->model->translations()
+            ->forLocale($locale)
+            ->delete();
+    }
+
+    /**
+     * Delete all translations from the model.
+     */
+    public function deleteAll(): void
+    {
+        $this->model->translations()->delete();
     }
 }

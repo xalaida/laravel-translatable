@@ -221,13 +221,11 @@ class SetterTranslationTest extends TestCase
     }
 
     /** @test */
-    public function it_removes_previously_stored_translation_when_setting_null_as_value(): void
+    public function it_can_store_null_as_translation_value(): void
     {
         $book = new BookWithSetters();
         $book->title = 'Ocean monsters';
         $book->save();
-
-        $book->translator()->add('title', 'Монстри океану', 'uk');
 
         $this->app->setLocale('uk');
 
@@ -236,8 +234,8 @@ class SetterTranslationTest extends TestCase
 
         $book = $book->fresh();
 
-        self::assertEquals('Ocean monsters', $book->title);
-        $this->assertDatabaseCount('translations', 0);
+        self::assertNull($book->title);
+        $this->assertDatabaseCount('translations', 1);
     }
 
     /**

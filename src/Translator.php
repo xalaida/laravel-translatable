@@ -3,6 +3,7 @@
 namespace Nevadskiy\Translatable;
 
 use Illuminate\Database\Eloquent\Model;
+use Nevadskiy\Translatable\Exceptions\TranslationMissingException;
 use Nevadskiy\Translatable\Strategies\InteractsWithTranslations;
 use Nevadskiy\Translatable\Strategies\TranslatorStrategy;
 use Nevadskiy\Translatable\Events\TranslationNotFound;
@@ -82,20 +83,24 @@ class Translator
     // TODO: add possibility to log out warnings with missing translations.
 
     /**
+     * TODO: continue from this... cover with tests.
      * Get the translation value of the given attribute or the fallback value if it is missing.
-     *
-     * @return mixed
      */
     public function getOrFallback(string $attribute, string $locale = null)
     {
-        $value = $this->get($attribute, $locale);
-
-        // TODO: make the strategy to be responsible how to retrieve fallback translation.
-        if (is_null($value)) {
-            return $this->model->getOriginalAttribute($attribute);
+        try {
+            return $this->get($attribute, $locale);
+        } catch (TranslationMissingException $e) {
+            return $this->fallback($attribute);
         }
+    }
 
-        return $value;
+    /**
+     * Get the fallback translation of the model.
+     */
+    public function fallback(string $attribute)
+    {
+        return $this->model->getOriginalAttribute($attribute);
     }
 
     /**
@@ -162,14 +167,12 @@ class Translator
 
     }
 
-    public function delete()
+    /**
+     * Delete translation from the model for the given attribute and locale.
+     */
+    public function delete(string $attribute, string $locale = null)
     {
-
-    }
-
-    public function deleteAll()
-    {
-
+        // TODO: pass to strategy
     }
 
     /**
