@@ -39,17 +39,17 @@ class MorphMapTest extends TestCase
         ]);
 
         $book = new BookWithMorphMap();
-        $book->title = 'Book about dolphins';
+        $book->title = 'Melancholic waltz';
         $book->save();
 
-        $book->translator()->add('title', 'Книга про дельфінів', 'uk');
+        $book->translator()->add('title', 'Меланхолійний вальс', 'uk');
 
         $this->assertDatabaseHas('translations', [
             'translatable_id' => $book->getKey(),
             'translatable_type' => 'books',
             'translatable_attribute' => 'title',
             'locale' => 'uk',
-            'value' => 'Книга про дельфінів',
+            'value' => 'Меланхолійний вальс',
         ]);
     }
 
