@@ -202,6 +202,56 @@ class TranslationTest extends TestCase
     }
 
     /** @test */
+    public function it_removes_previous_translation_when_setting_null(): void
+    {
+        $book = new Book();
+        $book->title = 'The world around us';
+        $book->save();
+
+        $book->translator()->add('title', 'Світ навколо нас', 'uk');
+        $this->assertDatabaseCount('translations', 1);
+
+        $book->translator()->add('title', null, 'uk');
+        $this->assertDatabaseCount('translations', 0);
+
+        self::assertEquals('The world around us', $book->translator()->getOrFallback('title', 'uk'));
+    }
+
+    /** @test */
+    public function it_does_not_store_pending_translations_twice(): void
+    {
+        $book = new Book();
+        $book->title = 'The world around us';
+        $book->save();
+
+        $this->app->setLocale('uk');
+        $book->translator()->set('title', 'Світ навколо нас', 'uk');
+        $book->save();
+
+        DB::connection()->enableQueryLog();
+
+        $book->save();
+
+        self::assertEmpty(DB::connection()->getQueryLog());
+        $this->assertDatabaseCount('translations', 1);
+    }
+
+    /** @test */
+    public function it_does_not_duplicate_translations(): void
+    {
+        $book = new Book();
+        $book->title = 'The world around us';
+        $book->save();
+
+        $this->app->setLocale('uk');
+
+        $book->translator()->add('title', 'Світ навколо нас', 'uk');
+        $book->translator()->add('title', 'Світ навколо нас', 'uk');
+
+        $this->assertDatabaseCount('translations', 1);
+    }
+
+    /** @test */
     public function it_does_not_perform_additional_query_for_fallback_locale(): void
     {
         $book = new Book();

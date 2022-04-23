@@ -74,16 +74,18 @@ class SingleTableStrategy implements TranslatorStrategy
         return $locale === 'en';
     }
 
+    /**
+     * Save the pending translations on the model.
+     */
     public function save(): void
     {
         foreach ($this->pullPendingTranslations() as $locale => $attributes) {
-            foreach (array_filter($attributes) as $attribute => $value) {
-                $this->model->translations()->updateOrCreate([
-                    'translatable_attribute' => $attribute,
-                    'locale' => $locale,
-                ], [
-                    'value' => $value,
-                ]);
+            foreach ($attributes as $attribute => $value) {
+                if (is_null($value)) {
+                    $this->deleteTranslation($attribute, $locale);
+                } else {
+                    $this->updateOrCreateTranslation($attribute, $locale, $value);
+                }
             }
         }
     }
@@ -132,5 +134,29 @@ class SingleTableStrategy implements TranslatorStrategy
         }
 
         return $translation->getAttribute('value');
+    }
+
+    /**
+     * Update existing translation on the model or create a new one if it is missing.
+     */
+    protected function updateOrCreateTranslation(string $attribute, string $locale, $value): void
+    {
+        $this->model->translations()->updateOrCreate([
+            'translatable_attribute' => $attribute,
+            'locale' => $locale,
+        ], [
+            'value' => $value,
+        ]);
+    }
+
+    /**
+     * Delete translation from the model.
+     */
+    protected function deleteTranslation(string $attribute, string $locale): void
+    {
+        $this->model->translations()
+            ->forAttribute($attribute)
+            ->forLocale($locale)
+            ->delete();
     }
 }
