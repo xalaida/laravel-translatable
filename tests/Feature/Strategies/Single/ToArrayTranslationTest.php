@@ -15,10 +15,10 @@ class ToArrayTranslationTest extends TestCase
             'description' => 'Book about dolphins',
         ]);
 
-        $book->translator()->add('title', 'Моя первая книга', 'ru');
-        $book->translator()->add('description', 'Книга о дельфинах', 'ru');
+        $book->translator()->add('title', 'Моя первая книга', 'uk');
+        $book->translator()->add('description', 'Книга о дельфинах', 'uk');
 
-        $this->app->setLocale('ru');
+        $this->app->setLocale('uk');
 
         self::assertEquals([
            'title' => 'Моя первая книга',
@@ -34,10 +34,10 @@ class ToArrayTranslationTest extends TestCase
             'description' => 'Book about dolphins',
         ]);
 
-        $book->translator()->add('title', 'Моя первая книга', 'ru');
-        $book->translator()->add('description', 'Книга о дельфинах', 'ru');
+        $book->translator()->add('title', 'Моя первая книга', 'uk');
+        $book->translator()->add('description', 'Книга о дельфинах', 'uk');
 
-        $this->app->setLocale('ru');
+        $this->app->setLocale('uk');
 
         $bookArray = $book->toArray();
 
@@ -53,9 +53,9 @@ class ToArrayTranslationTest extends TestCase
             'description' => 'Book about dolphins',
         ]);
 
-        $book->translator()->add('title', 'первая книга', 'ru');
+        $book->translator()->add('title', 'первая книга', 'uk');
 
-        $this->app->setLocale('ru');
+        $this->app->setLocale('uk');
 
         $bookArray = $book->toArray();
 

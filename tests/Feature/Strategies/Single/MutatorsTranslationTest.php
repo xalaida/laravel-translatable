@@ -27,7 +27,7 @@ class MutatorsTranslationTest extends TestCase
         $this->schema()->create('books', function (Blueprint $table) {
             $table->id();
             $table->string('title');
-            $table->string('description');
+            $table->string('description')->nullable();
             $table->timestamps();
         });
     }
@@ -36,11 +36,10 @@ class MutatorsTranslationTest extends TestCase
     public function it_applies_mutators_for_translatable_attributes(): void
     {
         $book = new BookWithMutators();
-        $book->title = 'My book';
-        $book->description = 'My first book';
+        $book->title = 'Three destinies';
         $book->save();
 
-        $book->translation()->add('title', 'Очень очень длинное название для статьи', 'ru');
+        $book->translator()->add('title', 'Три долі', 'uk');
 
         $this->assertDatabaseHas('translations', [
             'value' => 'Очень очень длинное название д...',
@@ -55,7 +54,7 @@ class MutatorsTranslationTest extends TestCase
         $book->description = 'My first book';
         $book->save();
 
-        $book->translation()->add('title', 'Очень очень длинное название для книги', 'ru');
+        $book->translator()->add('title', 'Очень очень длинное название для книги', 'uk');
 
         self::assertEquals('My book', $book->title);
     }
@@ -68,7 +67,7 @@ class MutatorsTranslationTest extends TestCase
         $book->description = 'My first book';
         $book->save();
 
-        $this->app->setLocale('ru');
+        $this->app->setLocale('uk');
 
         $book->title = 'Очень очень длинное название для статьи';
 
@@ -113,11 +112,11 @@ class BookWithMutators extends Model
 
     public function setTitleAttribute(string $title): void
     {
-        $this->attributes['title'] = Str::limit($title, 30);
+        $this->attributes['title'] = Str::limit($title, 10);
     }
 
     public function setDescriptionAttribute(string $description): void
     {
-        $this->attributes['description'] = Str::limit($description, 30);
+        $this->attributes['description'] = Str::limit($description, 10);
     }
 }

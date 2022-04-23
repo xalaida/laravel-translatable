@@ -56,9 +56,9 @@ class RouteBindingByTranslatableAttributeTest extends TestCase
         $article->slug = 'article-about-penguins';
         $article->save();
 
-        $article->translator()->add('slug', 'статья-о-пингвинах', 'ru');
+        $article->translator()->add('slug', 'статья-о-пингвинах', 'uk');
 
-        $this->app->setLocale('ru');
+        $this->app->setLocale('uk');
 
         $response = $this->get('/articles/статья-о-пингвинах');
 
@@ -76,9 +76,9 @@ class RouteBindingByTranslatableAttributeTest extends TestCase
 //        $postAboutGiraffes = PostFactory::new()->create(['slug' => 'post-about-giraffes']);
 //
 //        $postAboutPenguins = PostFactory::new()->create(['slug' => 'post-about-penguins']);
-//        $postAboutPenguins->translation()->add('slug', 'пост-о-пингвинах', 'ru');
+//        $postAboutPenguins->translation()->add('slug', 'пост-о-пингвинах', 'uk');
 //
-//        $this->app->setLocale('ru');
+//        $this->app->setLocale('uk');
 //        $response = $this->get('posts/пост-о-пингвинах');
 //
 //        $response->assertOk();
@@ -126,7 +126,7 @@ class RouteBindingByTranslatableAttributeTest extends TestCase
 //
 //        $post = PostFactory::new()->create(['slug' => 'post-about-penguins']);
 //
-//        $this->app->setLocale('ru');
+//        $this->app->setLocale('uk');
 //        $response = $this->get('posts/post-about-penguins');
 //
 //        $response->assertOk();
@@ -141,9 +141,9 @@ class RouteBindingByTranslatableAttributeTest extends TestCase
 //        });
 //
 //        $post = PostFactory::new()->create(['slug' => 'post-about-penguins']);
-//        $post->translation()->add('slug', 'пост-о-пингвинах', 'ru');
+//        $post->translation()->add('slug', 'пост-о-пингвинах', 'uk');
 //
-//        $this->app->setLocale('ru');
+//        $this->app->setLocale('uk');
 //        $response = $this->get('posts/post-about-penguins');
 //
 //        $response->assertNotFound();
@@ -157,7 +157,7 @@ class RouteBindingByTranslatableAttributeTest extends TestCase
 //        });
 //
 //        $post = PostFactory::new()->create(['slug' => 'post-about-penguins']);
-//        $post->translation()->add('slug', 'пост-о-пингвинах', 'ru');
+//        $post->translation()->add('slug', 'пост-о-пингвинах', 'uk');
 //
 //        $this->app->setLocale('es');
 //        $response = $this->get('posts/пост-о-пингвинах');
@@ -171,9 +171,9 @@ class RouteBindingByTranslatableAttributeTest extends TestCase
 //        Route::get('/posts/{post}')->name('posts.show');
 //
 //        $post = PostFactory::new()->create(['slug' => 'post-about-penguins']);
-//        $post->translation()->add('slug', 'пост-о-пингвинах', 'ru');
+//        $post->translation()->add('slug', 'пост-о-пингвинах', 'uk');
 //
-//        $this->app->setLocale('ru');
+//        $this->app->setLocale('uk');
 //        $url = route('posts.show', $post, false);
 //
 //        self::assertEquals('/posts/'.rawurlencode('пост-о-пингвинах'), $url);

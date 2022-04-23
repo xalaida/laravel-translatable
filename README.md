@@ -171,7 +171,7 @@ The package takes the default locale from the `config('app.fallback_locale')` va
 ```php
 $book = Book::where('title', 'Book about birds')->first();
 
-app()->setLocale('ru');
+app()->setLocale('uk');
 
 $book->update(['title' => 'Книга о птицах']);
 
@@ -187,9 +187,9 @@ echo $book->title; // 'Book about birds'
 ```php
 $book = Book::where('title', 'Book about dolphins')->first();
 
-$book->translate('title', 'Книга о дельфинах', 'ru');
+$book->translate('title', 'Книга о дельфинах', 'uk');
 
-echo $book->getTranslation('title', 'ru'); // 'Книга о дельфинах'
+echo $book->getTranslation('title', 'uk'); // 'Книга о дельфинах'
 ```
 
 ##### Methods for reading translation
@@ -218,7 +218,7 @@ The package automatically eager loads translations of the current locale for you
 
 ```php
 // In a controller
-app()->setLocale('ru');
+app()->setLocale('uk');
 $books = Book::paginate(20);
 
 // In a view
@@ -241,14 +241,14 @@ class Book extends Model
 }
 
 $book = Book::create(['title' => 'book about birds']);
-$book->translate('title', 'книга о птицах', 'ru');
+$book->translate('title', 'книга о птицах', 'uk');
 
 // Using attribute with the current locale
-app()->setLocale('ru');
+app()->setLocale('uk');
 echo $book->title; // 'Книга о птицах'
 
 // Using getTranslate method
-echo $book->getTranslation('title', 'ru'); // 'Книга о птицах'
+echo $book->getTranslation('title', 'uk'); // 'Книга о птицах'
 ```
 
 ##### Translations work with model mutators as well
@@ -263,14 +263,14 @@ class Book extends Model
 }
 
 $book = Book::create(['description' => 'Very long description']);
-$book->translate('description', 'Очень длинное описание', 'ru');
+$book->translate('description', 'Очень длинное описание', 'uk');
 
 // Using attribute with the current locale
-app()->setLocale('ru');
+app()->setLocale('uk');
 echo $book->description; // 'Очень длин'
 
 // Using getTranslation method
-echo $book->getTranslation('description', 'ru'); // 'Очень длин'
+echo $book->getTranslation('description', 'uk'); // 'Очень длин'
 ```
 
 ##### Querying models without translations
@@ -293,7 +293,7 @@ $books = Book::whereTranslatable('title', 'Книга о жирафах')->get()
 
 If you want to query rows only by a specific locale, you should pass it by yourself. 
 
-$books = Book::whereTranslatable('title', 'Книга о жирафах', 'ru')->get();
+$books = Book::whereTranslatable('title', 'Книга о жирафах', 'uk')->get();
 
 Otherwise, the query builder will return matched rows within all available locales.
 
@@ -302,7 +302,7 @@ Also, you can use different operators for querying translations.
 ```php
 $books = Book::whereTranslatable('title', 'Book about%', null, 'LIKE')->get();
 // or
-$books = Book::whereTranslatable('title', 'Книги о%', 'ru', 'LIKE')->get();
+$books = Book::whereTranslatable('title', 'Книги о%', 'uk', 'LIKE')->get();
 ```
 
 ##### Ordering translations

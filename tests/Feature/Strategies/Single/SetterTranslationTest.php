@@ -13,14 +13,14 @@ class SetterTranslationTest extends TestCase
     {
         $book = BookFactory::new()->create(['title' => 'My first book']);
 
-        $this->app->setLocale('ru');
+        $this->app->setLocale('uk');
 
         $book->title = 'Моя первая книга';
         $book->save();
 
         $book = $book->fresh();
 
-        self::assertEquals('Моя первая книга', $book->translator()->get('title', 'ru'));
+        self::assertEquals('Моя первая книга', $book->translator()->get('title', 'uk'));
         self::assertEquals('My first book', $book->getOriginalAttribute('title'));
         $this->assertDatabaseCount('translations', 1);
     }
@@ -30,14 +30,14 @@ class SetterTranslationTest extends TestCase
     {
         $book = BookFactory::new()->create(['title' => 'My first book']);
 
-        $this->app->setLocale('ru');
+        $this->app->setLocale('uk');
 
         $book->fillable(['title']);
         $book->update(['title' => 'Моя книга']);
 
         $book = $book->fresh();
 
-        self::assertEquals('Моя книга', $book->translator()->get('title', 'ru'));
+        self::assertEquals('Моя книга', $book->translator()->get('title', 'uk'));
         self::assertEquals('My first book', $book->getOriginalAttribute('title'));
         $this->assertDatabaseCount('translations', 1);
     }
@@ -47,13 +47,13 @@ class SetterTranslationTest extends TestCase
     {
         $book = BookFactory::new()->create(['title' => 'My first book']);
 
-        $this->app->setLocale('ru');
+        $this->app->setLocale('uk');
 
         $book->title = 'Моя первая книга';
 
         $book = $book->fresh();
 
-        self::assertNull($book->translator()->get('title', 'ru'));
+        self::assertNull($book->translator()->get('title', 'uk'));
         self::assertEquals('My first book', $book->title);
         $this->assertDatabaseCount('translations', 0);
     }
@@ -63,9 +63,9 @@ class SetterTranslationTest extends TestCase
 //    {
 //        $book = BookFactory::new()->create(['title' => 'My book']);
 //
-//        $book->translator()->add('title', 'Ошибочное название книги', 'ru');
+//        $book->translator()->add('title', 'Ошибочное название книги', 'uk');
 //
-//        $this->app->setLocale('ru');
+//        $this->app->setLocale('uk');
 //
 //        $book->title = 'Исправленное название книги';
 //        $book->save();
@@ -80,7 +80,7 @@ class SetterTranslationTest extends TestCase
     {
         $book = BookFactory::new()->create(['title' => 'Not translatable title']);
 
-        $this->app->setLocale('ru');
+        $this->app->setLocale('uk');
 
         self::assertEquals('Not translatable title', $book->title);
 
@@ -97,7 +97,7 @@ class SetterTranslationTest extends TestCase
             'description' => 'Book about birds',
         ]);
 
-        $this->app->setLocale('ru');
+        $this->app->setLocale('uk');
 
         $book->title = 'Моя книга';
         $book->description = 'Книга о птицах';
@@ -149,7 +149,7 @@ class SetterTranslationTest extends TestCase
     {
         $book = BookFactory::new()->create();
 
-        $this->app->setLocale('ru');
+        $this->app->setLocale('uk');
 
         $book->version = 3;
         $book->save();
@@ -165,7 +165,7 @@ class SetterTranslationTest extends TestCase
     {
         $book = BookFactory::new()->create(['description' => 'Book about animals']);
 
-        $this->app->setLocale('ru');
+        $this->app->setLocale('uk');
 
         $book->description = null;
         $book->save();
@@ -181,7 +181,7 @@ class SetterTranslationTest extends TestCase
     {
         $book = BookFactory::new()->create(['title' => 'My best book']);
 
-        $this->app->setLocale('ru');
+        $this->app->setLocale('uk');
 
         $book->title = 'Моя лучшая книга';
         $book->save();
@@ -199,7 +199,7 @@ class SetterTranslationTest extends TestCase
     {
         $book = BookFactory::new()->create(['title' => 'My best book']);
 
-        $this->app->setLocale('ru');
+        $this->app->setLocale('uk');
 
         $book->title = 'Моя лучшая книга';
         $book->save();

@@ -22,9 +22,9 @@ class RouteBindingByTranslatableAttributeTest extends TestCase
         $postAboutGiraffes = PostFactory::new()->create(['slug' => 'post-about-giraffes']);
 
         $postAboutPenguins = PostFactory::new()->create(['slug' => 'post-about-penguins']);
-        $postAboutPenguins->translator()->add('slug', 'пост-о-пингвинах', 'ru');
+        $postAboutPenguins->translator()->add('slug', 'пост-о-пингвинах', 'uk');
 
-        $this->app->setLocale('ru');
+        $this->app->setLocale('uk');
         $response = $this->get('posts/пост-о-пингвинах');
 
         $response->assertOk();
@@ -72,7 +72,7 @@ class RouteBindingByTranslatableAttributeTest extends TestCase
 
         $post = PostFactory::new()->create(['slug' => 'post-about-penguins']);
 
-        $this->app->setLocale('ru');
+        $this->app->setLocale('uk');
         $response = $this->get('posts/post-about-penguins');
 
         $response->assertOk();
@@ -87,9 +87,9 @@ class RouteBindingByTranslatableAttributeTest extends TestCase
         });
 
         $post = PostFactory::new()->create(['slug' => 'post-about-penguins']);
-        $post->translator()->add('slug', 'пост-о-пингвинах', 'ru');
+        $post->translator()->add('slug', 'пост-о-пингвинах', 'uk');
 
-        $this->app->setLocale('ru');
+        $this->app->setLocale('uk');
         $response = $this->get('posts/post-about-penguins');
 
         $response->assertNotFound();
@@ -103,7 +103,7 @@ class RouteBindingByTranslatableAttributeTest extends TestCase
         });
 
         $post = PostFactory::new()->create(['slug' => 'post-about-penguins']);
-        $post->translator()->add('slug', 'пост-о-пингвинах', 'ru');
+        $post->translator()->add('slug', 'пост-о-пингвинах', 'uk');
 
         $this->app->setLocale('es');
         $response = $this->get('posts/пост-о-пингвинах');
@@ -117,9 +117,9 @@ class RouteBindingByTranslatableAttributeTest extends TestCase
         Route::get('/posts/{post}')->name('posts.show');
 
         $post = PostFactory::new()->create(['slug' => 'post-about-penguins']);
-        $post->translator()->add('slug', 'пост-о-пингвинах', 'ru');
+        $post->translator()->add('slug', 'пост-о-пингвинах', 'uk');
 
-        $this->app->setLocale('ru');
+        $this->app->setLocale('uk');
         $url = route('posts.show', $post, false);
 
         self::assertEquals('/posts/'.rawurlencode('пост-о-пингвинах'), $url);

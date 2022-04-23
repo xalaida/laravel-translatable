@@ -16,7 +16,7 @@ class TranslationTest extends TestCase
 
         $translation1 = TranslationFactory::new()
             ->for($book, 'title')
-            ->locale('ru')
+            ->locale('uk')
             ->create();
 
         $translation2 = TranslationFactory::new()
@@ -24,7 +24,7 @@ class TranslationTest extends TestCase
             ->locale('es')
             ->create();
 
-        $translations = Translation::query()->forLocale('ru')->get();
+        $translations = Translation::query()->forLocale('uk')->get();
 
         self::assertCount(1, $translations);
         self::assertTrue($translations->first()->is($translation1));

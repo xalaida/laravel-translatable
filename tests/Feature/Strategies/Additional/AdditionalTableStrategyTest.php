@@ -12,7 +12,7 @@ class AdditionalTableStrategyTest extends TestCase
     /** @test */
     public function it_can_create_models_in_custom_locale_correctly(): void
     {
-        $this->app->setLocale('ru');
+        $this->app->setLocale('uk');
 
         $product = new Product();
         $product->title = 'Свитер с оленями';
@@ -49,15 +49,15 @@ class AdditionalTableStrategyTest extends TestCase
             'description' => 'Warm winter sweater',
         ]);
 
-        $product->translator()->set('title', 'Свитер с оленями', 'ru');
-        $product->translator()->set('description', 'Теплый зимний свитер', 'ru');
+        $product->translator()->set('title', 'Свитер с оленями', 'uk');
+        $product->translator()->set('description', 'Теплый зимний свитер', 'uk');
         $product->translator()->save();
 
         $this->assertDatabaseCount('product_translations', 1);
         $this->assertDatabaseHas('product_translations', [
             'title' => 'Свитер с оленями',
             'description' => 'Теплый зимний свитер',
-            'locale' => 'ru',
+            'locale' => 'uk',
         ]);
     }
 
@@ -69,8 +69,8 @@ class AdditionalTableStrategyTest extends TestCase
             'description' => 'Warm winter sweater',
         ]);
 
-        $product->translator()->set('title', 'Свитер с оленями', 'ru');
-        $product->translator()->set('description', 'Теплый зимний свитер', 'ru');
+        $product->translator()->set('title', 'Свитер с оленями', 'uk');
+        $product->translator()->set('description', 'Теплый зимний свитер', 'uk');
 
         $this->assertDatabaseCount('product_translations', 0);
     }
@@ -83,8 +83,8 @@ class AdditionalTableStrategyTest extends TestCase
             'description' => 'Warm winter sweater',
         ]);
 
-        $product->translator()->set('title', 'Свитер с оленями', 'ru');
-        $product->translator()->set('description', 'Теплый зимний свитер', 'ru');
+        $product->translator()->set('title', 'Свитер с оленями', 'uk');
+        $product->translator()->set('description', 'Теплый зимний свитер', 'uk');
         $product->translator()->save();
 
         DB::enableQueryLog();
@@ -100,9 +100,9 @@ class AdditionalTableStrategyTest extends TestCase
     {
         $product = ProductFactory::new()->create(['title' => 'Reindeer Sweater']);
 
-        $product->translator()->set('title', 'Свитер с оленями', 'ru');
+        $product->translator()->set('title', 'Свитер с оленями', 'uk');
 
-        self::assertEquals('Свитер с оленями', $product->translator()->get('title', 'ru'));
+        self::assertEquals('Свитер с оленями', $product->translator()->get('title', 'uk'));
     }
 
     /** @test */
@@ -110,7 +110,7 @@ class AdditionalTableStrategyTest extends TestCase
     {
         $product = ProductFactory::new()->create(['title' => 'Reindeer Sweater']);
 
-        $this->app->setLocale('ru');
+        $this->app->setLocale('uk');
 
         $product->title = 'Свитер с оленями';
         $product->save();
@@ -118,7 +118,7 @@ class AdditionalTableStrategyTest extends TestCase
         $this->assertDatabaseCount('product_translations', 1);
         $this->assertDatabaseHas('product_translations', [
             'title' => 'Свитер с оленями',
-            'locale' => 'ru',
+            'locale' => 'uk',
         ]);
     }
 
@@ -127,9 +127,9 @@ class AdditionalTableStrategyTest extends TestCase
     {
         $product = ProductFactory::new()->create(['title' => 'Reindeer Sweater']);
 
-        $product->translator()->set('title', 'Свитер с оленями', 'ru');
+        $product->translator()->set('title', 'Свитер с оленями', 'uk');
 
-        $this->app->setLocale('ru');
+        $this->app->setLocale('uk');
 
         self::assertEquals('Свитер с оленями', $product->title);
     }
@@ -141,13 +141,13 @@ class AdditionalTableStrategyTest extends TestCase
         $product2 = ProductFactory::new()->create(['title' => 'Sony PlayStation']);
         $product3 = ProductFactory::new()->create(['title' => 'LG Boiler']);
 
-        $product1->translator()->add('title', 'Свитер с оленями', 'ru');
-        $product2->translator()->add('title', 'Sony ИгроваяСтанция', 'ru');
-        $product3->translator()->add('title', 'LG чайник', 'ru');
+        $product1->translator()->add('title', 'Свитер с оленями', 'uk');
+        $product2->translator()->add('title', 'Sony ИгроваяСтанция', 'uk');
+        $product3->translator()->add('title', 'LG чайник', 'uk');
 
         $products = Product::query()->withoutGlobalScopes()->with('translations')->get();
 
-        $this->app->setLocale('ru');
+        $this->app->setLocale('uk');
 
         DB::enableQueryLog();
 
@@ -165,11 +165,11 @@ class AdditionalTableStrategyTest extends TestCase
         $product2 = ProductFactory::new()->create(['title' => 'Sony PlayStation']);
         $product3 = ProductFactory::new()->create(['title' => 'LG Boiler']);
 
-        $product1->translator()->add('title', 'Свитер с оленями', 'ru');
-        $product2->translator()->add('title', 'Sony ИгроваяСтанция', 'ru');
-        $product3->translator()->add('title', 'LG чайник', 'ru');
+        $product1->translator()->add('title', 'Свитер с оленями', 'uk');
+        $product2->translator()->add('title', 'Sony ИгроваяСтанция', 'uk');
+        $product3->translator()->add('title', 'LG чайник', 'uk');
 
-        $this->app->setLocale('ru');
+        $this->app->setLocale('uk');
 
         $products = Product::query()->get();
 

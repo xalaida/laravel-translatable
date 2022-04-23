@@ -11,10 +11,10 @@ class TranslatableScopesTest extends TestCase
     /** @test */
     public function it_retrieves_model_by_default_value(): void
     {
-        $this->app->setLocale('ru');
+        $this->app->setLocale('uk');
 
         $book = BookFactory::new()->create(['title' => 'Book about dolphins']);
-        $book->translator()->add('title', 'Книга про дельфинов', 'ru');
+        $book->translator()->add('title', 'Книга про дельфинов', 'uk');
 
         $result = Book::whereTranslatable('title', 'Book about dolphins')->first();
 
@@ -24,10 +24,10 @@ class TranslatableScopesTest extends TestCase
     /** @test */
     public function it_can_retrieve_translatable_model_by_attribute_value_within_all_locales(): void
     {
-        $this->app->setLocale('ru');
+        $this->app->setLocale('uk');
 
         $book1 = BookFactory::new()->create();
-        $book1->translator()->add('title', 'Книга про собак', 'ru');
+        $book1->translator()->add('title', 'Книга про собак', 'uk');
 
         $book2 = BookFactory::new()->create();
         $book2->translator()->add('title', 'Книга про собак', 'uk');
@@ -46,15 +46,15 @@ class TranslatableScopesTest extends TestCase
     public function it_can_retrieve_translatable_model_by_attribute_value_and_locale(): void
     {
         $book1 = BookFactory::new()->create();
-        $book1->translator()->add('title', 'Книга о попугаях', 'ru');
+        $book1->translator()->add('title', 'Книга о попугаях', 'uk');
 
         $book2 = BookFactory::new()->create();
-        $book2->translator()->add('title', 'Книга о жирафах', 'ru');
+        $book2->translator()->add('title', 'Книга о жирафах', 'uk');
 
         $book3 = BookFactory::new()->create();
-        $book3->translator()->add('title', 'Книга о пингвинах', 'ru');
+        $book3->translator()->add('title', 'Книга о пингвинах', 'uk');
 
-        $result = Book::whereTranslatable('title', 'Книга о жирафах', 'ru')->first();
+        $result = Book::whereTranslatable('title', 'Книга о жирафах', 'uk')->first();
 
         self::assertTrue($result->is($book2));
     }
@@ -63,9 +63,9 @@ class TranslatableScopesTest extends TestCase
     public function it_does_not_retrieve_model_by_incorrect_locale(): void
     {
         $book = BookFactory::new()->create(['title' => 'Book about dolphins']);
-        $book->translator()->add('title', 'Книга про дельфинов', 'ru');
+        $book->translator()->add('title', 'Книга про дельфинов', 'uk');
 
-        $result = Book::whereTranslatable('title', 'Book about dolphins', 'ru')->first();
+        $result = Book::whereTranslatable('title', 'Book about dolphins', 'uk')->first();
 
         self::assertNull($result);
     }
@@ -86,13 +86,13 @@ class TranslatableScopesTest extends TestCase
     public function it_can_retrieve_models_using_like_operator(): void
     {
         $book1 = BookFactory::new()->create();
-        $book1->translator()->add('title', 'Книга о птицах', 'ru');
+        $book1->translator()->add('title', 'Книга о птицах', 'uk');
 
         $book2 = BookFactory::new()->create();
-        $book2->translator()->add('title', 'Книга о дельфинах', 'ru');
+        $book2->translator()->add('title', 'Книга о дельфинах', 'uk');
 
         $book3 = BookFactory::new()->create();
-        $book3->translator()->add('title', 'Книга про собак', 'ru');
+        $book3->translator()->add('title', 'Книга про собак', 'uk');
 
         $result = Book::whereTranslatable('title', 'Книга о%', null, 'LIKE')->get();
 
@@ -107,10 +107,10 @@ class TranslatableScopesTest extends TestCase
         $book1 = BookFactory::new()->create(['title' => 'First book']);
         $book2 = BookFactory::new()->create(['title' => 'Second book']);
 
-        $book1->translator()->add('title', 'Первая книга', 'ru');
-        $book2->translator()->add('title', 'Вторая книга', 'ru');
+        $book1->translator()->add('title', 'Первая книга', 'uk');
+        $book2->translator()->add('title', 'Вторая книга', 'uk');
 
-        $this->app->setLocale('ru');
+        $this->app->setLocale('uk');
 
         $books = Book::query()->orderByTranslatable('title')->get();
 
@@ -124,10 +124,10 @@ class TranslatableScopesTest extends TestCase
         $book1 = BookFactory::new()->create(['title' => 'First book']);
         $book2 = BookFactory::new()->create(['title' => 'Second book']);
 
-        $book1->translator()->add('title', 'Первая книга', 'ru');
-        $book2->translator()->add('title', 'Вторая книга', 'ru');
+        $book1->translator()->add('title', 'Первая книга', 'uk');
+        $book2->translator()->add('title', 'Вторая книга', 'uk');
 
-        $this->app->setLocale('ru');
+        $this->app->setLocale('uk');
 
         $books = Book::query()->orderByTranslatable('title', 'desc')->get();
 
@@ -141,10 +141,10 @@ class TranslatableScopesTest extends TestCase
         $book1 = BookFactory::new()->create(['title' => 'First book']);
         $book2 = BookFactory::new()->create(['title' => 'Second book']);
 
-        $book1->translator()->add('title', 'Первая книга', 'ru');
-        $book2->translator()->add('title', 'Вторая книга', 'ru');
+        $book1->translator()->add('title', 'Первая книга', 'uk');
+        $book2->translator()->add('title', 'Вторая книга', 'uk');
 
-        $books = Book::query()->orderByTranslatable('title', 'asc', 'ru')->get();
+        $books = Book::query()->orderByTranslatable('title', 'asc', 'uk')->get();
 
         self::assertTrue($books[0]->is($book2));
         self::assertTrue($books[1]->is($book1));

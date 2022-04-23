@@ -65,7 +65,7 @@ class AdditionalTableStrategyExtendingTest extends TestCase
     /** @test */
     public function it_can_store_model_correctly_in_extending_translatable_attributes_mode_using_custom_locale(): void
     {
-        $this->app->setLocale('ru');
+        $this->app->setLocale('uk');
 
         $article = new Article();
         $article->title = 'Статья о попугаях';
@@ -82,7 +82,7 @@ class AdditionalTableStrategyExtendingTest extends TestCase
             'article_id' => $article->getKey(),
             'title' => 'Статья о попугаях',
             'description' => 'Как научить разговаривать попугая',
-            'locale' => 'ru',
+            'locale' => 'uk',
         ]);
     }
 
@@ -92,8 +92,8 @@ class AdditionalTableStrategyExtendingTest extends TestCase
         $article = new Article();
         $article->save();
 
-        $article->translator()->set('title', 'Статья о попугаях', 'ru');
-        $article->translator()->set('description', 'Как научить разговаривать попугая', 'ru');
+        $article->translator()->set('title', 'Статья о попугаях', 'uk');
+        $article->translator()->set('description', 'Как научить разговаривать попугая', 'uk');
         $article->translator()->save();
 
         $this->assertDatabaseCount('article_translations', 1);
@@ -101,7 +101,7 @@ class AdditionalTableStrategyExtendingTest extends TestCase
             'article_id' => $article->getKey(),
             'title' => 'Статья о попугаях',
             'description' => 'Как научить разговаривать попугая',
-            'locale' => 'ru',
+            'locale' => 'uk',
         ]);
     }
 

@@ -15,9 +15,9 @@ class TranslationTest extends TestCase
 //    {
 //        $book = BookFactory::new()->create();
 //
-//        $book->translator()->add('title', 'Моя первая книга', 'ru');
+//        $book->translator()->add('title', 'Моя первая книга', 'uk');
 //
-//        self::assertEquals('Моя первая книга', $book->translator()->get('title', 'ru'));
+//        self::assertEquals('Моя первая книга', $book->translator()->get('title', 'uk'));
 //    }
 
 //    /** @test */
@@ -25,10 +25,10 @@ class TranslationTest extends TestCase
 //    {
 //        $book = BookFactory::new()->create();
 //
-//        $book->translator()->add('title', 'Книга о птицах', 'ru');
+//        $book->translator()->add('title', 'Книга о птицах', 'uk');
 //        $book->translator()->add('description', 'Livre sur les oiseaux', 'fr');
 //
-//        self::assertEquals('Книга о птицах', $book->translator()->get('title', 'ru'));
+//        self::assertEquals('Книга о птицах', $book->translator()->get('title', 'uk'));
 //    }
 
 //    /** @test */
@@ -36,7 +36,7 @@ class TranslationTest extends TestCase
 //    {
 //        $book = BookFactory::new()->create();
 //
-//        $book->translator()->add('title', 'Моя блестящая книга', 'ru');
+//        $book->translator()->add('title', 'Моя блестящая книга', 'uk');
 //        $book->translator()->add('title', 'Mi brillante libro', 'es');
 //        $book->translator()->add('title', 'Mon brillant livre', 'fr');
 //
@@ -47,7 +47,7 @@ class TranslationTest extends TestCase
 //    public function it_retrieves_original_value_for_fallback_locale(): void
 //    {
 //        $book = BookFactory::new()->create(['title' => 'My best book']);
-//        $book->translator()->add('title', 'Моя лучшая книга', 'ru');
+//        $book->translator()->add('title', 'Моя лучшая книга', 'uk');
 //
 //        self::assertEquals('My best book', $book->translator()->get('title', 'en'));
 //    }
@@ -96,11 +96,11 @@ class TranslationTest extends TestCase
 //    {
 //        $book = BookFactory::new()->create(['title' => 'My original book']);
 //
-//        $book->translator()->add('title', 'Моя оригинальная книга', 'ru');
+//        $book->translator()->add('title', 'Моя оригинальная книга', 'uk');
 //
 //        $book = $book->fresh();
 //
-//        self::assertEquals('Моя оригинальная книга', $book->translator()->get('title', 'ru'));
+//        self::assertEquals('Моя оригинальная книга', $book->translator()->get('title', 'uk'));
 //        self::assertEquals('My original book', $book->title);
 //    }
 
@@ -127,7 +127,7 @@ class TranslationTest extends TestCase
 //    {
 //        $book = BookFactory::new()->create();
 //
-//        $book->translator()->add('title', 'Моя новая книга', 'ru');
+//        $book->translator()->add('title', 'Моя новая книга', 'uk');
 //
 //        self::assertCount(1, Translation::all());
 //
@@ -136,7 +136,7 @@ class TranslationTest extends TestCase
 //            'translatable_type' => $book->getMorphClass(),
 //            'translatable_attribute' => 'title',
 //            'value' => 'Моя новая книга',
-//            'locale' => 'ru',
+//            'locale' => 'uk',
 //        ]);
 //    }
 //
@@ -148,10 +148,10 @@ class TranslationTest extends TestCase
 //        $book->translator()->addMany([
 //            'title' => 'Тестовое название книги',
 //            'description' => 'Тестовое описание книги',
-//        ], 'ru');
+//        ], 'uk');
 //
-//        self::assertEquals('Тестовое название книги', $book->translator()->get('title', 'ru'));
-//        self::assertEquals('Тестовое описание книги', $book->translator()->get('description', 'ru'));
+//        self::assertEquals('Тестовое название книги', $book->translator()->get('title', 'uk'));
+//        self::assertEquals('Тестовое описание книги', $book->translator()->get('description', 'uk'));
 //    }
 
 //    /** @test */
@@ -162,7 +162,7 @@ class TranslationTest extends TestCase
 //        $book->translator()->addMany([
 //            'title' => 'Моя новая книга',
 //            'description' => 'Как хранить переводы для Laravel',
-//        ], 'ru');
+//        ], 'uk');
 //
 //        self::assertCount(2, Translation::all());
 //
@@ -171,7 +171,7 @@ class TranslationTest extends TestCase
 //            'translatable_type' => $book->getMorphClass(),
 //            'translatable_attribute' => 'title',
 //            'value' => 'Моя новая книга',
-//            'locale' => 'ru',
+//            'locale' => 'uk',
 //        ]);
 //
 //        $this->assertDatabaseHas('translations', [
@@ -179,7 +179,7 @@ class TranslationTest extends TestCase
 //            'translatable_type' => $book->getMorphClass(),
 //            'translatable_attribute' => 'description',
 //            'value' => 'Как хранить переводы для Laravel',
-//            'locale' => 'ru',
+//            'locale' => 'uk',
 //        ]);
 //    }
 
@@ -201,11 +201,11 @@ class TranslationTest extends TestCase
 //    {
 //        $book = BookFactory::new()->create();
 //
-//        $book->translator()->add('title', 'Неправильное название книги', 'ru');
-//        $book->translator()->add('title', 'Правильное название книги', 'ru');
+//        $book->translator()->add('title', 'Неправильное название книги', 'uk');
+//        $book->translator()->add('title', 'Правильное название книги', 'uk');
 //
 //        self::assertCount(1, Translation::all());
-//        self::assertEquals('Правильное название книги', $book->translator()->get('title', 'ru'));
+//        self::assertEquals('Правильное название книги', $book->translator()->get('title', 'uk'));
 //    }
 //
 //    /** @test */
