@@ -25,7 +25,7 @@ class CastTranslationTest extends TestCase
      */
     private function createSchema(): void
     {
-        $this->schema()->create('articles', function (Blueprint $table) {
+        $this->schema()->create('books', function (Blueprint $table) {
             $table->id();
             $table->text('content');
             $table->timestamp('published_at')->nullable();
@@ -36,34 +36,34 @@ class CastTranslationTest extends TestCase
     /** @test */
     public function it_casts_translatable_attributes(): void
     {
-        $article = new ArticleWithCasts();
-        $article->content = [
+        $book = new BookWithCasts();
+        $book->content = [
             'title' => 'Chapter 1',
             'body' => 'Chapter about birds',
         ];
-        $article->save();
+        $book->save();
 
-        $article->translator()->add('content', ['title' => 'Глава 1', 'body' => 'Глава о птицах'], 'ru');
+        $book->translator()->add('content', ['title' => 'Глава 1', 'body' => 'Глава о птицах'], 'ru');
 
         $this->app->setLocale('ru');
 
-        self::assertEquals(['title' => 'Глава 1', 'body' => 'Глава о птицах'], $article->content);
+        self::assertEquals(['title' => 'Глава 1', 'body' => 'Глава о птицах'], $book->content);
         self::assertCount(1, Translation::all());
     }
 
     /** @test */
     public function it_casts_attributes_using_fallback_translation(): void
     {
-        $article = new ArticleWithCasts();
-        $article->content = [
+        $book = new BookWithCasts();
+        $book->content = [
             'title' => 'Chapter 1',
             'body' => 'Chapter about birds',
         ];
-        $article->save();
+        $book->save();
 
         $this->app->setLocale('ru');
 
-        self::assertEquals(['title' => 'Chapter 1', 'body' => 'Chapter about birds'], $article->content);
+        self::assertEquals(['title' => 'Chapter 1', 'body' => 'Chapter about birds'], $book->content);
     }
 
     /** @test */
@@ -71,18 +71,18 @@ class CastTranslationTest extends TestCase
     {
         $now = $this->freezeTime(now());
 
-        $article = new ArticleWithCasts();
-        $article->content = [
+        $book = new BookWithCasts();
+        $book->content = [
             'title' => 'Chapter 1',
             'body' => 'Chapter about birds',
         ];
-        $article->published_at = $now;
-        $article->save();
+        $book->published_at = $now;
+        $book->save();
 
         $this->app->setLocale('ru');
 
-        self::assertInstanceOf(DateTimeInterface::class, $article->published_at);
-        self::assertTrue($now->equalTo($article->published_at));
+        self::assertInstanceOf(DateTimeInterface::class, $book->published_at);
+        self::assertTrue($now->equalTo($book->published_at));
     }
 
     /**
@@ -90,7 +90,7 @@ class CastTranslationTest extends TestCase
      */
     protected function tearDown(): void
     {
-        $this->schema()->drop('articles');
+        $this->schema()->drop('books');
         parent::tearDown();
     }
 }
@@ -99,11 +99,11 @@ class CastTranslationTest extends TestCase
  * @property array content
  * @property DateTimeInterface|null published_at
  */
-class ArticleWithCasts extends Model
+class BookWithCasts extends Model
 {
     use HasTranslations;
 
-    protected $table = 'articles';
+    protected $table = 'books';
 
     protected $translatable = [
         'content',

@@ -24,7 +24,7 @@ class MutatorsTranslationTest extends TestCase
      */
     private function createSchema(): void
     {
-        $this->schema()->create('articles', function (Blueprint $table) {
+        $this->schema()->create('books', function (Blueprint $table) {
             $table->id();
             $table->string('title');
             $table->string('description');
@@ -35,12 +35,12 @@ class MutatorsTranslationTest extends TestCase
     /** @test */
     public function it_applies_mutators_for_translatable_attributes(): void
     {
-        $article = new ArticleWithMutators();
-        $article->title = 'My article';
-        $article->description = 'My first article';
-        $article->save();
+        $book = new BookWithMutators();
+        $book->title = 'My book';
+        $book->description = 'My first book';
+        $book->save();
 
-        $article->translation()->add('title', 'Очень очень длинное название для статьи', 'ru');
+        $book->translation()->add('title', 'Очень очень длинное название для статьи', 'ru');
 
         $this->assertDatabaseHas('translations', [
             'value' => 'Очень очень длинное название д...',
@@ -50,40 +50,40 @@ class MutatorsTranslationTest extends TestCase
     /** @test */
     public function it_does_not_override_original_attribute_after_applying_mutators(): void
     {
-        $article = new ArticleWithMutators();
-        $article->title = 'My article';
-        $article->description = 'My first article';
-        $article->save();
+        $book = new BookWithMutators();
+        $book->title = 'My book';
+        $book->description = 'My first book';
+        $book->save();
 
-        $article->translation()->add('title', 'Очень очень длинное название для книги', 'ru');
+        $book->translation()->add('title', 'Очень очень длинное название для книги', 'ru');
 
-        self::assertEquals('My article', $article->title);
+        self::assertEquals('My book', $book->title);
     }
 
     /** @test */
     public function it_applies_mutators_using_setter(): void
     {
-        $article = new ArticleWithMutators();
-        $article->title = 'My article';
-        $article->description = 'My first article';
-        $article->save();
+        $book = new BookWithMutators();
+        $book->title = 'My book';
+        $book->description = 'My first book';
+        $book->save();
 
         $this->app->setLocale('ru');
 
-        $article->title = 'Очень очень длинное название для статьи';
+        $book->title = 'Очень очень длинное название для статьи';
 
-        self::assertEquals('Очень очень длинное название д...', $article->title);
+        self::assertEquals('Очень очень длинное название д...', $book->title);
     }
 
     /** @test */
     public function it_still_applies_mutators_for_non_translatable_attributes(): void
     {
-        $article = new ArticleWithMutators();
-        $article->title = 'My article';
-        $article->description = 'Very long description for the article';
-        $article->save();
+        $book = new BookWithMutators();
+        $book->title = 'My book';
+        $book->description = 'Very long description for the book';
+        $book->save();
 
-        self::assertEquals('Very long description for the...', $article->description);
+        self::assertEquals('Very long description for the...', $book->description);
     }
 
     /**
@@ -91,7 +91,7 @@ class MutatorsTranslationTest extends TestCase
      */
     protected function tearDown(): void
     {
-        $this->schema()->drop('articles');
+        $this->schema()->drop('books');
 
         parent::tearDown();
     }
@@ -101,11 +101,11 @@ class MutatorsTranslationTest extends TestCase
  * @property string title
  * @property string description
  */
-class ArticleWithMutators extends Model
+class BookWithMutators extends Model
 {
     use HasTranslations;
 
-    protected $table = 'articles';
+    protected $table = 'books';
 
     protected $translatable = [
         'title',

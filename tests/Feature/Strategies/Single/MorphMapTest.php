@@ -35,10 +35,10 @@ class MorphMapTest extends TestCase
     public function it_stores_translations_using_morph_map(): void
     {
         Relation::morphMap([
-            'books' => BookForMorphMap::class,
+            'books' => BookWithMorphMap::class,
         ]);
 
-        $book = new BookForMorphMap();
+        $book = new BookWithMorphMap();
         $book->title = 'Book about dolphins';
         $book->save();
 
@@ -66,7 +66,7 @@ class MorphMapTest extends TestCase
 /**
  * @property string title
  */
-class BookForMorphMap extends Model
+class BookWithMorphMap extends Model
 {
     use HasTranslations;
 

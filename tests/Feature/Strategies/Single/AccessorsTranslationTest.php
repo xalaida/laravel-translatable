@@ -11,7 +11,7 @@ use Nevadskiy\Translatable\Tests\TestCase;
 class AccessorsTranslationTest extends TestCase
 {
     /**
-     * Set up the test environment.
+     * @inheritDoc
      */
     protected function setUp(): void
     {
@@ -24,7 +24,7 @@ class AccessorsTranslationTest extends TestCase
      */
     private function createSchema(): void
     {
-        $this->schema()->create('articles', function (Blueprint $table) {
+        $this->schema()->create('books', function (Blueprint $table) {
             $table->id();
             $table->string('title');
             $table->timestamps();
@@ -34,118 +34,117 @@ class AccessorsTranslationTest extends TestCase
     /** @test */
     public function it_applies_accessors_to_translatable_attributes(): void
     {
-        $article = new BookWithAccessors();
-        $article->title = 'My article';
-        $article->save();
+        $book = new BookWithAccessors();
+        $book->title = 'My book';
+        $book->save();
 
-        $article->translator()->add('title', 'моя статья', 'ru');
+        $book->translator()->add('title', 'моя статья', 'ru');
 
-        self::assertEquals('Моя статья', $article->translator()->get('title', 'ru'));
+        self::assertEquals('Моя статья', $book->translator()->get('title', 'ru'));
     }
 
     /** @test */
     public function it_applies_accessors_to_translatable_attributes_using_getters(): void
     {
-        $article = new BookWithAccessors();
-        $article->title = 'My article';
-        $article->save();
+        $book = new BookWithAccessors();
+        $book->title = 'My book';
+        $book->save();
 
         $this->app->setLocale('ru');
 
-        $article->title = 'моя статья';
+        $book->title = 'моя статья';
 
-        self::assertEquals('Моя статья', $article->title);
+        self::assertEquals('Моя статья', $book->title);
     }
 
     /** @test */
     public function it_still_applies_accessors_to_original_attributes_using_getters(): void
     {
-        $article = new BookWithAccessors();
-        $article->title = 'my article';
-        $article->save();
+        $book = new BookWithAccessors();
+        $book->title = 'my book';
+        $book->save();
 
-        self::assertEquals('My article', $article->title);
+        self::assertEquals('My book', $book->title);
     }
 
     /** @test */
     public function it_still_applies_accessors_to_original_attributes_in_fallback_locale(): void
     {
-        $article = new BookWithAccessors();
-        $article->title = 'my article';
-        $article->save();
+        $book = new BookWithAccessors();
+        $book->title = 'my book';
+        $book->save();
 
-        $article->translator()->add('title', 'моя статья', 'ru');
+        $book->translator()->add('title', 'моя статья', 'ru');
 
         $this->app->setLocale('ru');
 
-        self::assertEquals('My article', $article->getOriginalAttribute('title'));
+        self::assertEquals('My book', $book->getOriginalAttribute('title'));
     }
 
     /** @test */
     public function it_does_not_override_original_attribute_after_applying_accessors(): void
     {
-        $article = new BookWithAccessors();
-        $article->title = 'my article';
-        $article->save();
-        $article->translator()->add('title', 'моя статья', 'ru');
+        $book = new BookWithAccessors();
+        $book->title = 'my book';
+        $book->save();
+        $book->translator()->add('title', 'моя статья', 'ru');
 
-        $article->translator()->get('title', 'ru');
-        $article->save();
+        $book->translator()->get('title', 'ru');
+        $book->save();
 
-        self::assertEquals('my article', $article->getRawOriginal('title'));
+        self::assertEquals('my book', $book->getRawOriginal('title'));
     }
 
     /** @test */
     public function it_returns_raw_translation_value_for_given_locale(): void
     {
-        $article = new BookWithAccessors();
-        $article->title = 'my article';
-        $article->save();
+        $book = new BookWithAccessors();
+        $book->title = 'my book';
+        $book->save();
 
-        $article->translator()->add('title', 'моя статья', 'ru');
+        $book->translator()->add('title', 'моя статья', 'ru');
 
-        self::assertEquals('моя статья', $article->translator()->raw('title', 'ru'));
+        self::assertEquals('моя статья', $book->translator()->raw('title', 'ru'));
     }
 
     /** @test */
     public function it_correctly_stores_translations_after_applied_accessors(): void
     {
-        $article = new BookWithAccessors();
-        $article->title = 'my article';
-        $article->save();
+        $book = new BookWithAccessors();
+        $book->title = 'my book';
+        $book->save();
 
         $this->app->setLocale('ru');
 
-        $article->title = 'моя статья';
-        $article->save();
+        $book->title = 'моя статья';
+        $book->save();
 
-        self::assertEquals('Моя статья', $article->title);
-        $article->save();
+        self::assertEquals('Моя статья', $book->title);
+        $book->save();
 
-        self::assertEquals('моя статья', $article->fresh()->translator()->raw('title', 'ru'));
+        self::assertEquals('моя статья', $book->fresh()->translator()->raw('title', 'ru'));
     }
 
     /** @test */
     public function it_still_applies_accessors_for_non_translatable_attributes(): void
     {
-        $article = new BookWithAccessors();
-        $article->title = 'my article';
-        $article->save();
+        $book = new BookWithAccessors();
+        $book->title = 'my book';
+        $book->save();
 
-        $article->translator()->add('description', 'Статья про собак', 'ru');
+        $book->translator()->add('description', 'Статья про собак', 'ru');
 
         $this->app->setLocale('ru');
 
-        self::assertEquals('Ста...', $article->description_short);
+        self::assertEquals('Ста...', $book->description_short);
     }
 
     /**
-     * Tear down the test.
+     * @inheritDoc
      */
     protected function tearDown(): void
     {
-        $this->schema()->drop('articles');
-
+        $this->schema()->drop('books');
         parent::tearDown();
     }
 }
@@ -159,7 +158,7 @@ class BookWithAccessors extends Model
 {
     use HasTranslations;
 
-    protected $table = 'articles';
+    protected $table = 'books';
 
     protected $translatable = [
         'title',

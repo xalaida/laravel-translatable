@@ -34,7 +34,7 @@ class CreationTranslatableModelTest extends TestCase
  * @property array content
  * @property DateTimeInterface|null published_at
  */
-class BookForCreation extends Model
+class BookWithCreation extends Model
 {
     use HasTranslations;
 
