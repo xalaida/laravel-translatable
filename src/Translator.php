@@ -177,6 +177,17 @@ class Translator
         }
     }
 
+    /**
+     * Add many translations to the model for the given locale.
+     */
+    public function addMany(array $translations, string $locale = null): void
+    {
+        $this->setMany($translations, $locale)->save();
+    }
+
+    /**
+     * Set many translations on the model for the given locale.
+     */
     public function setMany(array $translations, string $locale = null): Translator
     {
         foreach ($translations as $attribute => $value) {
@@ -184,10 +195,5 @@ class Translator
         }
 
         return $this;
-    }
-
-    public function addMany(array $translations, string $locale = null): void
-    {
-        $this->setMany($translations, $locale)->save();
     }
 }

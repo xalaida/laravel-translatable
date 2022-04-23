@@ -219,16 +219,16 @@ class TranslationTest extends TestCase
         self::assertEmpty(Translation::all());
     }
 
-    /** @test */
-    public function it_throws_an_exception_during_translation_non_translatable_attributes(): void
-    {
-        $book = BookFactory::new()->create(['title' => 'My book']);
-
-        try {
-            $book->translator()->add('version', '5', $this->app->getLocale());
-            self::fail('Exception was not thrown for not translatable attribute');
-        } catch (AttributeNotTranslatableException $e) {
-            self::assertCount(0, Translation::all());
-        }
-    }
+//    /** @test */
+//    public function it_throws_an_exception_during_translation_non_translatable_attributes(): void
+//    {
+//        $book = BookFactory::new()->create(['title' => 'My book']);
+//
+//        try {
+//            $book->translator()->add('version', '5', $this->app->getLocale());
+//            self::fail('Exception was not thrown for not translatable attribute');
+//        } catch (AttributeNotTranslatableException $e) {
+//            self::assertCount(0, Translation::all());
+//        }
+//    }
 }

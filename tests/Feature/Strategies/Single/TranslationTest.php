@@ -118,10 +118,12 @@ class TranslationTest extends TestCase
         $book->title = 'Large encyclopedia of animals';
         $book->save();
 
-        $this->expectException(AttributeNotTranslatableException::class);
-
-        $book->translator()->add('created_at', now()->setTimezone('Europe/Kiev'), 'uk');
-        $this->assertDatabaseCount('translations', 0);
+        try {
+            $book->translator()->add('created_at', now()->setTimezone('Europe/Kiev'), 'uk');
+            self::fail('Exception was not thrown for not translatable attribute');
+        } catch (AttributeNotTranslatableException $e) {
+            $this->assertDatabaseCount('translations', 0);
+        }
     }
 
     /** @test */
@@ -146,7 +148,6 @@ class TranslationTest extends TestCase
 
     // TODO: probably move to strategy specific test.
 
-    // TODO: extract this test into 'many-translations' group
     /** @test */
     public function it_saves_translations_to_the_database(): void
     {
@@ -162,36 +163,6 @@ class TranslationTest extends TestCase
             'translatable_type' => $book->getMorphClass(),
             'translatable_attribute' => 'title',
             'value' => 'Атлас тварин',
-            'locale' => 'uk',
-        ]);
-    }
-
-    // TODO: extract this test into 'many-translations' group
-    /** @test */
-    public function it_saves_many_translations_to_the_database(): void
-    {
-        $book = new Book();
-        $book->title = 'Atlas of animals';
-        $book->save();
-
-        $book->translator()->addMany([
-            'title' => 'Атлас тварин',
-            'description' => '«Атлас тварин» ‒ унікальне видання про мешканців нашої планети з авторськими ілюстраціями.',
-        ], 'uk');
-
-        $this->assertDatabaseCount('translations', 2);
-        $this->assertDatabaseHas('translations', [
-            'translatable_id' => $book->getKey(),
-            'translatable_type' => $book->getMorphClass(),
-            'translatable_attribute' => 'title',
-            'value' => 'Атлас тварин',
-            'locale' => 'uk',
-        ]);
-        $this->assertDatabaseHas('translations', [
-            'translatable_id' => $book->getKey(),
-            'translatable_type' => $book->getMorphClass(),
-            'translatable_attribute' => 'title',
-            'value' => '«Атлас тварин» ‒ унікальне видання про мешканців нашої планети з авторськими ілюстраціями.',
             'locale' => 'uk',
         ]);
     }
