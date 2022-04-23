@@ -2,7 +2,8 @@
 
 namespace Nevadskiy\Translatable\Tests\Feature\Strategies\Single;
 
-use Nevadskiy\Translatable\Strategies\Single\Models\Translation;
+use Illuminate\Database\Eloquent\Model;
+use Nevadskiy\Translatable\Strategies\Single\HasTranslations;
 use Nevadskiy\Translatable\Tests\Support\Factories\BookFactory;
 use Nevadskiy\Translatable\Tests\TestCase;
 
@@ -19,11 +20,32 @@ class CreationTranslatableModelTest extends TestCase
             'version' => '1',
         ]);
 
-        self::assertEmpty(Translation::all());
+        $this->assertDatabaseCount('translations', 0);
+
         $this->assertDatabaseHas($book->getTable(), [
             'title' => 'My book',
             'description' => 'Book about birds',
             'version' => '1',
         ]);
     }
+}
+
+/**
+ * @property array content
+ * @property DateTimeInterface|null published_at
+ */
+class BookForCreation extends Model
+{
+    use HasTranslations;
+
+    protected $table = 'articles';
+
+    protected $translatable = [
+        'content',
+    ];
+
+    protected $casts = [
+        'content' => 'array',
+        'published_at' => 'datetime',
+    ];
 }

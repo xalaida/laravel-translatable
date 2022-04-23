@@ -207,18 +207,18 @@ class TranslationTest extends TestCase
 //        self::assertCount(1, Translation::all());
 //        self::assertEquals('Правильное название книги', $book->translator()->get('title', 'ru'));
 //    }
-
-    /** @test */
-    public function it_updates_default_value_for_default_locale(): void
-    {
-        $book = BookFactory::new()->create(['title' => 'My book']);
-
-        $book->translator()->add('title', 'My english book', $this->app->getLocale());
-
-        self::assertEquals('My english book', $book->getAttribute('title'));
-        self::assertEmpty(Translation::all());
-    }
-
+//
+//    /** @test */
+//    public function it_updates_default_value_for_default_locale(): void
+//    {
+//        $book = BookFactory::new()->create(['title' => 'My book']);
+//
+//        $book->translator()->add('title', 'My english book', $this->app->getLocale());
+//
+//        self::assertEquals('My english book', $book->getAttribute('title'));
+//        self::assertEmpty(Translation::all());
+//    }
+//
 //    /** @test */
 //    public function it_throws_an_exception_during_translation_non_translatable_attributes(): void
 //    {
