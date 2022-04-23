@@ -36,53 +36,51 @@ class MutatorsTranslationTest extends TestCase
     public function it_applies_mutators_for_translatable_attributes(): void
     {
         $book = new BookWithMutators();
-        $book->title = 'Three destinies';
+        $book->title = 'Shot on the stairs';
         $book->save();
 
-        $book->translator()->add('title', 'Три долі', 'uk');
+        $book->translator()->add('title', 'Постріл на сходах', 'uk');
 
         $this->assertDatabaseHas('translations', [
-            'value' => 'Очень очень длинное название д...',
+            'value' => 'Постріл на...',
         ]);
     }
 
     /** @test */
-    public function it_does_not_override_original_attribute_after_applying_mutators(): void
+    public function it_does_not_override_original_attribute_with_mutated_value(): void
     {
         $book = new BookWithMutators();
-        $book->title = 'My book';
-        $book->description = 'My first book';
+        $book->title = 'Shot on the stairs';
         $book->save();
 
-        $book->translator()->add('title', 'Очень очень длинное название для книги', 'uk');
+        $book->translator()->add('title', 'Постріл на сходах', 'uk');
 
-        self::assertEquals('My book', $book->title);
+        self::assertEquals('Shot on th...', $book->translator()->get('title'));
     }
 
     /** @test */
-    public function it_applies_mutators_using_setter(): void
+    public function it_applies_mutators_using_model_setter(): void
     {
         $book = new BookWithMutators();
-        $book->title = 'My book';
-        $book->description = 'My first book';
+        $book->title = 'Shot on the stairs';
         $book->save();
 
         $this->app->setLocale('uk');
 
-        $book->title = 'Очень очень длинное название для статьи';
+        $book->title = 'Постріл на сходах';
 
-        self::assertEquals('Очень очень длинное название д...', $book->title);
+        self::assertEquals('Постріл на...', $book->title);
     }
 
     /** @test */
     public function it_still_applies_mutators_for_non_translatable_attributes(): void
     {
         $book = new BookWithMutators();
-        $book->title = 'My book';
-        $book->description = 'Very long description for the book';
+        $book->title = 'Shot on the stairs';
+        $book->description = 'Detective of the 20s';
         $book->save();
 
-        self::assertEquals('Very long description for the...', $book->description);
+        self::assertEquals('Detective...', $book->description);
     }
 
     /**
@@ -91,7 +89,6 @@ class MutatorsTranslationTest extends TestCase
     protected function tearDown(): void
     {
         $this->schema()->drop('books');
-
         parent::tearDown();
     }
 }

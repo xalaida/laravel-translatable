@@ -131,7 +131,6 @@ class AdditionalTableStrategyExtendingTest extends TestCase
     {
         $this->schema()->drop('articles');
         $this->schema()->drop('article_translations');
-
         parent::tearDown();
     }
 }
