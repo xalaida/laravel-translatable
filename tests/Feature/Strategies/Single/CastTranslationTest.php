@@ -6,9 +6,11 @@ use DateTimeInterface;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Schema\Blueprint;
 use Nevadskiy\Translatable\Strategies\Single\HasTranslations;
-use Nevadskiy\Translatable\Strategies\Single\Models\Translation;
 use Nevadskiy\Translatable\Tests\TestCase;
 
+/**
+ * TODO: test it using in-memory array strategy and simplify database test to just test attributes and originals
+ */
 class CastTranslationTest extends TestCase
 {
     /**
@@ -38,32 +40,41 @@ class CastTranslationTest extends TestCase
     {
         $book = new BookWithCasts();
         $book->content = [
-            'title' => 'Chapter 1',
-            'body' => 'Chapter about birds',
+            'title' => 'Swan flock',
+            'author' => 'Vasil Zemlyak',
         ];
         $book->save();
 
-        $book->translator()->add('content', ['title' => 'Глава 1', 'body' => 'Глава о птицах'], 'ru');
+        $book->translator()->add('content', [
+            'title' => 'Лебедина зграя',
+            'author' => 'Василь Земляк',
+        ], 'uk');
 
-        $this->app->setLocale('ru');
+        $this->app->setLocale('uk');
 
-        self::assertEquals(['title' => 'Глава 1', 'body' => 'Глава о птицах'], $book->content);
-        self::assertCount(1, Translation::all());
+        self::assertEquals([
+            'title' => 'Лебедина зграя',
+            'author' => 'Василь Земляк',
+        ], $book->content);
+        $this->assertDatabaseCount('translations', 1);
     }
 
     /** @test */
-    public function it_casts_attributes_using_fallback_translation(): void
+    public function it_casts_attributes_using_fallback_locale(): void
     {
         $book = new BookWithCasts();
         $book->content = [
-            'title' => 'Chapter 1',
-            'body' => 'Chapter about birds',
+            'title' => 'Swan flock',
+            'author' => 'Vasil Zemlyak',
         ];
         $book->save();
 
-        $this->app->setLocale('ru');
+        $this->app->setLocale('uk');
 
-        self::assertEquals(['title' => 'Chapter 1', 'body' => 'Chapter about birds'], $book->content);
+        self::assertEquals([
+            'title' => 'Swan flock',
+            'author' => 'Vasil Zemlyak',
+        ], $book->content);
     }
 
     /** @test */
@@ -73,13 +84,13 @@ class CastTranslationTest extends TestCase
 
         $book = new BookWithCasts();
         $book->content = [
-            'title' => 'Chapter 1',
-            'body' => 'Chapter about birds',
+            'title' => 'Swan flock',
+            'author' => 'Vasil Zemlyak',
         ];
         $book->published_at = $now;
         $book->save();
 
-        $this->app->setLocale('ru');
+        $this->app->setLocale('uk');
 
         self::assertInstanceOf(DateTimeInterface::class, $book->published_at);
         self::assertTrue($now->equalTo($book->published_at));
