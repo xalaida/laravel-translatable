@@ -1,6 +1,6 @@
 <?php
 
-namespace Nevadskiy\Translatable\Tests\Feature;
+namespace Nevadskiy\Translatable\Tests\Feature\Strategies\Single;
 
 use DateTimeInterface;
 use Illuminate\Database\Eloquent\Model;

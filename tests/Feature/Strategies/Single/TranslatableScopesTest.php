@@ -6,6 +6,7 @@ use Nevadskiy\Translatable\Tests\Support\Factories\BookFactory;
 use Nevadskiy\Translatable\Tests\Support\Models\Book;
 use Nevadskiy\Translatable\Tests\TestCase;
 
+// TODO: split into multiple test cases
 class TranslatableScopesTest extends TestCase
 {
     /** @test */

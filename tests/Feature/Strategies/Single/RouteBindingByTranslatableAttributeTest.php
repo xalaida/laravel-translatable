@@ -8,6 +8,7 @@ use Nevadskiy\Translatable\Tests\Support\Models\Post;
 use Nevadskiy\Translatable\Tests\TestCase;
 use function route;
 
+// TODO: feature it.
 class RouteBindingByTranslatableAttributeTest extends TestCase
 {
     // TODO: add support for resolveChildRouteBinding() method.

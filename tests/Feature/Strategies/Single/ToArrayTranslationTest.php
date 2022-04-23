@@ -1,65 +1,124 @@
 <?php
 
-namespace Nevadskiy\Translatable\Tests\Feature;
+namespace Nevadskiy\Translatable\Tests\Feature\Strategies\Single;
 
-use Nevadskiy\Translatable\Tests\Support\Factories\BookFactory;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Str;
+use Nevadskiy\Translatable\Strategies\Single\HasTranslations;
 use Nevadskiy\Translatable\Tests\TestCase;
 
 class ToArrayTranslationTest extends TestCase
 {
-    /** @test */
-    public function it_returns_an_array_with_model_translations(): void
+    /**
+     * @inheritdoc
+     */
+    protected function setUp(): void
     {
-        $book = BookFactory::new()->create([
-            'title' => 'My first book',
-            'description' => 'Book about dolphins',
-        ]);
+        parent::setUp();
+        $this->createSchema();
+    }
 
-        $book->translator()->add('title', 'Моя первая книга', 'uk');
-        $book->translator()->add('description', 'Книга о дельфинах', 'uk');
+    /**
+     * Set up the database schema.
+     */
+    private function createSchema(): void
+    {
+        $this->schema()->create('books', function (Blueprint $table) {
+            $table->id();
+            $table->string('title');
+            $table->text('description')->nullable();
+            $table->timestamps();
+        });
+    }
+
+    /** @test */
+    public function it_returns_array_with_translations(): void
+    {
+        $book = new BookToArray();
+        $book->title = 'In the jungle';
+        $book->description = 'The book is filled with funny funny illustrations and captions';
+        $book->save();
+
+        $book->translator()->add('title', 'У джунглях', 'uk');
+        $book->translator()->add('description', 'Книга наповнена кумедними яскравими ілюстраціями та підписами до них', 'uk');
 
         $this->app->setLocale('uk');
 
         self::assertEquals([
-           'title' => 'Моя первая книга',
-           'description' => 'Книга о дельфинах',
-        ], $book->translator()->toArray());
+           'title' => 'У джунглях',
+           'description' => 'Книга наповнена кумедними яскравими ілюстраціями та підписами до них',
+        ], $book->translator()->toArray('uk'));
     }
 
     /** @test */
-    public function it_transforms_to_array_using_translatable_values(): void
+    public function it_transforms_model_to_array_using_translatable_values(): void
     {
-        $book = BookFactory::new()->create([
-            'title' => 'My first book',
-            'description' => 'Book about dolphins',
-        ]);
+        $book = new BookToArray();
+        $book->title = 'In the jungle';
+        $book->description = 'The book is filled with funny funny illustrations and captions';
+        $book->save();
 
-        $book->translator()->add('title', 'Моя первая книга', 'uk');
-        $book->translator()->add('description', 'Книга о дельфинах', 'uk');
+        $book->translator()->add('title', 'У джунглях', 'uk');
+        $book->translator()->add('description', 'Книга наповнена кумедними яскравими ілюстраціями та підписами до них', 'uk');
 
         $this->app->setLocale('uk');
 
-        $bookArray = $book->toArray();
+        $array = $book->toArray();
 
-        self::assertEquals('Моя первая книга', $bookArray['title']);
-        self::assertEquals('Книга о дельфинах', $bookArray['description']);
+        self::assertArrayHasKey('id', $array);
+        self::assertArrayHasKey('title', $array);
+        self::assertArrayHasKey('description', $array);
+        self::assertArrayHasKey('updated_at', $array);
+        self::assertArrayHasKey('created_at', $array);
+        self::assertEquals('У джунглях', $array['title']);
+        self::assertEquals('Книга наповнена кумедними яскравими ілюстраціями та підписами до них', $array['description']);
     }
 
     /** @test */
     public function it_transforms_to_array_using_model_accessors(): void
     {
-        $book = BookFactory::new()->create([
-            'title' => 'My first book',
-            'description' => 'Book about dolphins',
-        ]);
+        $book = new BookToArray();
+        $book->title = 'In the jungle';
+        $book->save();
 
-        $book->translator()->add('title', 'первая книга', 'uk');
+        $book->translator()->add('title', 'у джунглях', 'uk');
 
         $this->app->setLocale('uk');
 
-        $bookArray = $book->toArray();
+        $array = $book->toArray();
 
-        self::assertEquals('Первая книга', $bookArray['title']);
-        self::assertEquals('Book about dolphins', $bookArray['description']);
+        self::assertEquals('У джунглях', $array['title']);
+        self::assertNull($array['description']);
+    }
+
+    /**
+     * @inheritdoc
+     */
+    protected function tearDown(): void
+    {
+        $this->schema()->drop('books');
+        parent::tearDown();
+    }
+}
+
+/**
+ * @property string title
+ * @property string|null description
+ */
+class BookToArray extends Model
+{
+    use HasTranslations;
+
+    protected $table = 'books';
+
+    protected $translatable = [
+        'title',
+        'description',
+    ];
+
+    public function getTitleAttribute(string $title): string
+    {
+        return Str::ucfirst($title);
     }
 }
