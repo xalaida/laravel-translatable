@@ -4,7 +4,6 @@ namespace Nevadskiy\Translatable\Tests\Feature\Strategies\Single;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Schema\Blueprint;
-use Illuminate\Support\Facades\DB;
 use Nevadskiy\Translatable\Exceptions\AttributeNotTranslatableException;
 use Nevadskiy\Translatable\Strategies\Single\HasTranslations;
 use Nevadskiy\Translatable\Tests\TestCase;
@@ -32,8 +31,6 @@ class ManyTranslationTest extends TestCase
             $table->timestamps();
         });
     }
-
-    // TODO: mix non-translatable attribute
 
     /** @test */
     public function it_saves_many_translations_to_the_database(): void

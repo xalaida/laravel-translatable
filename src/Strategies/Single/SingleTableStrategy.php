@@ -10,6 +10,7 @@ use Nevadskiy\Translatable\Strategies\TranslatorStrategy;
  * TODO: add possibility to trigger an exception when creating model in non-default locale.
  * TODO: add possibility to extract translatable attributes out of the model into single table (allows to create models in custom locale)
  * TODO: structure translations on 'retrieve' event (only when it was fired AFTER eager loading, not before like now)
+ * TODO: structure loaded translation in the strategy as this: ['en' => ['title' => null], 'uk' => ['title' => 'Книга']]
  */
 class SingleTableStrategy implements TranslatorStrategy
 {

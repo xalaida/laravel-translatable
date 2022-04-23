@@ -8,9 +8,6 @@ use Illuminate\Support\Facades\DB;
 use Nevadskiy\Translatable\Strategies\Single\HasTranslations;
 use Nevadskiy\Translatable\Tests\TestCase;
 
-// TODO: add possibility to disable eager loading in model.
-// TODO: structure loaded translation in the strategy as this: ['en' => ['title' => null], 'uk' => ['title' => 'Книга']]
-
 class EagerLoadingTranslationsTest extends TestCase
 {
     /**

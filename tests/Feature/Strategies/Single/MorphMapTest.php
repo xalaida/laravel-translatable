@@ -24,7 +24,7 @@ class MorphMapTest extends TestCase
      */
     private function createSchema(): void
     {
-        $this->schema()->create('articles', function (Blueprint $table) {
+        $this->schema()->create('books', function (Blueprint $table) {
             $table->id();
             $table->string('title');
             $table->timestamps();
@@ -35,17 +35,21 @@ class MorphMapTest extends TestCase
     public function it_stores_translations_using_morph_map(): void
     {
         Relation::morphMap([
-            'articles' => Article::class,
+            'books' => BookForMorphMap::class,
         ]);
 
-        $article = new Article();
-        $article->title = 'Book about dolphins';
-        $article->save();
+        $book = new BookForMorphMap();
+        $book->title = 'Book about dolphins';
+        $book->save();
 
-        $article->translator()->add('title', 'Книга про дельфинов', 'ru');
+        $book->translator()->add('title', 'Книга про дельфінів', 'uk');
 
         $this->assertDatabaseHas('translations', [
-            'translatable_type' => 'articles',
+            'translatable_id' => $book->getKey(),
+            'translatable_type' => 'books',
+            'translatable_attribute' => 'title',
+            'locale' => 'uk',
+            'value' => 'Книга про дельфінів',
         ]);
     }
 
@@ -54,8 +58,7 @@ class MorphMapTest extends TestCase
      */
     protected function tearDown(): void
     {
-        $this->schema()->drop('articles');
-
+        $this->schema()->drop('books');
         parent::tearDown();
     }
 }
@@ -63,9 +66,11 @@ class MorphMapTest extends TestCase
 /**
  * @property string title
  */
-class Article extends Model
+class BookForMorphMap extends Model
 {
     use HasTranslations;
+
+    protected $table = 'books';
 
     protected $translatable = [
         'title',
