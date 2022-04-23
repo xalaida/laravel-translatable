@@ -15,7 +15,7 @@ use Nevadskiy\Translatable\Strategies\Single\HasTranslations;
  * @property string translatable_attribute
  * @property-read Model|HasTranslations translatable
  * @property string value
- * @property string|null locale
+ * @property string locale
  * @property Carbon updated_at
  * @property Carbon created_at
  */
