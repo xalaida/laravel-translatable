@@ -2,11 +2,16 @@
 
 namespace Nevadskiy\Translatable\Tests\Feature\Strategies\Single;
 
-use Nevadskiy\Translatable\Strategies\Single\Models\Translation;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\DB;
+use Nevadskiy\Translatable\Strategies\Single\HasTranslations;
 use Nevadskiy\Translatable\Exceptions\AttributeNotTranslatableException;
-use Nevadskiy\Translatable\Tests\Support\Factories\BookFactory;
 use Nevadskiy\Translatable\Tests\TestCase;
 
+// TODO: missing translation for locale
+// TODO: test custom model (for uuid attributes)
+// TODO: using custom (not english) language for default values
 class TranslationTest extends TestCase
 {
     /**
@@ -18,225 +23,261 @@ class TranslationTest extends TestCase
         $this->createSchema();
     }
 
+    /**
+     * Set up the database schema.
+     */
+    private function createSchema(): void
+    {
+        $this->schema()->create('books', function (Blueprint $table) {
+            $table->id();
+            $table->string('title');
+            $table->text('description')->nullable();
+            $table->timestamps();
+        });
+    }
+
     /** @test */
     public function it_handles_translations_for_translatable_attributes(): void
     {
-        $book = BookFactory::new()->create();
+        $book = new Book();
+        $book->title = 'My first book';
+        $book->save();
 
-        $book->translator()->add('title', 'Моя первая книга', 'ru');
+        $book->translator()->add('title', 'Моя перша книга', 'uk');
 
-        self::assertEquals('Моя первая книга', $book->translator()->get('title', 'ru'));
+        self::assertEquals('Моя перша книга', $book->translator()->get('title', 'uk'));
     }
 
     /** @test */
-    public function it_retrieves_correct_value_from_multiple_translations(): void
+    public function it_retrieves_correct_translation_from_multiple_locales(): void
     {
-        $book = BookFactory::new()->create();
+        $book = new Book();
+        $book->title = 'Amazing birds';
+        $book->save();
 
-        $book->translator()->add('title', 'Книга о птицах', 'ru');
-        $book->translator()->add('description', 'Livre sur les oiseaux', 'fr');
+        $book->translator()->add('title', 'Дивовижні птахи', 'uk');
+        $book->translator()->add('title', 'Niesamowite ptaki', 'pl');
 
-        self::assertEquals('Книга о птицах', $book->translator()->get('title', 'ru'));
+        self::assertEquals('Niesamowite ptaki', $book->translator()->get('title', 'pl'));
     }
 
     /** @test */
-    public function it_retrieves_translation_for_specified_locale(): void
+    public function it_retrieves_correct_translation_from_multiple_attributes(): void
     {
-        $book = BookFactory::new()->create();
+        $book = new Book();
+        $book->title = 'Amazing birds';
+        $book->save();
 
-        $book->translator()->add('title', 'Моя блестящая книга', 'ru');
-        $book->translator()->add('title', 'Mi brillante libro', 'es');
-        $book->translator()->add('title', 'Mon brillant livre', 'fr');
+        $book->translator()->add('title', 'Дивовижні птахи', 'uk');
+        $book->translator()->add('description', 'Як упізнати птаха? Чому він співає?', 'uk');
 
-        self::assertEquals('Mi brillante libro', $book->translator()->get('title', 'es'));
+        self::assertEquals('Дивовижні птахи', $book->translator()->get('title', 'uk'));
     }
 
     /** @test */
     public function it_retrieves_original_value_for_fallback_locale(): void
     {
-        $book = BookFactory::new()->create(['title' => 'My best book']);
-        $book->translator()->add('title', 'Моя лучшая книга', 'ru');
+        $book = new Book();
+        $book->title = 'Book about penguins';
+        $book->save();
 
-        self::assertEquals('My best book', $book->translator()->get('title', 'en'));
+        $book->translator()->add('title', 'Книга про пінгвінів', 'uk');
+
+        self::assertEquals('Book about penguins', $book->translator()->get('title', 'en'));
+    }
+
+    /** @test */
+    public function it_updates_original_attribute_when_trying_to_translate_attribute_using_fallback_locale(): void
+    {
+        $book = new Book();
+        $book->title = 'Encyclopedia of animals';
+        $book->save();
+
+        $book->translator()->add('title', 'Large encyclopedia of animals', 'en');
+
+        self::assertEquals('Large encyclopedia of animals', $book->title);
+        self::assertEmpty($book->translations);
     }
 
     /** @test */
     public function it_throws_an_exception_when_trying_to_get_translation_for_non_translatable_attribute(): void
     {
-        $book = BookFactory::new()->create();
+        $book = new Book();
+        $book->title = 'Large encyclopedia of animals';
+        $book->save();
 
         $this->expectException(AttributeNotTranslatableException::class);
 
-        $book->translator()->get('id');
-    }
-
-    /** @test */
-    public function it_updates_original_attribute_for_fallback_locale(): void
-    {
-        $book = BookFactory::new()->create();
-
-        $book->translator()->add('title', 'Book title in English', 'en');
-
-        self::assertEquals('Book title in English', $book->title);
-        self::assertEmpty(Translation::all());
+        $book->translator()->get('created_at');
     }
 
     /** @test */
     public function it_throws_an_exception_when_trying_to_add_translation_for_non_translatable_attribute(): void
     {
-        $book = BookFactory::new()->create();
+        $book = new Book();
+        $book->title = 'Large encyclopedia of animals';
+        $book->save();
 
         $this->expectException(AttributeNotTranslatableException::class);
 
-        $book->translator()->add('id', 'Spanish ID', 'es');
+        $book->translator()->add('created_at', now()->setTimezone('Europe/Kiev'), 'uk');
+        $this->assertDatabaseCount('translations', 0);
     }
 
     /** @test */
-    public function it_does_not_break_anything_for_default_attributes(): void
+    public function it_returns_null_if_translation_is_missing(): void
     {
-        $book = BookFactory::new()->create(['version' => 24]);
+        $book = new Book();
+        $book->title = 'Atlas of animals';
+        $book->save();
 
-        self::assertEquals(24, $book->version);
+        self::assertNull($book->translator()->get('title', 'uk'));
     }
 
     /** @test */
-    public function it_does_not_override_original_values(): void
+    public function it_returns_fallback_value_if_translation_is_missing(): void
     {
-        $book = BookFactory::new()->create(['title' => 'My original book']);
+        $book = new Book();
+        $book->title = 'Atlas of animals';
+        $book->save();
 
-        $book->translator()->add('title', 'Моя оригинальная книга', 'ru');
-
-        $book = $book->fresh();
-
-        self::assertEquals('Моя оригинальная книга', $book->translator()->get('title', 'ru'));
-        self::assertEquals('My original book', $book->title);
-    }
-
-    /** @test */
-    public function it_returns_null_if_translation_does_not_exist(): void
-    {
-        self::assertNull(
-            BookFactory::new()->create()->translator()->get('title', 'fr')
-        );
-    }
-
-    /** @test */
-    public function it_returns_fallback_value_if_translation_does_not_exist(): void
-    {
-        $book = BookFactory::new()->create(['title' => 'English title']);
-
-        self::assertEquals('English title', $book->translator()->getOrFallback('title', 'ua'));
+        self::assertEquals('Atlas of animals', $book->translator()->getOrFallback('title', 'uk'));
     }
 
     // TODO: probably move to strategy specific test.
 
+    // TODO: extract this test into 'many-translations' group
     /** @test */
     public function it_saves_translations_to_the_database(): void
     {
-        $book = BookFactory::new()->create();
+        $book = new Book();
+        $book->title = 'Atlas of animals';
+        $book->save();
 
-        $book->translator()->add('title', 'Моя новая книга', 'ru');
+        $book->translator()->add('title', 'Атлас тварин', 'uk');
 
-        self::assertCount(1, Translation::all());
-
+        $this->assertDatabaseCount('translations', 1);
         $this->assertDatabaseHas('translations', [
-            'translatable_id' => $book->id,
+            'translatable_id' => $book->getKey(),
             'translatable_type' => $book->getMorphClass(),
             'translatable_attribute' => 'title',
-            'value' => 'Моя новая книга',
-            'locale' => 'ru',
+            'value' => 'Атлас тварин',
+            'locale' => 'uk',
         ]);
     }
 
-    /** @test */
-    public function it_saves_many_translations_for_translatable_attributes(): void
-    {
-        $book = BookFactory::new()->create();
-
-        $book->translator()->addMany([
-            'title' => 'Тестовое название книги',
-            'description' => 'Тестовое описание книги',
-        ], 'ru');
-
-        self::assertEquals('Тестовое название книги', $book->translator()->get('title', 'ru'));
-        self::assertEquals('Тестовое описание книги', $book->translator()->get('description', 'ru'));
-    }
-
+    // TODO: extract this test into 'many-translations' group
     /** @test */
     public function it_saves_many_translations_to_the_database(): void
     {
-        $book = BookFactory::new()->create();
+        $book = new Book();
+        $book->title = 'Atlas of animals';
+        $book->save();
 
         $book->translator()->addMany([
-            'title' => 'Моя новая книга',
-            'description' => 'Как хранить переводы для Laravel',
-        ], 'ru');
+            'title' => 'Атлас тварин',
+            'description' => '«Атлас тварин» ‒ унікальне видання про мешканців нашої планети з авторськими ілюстраціями.',
+        ], 'uk');
 
-        self::assertCount(2, Translation::all());
-
+        $this->assertDatabaseCount('translations', 2);
         $this->assertDatabaseHas('translations', [
-            'translatable_id' => $book->id,
+            'translatable_id' => $book->getKey(),
             'translatable_type' => $book->getMorphClass(),
             'translatable_attribute' => 'title',
-            'value' => 'Моя новая книга',
-            'locale' => 'ru',
+            'value' => 'Атлас тварин',
+            'locale' => 'uk',
         ]);
-
         $this->assertDatabaseHas('translations', [
-            'translatable_id' => $book->id,
+            'translatable_id' => $book->getKey(),
             'translatable_type' => $book->getMorphClass(),
-            'translatable_attribute' => 'description',
-            'value' => 'Как хранить переводы для Laravel',
-            'locale' => 'ru',
+            'translatable_attribute' => 'title',
+            'value' => '«Атлас тварин» ‒ унікальне видання про мешканців нашої планети з авторськими ілюстраціями.',
+            'locale' => 'uk',
         ]);
     }
 
+    // TODO: extract this test into 'caching' group
     /** @test */
-    public function it_returns_translation_from_different_locales(): void
+    public function it_retrieves_translation_for_different_locale(): void
     {
-        $book = BookFactory::new()->create(['title' => 'My original title']);
+        $book = new Book();
+        $book->title = 'Wind in willows';
+        $book->save();
 
-        $book->translator()->add('title', 'Min ursprungliga titel', 'sv');
-        $book->translator()->add('title', 'Mi titulo original', 'es');
+        $book->translator()->add('title', 'Вітер у вербах', 'uk');
+        $book->translator()->add('title', 'Wiatr w wierzbach', 'pl');
 
-        self::assertEquals('Min ursprungliga titel', $book->translator()->get('title', 'sv'));
-        self::assertEquals('Mi titulo original', $book->translator()->get('title', 'es'));
-        self::assertEquals('My original title', $book->title);
+        self::assertEquals('Вітер у вербах', $book->translator()->get('title', 'uk'));
+        self::assertEquals('Wiatr w wierzbach', $book->translator()->get('title', 'pl'));
+        self::assertEquals('Wind in willows', $book->title);
     }
 
+    // TODO: extract this test into 'caching' group
+    // TODO: make this test work.
     /** @test */
     public function it_overrides_previous_translations(): void
     {
-        $book = BookFactory::new()->create();
+        $book = new Book();
+        $book->title = 'The world around us. Wild animals';
+        $book->save();
 
-        $book->translator()->add('title', 'Неправильное название книги', 'ru');
-        $book->translator()->add('title', 'Правильное название книги', 'ru');
+        $book->translator()->add('title', 'Світ навколо нас', 'uk');
+        self::assertEquals('Світ навколо нас', $book->translator()->get('title', 'uk'));
 
-        self::assertCount(1, Translation::all());
-        self::assertEquals('Правильное название книги', $book->translator()->get('title', 'ru'));
+        $book->translator()->add('title', 'Світ навколо нас. Дикі тварини', 'uk');
+        self::assertEquals('Світ навколо нас. Дикі тварини', $book->translator()->get('title', 'uk'));
+
+        $this->assertDatabaseCount('translations', 1);
     }
 
     /** @test */
-    public function it_updates_default_value_for_default_locale(): void
+    public function it_does_not_perform_additional_query_for_fallback_locale(): void
     {
-        $book = BookFactory::new()->create(['title' => 'My book']);
+        $book = new Book();
+        $book->title = 'Book about penguins';
+        $book->save();
 
-        $book->translator()->add('title', 'My english book', $this->app->getLocale());
+        $book->translator()->add('title', 'Книга про пінгвінів', 'uk');
 
-        self::assertEquals('My english book', $book->getAttribute('title'));
-        self::assertEmpty(Translation::all());
+        DB::connection()->enableQueryLog();
+
+        $translation = $book->translator()->get('title', 'en');
+
+        self::assertEmpty(DB::connection()->getQueryLog());
+        self::assertEquals('Book about penguins', $translation);
     }
 
     /** @test */
-    public function it_throws_an_exception_during_translation_non_translatable_attributes(): void
+    public function it_performs_only_one_query_to_retrieve_translation_for_same_attribute_and_locale(): void
     {
-        $book = BookFactory::new()->create(['title' => 'My book']);
+        $book = new Book();
+        $book->title = 'Book about penguins';
+        $book->save();
 
-        try {
-            $book->translator()->add('version', '5', $this->app->getLocale());
-            self::fail('Exception was not thrown for not translatable attribute');
-        } catch (AttributeNotTranslatableException $e) {
-            self::assertCount(0, Translation::all());
-        }
+        $book->translator()->add('title', 'Книга про пінгвінів', 'uk');
+
+        DB::connection()->enableQueryLog();
+
+        $book->translator()->get('title', 'uk');
+        $book->translator()->get('title', 'uk');
+        $book->translator()->get('title', 'uk');
+
+        self::assertCount(1, DB::connection()->getQueryLog());
     }
+}
+
+/**
+ * @property string title
+ * @property string|null description
+ */
+class Book extends Model
+{
+    use HasTranslations;
+
+    protected $table = 'books';
+
+    protected $translatable = [
+        'title',
+        'description',
+    ];
 }

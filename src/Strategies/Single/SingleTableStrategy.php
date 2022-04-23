@@ -110,6 +110,7 @@ class SingleTableStrategy implements TranslatorStrategy
     }
 
     /**
+     * TODO: rewrite this to reload translation previously loaded via 'global scope'
      * @param string $attribute
      * @param string $locale
      * @return mixed
