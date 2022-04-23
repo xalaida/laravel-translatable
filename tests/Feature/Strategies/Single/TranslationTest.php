@@ -235,6 +235,15 @@ class TranslationTest extends TestCase
 
         self::assertCount(1, DB::connection()->getQueryLog());
     }
+
+    /**
+     * Tear down the test.
+     */
+    protected function tearDown(): void
+    {
+        $this->schema()->drop('books');
+        parent::tearDown();
+    }
 }
 
 /**

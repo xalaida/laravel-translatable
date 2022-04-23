@@ -82,6 +82,15 @@ class ManyTranslationTest extends TestCase
             $this->assertDatabaseCount('translations', 0);
         }
     }
+
+    /**
+     * Tear down the test.
+     */
+    protected function tearDown(): void
+    {
+        $this->schema()->drop('books');
+        parent::tearDown();
+    }
 }
 
 /**

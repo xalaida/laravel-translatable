@@ -6,14 +6,11 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Database\Eloquent\Scope;
-use Nevadskiy\Translatable\Strategies\Single\HasTranslations;
 
 class TranslationsEagerLoadScope implements Scope
 {
     /**
-     * Apply the scope to a given Eloquent query builder.
-     *
-     * @param Model|HasTranslations $translatable
+     * @inheritDoc
      */
     public function apply(Builder $query, Model $translatable): void
     {
@@ -21,30 +18,10 @@ class TranslationsEagerLoadScope implements Scope
             return;
         }
 
-        if (! $this->shouldEagerLoadTranslations($translatable)) {
-            return;
-        }
+        // TODO: probably reduce fields amount.
 
-        // TODO Reduce the amount of fields using partition selects.
-        // TODO: load only translatable attributes here.
-        $query->with(['translations' => static function (Relation $query) use ($translatable) {
+        $query->with(['translations' => function (Relation $query) use ($translatable) {
             $query->forLocale($translatable->translator()->getLocale());
         }]);
-    }
-
-    /**
-     * Determine whether the translations should be loaded.
-     *
-     * @param Model|HasTranslations $translatable
-     */
-    private function shouldEagerLoadTranslations(Model $translatable): bool
-    {
-        foreach ($translatable->getTranslatable() as $attribute) {
-            if ($translatable->shouldProxyAttributeToTranslator($attribute)) {
-                return true;
-            }
-        }
-
-        return false;
     }
 }

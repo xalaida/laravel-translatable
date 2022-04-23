@@ -9,6 +9,8 @@ use Illuminate\Support\Str;
 use Nevadskiy\Translatable\Strategies\Single\HasTranslations;
 
 /**
+ * TODO: remove this model.
+ *
  * @property int id
  * @property string title
  * @property string description
