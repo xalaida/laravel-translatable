@@ -18,8 +18,6 @@ class TranslationsEagerLoadScope implements Scope
             return;
         }
 
-        // TODO: probably reduce fields amount.
-
         $query->with(['translations' => function (Relation $query) use ($translatable) {
             $query->forLocale($translatable->translator()->getLocale());
         }]);

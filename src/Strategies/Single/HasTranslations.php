@@ -25,6 +25,8 @@ trait HasTranslations
      */
     protected static function bootHasTranslations(): void
     {
+        // TODO: move booting to the strategy.
+
         static::addGlobalScope(new TranslationsEagerLoadScope());
 
         static::saved(static function (self $translatable) {
@@ -102,8 +104,6 @@ trait HasTranslations
         $this->translations()->delete();
     }
 
-    // TODO: refactor below.
-
     /**
      * Scope to remove the 'translations' relation from a query.
      */
@@ -111,6 +111,8 @@ trait HasTranslations
     {
         return $query->withoutGlobalScope(TranslationsEagerLoadScope::class);
     }
+
+    // TODO: refactor below.
 
     /**
      * Scope to filter models by translatable attribute.

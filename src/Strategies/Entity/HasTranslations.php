@@ -101,6 +101,8 @@ trait HasTranslations
      */
     protected function handleDeletedEvent(): void
     {
+        // TODO: probably move to the translation instance.
+
         if ($this->shouldDeleteTranslations()) {
             $this->deleteTranslations();
         }

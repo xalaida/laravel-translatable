@@ -167,6 +167,11 @@ class Translator
 
     }
 
+    public function deleteAll()
+    {
+
+    }
+
     /**
      * Assert that the given attribute is translatable.
      */

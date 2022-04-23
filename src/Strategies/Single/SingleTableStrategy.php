@@ -6,10 +6,15 @@ use Illuminate\Database\Eloquent\Model;
 use Nevadskiy\Translatable\Strategies\Single\Models\Translation;
 use Nevadskiy\Translatable\Strategies\TranslatorStrategy;
 
-// TODO: add possibility to trigger an exception when creating model in non-default locale.
-// TODO: add possibility to extract translatable attributes out of the model into single table (allows to create models in custom locale)
+/**
+ * TODO: add possibility to trigger an exception when creating model in non-default locale.
+ * TODO: add possibility to extract translatable attributes out of the model into single table (allows to create models in custom locale)
+ * TODO: structure translations on 'retrieve' event (only when it was fired AFTER eager loading, not before like now)
+ */
 class SingleTableStrategy implements TranslatorStrategy
 {
+    // TODO: boot translation similar how laravel model is doing this (original and translations array and dirty on save)
+
     /**
      * The translatable model instance.
      *
@@ -53,7 +58,7 @@ class SingleTableStrategy implements TranslatorStrategy
      */
     public function set(string $attribute, $value, string $locale): void
     {
-        if ($this->shouldSetAsOriginalAttribute($locale)) {
+        if ($this->shouldSetToOriginalAttribute($locale)) {
             $this->model->setOriginalAttribute($attribute, $value);
         } else {
             $this->pendingTranslations[$locale][$attribute] = $this->model->withAttributeSetter($attribute, $value);
@@ -95,7 +100,7 @@ class SingleTableStrategy implements TranslatorStrategy
      * @param string $locale
      * @return bool
      */
-    private function shouldSetAsOriginalAttribute(string $locale): bool
+    private function shouldSetToOriginalAttribute(string $locale): bool
     {
         if (! $this->model->exists) {
             return true;
@@ -110,7 +115,6 @@ class SingleTableStrategy implements TranslatorStrategy
     }
 
     /**
-     * TODO: rewrite this to reload translation previously loaded via 'global scope'
      * @param string $attribute
      * @param string $locale
      * @return mixed
