@@ -1,15 +1,14 @@
 <?php
 
-namespace Nevadskiy\Translatable\Tests\Feature;
+namespace Nevadskiy\Translatable\Tests\Feature\Strategies\Single;
 
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Event;
 use Nevadskiy\Translatable\Events\TranslationNotFound;
-use Nevadskiy\Translatable\Tests\Support\Factories\BookFactory;
+use Nevadskiy\Translatable\Strategies\Single\HasTranslations;
 use Nevadskiy\Translatable\Tests\TestCase;
 
-// TODO: check if translation is not fired
-// TODO: check when using fallback
 class FireTranslationNotFoundEventTest extends TestCase
 {
     /**
@@ -34,50 +33,74 @@ class FireTranslationNotFoundEventTest extends TestCase
     }
 
     /** @test */
-    public function it_fires_an_event_when_translation_is_not_found_for_the_given_attribute_and_locale(): void
+    public function it_fires_event_when_translation_is_not_found_for_the_given_attribute_and_locale(): void
     {
-        $book = BookFactory::new()->create(['title' => 'My original book']);
+        $book = new BookForTranslationNotFoundEvent();
+        $book->title = 'Nature clock';
+        $book->save();
 
-        $this->app->setLocale('ru');
+        $this->app->setLocale('uk');
 
         Event::fake(TranslationNotFound::class);
 
-        self::assertEquals('My original book', $book->title);
+        self::assertNull($book->translator()->get('title'));
 
-        Event::assertDispatched(TranslationNotFound::class, static function (TranslationNotFound $event) use ($book) {
+        Event::assertDispatched(TranslationNotFound::class, function (TranslationNotFound $event) use ($book) {
             return $event->attribute === 'title'
-                && $event->locale === 'ru'
+                && $event->locale === 'uk'
                 && $event->model->is($book);
         });
     }
 
     /** @test */
-    public function it_fires_an_event_when_translation_is_not_found_using_method(): void
+    public function it_fires_translation_not_found_event_using_fallback_method(): void
     {
-        $book = BookFactory::new()->create(['title' => 'My original book']);
+        $book = new BookForTranslationNotFoundEvent();
+        $book->title = 'Nature clock';
+        $book->save();
+
+        $this->app->setLocale('uk');
 
         Event::fake(TranslationNotFound::class);
 
-        self::assertNull($book->translator()->get('title', 'ru'));
+        self::assertEquals('Nature clock', $book->translator()->getOrFallback('title'));
 
-        Event::assertDispatched(TranslationNotFound::class, static function (TranslationNotFound $event) use ($book) {
+        Event::assertDispatched(TranslationNotFound::class, function (TranslationNotFound $event) use ($book) {
             return $event->attribute === 'title'
-                && $event->locale === 'ru'
+                && $event->locale === 'uk'
                 && $event->model->is($book);
         });
     }
 
     /** @test */
-    public function it_does_not_fire_translation_not_found_event_when_translation_is_available(): void
+    public function it_does_not_fire_translation_not_found_event_when_translation_is_found(): void
     {
-        $book = BookFactory::new()->create(['title' => 'My original book']);
+        $book = new BookForTranslationNotFoundEvent();
+        $book->title = 'Nature clock';
+        $book->save();
 
-        $book->translator()->add('title', 'Моя оригинальная книга', 'ru');
+        $this->app->setLocale('uk');
+
+        $book->translator()->add('title', 'Годинник природи', 'uk');
 
         Event::fake(TranslationNotFound::class);
 
-        self::assertEquals('Моя оригинальная книга', $book->translator()->get('title', 'ru'));
+        self::assertEquals('Годинник природи', $book->translator()->get('title', 'uk'));
 
         Event::assertNotDispatched(TranslationNotFound::class);
     }
+}
+
+/**
+ * @property string title
+ */
+class BookForTranslationNotFoundEvent extends Model
+{
+    use HasTranslations;
+
+    protected $table = 'books';
+
+    protected $translatable = [
+        'title',
+    ];
 }
