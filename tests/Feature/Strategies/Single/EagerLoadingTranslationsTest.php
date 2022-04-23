@@ -54,9 +54,6 @@ class EagerLoadingTranslationsTest extends TestCase
     /** @test */
     public function it_performs_only_two_queries_to_retrieve_models_and_translations_with_eager_loading(): void
     {
-        // TODO: feature ModelFactory::new()->for(BookForEagerLoading::class)->createMany([ [1], [2], [3] ])
-        // TODO: also configure attributes with faker ->attributes(['title' => fn () => $this->faker->title])
-
         $book1 = new BookForEagerLoading();
         $book1->title = 'Atlas of animals';
         $book1->save();
