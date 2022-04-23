@@ -15,7 +15,7 @@ use Nevadskiy\Translatable\Tests\TestCase;
 class TranslationTest extends TestCase
 {
     /**
-     * Set up the test environment.
+     * @inheritdoc
      */
     protected function setUp(): void
     {
@@ -237,7 +237,7 @@ class TranslationTest extends TestCase
     }
 
     /**
-     * Tear down the test.
+     * @inheritdoc
      */
     protected function tearDown(): void
     {

@@ -13,7 +13,7 @@ class RouteBindingByTranslatableAttributeTest extends TestCase
     // TODO: add support for resolveChildRouteBinding() method.
 
     /**
-     * Set up the test environment.
+     * @inheritdoc
      */
     protected function setUp(): void
     {

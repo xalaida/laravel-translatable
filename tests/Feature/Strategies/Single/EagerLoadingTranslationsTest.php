@@ -11,7 +11,7 @@ use Nevadskiy\Translatable\Tests\TestCase;
 class EagerLoadingTranslationsTest extends TestCase
 {
     /**
-     * Set up the test environment.
+     * @inheritdoc
      */
     protected function setUp(): void
     {
@@ -27,7 +27,6 @@ class EagerLoadingTranslationsTest extends TestCase
         $this->schema()->create('books', function (Blueprint $table) {
             $table->id();
             $table->string('title');
-            $table->text('description')->nullable();
             $table->timestamps();
         });
     }
@@ -127,7 +126,7 @@ class EagerLoadingTranslationsTest extends TestCase
     }
 
     /**
-     * Tear down the test.
+     * @inheritdoc
      */
     protected function tearDown(): void
     {
@@ -138,7 +137,6 @@ class EagerLoadingTranslationsTest extends TestCase
 
 /**
  * @property string title
- * @property string|null description
  */
 class BookForEagerLoading extends Model
 {
@@ -148,6 +146,5 @@ class BookForEagerLoading extends Model
 
     protected $translatable = [
         'title',
-        'description',
     ];
 }

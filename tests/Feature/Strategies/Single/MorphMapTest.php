@@ -11,7 +11,7 @@ use Nevadskiy\Translatable\Tests\TestCase;
 class MorphMapTest extends TestCase
 {
     /**
-     * Set up the test environment.
+     * @inheritdoc
      */
     protected function setUp(): void
     {
@@ -54,7 +54,7 @@ class MorphMapTest extends TestCase
     }
 
     /**
-     * Tear down the test.
+     * @inheritdoc
      */
     protected function tearDown(): void
     {

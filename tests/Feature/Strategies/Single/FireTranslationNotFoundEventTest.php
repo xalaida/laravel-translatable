@@ -2,15 +2,39 @@
 
 namespace Nevadskiy\Translatable\Tests\Feature;
 
+use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Event;
 use Nevadskiy\Translatable\Events\TranslationNotFound;
 use Nevadskiy\Translatable\Tests\Support\Factories\BookFactory;
 use Nevadskiy\Translatable\Tests\TestCase;
 
-class FireTranslationNotFoundTest extends TestCase
+// TODO: check if translation is not fired
+// TODO: check when using fallback
+class FireTranslationNotFoundEventTest extends TestCase
 {
+    /**
+     * @inheritdoc
+     */
+    protected function setUp(): void
+    {
+        parent::setUp();
+        $this->createSchema();
+    }
+
+    /**
+     * Set up the database schema.
+     */
+    private function createSchema(): void
+    {
+        $this->schema()->create('books', function (Blueprint $table) {
+            $table->id();
+            $table->text('title');
+            $table->timestamps();
+        });
+    }
+
     /** @test */
-    public function it_fires_an_event_when_translation_is_not_found_using_attribute(): void
+    public function it_fires_an_event_when_translation_is_not_found_for_the_given_attribute_and_locale(): void
     {
         $book = BookFactory::new()->create(['title' => 'My original book']);
 
