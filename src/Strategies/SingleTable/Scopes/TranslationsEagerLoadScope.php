@@ -14,10 +14,6 @@ class TranslationsEagerLoadScope implements Scope
      */
     public function apply(Builder $query, Model $translatable): void
     {
-        if ($translatable->translator()->isFallbackLocale()) {
-            return;
-        }
-
         $query->with(['translations' => function (Relation $query) use ($translatable) {
             $query->forLocale($translatable->translator()->getLocale());
         }]);
