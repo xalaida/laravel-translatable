@@ -83,6 +83,7 @@ class Translator
     // TODO: add possibility to log out warnings with missing translations.
 
     /**
+     * // TODO: refactor with laravel-way getOrFail and get
      * TODO: continue from this... cover with tests.
      * Get the translation value of the given attribute or the fallback value if it is missing.
      */

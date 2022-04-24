@@ -8,7 +8,7 @@ use Nevadskiy\Translatable\Exceptions\AttributeNotTranslatableException;
 use Nevadskiy\Translatable\Strategies\Single\HasTranslations;
 use Nevadskiy\Translatable\Tests\TestCase;
 
-class ManyTranslationTest extends TestCase
+class ManyTranslationsTest extends TestCase
 {
     /**
      * @inheritdoc
