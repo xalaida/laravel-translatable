@@ -158,4 +158,18 @@ trait HasTranslations
             ->addSelect($this->qualifyColumn('*'))
             ->orderBy($translationModel->qualifyColumn('value'), $direction);
     }
+
+    /**
+     * @inheritDoc
+     */
+    public function resolveRouteBinding($value, $field = null): ?Model
+    {
+        $field = $field ?? $this->getRouteKeyName();
+
+        if (! $this->isTranslatable($field)) {
+            return parent::resolveRouteBinding($value, $field);
+        }
+
+        return $this->whereTranslatable($field, $value)->first();
+    }
 }
