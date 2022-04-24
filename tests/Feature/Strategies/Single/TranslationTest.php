@@ -156,7 +156,7 @@ class TranslationTest extends TestCase
         $book->title = 'Atlas of animals';
         $book->save();
 
-        self::assertEquals('Atlas of animals', $book->translator()->getOrFallback('title', 'uk'));
+        self::assertEquals('Atlas of animals', $book->translator()->get('title', 'uk'));
     }
 
     // TODO: probably move to strategy specific test.
@@ -227,7 +227,7 @@ class TranslationTest extends TestCase
         $book->translator()->add('title', null, 'uk');
         $this->assertDatabaseCount('translations', 0);
 
-        self::assertEquals('The world around us', $book->translator()->getOrFallback('title', 'uk'));
+        self::assertEquals('The world around us', $book->translator()->get('title', 'uk'));
     }
 
     /** @test */

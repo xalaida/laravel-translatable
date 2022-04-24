@@ -44,7 +44,7 @@ class TranslationMissingEventTest extends TestCase
 
         Event::fake(TranslationMissing::class);
 
-        self::assertEquals('Nature clock', $book->translator()->getOrFallback('title'));
+        self::assertEquals('Nature clock', $book->translator()->get('title'));
 
         Event::assertDispatched(TranslationMissing::class, static function (TranslationMissing $event) use ($book) {
             return $event->attribute === 'title'
@@ -80,7 +80,7 @@ class TranslationMissingEventTest extends TestCase
 
         Event::fake(TranslationMissing::class);
 
-        self::assertEquals('Годинник природи', $book->translator()->getOrFallback('title', 'uk'));
+        self::assertEquals('Годинник природи', $book->translator()->get('title', 'uk'));
 
         Event::assertNotDispatched(TranslationMissing::class);
     }
@@ -96,7 +96,7 @@ class TranslationMissingEventTest extends TestCase
 
         Event::fake(TranslationMissing::class);
 
-        self::assertNull($book->translator()->getOrFallback('title', 'uk'));
+        self::assertNull($book->translator()->get('title', 'uk'));
 
         Event::assertNotDispatched(TranslationMissing::class);
     }

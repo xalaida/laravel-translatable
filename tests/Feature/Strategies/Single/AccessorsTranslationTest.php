@@ -79,7 +79,7 @@ class AccessorsTranslationTest extends TestCase
 
         $this->app->setLocale('uk');
 
-        self::assertEquals('Forest song', $book->translator()->getOrFallback('title'));
+        self::assertEquals('Forest song', $book->translator()->get('title'));
     }
 
     /** @test */
@@ -96,22 +96,11 @@ class AccessorsTranslationTest extends TestCase
         self::assertEquals('forest song', $book->getRawOriginal('title'));
     }
 
-    /** @test */
-    public function it_returns_raw_translation_value_for_given_locale(): void
-    {
-        $book = new BookWithAccessors();
-        $book->title = 'forest song';
-        $book->save();
-
-        $book->translator()->add('title', 'лісова пісня', 'uk');
-
-        self::assertEquals('лісова пісня', $book->translator()->raw('title', 'uk'));
-    }
 
     /** @test */
     public function it_correctly_stores_translations_after_applied_accessors(): void
     {
-        $book = new BookWithAccessors();
+        $book = new BookWithRaw();
         $book->title = 'forest song';
         $book->save();
 
@@ -123,7 +112,7 @@ class AccessorsTranslationTest extends TestCase
         self::assertEquals('Лісова пісня', $book->title);
         $book->save();
 
-        self::assertEquals('лісова пісня', $book->fresh()->translator()->raw('title', 'uk'));
+        self::assertEquals('лісова пісня', $book->fresh()->translator()->getRaw('title', 'uk'));
     }
 
     /** @test */
@@ -166,13 +155,13 @@ class BookWithAccessors extends Model
         'description'
     ];
 
-    public function getDescriptionShortAttribute(): string
-    {
-        return Str::limit($this->description, 3);
-    }
-
     public function getTitleAttribute(string $title): string
     {
         return Str::ucfirst($title);
+    }
+
+    public function getDescriptionShortAttribute(): string
+    {
+        return Str::limit($this->description, 3);
     }
 }

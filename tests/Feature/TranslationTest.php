@@ -117,7 +117,7 @@ class TranslationTest extends TestCase
 //    {
 //        $book = BookFactory::new()->create(['title' => 'English title']);
 //
-//        self::assertEquals('English title', $book->translator()->getOrFallback('title', 'ua'));
+//        self::assertEquals('English title', $book->translator()->get('title', 'ua'));
 //    }
 
     // TODO: probably move to strategy specific test.

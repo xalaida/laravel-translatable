@@ -82,7 +82,7 @@ class SetterTranslationTest extends TestCase
 
         $book = $book->fresh();
 
-        self::assertEquals('Ocean monsters', $book->translator()->getOrFallback('title', 'uk'));
+        self::assertEquals('Ocean monsters', $book->translator()->get('title', 'uk'));
         self::assertEquals('Ocean monsters', $book->title);
         $this->assertDatabaseCount('translations', 0);
     }

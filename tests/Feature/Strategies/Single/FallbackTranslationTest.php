@@ -34,23 +34,40 @@ class FallbackTranslationTest extends TestCase
     /** @test */
     public function it_retrieves_fallback_translation(): void
     {
-        $book = new BookWithFallbackTranslation();
+        $book = new BookWithFallback();
         $book->title = 'Sense gallery';
         $book->save();
 
+        $this->app->setLocale('uk');
         $book->translator()->add('title', 'Галерея чуття', 'uk');
 
-        self::assertEquals('Sense gallery', $book->translator()->fallback('title'));
+        self::assertEquals('Sense gallery', $book->translator()->getFallback('title'));
     }
 
     /** @test */
     public function it_retrieves_fallback_translation_with_accessor_applied(): void
     {
-        $book = new BookWithFallbackTranslation();
+        $book = new BookWithFallback();
         $book->title = 'sense gallery';
         $book->save();
 
-        self::assertEquals('Sense gallery', $book->translator()->fallback('title'));
+        $this->app->setLocale('uk');
+        $book->translator()->add('title', 'Галерея чуття', 'uk');
+
+        self::assertEquals('Sense gallery', $book->translator()->getFallback('title'));
+    }
+
+    /** @test */
+    public function it_retrieves_raw_fallback_translation(): void
+    {
+        $book = new BookWithFallback();
+        $book->title = 'sense gallery';
+        $book->save();
+
+        $this->app->setLocale('uk');
+        $book->translator()->add('title', 'Галерея чуття', 'uk');
+
+        self::assertEquals('sense gallery', $book->translator()->getRawFallback('title'));
     }
 
     /**
@@ -66,7 +83,7 @@ class FallbackTranslationTest extends TestCase
 /**
  * @property string|null title
  */
-class BookWithFallbackTranslation extends Model
+class BookWithFallback extends Model
 {
     use HasTranslations;
 

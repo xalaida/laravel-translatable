@@ -85,19 +85,17 @@ class Translator
      */
     public function get(string $attribute, string $locale = null)
     {
-        $this->assertAttributeIsTranslatable($attribute);
-
         try {
             return $this->getOrFail($attribute, $locale ?: $this->getLocale());
         } catch (TranslationMissingException $e) {
-            event(new TranslationMissing($this->model, $attribute, $locale));
+            event(new TranslationMissing($e->model, $e->attribute, $e->locale));
 
-            return $this->fallback($attribute);
+            return $this->getFallback($attribute);
         }
     }
 
     /**
-     * Get the translation value of the given attribute or the fallback value if it is missing.
+     * Get the translation value of the given attribute or throw an exception.
      */
     public function getOrFail(string $attribute, string $locale = null)
     {
@@ -115,9 +113,41 @@ class Translator
     /**
      * Get the fallback translation of the model.
      */
-    public function fallback(string $attribute)
+    public function getFallback(string $attribute)
     {
         return $this->model->getOriginalAttribute($attribute);
+    }
+
+    /**
+     * Get the raw translation value of the given attribute or throw an exception.
+     */
+    public function getRaw(string $attribute, string $locale = null)
+    {
+        try {
+            return $this->getRawOrFail($attribute, $locale ?: $this->getLocale());
+        } catch (TranslationMissingException $e) {
+            event(new TranslationMissing($e->model, $e->attribute, $e->locale));
+
+            return $this->getRawFallback($attribute);
+        }
+    }
+
+    /**
+     * Get the raw translation value of the given attribute or throw an exception.
+     */
+    public function getRawOrFail(string $attribute, string $locale = null)
+    {
+        $this->assertAttributeIsTranslatable($attribute);
+
+        return $this->strategy->get($attribute, $locale ?: $this->getLocale());
+    }
+
+    /**
+     * Get the raw fallback translation of the model.
+     */
+    public function getRawFallback(string $attribute)
+    {
+        return $this->model->getRawOriginal($attribute);
     }
 
     /**
