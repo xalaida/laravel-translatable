@@ -7,7 +7,6 @@
 
 The package provides possibility to store translations for your Eloquent models.
 
-
 ## 🍬 Features 
 
 - Storing model translations in the database.
@@ -15,7 +14,6 @@ The package provides possibility to store translations for your Eloquent models.
 - Auto-resolving model translations for the current locale.
 - No need to rewrite existing code to make a model translatable.
 - Useful scopes to query translatable models.
-
 
 ## 📺 Demo
 
@@ -51,12 +49,10 @@ echo $book->translator()->get('title', 'es'); // 'Libro sobre jirafas'
 echo $book->translator()->get('title', 'en'); // 'Book about giraffes'
 ```
 
-
 ## ✅ Requirements
 
 - Laravel `7.0` or newer  
 - PHP `7.2` or newer
-
 
 ## 🔌 Installation
 
@@ -65,7 +61,6 @@ Install the package via composer.
 ```bash
 composer require nevadskiy/laravel-translatable
 ```
-
 
 ## Strategies
 
@@ -88,7 +83,6 @@ The table structure:
 | created_at             | The timestamp the translation was created |
 | updated_at             | The timestamp the translation was updated |
 
-
 #### Usage
 
 - Publish package migration.
@@ -102,7 +96,6 @@ php artisan vendor:publish --tag=translations
 ```bash
 php artisan migrate
 ```
-
 
 ## 🔨 Making models translatable 
 
@@ -157,7 +150,6 @@ class Post extends Model
 }
 ```
 
-
 ## 📄 Documentation
 
 Default locale values are stored in the original table as usual.
@@ -194,13 +186,12 @@ echo $book->getTranslation('title', 'uk'); // 'Книга о дельфинах'
 
 ##### Methods for reading translation
 
-Method | Description
---- | ---
-`getTranslationOrDefault` | Retrieves a translation for the given attribute or a default value if a translation is missing.
-`getTranslation` | Retrieves a translation for the given attribute or `null` if a translation is missing.
-`getRawTranslation` | Retrieves a translation without any Eloquent accessors applied for the given attribute or `null` if a translation is missing.
-`getDefaultTranslation` | Retrieves the value in a default locale.
-
+| Method                    | Description                                                                                                                   |
+|---------------------------|-------------------------------------------------------------------------------------------------------------------------------|
+| `getTranslationOrDefault` | Retrieves a translation for the given attribute or a default value if a translation is missing.                               |
+| `getTranslation`          | Retrieves a translation for the given attribute or `null` if a translation is missing.                                        |
+| `getRawTranslation`       | Retrieves a translation without any Eloquent accessors applied for the given attribute or `null` if a translation is missing. |
+| `getDefaultTranslation`   | Retrieves the value in a default locale.                                                                                      |
 
 ##### Translatable models creation
 
@@ -427,7 +418,6 @@ Relation::morphMap([
 ```
 More about morph maps [here](https://laravel.com/docs/7.x/eloquent-relationships#custom-polymorphic-types).
 
-
 ## Approaches
 
 - https://www.soluling.com/Help/Database/Index.htm
@@ -438,11 +428,9 @@ More about morph maps [here](https://laravel.com/docs/7.x/eloquent-relationships
 
 Please see [CHANGELOG](CHANGELOG.md) for more information what has changed recently.
 
-
 ## ☕ Contributing
 
 Please see [CONTRIBUTING](.github/CONTRIBUTING.md) for more information.
-
 
 ## 🔓 Security
 
