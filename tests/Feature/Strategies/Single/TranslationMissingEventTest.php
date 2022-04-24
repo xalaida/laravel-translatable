@@ -84,6 +84,22 @@ class TranslationMissingEventTest extends TestCase
 
         Event::assertNotDispatched(TranslationMissing::class);
     }
+
+    /** @test */
+    public function it_does_not_fire_translation_missing_event_when_translation_is_nullable(): void
+    {
+        $book = new BookForTranslationMissingEvent();
+        $book->title = 'Nature clock';
+        $book->save();
+
+        $book->translator()->add('title', null, 'uk');
+
+        Event::fake(TranslationMissing::class);
+
+        self::assertNull($book->translator()->getOrFallback('title', 'uk'));
+
+        Event::assertNotDispatched(TranslationMissing::class);
+    }
 }
 
 /**

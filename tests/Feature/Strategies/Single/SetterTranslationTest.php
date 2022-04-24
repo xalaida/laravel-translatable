@@ -203,7 +203,7 @@ class SetterTranslationTest extends TestCase
     }
 
     /** @test */
-    public function it_does_not_save_null_values_from_model_setter(): void
+    public function it_stores_null_value_as_translation_from_model_setter(): void
     {
         $book = new BookWithSetters();
         $book->title = 'Ocean monsters';
@@ -216,8 +216,8 @@ class SetterTranslationTest extends TestCase
 
         $book = $book->fresh();
 
-        self::assertEquals('Ocean monsters', $book->title);
-        $this->assertDatabaseCount('translations', 0);
+        self::assertNull($book->title);
+        $this->assertDatabaseCount('translations', 1);
     }
 
     /** @test */

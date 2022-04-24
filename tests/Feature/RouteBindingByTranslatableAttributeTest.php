@@ -1,6 +1,6 @@
 <?php
 
-namespace Nevadskiy\Translatable\Tests\Feature\Strategies\Single;
+namespace Nevadskiy\Translatable\Tests\Feature;
 
 use Illuminate\Support\Facades\Route;
 use Nevadskiy\Translatable\Tests\Support\Factories\PostFactory;
