@@ -26,15 +26,15 @@ test:
 	docker run --rm -it -v ${PWD}:/app app vendor/bin/phpunit
 
 # Generate a coverage report as html
-coverage-html:
+coverage.html:
 	docker run --rm -it -v ${PWD}:/app app vendor/bin/phpunit --coverage-html tests/report
 
 # Generate a coverage report as text
-coverage-text:
+coverage.text:
 	docker run --rm -it -v ${PWD}:/app app vendor/bin/phpunit --coverage-text
 
 # Coverage text alias
-coverage: coverage-text
+coverage: coverage.text
 
 # Fix the code style
 fix:
