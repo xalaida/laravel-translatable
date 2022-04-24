@@ -5,7 +5,7 @@ namespace Nevadskiy\Translatable\Tests\Feature\Strategies\SingleTableExtended;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Schema\Blueprint;
 use Nevadskiy\Translatable\Exceptions\AttributeNotTranslatableException;
-use Nevadskiy\Translatable\Strategies\SingleTable\HasTranslations;
+use Nevadskiy\Translatable\Strategies\SingleTableExtended\HasTranslations;
 use Nevadskiy\Translatable\Tests\TestCase;
 
 class WhereTranslatableScopeTest extends TestCase

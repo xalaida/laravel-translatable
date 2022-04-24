@@ -9,7 +9,7 @@ use Illuminate\Support\Str;
 use Nevadskiy\Translatable\Events\TranslationMissing;
 use Nevadskiy\Translatable\Exceptions\AttributeNotTranslatableException;
 use Nevadskiy\Translatable\Exceptions\TranslationMissingException;
-use Nevadskiy\Translatable\Strategies\SingleTable\HasTranslations;
+use Nevadskiy\Translatable\Strategies\SingleTableExtended\HasTranslations;
 use Nevadskiy\Translatable\Tests\TestCase;
 
 /**

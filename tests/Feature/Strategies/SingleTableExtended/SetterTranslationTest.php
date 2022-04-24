@@ -4,7 +4,7 @@ namespace Nevadskiy\Translatable\Tests\Feature\Strategies\SingleTableExtended;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Schema\Blueprint;
-use Nevadskiy\Translatable\Strategies\SingleTable\HasTranslations;
+use Nevadskiy\Translatable\Strategies\SingleTableExtended\HasTranslations;
 use Nevadskiy\Translatable\Tests\TestCase;
 
 class SetterTranslationTest extends TestCase

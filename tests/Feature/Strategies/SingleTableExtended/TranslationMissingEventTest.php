@@ -7,7 +7,7 @@ use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Event;
 use Nevadskiy\Translatable\Events\TranslationMissing;
 use Nevadskiy\Translatable\Exceptions\TranslationMissingException;
-use Nevadskiy\Translatable\Strategies\SingleTable\HasTranslations;
+use Nevadskiy\Translatable\Strategies\SingleTableExtended\HasTranslations;
 use Nevadskiy\Translatable\Tests\TestCase;
 
 class TranslationMissingEventTest extends TestCase
