@@ -1,6 +1,6 @@
 <?php
 
-namespace Nevadskiy\Translatable\Tests\Feature;
+namespace Nevadskiy\Translatable\Tests\Feature\Strategies\Single;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Schema\Blueprint;
@@ -9,11 +9,12 @@ use Nevadskiy\Translatable\Strategies\Single\HasTranslations;
 use Nevadskiy\Translatable\Tests\TestCase;
 use function route;
 
+/**
+ * TODO: add support for resolveChildRouteBinding() method.
+ */
 class RouteModelBindingTest extends TestCase
 {
-    // TODO: add support for resolveChildRouteBinding() method.
-
-    /**
+        /**
      * @inheritdoc
      */
     protected function setUp(): void
@@ -29,6 +30,7 @@ class RouteModelBindingTest extends TestCase
     {
         $this->schema()->create('books', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('author_id')->nullable();
             $table->string('title')->nullable();
             $table->string('slug');
             $table->timestamps();

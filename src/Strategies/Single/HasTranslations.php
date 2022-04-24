@@ -107,6 +107,7 @@ trait HasTranslations
 
     /**
      * Scope to filter models by translatable attribute.
+     * TODO: add possibility to use qualified columns (table.attribute)
      */
     protected function scopeWhereTranslatable(Builder $query, string $attribute, $value, string $locale = null, string $operator = '='): Builder
     {
@@ -135,6 +136,7 @@ trait HasTranslations
 
     /**
      * Scope to order models by translatable attribute.
+     * TODO: add possibility to use qualified columns (table.attribute)
      */
     protected function scopeOrderByTranslatable(Builder $query, string $attribute, string $direction = 'asc', string $locale = null): Builder
     {
@@ -160,6 +162,7 @@ trait HasTranslations
     }
 
     /**
+     * TODO: add possibility to use qualified columns (table.attribute)
      * @inheritDoc
      */
     public function resolveRouteBinding($value, $field = null): ?Model
