@@ -2,7 +2,7 @@
 alias app='docker run --rm -it -v ${PWD}:/app app'
 
 # Test by filter alias
-alias tf='docker run --rm -it -v ${PWD}:/app app vendor/bin/phpunit --filter'
+alias tf='docker run --rm -it -v ${PWD}:/app app vendor/bin/phpunit --stop-on-failure --filter'
 
 # Test by filter with coverage report
 alias tfc='docker run --rm -it -v ${PWD}:/app app vendor/bin/phpunit --coverage-text --filter'
