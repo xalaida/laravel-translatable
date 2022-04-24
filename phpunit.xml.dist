@@ -11,8 +11,11 @@
          stopOnFailure="false"
 >
     <testsuites>
-        <testsuite name="Package Test Suite">
+        <testsuite name="all">
             <directory>tests/</directory>
+        </testsuite>
+        <testsuite name="single">
+            <directory>tests/Feature/Strategies/Single</directory>
         </testsuite>
     </testsuites>
     <filter>
