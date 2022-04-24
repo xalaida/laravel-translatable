@@ -149,16 +149,13 @@ trait HasTranslations
         // TODO: resolve model using resolver
         $translationModel = new Translation;
 
-        // Prevent overriding model attributes
-        $query->addSelect($this->qualifyColumn('*'));
-
-        $query->leftJoin($translationModel->getTable(), function (JoinClause $join) use ($translationModel, $attribute, $locale) {
+        return $query->leftJoin($translationModel->getTable(), function (JoinClause $join) use ($translationModel, $attribute, $locale) {
             $join->on($translationModel->qualifyColumn('translatable_id'), '=', $this->qualifyColumn($this->getKeyName()))
                 ->where($translationModel->qualifyColumn('translatable_type'), $this->getMorphClass())
                 ->where($translationModel->qualifyColumn('translatable_attribute'), $attribute)
                 ->where($translationModel->qualifyColumn('locale'), $locale);
-        });
-
-        return $query->orderBy($translationModel->qualifyColumn('value'), $direction);
+        })
+            ->addSelect($this->qualifyColumn('*'))
+            ->orderBy($translationModel->qualifyColumn('value'), $direction);
     }
 }
