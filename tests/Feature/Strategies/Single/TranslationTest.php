@@ -10,6 +10,7 @@ use Nevadskiy\Translatable\Strategies\Single\HasTranslations;
 use Nevadskiy\Translatable\Exceptions\AttributeNotTranslatableException;
 use Nevadskiy\Translatable\Tests\TestCase;
 
+// TODO: review this testcase
 // TODO: missing translation for locale
 // TODO: test custom model (for uuid attributes)
 // TODO: using custom (not english) language for default values
