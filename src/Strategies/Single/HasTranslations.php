@@ -77,7 +77,7 @@ trait HasTranslations
      */
     protected function shouldDeleteTranslations(): bool
     {
-        if (! $this->isUsingSoftDeletes()) {
+        if (! collect(class_uses_recursive($this))->contains(SoftDeletes::class)) {
             return true;
         }
 
@@ -86,14 +86,6 @@ trait HasTranslations
         }
 
         return false;
-    }
-
-    /**
-     * Determine whether the model uses soft deletes.
-     */
-    protected function isUsingSoftDeletes(): bool
-    {
-        return in_array(SoftDeletes::class, class_uses_recursive($this), true);
     }
 
     /**
