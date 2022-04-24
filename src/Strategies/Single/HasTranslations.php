@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Database\Query\JoinClause;
 use Illuminate\Support\Collection;
 use Nevadskiy\Translatable\Strategies\InteractsWithTranslations;
 use Nevadskiy\Translatable\Strategies\Single\Models\Translation;
@@ -145,15 +146,19 @@ trait HasTranslations
             return $query->orderBy($attribute, $direction);
         }
 
-        return $query->orderBy(
-            Translation::query()
-                ->whereColumn('translatable_id', "{$this->getTable()}.{$this->getKeyName()}")
-                ->where('translatable_type', $this->getMorphClass())
-                ->forLocale($locale)
-                ->forAttribute($attribute)
-                ->limit(1)
-                ->select('value'),
-            $direction
-        );
+        // TODO: resolve model using resolver
+        $translationModel = new Translation;
+
+        // Prevent overriding model attributes
+        $query->addSelect($this->qualifyColumn('*'));
+
+        $query->leftJoin($translationModel->getTable(), function (JoinClause $join) use ($translationModel, $attribute, $locale) {
+            $join->on($translationModel->qualifyColumn('translatable_id'), '=', $this->qualifyColumn($this->getKeyName()))
+                ->where($translationModel->qualifyColumn('translatable_type'), $this->getMorphClass())
+                ->where($translationModel->qualifyColumn('translatable_attribute'), $attribute)
+                ->where($translationModel->qualifyColumn('locale'), $locale);
+        });
+
+        return $query->orderBy($translationModel->qualifyColumn('value'), $direction);
     }
 }
