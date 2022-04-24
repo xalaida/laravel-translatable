@@ -187,7 +187,7 @@ class Translator
 
     public function unset()
     {
-        // TODO: pass to strategy
+        // TODO: implement this
     }
 
     /**
@@ -195,7 +195,7 @@ class Translator
      */
     public function delete(string $attribute, string $locale = null)
     {
-        // TODO: pass to strategy
+        // TODO: implement this
     }
 
     /**
