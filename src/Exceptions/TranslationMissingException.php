@@ -2,10 +2,10 @@
 
 namespace Nevadskiy\Translatable\Exceptions;
 
-use DomainException;
 use Illuminate\Database\Eloquent\Model;
+use RuntimeException;
 
-class TranslationMissingException extends DomainException
+class TranslationMissingException extends RuntimeException
 {
     /**
      * The translatable model instance.
@@ -29,7 +29,7 @@ class TranslationMissingException extends DomainException
     public $locale;
 
     /**
-     * Create the exception instance for the given model.
+     * Make a new exception instance.
      */
     public function __construct(Model $model, string $attribute, string $locale)
     {

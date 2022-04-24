@@ -190,10 +190,10 @@ class Translator
     /**
      * Assert that the given attribute is translatable.
      */
-    protected function assertAttributeIsTranslatable(string $attribute): void
+    public function assertAttributeIsTranslatable(string $attribute): void
     {
         if (! $this->model->isTranslatable($attribute)) {
-            throw AttributeNotTranslatableException::fromAttribute($attribute);
+            throw new AttributeNotTranslatableException($attribute);
         }
     }
 

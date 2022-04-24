@@ -2,16 +2,23 @@
 
 namespace Nevadskiy\Translatable\Exceptions;
 
-use DomainException;
+use RuntimeException;
 
-class AttributeNotTranslatableException extends DomainException
+class AttributeNotTranslatableException extends RuntimeException
 {
     /**
-     * TODO: use constructor instead.
-     * Create the exception instance from the attribute.
+     * The name of the attribute.
+     *
+     * @var string
      */
-    public static function fromAttribute(string $attribute): self
+    public $attribute;
+
+    /**
+     * Make a new exception instance.
+     */
+    public function __construct(string $attribute)
     {
-        return new static("Attribute {$attribute} is not translatable.");
+        parent::__construct("Attribute {$attribute} is not translatable.");
+        $this->attribute = $attribute;
     }
 }
