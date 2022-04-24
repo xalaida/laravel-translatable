@@ -96,7 +96,6 @@ class AccessorsTranslationTest extends TestCase
         self::assertEquals('forest song', $book->getRawOriginal('title'));
     }
 
-
     /** @test */
     public function it_correctly_stores_translations_after_applied_accessors(): void
     {
