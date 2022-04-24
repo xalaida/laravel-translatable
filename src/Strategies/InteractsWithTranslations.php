@@ -56,7 +56,7 @@ trait InteractsWithTranslations
             return $this->getOriginalAttribute($attribute);
         }
 
-        return $this->translator()->getOrFallback($attribute);
+        return $this->translator()->get($attribute);
     }
 
     /**
