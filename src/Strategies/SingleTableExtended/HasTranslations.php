@@ -48,6 +48,15 @@ trait HasTranslations
     }
 
     /**
+     * Determine whether it should use original model value when the translation is missing for the current locale.
+     * TODO: implement this.
+     */
+    protected function useOriginalValueAsTranslationFallback(): bool
+    {
+        return true;
+    }
+
+    /**
      * Get the translations' relation.
      */
     public function translations(): MorphMany
