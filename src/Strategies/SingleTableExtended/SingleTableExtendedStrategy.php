@@ -38,16 +38,7 @@ class SingleTableExtendedStrategy extends SingleTableStrategy
      */
     protected function shouldGetFromOriginalAttribute(string $locale): bool
     {
-        return $this->isFallbackLocale($locale);
-    }
-
-    /**
-     * Determine if the given locale is a fallback locale.
-     * TODO: refactor
-     */
-    protected function isFallbackLocale(string $locale): bool
-    {
-        return $locale === 'en';
+        return $this->model->translator()->isFallbackLocale($locale);
     }
 
     /**
@@ -59,6 +50,6 @@ class SingleTableExtendedStrategy extends SingleTableStrategy
             return true;
         }
 
-        return $this->isFallbackLocale($locale);
+        return $this->model->translator()->isFallbackLocale($locale);
     }
 }
