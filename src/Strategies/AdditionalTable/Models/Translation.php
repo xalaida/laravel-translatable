@@ -1,6 +1,6 @@
 <?php
 
-namespace Nevadskiy\Translatable\Strategies\Entity\Models;
+namespace Nevadskiy\Translatable\Strategies\AdditionalTable\Models;
 
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;

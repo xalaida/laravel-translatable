@@ -1,9 +1,9 @@
 <?php
 
-namespace Nevadskiy\Translatable\Strategies\Entity;
+namespace Nevadskiy\Translatable\Strategies\AdditionalTable;
 
 use Illuminate\Database\Eloquent\Model;
-use Nevadskiy\Translatable\Strategies\Entity\Models\Translation;
+use Nevadskiy\Translatable\Strategies\AdditionalTable\Models\Translation;
 use Nevadskiy\Translatable\Strategies\TranslatorStrategy;
 
 /**

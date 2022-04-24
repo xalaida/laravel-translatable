@@ -4,7 +4,7 @@ namespace Nevadskiy\Translatable\Tests\Support\Models;
 
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
-use Nevadskiy\Translatable\Strategies\Entity\HasTranslations;
+use Nevadskiy\Translatable\Strategies\AdditionalTable\HasTranslations;
 
 /**
  * @property int id

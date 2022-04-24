@@ -5,7 +5,7 @@ namespace Nevadskiy\Translatable\Tests\Feature\Strategies\Additional;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Route;
-use Nevadskiy\Translatable\Strategies\Entity\HasTranslations;
+use Nevadskiy\Translatable\Strategies\AdditionalTable\HasTranslations;
 use Nevadskiy\Translatable\Tests\TestCase;
 
 class RouteBindingByTranslatableAttributeTest extends TestCase
