@@ -5,6 +5,7 @@ namespace Nevadskiy\Translatable\Tests\Feature\Strategies\Single;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\DB;
+use Nevadskiy\Translatable\Exceptions\TranslationMissingException;
 use Nevadskiy\Translatable\Strategies\Single\HasTranslations;
 use Nevadskiy\Translatable\Exceptions\AttributeNotTranslatableException;
 use Nevadskiy\Translatable\Tests\TestCase;
@@ -97,6 +98,18 @@ class TranslationTest extends TestCase
 
         self::assertEquals('Large encyclopedia of animals', $book->title);
         self::assertEmpty($book->translations);
+    }
+
+    /** @test */
+    public function it_throws_exception_when_trying_to_get_missing_translation(): void
+    {
+        $book = new Book();
+        $book->title = 'Large encyclopedia of animals';
+        $book->save();
+
+        $this->expectException(TranslationMissingException::class);
+
+        $book->translator()->getOrFail('title', 'uk');
     }
 
     /** @test */

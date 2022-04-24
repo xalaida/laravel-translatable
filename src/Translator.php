@@ -80,21 +80,36 @@ class Translator
         $this->set($attribute, $value, $locale)->save();
     }
 
-    // TODO: add possibility to log out warnings with missing translations.
-
     /**
-     * // TODO: refactor with laravel-way getOrFail and get
-     * TODO: continue from this... cover with tests.
-     * Get the translation value of the given attribute or the fallback value if it is missing.
+     * Get the translation value of the given attribute to the given locale.
      */
-    public function getOrFallback(string $attribute, string $locale = null)
+    public function get(string $attribute, string $locale = null)
     {
+        $this->assertAttributeIsTranslatable($attribute);
+
         try {
-            return $this->get($attribute, $locale);
+            return $this->getOrFail($attribute, $locale ?: $this->getLocale());
         } catch (TranslationMissingException $e) {
-            event(new TranslationMissing($e->model, $e->attribute, $e->locale));
+            event(new TranslationMissing($this->model, $attribute, $locale));
+
             return $this->fallback($attribute);
         }
+    }
+
+    /**
+     * Get the translation value of the given attribute or the fallback value if it is missing.
+     */
+    public function getOrFail(string $attribute, string $locale = null)
+    {
+        $this->assertAttributeIsTranslatable($attribute);
+
+        $translation = $this->strategy->get($attribute, $locale ?: $this->getLocale());
+
+        if (is_null($translation)) {
+            return null;
+        }
+
+        return $this->model->withAttributeGetter($attribute, $translation);
     }
 
     /**
@@ -103,30 +118,6 @@ class Translator
     public function fallback(string $attribute)
     {
         return $this->model->getOriginalAttribute($attribute);
-    }
-
-    /**
-     * Get the translation value of the given attribute to the given locale.
-     *
-     * @return mixed
-     */
-    public function get(string $attribute, string $locale = null)
-    {
-        $this->assertAttributeIsTranslatable($attribute);
-
-        try {
-            $translation = $this->get($attribute, $locale ?: $this->getLocale());
-        } catch (TranslationMissingException $e) {
-            event(new TranslationMissing($this->model, $attribute, $locale));
-
-            return $this->fallback($attribute);
-        }
-
-        if (is_null($translation)) {
-            return null;
-        }
-
-        return $this->model->withAttributeGetter($attribute, $translation);
     }
 
     /**
@@ -139,27 +130,10 @@ class Translator
         $translations = [];
 
         foreach ($this->model->getTranslatable() as $attribute) {
-            $translations[$attribute] = $this->getOrFallback($attribute, $locale);
+            $translations[$attribute] = $this->get($attribute, $locale);
         }
 
         return $translations;
-    }
-
-    /**
-     * Get raw translation value for the attribute.
-     */
-    public function raw(string $attribute, string $locale = null)
-    {
-        $locale = $locale ?: $this->getLocale();
-
-        $translation = $this->strategy->get($attribute, $locale);
-
-        if (is_null($translation)) {
-            // TODO: use DI model dispatcher.
-            event(new TranslationMissing($this->model, $attribute, $locale));
-        }
-
-        return $translation;
     }
 
     /**
