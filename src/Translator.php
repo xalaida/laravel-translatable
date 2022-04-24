@@ -114,13 +114,19 @@ class Translator
     {
         $this->assertAttributeIsTranslatable($attribute);
 
-        $raw = $this->raw($attribute, $locale);
+        try {
+            $translation = $this->get($attribute, $locale ?: $this->getLocale());
+        } catch (TranslationMissingException $e) {
+            event(new TranslationMissing($this->model, $attribute, $locale));
 
-        if (is_null($raw)) {
+            return $this->fallback($attribute);
+        }
+
+        if (is_null($translation)) {
             return null;
         }
 
-        return $this->model->withAttributeGetter($attribute, $raw);
+        return $this->model->withAttributeGetter($attribute, $translation);
     }
 
     /**
