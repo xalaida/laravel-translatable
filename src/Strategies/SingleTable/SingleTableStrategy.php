@@ -65,6 +65,8 @@ class SingleTableStrategy implements TranslatorStrategy
      */
     public function save(): void
     {
+        // TODO: assert that model exists in the database.
+
         foreach ($this->pullPendingTranslations() as $locale => $attributes) {
             foreach ($attributes as $attribute => $value) {
                 $this->updateOrCreateTranslation($attribute, $locale, $value);

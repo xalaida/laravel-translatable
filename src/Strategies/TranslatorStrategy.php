@@ -15,7 +15,6 @@ interface TranslatorStrategy
     public function set(string $attribute, $value, string $locale): void;
 
     /**
-     * TODO: probably replace with boot() method.
      * Save all set translations into the database.
      */
     public function save(): void;

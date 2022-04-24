@@ -35,6 +35,8 @@ trait HasTranslations
         static::deleted(static function (self $translatable) {
             $translatable->handleDeletedEvent();
         });
+
+        // TODO: add replicated handler.
     }
 
     /**
