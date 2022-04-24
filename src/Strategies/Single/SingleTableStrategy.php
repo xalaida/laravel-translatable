@@ -45,7 +45,7 @@ class SingleTableStrategy implements TranslatorStrategy
     public function get(string $attribute, string $locale)
     {
         if ($this->shouldGetFromOriginalAttribute($locale)) {
-            return $this->model->getOriginalAttribute($attribute);
+            return $this->model->getRawOriginal($attribute);
         }
 
         if (isset($this->pendingTranslations[$locale][$attribute])) {
@@ -61,9 +61,10 @@ class SingleTableStrategy implements TranslatorStrategy
     public function set(string $attribute, $value, string $locale): void
     {
         if ($this->shouldSetToOriginalAttribute($locale)) {
+            // TODO: should set raw
             $this->model->setOriginalAttribute($attribute, $value);
         } else {
-            $this->pendingTranslations[$locale][$attribute] = $this->model->withAttributeSetter($attribute, $value);
+            $this->pendingTranslations[$locale][$attribute] = $value;
         }
     }
 

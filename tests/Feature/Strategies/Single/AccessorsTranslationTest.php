@@ -30,6 +30,8 @@ class AccessorsTranslationTest extends TestCase
         $this->schema()->create('books', function (Blueprint $table) {
             $table->id();
             $table->string('title');
+            $table->string('description')->nullable();
+            $table->string('caption')->nullable();
             $table->timestamps();
         });
     }
@@ -99,7 +101,7 @@ class AccessorsTranslationTest extends TestCase
     /** @test */
     public function it_correctly_stores_translations_after_applied_accessors(): void
     {
-        $book = new BookWithRaw();
+        $book = new BookWithAccessors();
         $book->title = 'forest song';
         $book->save();
 
@@ -119,6 +121,7 @@ class AccessorsTranslationTest extends TestCase
     {
         $book = new BookWithAccessors();
         $book->title = 'forest song';
+        $book->description = 'Beautiful ancient forest in Volyn';
         $book->save();
 
         $book->translator()->add('description', 'Прекрасний предковічний ліс на Волині', 'uk');
@@ -126,6 +129,17 @@ class AccessorsTranslationTest extends TestCase
         $this->app->setLocale('uk');
 
         self::assertEquals('Пре...', $book->description_short);
+    }
+
+    /** @test */
+    public function it_applies_accessors_for_translatable_attributes_in_fallback_locale_once(): void
+    {
+        $book = new BookWithAccessors();
+        $book->title = 'Forest song';
+        $book->caption = 'Ancient forest';
+        $book->save();
+
+        self::assertEquals('Ancient forest.', $book->caption);
     }
 
     /**
@@ -142,6 +156,7 @@ class AccessorsTranslationTest extends TestCase
  * @property string title
  * @property string description
  * @property string description_short
+ * @property string caption
  */
 class BookWithAccessors extends Model
 {
@@ -151,7 +166,8 @@ class BookWithAccessors extends Model
 
     protected $translatable = [
         'title',
-        'description'
+        'description',
+        'caption',
     ];
 
     public function getTitleAttribute(string $title): string
@@ -162,5 +178,10 @@ class BookWithAccessors extends Model
     public function getDescriptionShortAttribute(): string
     {
         return Str::limit($this->description, 3);
+    }
+
+    public function getCaptionAttribute(string $caption): string
+    {
+        return $caption . '.';
     }
 }
