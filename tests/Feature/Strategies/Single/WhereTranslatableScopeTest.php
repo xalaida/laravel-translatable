@@ -163,7 +163,7 @@ class WhereTranslatableScopeTest extends TestCase
         $book3->title = 'Day of Wrath';
         $book3->save();
 
-        $records = BookWhereTranslatable::whereTranslatable('title', '%пророк', null, 'LIKE')->get();
+        $records = BookWhereTranslatable::query()->whereTranslatable('title', '%пророк', null, 'LIKE')->get();
 
         self::assertCount(2, $records);
         self::assertTrue($records[0]->is($book1));
