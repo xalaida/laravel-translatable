@@ -2,7 +2,7 @@
 
 namespace Nevadskiy\Translatable\Tests\Feature;
 
-use Nevadskiy\Translatable\Strategies\Single\Models\Translation;
+use Nevadskiy\Translatable\Strategies\SingleTable\Models\Translation;
 use Nevadskiy\Translatable\Exceptions\AttributeNotTranslatableException;
 use Nevadskiy\Translatable\Tests\Support\Factories\BookFactory;
 use Nevadskiy\Translatable\Tests\TestCase;

@@ -1,12 +1,12 @@
 <?php
 
-namespace Nevadskiy\Translatable\Strategies\Single\Models;
+namespace Nevadskiy\Translatable\Strategies\SingleTable\Models;
 
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
-use Nevadskiy\Translatable\Strategies\Single\HasTranslations;
+use Nevadskiy\Translatable\Strategies\SingleTable\HasTranslations;
 
 /**
  * @property int id

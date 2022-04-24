@@ -1,6 +1,6 @@
 <?php
 
-namespace Nevadskiy\Translatable\Strategies\Single\Scopes;
+namespace Nevadskiy\Translatable\Strategies\SingleTable\Scopes;
 
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;

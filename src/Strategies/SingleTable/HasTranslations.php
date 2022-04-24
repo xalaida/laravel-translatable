@@ -1,6 +1,6 @@
 <?php
 
-namespace Nevadskiy\Translatable\Strategies\Single;
+namespace Nevadskiy\Translatable\Strategies\SingleTable;
 
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
@@ -9,8 +9,8 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Query\JoinClause;
 use Illuminate\Support\Collection;
 use Nevadskiy\Translatable\Strategies\InteractsWithTranslations;
-use Nevadskiy\Translatable\Strategies\Single\Models\Translation;
-use Nevadskiy\Translatable\Strategies\Single\Scopes\TranslationsEagerLoadScope;
+use Nevadskiy\Translatable\Strategies\SingleTable\Models\Translation;
+use Nevadskiy\Translatable\Strategies\SingleTable\Scopes\TranslationsEagerLoadScope;
 use Nevadskiy\Translatable\Strategies\TranslatorStrategy;
 
 /**
@@ -44,7 +44,7 @@ trait HasTranslations
      */
     protected function getTranslationStrategy(): TranslatorStrategy
     {
-        return new SingleTableStrategy($this);
+        return new Strategy($this);
     }
 
     /**

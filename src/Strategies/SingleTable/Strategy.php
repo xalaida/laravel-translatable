@@ -1,10 +1,10 @@
 <?php
 
-namespace Nevadskiy\Translatable\Strategies\Single;
+namespace Nevadskiy\Translatable\Strategies\SingleTable;
 
 use Illuminate\Database\Eloquent\Model;
 use Nevadskiy\Translatable\Exceptions\TranslationMissingException;
-use Nevadskiy\Translatable\Strategies\Single\Models\Translation;
+use Nevadskiy\Translatable\Strategies\SingleTable\Models\Translation;
 use Nevadskiy\Translatable\Strategies\TranslatorStrategy;
 
 /**
@@ -13,7 +13,7 @@ use Nevadskiy\Translatable\Strategies\TranslatorStrategy;
  * TODO: structure translations on 'retrieve' event (only when it was fired AFTER eager loading, not before like now)
  * TODO: structure loaded translation in the strategy as this: ['en' => ['title' => null], 'uk' => ['title' => 'Книга']]
  */
-class SingleTableStrategy implements TranslatorStrategy
+class Strategy implements TranslatorStrategy
 {
     // TODO: boot translation similar how laravel model is doing this (original and translations array and dirty on save)
 
@@ -44,9 +44,9 @@ class SingleTableStrategy implements TranslatorStrategy
      */
     public function get(string $attribute, string $locale)
     {
-        if ($this->shouldGetFromOriginalAttribute($locale)) {
-            return $this->model->getRawOriginal($attribute);
-        }
+//        if ($this->shouldGetFromOriginalAttribute($locale)) {
+//            return $this->model->getRawOriginal($attribute);
+//        }
 
         if (isset($this->pendingTranslations[$locale][$attribute])) {
             return $this->pendingTranslations[$locale][$attribute];
@@ -60,11 +60,7 @@ class SingleTableStrategy implements TranslatorStrategy
      */
     public function set(string $attribute, $value, string $locale): void
     {
-        if ($this->shouldSetToOriginalAttribute($locale)) {
-            $this->model->setRawOriginal($attribute, $value);
-        } else {
-            $this->pendingTranslations[$locale][$attribute] = $value;
-        }
+        $this->pendingTranslations[$locale][$attribute] = $value;
     }
 
     /**
@@ -145,34 +141,4 @@ class SingleTableStrategy implements TranslatorStrategy
             'value' => $value,
         ]);
     }
-
-// TODO: feature deleting
-//    /**
-//     * Delete translation from the model for the given attribute and locale.
-//     */
-//    public function delete(string $attribute, string $locale)
-//    {
-//        $this->model->translations()
-//            ->forAttribute($attribute)
-//            ->forLocale($locale)
-//            ->delete();
-//    }
-//
-//    /**
-//     * Delete all translations from the model for the given locale.
-//     */
-//    public function deleteForLocale(string $locale = null)
-//    {
-//        $this->model->translations()
-//            ->forLocale($locale)
-//            ->delete();
-//    }
-//
-//    /**
-//     * Delete all translations from the model.
-//     */
-//    public function deleteAll(): void
-//    {
-//        $this->model->translations()->delete();
-//    }
 }
