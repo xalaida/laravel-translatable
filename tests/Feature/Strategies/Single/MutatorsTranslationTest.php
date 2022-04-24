@@ -28,12 +28,13 @@ class MutatorsTranslationTest extends TestCase
             $table->id();
             $table->string('title');
             $table->string('description')->nullable();
+            $table->string('caption')->nullable();
             $table->timestamps();
         });
     }
 
     /** @test */
-    public function it_applies_mutators_for_translatable_attributes(): void
+    public function it_applies_mutator_for_translatable_attributes(): void
     {
         $book = new BookWithMutators();
         $book->title = 'Shot on the stairs';
@@ -59,7 +60,7 @@ class MutatorsTranslationTest extends TestCase
     }
 
     /** @test */
-    public function it_applies_mutators_using_model_setter(): void
+    public function it_applies_mutator_using_model_setter(): void
     {
         $book = new BookWithMutators();
         $book->title = 'Shot on the stairs';
@@ -73,7 +74,7 @@ class MutatorsTranslationTest extends TestCase
     }
 
     /** @test */
-    public function it_still_applies_mutators_for_non_translatable_attributes(): void
+    public function it_still_applies_mutator_for_non_translatable_attributes(): void
     {
         $book = new BookWithMutators();
         $book->title = 'Shot on the stairs';
@@ -81,6 +82,17 @@ class MutatorsTranslationTest extends TestCase
         $book->save();
 
         self::assertEquals('Detective...', $book->description);
+    }
+
+    /** @test */
+    public function it_applies_mutator_for_translatable_attributes_in_fallback_locale_once(): void
+    {
+        $book = new BookWithMutators();
+        $book->title = 'Forest song';
+        $book->caption = 'Ancient forest';
+        $book->save();
+
+        self::assertEquals('Ancient forest.', $book->caption);
     }
 
     /**
@@ -96,6 +108,7 @@ class MutatorsTranslationTest extends TestCase
 /**
  * @property string title
  * @property string description
+ * @property string caption
  */
 class BookWithMutators extends Model
 {
@@ -105,6 +118,7 @@ class BookWithMutators extends Model
 
     protected $translatable = [
         'title',
+        'caption',
     ];
 
     public function setTitleAttribute(string $title): void
@@ -115,5 +129,10 @@ class BookWithMutators extends Model
     public function setDescriptionAttribute(string $description): void
     {
         $this->attributes['description'] = Str::limit($description, 10);
+    }
+
+    public function setCaptionAttribute(string $caption): void
+    {
+        $this->attributes['caption'] = $caption . '.';
     }
 }

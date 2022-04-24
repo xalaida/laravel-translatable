@@ -61,8 +61,7 @@ class SingleTableStrategy implements TranslatorStrategy
     public function set(string $attribute, $value, string $locale): void
     {
         if ($this->shouldSetToOriginalAttribute($locale)) {
-            // TODO: should set raw
-            $this->model->setOriginalAttribute($attribute, $value);
+            $this->model->setRawOriginal($attribute, $value);
         } else {
             $this->pendingTranslations[$locale][$attribute] = $value;
         }

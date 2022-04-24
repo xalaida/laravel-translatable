@@ -47,6 +47,7 @@ class Translator
 
     /**
      * Get the translator locale.
+     * TODO: refactor.
      */
     public function getLocale(): string
     {
@@ -66,18 +67,44 @@ class Translator
     /**
      * Set the translation for the model.
      */
-    public function set(string $attribute, $value, string $locale = null): Translator
+    public function set(string $attribute, $value, string $locale = null): void
     {
         $this->assertAttributeIsTranslatable($attribute);
 
-        $this->strategy->set($attribute, $value, $locale ?: $this->getLocale());
-
-        return $this;
+        $this->strategy->set(
+            $attribute,
+            $this->model->withAttributeSetter($attribute, $value),
+            $locale ?: $this->getLocale()
+        );
     }
 
+    /**
+     * Save the given translation for the model.
+     */
     public function add(string $attribute, $value, string $locale = null): void
     {
-        $this->set($attribute, $value, $locale)->save();
+        $this->set($attribute, $value, $locale);
+        $this->model->save();
+    }
+
+    /**
+     * Add many translations to the model for the given locale.
+     */
+    public function addMany(array $translations, string $locale = null): void
+    {
+        $this->setMany($translations, $locale)->save();
+    }
+
+    /**
+     * Set many translations on the model for the given locale.
+     */
+    public function setMany(array $translations, string $locale = null): Translator
+    {
+        foreach ($translations as $attribute => $value) {
+            $this->set($attribute, $value, $locale);
+        }
+
+        return $this;
     }
 
     /**
@@ -151,6 +178,27 @@ class Translator
     }
 
     /**
+     * Save translations into the database.
+     */
+    public function save(): void
+    {
+        $this->strategy->save();
+    }
+
+    public function unset()
+    {
+        // TODO: pass to strategy
+    }
+
+    /**
+     * Delete translation from the model for the given attribute and locale.
+     */
+    public function delete(string $attribute, string $locale = null)
+    {
+        // TODO: pass to strategy
+    }
+
+    /**
      * Get list of translations for all translatable attributes for the given locale.
      */
     public function toArray(string $locale = null): array
@@ -167,27 +215,6 @@ class Translator
     }
 
     /**
-     * Save translations into the database.
-     */
-    public function save(): void
-    {
-        $this->strategy->save();
-    }
-
-    public function unset()
-    {
-
-    }
-
-    /**
-     * Delete translation from the model for the given attribute and locale.
-     */
-    public function delete(string $attribute, string $locale = null)
-    {
-        // TODO: pass to strategy
-    }
-
-    /**
      * Assert that the given attribute is translatable.
      */
     public function assertAttributeIsTranslatable(string $attribute): void
@@ -195,25 +222,5 @@ class Translator
         if (! $this->model->isTranslatable($attribute)) {
             throw new AttributeNotTranslatableException($attribute);
         }
-    }
-
-    /**
-     * Add many translations to the model for the given locale.
-     */
-    public function addMany(array $translations, string $locale = null): void
-    {
-        $this->setMany($translations, $locale)->save();
-    }
-
-    /**
-     * Set many translations on the model for the given locale.
-     */
-    public function setMany(array $translations, string $locale = null): Translator
-    {
-        foreach ($translations as $attribute => $value) {
-            $this->set($attribute, $value, $locale);
-        }
-
-        return $this;
     }
 }

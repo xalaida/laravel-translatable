@@ -37,7 +37,7 @@ class AccessorsTranslationTest extends TestCase
     }
 
     /** @test */
-    public function it_applies_accessors_to_translatable_attributes(): void
+    public function it_applies_accessor_to_translatable_attributes(): void
     {
         $book = new BookWithAccessors();
         $book->title = 'Forest song';
@@ -49,7 +49,7 @@ class AccessorsTranslationTest extends TestCase
     }
 
     /** @test */
-    public function it_applies_accessors_to_translatable_attributes_using_getters(): void
+    public function it_applies_accessor_to_translatable_attributes_using_getters(): void
     {
         $book = new BookWithAccessors();
         $book->title = 'Forest song';
@@ -63,7 +63,7 @@ class AccessorsTranslationTest extends TestCase
     }
 
     /** @test */
-    public function it_still_applies_accessors_to_original_attributes_using_getters(): void
+    public function it_still_applies_accessor_to_original_attributes_using_getters(): void
     {
         $book = new BookWithAccessors();
         $book->title = 'forest song';
@@ -73,7 +73,7 @@ class AccessorsTranslationTest extends TestCase
     }
 
     /** @test */
-    public function it_still_applies_accessors_to_original_attributes_in_fallback_locale(): void
+    public function it_still_applies_accessor_to_original_attributes_in_fallback_locale(): void
     {
         $book = new BookWithAccessors();
         $book->title = 'forest song';
@@ -85,7 +85,7 @@ class AccessorsTranslationTest extends TestCase
     }
 
     /** @test */
-    public function it_does_not_override_original_attribute_after_applying_accessors(): void
+    public function it_does_not_override_original_attribute_after_applying_accessor(): void
     {
         $book = new BookWithAccessors();
         $book->title = 'forest song';
@@ -99,7 +99,7 @@ class AccessorsTranslationTest extends TestCase
     }
 
     /** @test */
-    public function it_correctly_stores_translations_after_applied_accessors(): void
+    public function it_correctly_stores_translations_after_applied_accessor(): void
     {
         $book = new BookWithAccessors();
         $book->title = 'forest song';
@@ -117,7 +117,7 @@ class AccessorsTranslationTest extends TestCase
     }
 
     /** @test */
-    public function it_still_applies_accessors_for_non_translatable_attributes(): void
+    public function it_still_applies_accessor_for_non_translatable_attributes(): void
     {
         $book = new BookWithAccessors();
         $book->title = 'forest song';
@@ -132,7 +132,7 @@ class AccessorsTranslationTest extends TestCase
     }
 
     /** @test */
-    public function it_applies_accessors_for_translatable_attributes_in_fallback_locale_once(): void
+    public function it_applies_accessor_for_translatable_attributes_in_fallback_locale_once(): void
     {
         $book = new BookWithAccessors();
         $book->title = 'Forest song';

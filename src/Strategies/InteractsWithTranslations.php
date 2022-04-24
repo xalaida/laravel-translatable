@@ -124,6 +124,16 @@ trait InteractsWithTranslations
     }
 
     /**
+     * Set the model's raw original attribute values.
+     *
+     * @param mixed $value
+     */
+    public function setRawOriginal(string $attribute, $value): void
+    {
+        $this->attributes[$attribute] = $value;
+    }
+
+    /**
      * Get the attribute value with all mutators and casts applied.
      *
      * @param mixed $value

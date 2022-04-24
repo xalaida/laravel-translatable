@@ -27,7 +27,7 @@ class NullableTranslationTest extends TestCase
     {
         $this->schema()->create('books', function (Blueprint $table) {
             $table->id();
-            $table->string('title');
+            $table->string('title')->nullable();
             $table->timestamps();
         });
     }
@@ -70,7 +70,7 @@ class NullableTranslationTest extends TestCase
 
         $book->translator()->add('title', null, 'en');
 
-        self::assertNull($book->title);
+        self::assertNull($book->fresh()->title);
     }
 
     /**
