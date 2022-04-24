@@ -118,25 +118,19 @@ class OrderByTranslatableScopeTest extends TestCase
     /** @test */
     public function it_does_not_override_attributes_with_translatable_model_when_ordering_by_translatable_attribute(): void
     {
-        $book1 = new BookOrderByTranslatable();
-        $book1->title = 'Son of the earth';
-        $book1->value = 'Original value';
-        $book1->save();
+        $book = new BookOrderByTranslatable();
+        $book->title = 'Son of the earth';
+        $book->value = 'Original value';
+        $book->save();
 
-        $book1->translator()->add('title', 'Син землі', 'uk');
-
-        $book2 = new BookOrderByTranslatable();
-        $book2->title = 'The last prophet';
-        $book2->save();
-
-        $book2->translator()->add('title', 'Останній пророк', 'uk');
+        $book->translator()->add('title', 'Син землі', 'uk');
 
         $this->app->setLocale('uk');
 
         $records = BookOrderByTranslatable::query()->orderByTranslatable('title', 'desc')->get();
 
-        self::assertTrue($records[0]->is($book1));
-        self::assertTrue($records[1]->is($book2));
+        self::assertTrue($records[0]->is($book));
+        self::assertEquals('Original value', $records[0]->value);
     }
 
     /**
