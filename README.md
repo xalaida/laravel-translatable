@@ -467,5 +467,6 @@ The MIT License (MIT). Please see [LICENSE](LICENSE.md) for more information.
 - [ ] add nova admin package.
 - [ ] add possibility to check missing translations.
 - [ ] add possibility to delete translations instead of setting `null` or empty string.
+- [ ] add possibility to specify custom fallback locale per model in extended strategy.
 - [ ] `replicate` method should replicate model with all translations.
 - [ ] add possibility to use without uuid (add possibility to use custom translation model)

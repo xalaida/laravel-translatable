@@ -59,6 +59,9 @@ class TranslationTest extends TestCase
         ]);
     }
 
+    // TODO: create in custom locale
+    // TODO: create in fallback locale
+
     /** @test */
     public function it_has_nullable_attributes_when_translations_are_not_set(): void
     {
