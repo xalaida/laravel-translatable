@@ -109,7 +109,9 @@ trait HasTranslations
      */
     protected function scopeWhereTranslatable(Builder $query, string $attribute, $value, string $locale = null, string $operator = '='): Builder
     {
-        if (! $locale) {
+        $this->translator()->assertAttributeIsTranslatable($attribute);
+
+        if (is_null($locale)) {
             return $query->where(function (Builder $query) use ($attribute, $value, $operator) {
                 $query->where($attribute, $operator, $value)
                     ->orWhereHas('translations', function (Builder $query) use ($attribute, $value, $operator) {
@@ -135,6 +137,8 @@ trait HasTranslations
      */
     protected function scopeOrderByTranslatable(Builder $query, string $attribute, string $direction = 'asc', string $locale = null): Builder
     {
+        $this->translator()->assertAttributeIsTranslatable($attribute);
+
         $locale = $locale ?: $this->translator()->getLocale();
 
         if ($this->translator()->isFallbackLocale($locale)) {

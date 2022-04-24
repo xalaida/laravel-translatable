@@ -4,6 +4,7 @@ namespace Nevadskiy\Translatable\Tests\Feature\Strategies\Single;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Schema\Blueprint;
+use Nevadskiy\Translatable\Exceptions\AttributeNotTranslatableException;
 use Nevadskiy\Translatable\Strategies\Single\HasTranslations;
 use Nevadskiy\Translatable\Tests\TestCase;
 
@@ -167,6 +168,14 @@ class WhereTranslatableScopeTest extends TestCase
         self::assertCount(2, $records);
         self::assertTrue($records[0]->is($book1));
         self::assertTrue($records[1]->is($book2));
+    }
+
+    /** @test */
+    public function it_throws_exception_when_trying_to_query_by_non_translatable_attribute(): void
+    {
+        $this->expectException(AttributeNotTranslatableException::class);
+
+        BookWhereTranslatable::query()->whereTranslatable('id', 1)->get();
     }
 
     /**
