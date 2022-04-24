@@ -158,6 +158,24 @@ Values in non-default locales of each translatable model are stored in the singl
 
 The package takes the default locale from the `config('app.fallback_locale')` value.
 
+### Strategies
+
+#### Single Table
+
+- all translations are in the single table
+- consistent simple queries
+- model can be created in any locale
+- non-optimal indexes
+
+#### Single Table Extended
+
+- translations for default locale are in original table, for custom locale - in the global table
+- complex queries
+- model can be created only in fallback locale
+- non-optimal indexes
+- can use fallback translation when current is missing
+- can be added to an existing model without restructuring the original table
+
 ##### Automatically store and retrieve translations of the model using translatable attributes
 
 ```php
