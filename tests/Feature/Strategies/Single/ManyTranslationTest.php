@@ -33,7 +33,7 @@ class ManyTranslationTest extends TestCase
     }
 
     /** @test */
-    public function it_saves_many_translations_to_the_database(): void
+    public function it_saves_many_translations_to_database(): void
     {
         $book = new BookWithManyTranslations();
         $book->title = 'Atlas of animals';
@@ -62,7 +62,7 @@ class ManyTranslationTest extends TestCase
     }
 
     /** @test */
-    public function it_throws_an_exception_when_trying_to_save_many_translations_with_mixed_non_translatable_attribute(): void
+    public function it_throws_exception_when_trying_to_save_many_translations_with_mixed_non_translatable_attribute(): void
     {
         $book = new BookWithManyTranslations();
         $book->title = 'Atlas of animals';

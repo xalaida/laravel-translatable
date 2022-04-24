@@ -5,11 +5,12 @@ namespace Nevadskiy\Translatable\Tests\Feature\Strategies\Single;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Event;
-use Nevadskiy\Translatable\Events\TranslationNotFound;
+use Nevadskiy\Translatable\Events\TranslationMissing;
+use Nevadskiy\Translatable\Exceptions\TranslationMissingException;
 use Nevadskiy\Translatable\Strategies\Single\HasTranslations;
 use Nevadskiy\Translatable\Tests\TestCase;
 
-class FireTranslationNotFoundEventTest extends TestCase
+class TranslationMissingEventTest extends TestCase
 {
     /**
      * @inheritdoc
@@ -33,39 +34,19 @@ class FireTranslationNotFoundEventTest extends TestCase
     }
 
     /** @test */
-    public function it_fires_event_when_translation_is_not_found_for_the_given_attribute_and_locale(): void
+    public function it_fires_event_when_translation_is_missing_for_given_attribute_and_locale(): void
     {
-        $book = new BookForTranslationNotFoundEvent();
+        $book = new BookForTranslationMissingEvent();
         $book->title = 'Nature clock';
         $book->save();
 
         $this->app->setLocale('uk');
 
-        Event::fake(TranslationNotFound::class);
-
-        self::assertNull($book->translator()->get('title'));
-
-        Event::assertDispatched(TranslationNotFound::class, static function (TranslationNotFound $event) use ($book) {
-            return $event->attribute === 'title'
-                && $event->locale === 'uk'
-                && $event->model->is($book);
-        });
-    }
-
-    /** @test */
-    public function it_fires_translation_not_found_event_using_fallback_method(): void
-    {
-        $book = new BookForTranslationNotFoundEvent();
-        $book->title = 'Nature clock';
-        $book->save();
-
-        $this->app->setLocale('uk');
-
-        Event::fake(TranslationNotFound::class);
+        Event::fake(TranslationMissing::class);
 
         self::assertEquals('Nature clock', $book->translator()->getOrFallback('title'));
 
-        Event::assertDispatched(TranslationNotFound::class, static function (TranslationNotFound $event) use ($book) {
+        Event::assertDispatched(TranslationMissing::class, static function (TranslationMissing $event) use ($book) {
             return $event->attribute === 'title'
                 && $event->locale === 'uk'
                 && $event->model->is($book);
@@ -73,9 +54,23 @@ class FireTranslationNotFoundEventTest extends TestCase
     }
 
     /** @test */
-    public function it_does_not_fire_translation_not_found_event_when_translation_is_found(): void
+    public function it_throw_translation_missing_exception_when_trying_to_get_missing_translation(): void
     {
-        $book = new BookForTranslationNotFoundEvent();
+        $book = new BookForTranslationMissingEvent();
+        $book->title = 'Nature clock';
+        $book->save();
+
+        $this->app->setLocale('uk');
+
+        $this->expectException(TranslationMissingException::class);
+
+        $book->translator()->get('title');
+    }
+
+    /** @test */
+    public function it_does_not_fire_translation_missing_event_when_translation_is_found(): void
+    {
+        $book = new BookForTranslationMissingEvent();
         $book->title = 'Nature clock';
         $book->save();
 
@@ -83,18 +78,18 @@ class FireTranslationNotFoundEventTest extends TestCase
 
         $book->translator()->add('title', 'Годинник природи', 'uk');
 
-        Event::fake(TranslationNotFound::class);
+        Event::fake(TranslationMissing::class);
 
-        self::assertEquals('Годинник природи', $book->translator()->get('title', 'uk'));
+        self::assertEquals('Годинник природи', $book->translator()->getOrFallback('title', 'uk'));
 
-        Event::assertNotDispatched(TranslationNotFound::class);
+        Event::assertNotDispatched(TranslationMissing::class);
     }
 }
 
 /**
  * @property string title
  */
-class BookForTranslationNotFoundEvent extends Model
+class BookForTranslationMissingEvent extends Model
 {
     use HasTranslations;
 

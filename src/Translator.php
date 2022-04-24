@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 use Nevadskiy\Translatable\Exceptions\TranslationMissingException;
 use Nevadskiy\Translatable\Strategies\InteractsWithTranslations;
 use Nevadskiy\Translatable\Strategies\TranslatorStrategy;
-use Nevadskiy\Translatable\Events\TranslationNotFound;
+use Nevadskiy\Translatable\Events\TranslationMissing;
 use Nevadskiy\Translatable\Exceptions\AttributeNotTranslatableException;
 use function app;
 use function event;
@@ -91,6 +91,7 @@ class Translator
         try {
             return $this->get($attribute, $locale);
         } catch (TranslationMissingException $e) {
+            event(new TranslationMissing($e->model, $e->attribute, $e->locale));
             return $this->fallback($attribute);
         }
     }
@@ -148,7 +149,7 @@ class Translator
 
         if (is_null($translation)) {
             // TODO: use DI model dispatcher.
-            event(new TranslationNotFound($this->model, $attribute, $locale));
+            event(new TranslationMissing($this->model, $attribute, $locale));
         }
 
         return $translation;

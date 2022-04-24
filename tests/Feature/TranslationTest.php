@@ -53,7 +53,7 @@ class TranslationTest extends TestCase
 //    }
 
 //    /** @test */
-//    public function it_throws_an_exception_when_trying_to_get_translation_for_non_translatable_attribute(): void
+//    public function it_throws_exception_when_trying_to_get_translation_for_non_translatable_attribute(): void
 //    {
 //        $book = BookFactory::new()->create();
 //
@@ -74,7 +74,7 @@ class TranslationTest extends TestCase
 //    }
 
 //    /** @test */
-//    public function it_throws_an_exception_when_trying_to_add_translation_for_non_translatable_attribute(): void
+//    public function it_throws_exception_when_trying_to_add_translation_for_non_translatable_attribute(): void
 //    {
 //        $book = BookFactory::new()->create();
 //
@@ -123,7 +123,7 @@ class TranslationTest extends TestCase
     // TODO: probably move to strategy specific test.
 
 //    /** @test */
-//    public function it_saves_translations_to_the_database(): void
+//    public function it_saves_translations_to_database(): void
 //    {
 //        $book = BookFactory::new()->create();
 //
@@ -155,7 +155,7 @@ class TranslationTest extends TestCase
 //    }
 
 //    /** @test */
-//    public function it_saves_many_translations_to_the_database(): void
+//    public function it_saves_many_translations_to_database(): void
 //    {
 //        $book = BookFactory::new()->create();
 //
@@ -220,7 +220,7 @@ class TranslationTest extends TestCase
 //    }
 //
 //    /** @test */
-//    public function it_throws_an_exception_during_translation_non_translatable_attributes(): void
+//    public function it_throws_exception_during_translation_non_translatable_attributes(): void
 //    {
 //        $book = BookFactory::new()->create(['title' => 'My book']);
 //

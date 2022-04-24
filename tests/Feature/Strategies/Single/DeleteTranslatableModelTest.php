@@ -8,7 +8,7 @@ use Illuminate\Database\Schema\Blueprint;
 use Nevadskiy\Translatable\Strategies\Single\HasTranslations;
 use Nevadskiy\Translatable\Tests\TestCase;
 
-class DeleteTranslatableModelTestTest extends TestCase
+class DeleteTranslatableModelTest extends TestCase
 {
     /**
      * @inheritdoc

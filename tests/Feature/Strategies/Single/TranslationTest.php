@@ -100,7 +100,7 @@ class TranslationTest extends TestCase
     }
 
     /** @test */
-    public function it_throws_an_exception_when_trying_to_get_translation_for_non_translatable_attribute(): void
+    public function it_throws_exception_when_trying_to_get_translation_for_non_translatable_attribute(): void
     {
         $book = new Book();
         $book->title = 'Large encyclopedia of animals';
@@ -112,7 +112,7 @@ class TranslationTest extends TestCase
     }
 
     /** @test */
-    public function it_throws_an_exception_when_trying_to_add_translation_for_non_translatable_attribute(): void
+    public function it_throws_exception_when_trying_to_add_translation_for_non_translatable_attribute(): void
     {
         $book = new Book();
         $book->title = 'Large encyclopedia of animals';
@@ -149,7 +149,7 @@ class TranslationTest extends TestCase
     // TODO: probably move to strategy specific test.
 
     /** @test */
-    public function it_saves_translations_to_the_database(): void
+    public function it_saves_translations_to_database(): void
     {
         $book = new Book();
         $book->title = 'Atlas of animals';

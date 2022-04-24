@@ -4,7 +4,7 @@ namespace Nevadskiy\Translatable\Events;
 
 use Illuminate\Database\Eloquent\Model;
 
-class TranslationNotFound
+class TranslationMissing
 {
     /**
      * @var Model

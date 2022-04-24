@@ -127,7 +127,7 @@ class SingleTableStrategy implements TranslatorStrategy
         });
 
         if (! $translation) {
-            return throw new TranslationMissingException($this->model, $attribute, $locale);
+            throw new TranslationMissingException($this->model, $attribute, $locale);
         }
 
         return $translation->getAttribute('value');
