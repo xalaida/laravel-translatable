@@ -44,7 +44,7 @@ trait HasTranslations
      */
     protected function getTranslationStrategy(): TranslatorStrategy
     {
-        return new Strategy($this);
+        return new SingleTableStrategy($this);
     }
 
     /**
@@ -75,6 +75,7 @@ trait HasTranslations
 
     /**
      * Determine whether the model should delete translations.
+     * TODO: probably move to the strategy instance.
      */
     protected function shouldDeleteTranslations(): bool
     {
@@ -91,6 +92,7 @@ trait HasTranslations
 
     /**
      * Delete the model translations.
+     * TODO: probably move to the strategy instance.
      */
     protected function deleteTranslations(): void
     {

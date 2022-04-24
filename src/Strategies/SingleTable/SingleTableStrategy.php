@@ -1,6 +1,6 @@
 <?php
 
-namespace Nevadskiy\Translatable\Strategies\SingleTableExtended;
+namespace Nevadskiy\Translatable\Strategies\SingleTable;
 
 use Illuminate\Database\Eloquent\Model;
 use Nevadskiy\Translatable\Exceptions\TranslationMissingException;
@@ -22,14 +22,14 @@ class SingleTableStrategy implements TranslatorStrategy
      *
      * @var Model|HasTranslations
      */
-    private $model;
+    protected $model;
 
     /**
      * A list of pending translation insertions.
      *
      * @var array
      */
-    private $pendingTranslations = [];
+    protected $pendingTranslations = [];
 
     /**
      * Make a new strategy instance.
@@ -44,10 +44,6 @@ class SingleTableStrategy implements TranslatorStrategy
      */
     public function get(string $attribute, string $locale)
     {
-        if ($this->shouldGetFromOriginalAttribute($locale)) {
-            return $this->model->getRawOriginal($attribute);
-        }
-
         if (isset($this->pendingTranslations[$locale][$attribute])) {
             return $this->pendingTranslations[$locale][$attribute];
         }
@@ -60,34 +56,23 @@ class SingleTableStrategy implements TranslatorStrategy
      */
     public function set(string $attribute, $value, string $locale): void
     {
-        if ($this->shouldSetToOriginalAttribute($locale)) {
-            $this->model->setRawOriginal($attribute, $value);
-        } else {
-            $this->pendingTranslations[$locale][$attribute] = $value;
-        }
-    }
-
-    /**
-     * Determine if the given locale is fallback locale.
-     */
-    private function isFallbackLocale(string $locale): bool
-    {
-        return $locale === 'en';
+        $this->pendingTranslations[$locale][$attribute] = $value;
     }
 
     /**
      * Save the pending translations on the model.
+     * TODO: should be protected and set up from the boot method.
      */
     public function save(): void
     {
         foreach ($this->pullPendingTranslations() as $locale => $attributes) {
             foreach ($attributes as $attribute => $value) {
-                $this->updateOrCreate($attribute, $locale, $value);
+                $this->updateOrCreateTranslation($attribute, $locale, $value);
             }
         }
     }
 
-    private function pullPendingTranslations(): array
+    protected function pullPendingTranslations(): array
     {
         $pendingTranslations = $this->pendingTranslations;
 
@@ -97,29 +82,11 @@ class SingleTableStrategy implements TranslatorStrategy
     }
 
     /**
-     * @param string $locale
-     * @return bool
-     */
-    private function shouldSetToOriginalAttribute(string $locale): bool
-    {
-        if (! $this->model->exists) {
-            return true;
-        }
-
-        return $this->isFallbackLocale($locale);
-    }
-
-    private function shouldGetFromOriginalAttribute(string $locale): bool
-    {
-        return $this->isFallbackLocale($locale);
-    }
-
-    /**
      * @param string $attribute
      * @param string $locale
      * @return mixed
      */
-    private function getFromRelation(string $attribute, string $locale)
+    protected function getFromRelation(string $attribute, string $locale)
     {
         $translation = $this->model->translations->first(function (Translation $translation) use ($attribute, $locale) {
             return $translation->translatable_attribute === $attribute
@@ -136,7 +103,7 @@ class SingleTableStrategy implements TranslatorStrategy
     /**
      * Update existing translation on the model or create a new one if it is missing.
      */
-    public function updateOrCreate(string $attribute, string $locale, $value): void
+    protected function updateOrCreateTranslation(string $attribute, string $locale, $value): void
     {
         $this->model->translations()->updateOrCreate([
             'translatable_attribute' => $attribute,
@@ -146,7 +113,7 @@ class SingleTableStrategy implements TranslatorStrategy
         ]);
     }
 
-// TODO: feature deleting
+    // TODO: feature deleting
 //    /**
 //     * Delete translation from the model for the given attribute and locale.
 //     */

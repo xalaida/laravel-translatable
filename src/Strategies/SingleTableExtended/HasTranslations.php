@@ -10,7 +10,7 @@ use Illuminate\Database\Query\JoinClause;
 use Illuminate\Support\Collection;
 use Nevadskiy\Translatable\Strategies\InteractsWithTranslations;
 use Nevadskiy\Translatable\Strategies\SingleTable\Models\Translation;
-use Nevadskiy\Translatable\Strategies\SingleTable\Scopes\TranslationsEagerLoadScope;
+use Nevadskiy\Translatable\Strategies\SingleTableExtended\Scopes\TranslationsEagerLoadScope;
 use Nevadskiy\Translatable\Strategies\TranslatorStrategy;
 
 /**
@@ -26,8 +26,6 @@ trait HasTranslations
      */
     protected static function bootHasTranslations(): void
     {
-        // TODO: move booting to the strategy.
-
         static::addGlobalScope(new TranslationsEagerLoadScope());
 
         static::saved(static function (self $translatable) {
@@ -44,7 +42,7 @@ trait HasTranslations
      */
     protected function getTranslationStrategy(): TranslatorStrategy
     {
-        return new SingleTableStrategy($this);
+        return new SingleTableExtendedStrategy($this);
     }
 
     /**
