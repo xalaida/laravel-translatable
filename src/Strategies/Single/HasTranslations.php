@@ -112,29 +112,29 @@ trait HasTranslations
         return $query->withoutGlobalScope(TranslationsEagerLoadScope::class);
     }
 
-    // TODO: refactor below.
-
     /**
      * Scope to filter models by translatable attribute.
-     *
-     * @param mixed $value
      */
     protected function scopeWhereTranslatable(Builder $query, string $attribute, $value, string $locale = null, string $operator = '='): Builder
     {
-        return $query->where(function (Builder $query) use ($attribute, $value, $locale, $operator) {
-            if (is_null($locale) || $this->translator()->isFallbackLocale($locale)) {
-                $query->where($attribute, $operator, $value);
-            }
-
-            $query->orWhereHas('translations', function (Builder $query) use ($attribute, $value, $locale, $operator) {
-                $query->forAttribute($attribute);
-
-                if ($locale) {
-                    $query->forLocale($locale);
-                }
-
-                $query->where('value', $operator, $value);
+        if (! $locale) {
+            return $query->where(function (Builder $query) use ($attribute, $value, $operator) {
+                $query->where($attribute, $operator, $value)
+                    ->orWhereHas('translations', function (Builder $query) use ($attribute, $value, $operator) {
+                        $query->where('value', $operator, $value)
+                            ->forAttribute($attribute);
+                    });
             });
+        }
+
+        if ($this->translator()->isFallbackLocale($locale)) {
+            return $query->where($attribute, $operator, $value);
+        }
+
+        return $query->whereHas('translations', function (Builder $query) use ($attribute, $value, $locale, $operator) {
+            $query->where('value', $operator, $value)
+                ->forAttribute($attribute)
+                ->forLocale($locale);
         });
     }
 
