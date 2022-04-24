@@ -64,7 +64,7 @@ class TranslationMissingEventTest extends TestCase
 
         $this->expectException(TranslationMissingException::class);
 
-        $book->translator()->get('title');
+        $book->translator()->getOrFail('title');
     }
 
     /** @test */

@@ -54,6 +54,9 @@ class NullableTranslationTest extends TestCase
         $book->translator()->add('title', 'Спрага музики', 'uk');
         self::assertEquals('Спрага музики', $book->translator()->get('title', 'uk'));
 
+        // TODO: remove when it will be rewritten using 'loaded strategy structure' on 'retrieved' event.
+        $book = $book->fresh();
+
         $book->translator()->add('title', null, 'uk');
         self::assertNull($book->translator()->get('title', 'uk'));
     }

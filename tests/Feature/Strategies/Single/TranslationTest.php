@@ -140,16 +140,6 @@ class TranslationTest extends TestCase
     }
 
     /** @test */
-    public function it_returns_null_if_translation_is_missing(): void
-    {
-        $book = new Book();
-        $book->title = 'Atlas of animals';
-        $book->save();
-
-        self::assertNull($book->translator()->get('title', 'uk'));
-    }
-
-    /** @test */
     public function it_returns_fallback_value_if_translation_is_missing(): void
     {
         $book = new Book();
@@ -157,6 +147,18 @@ class TranslationTest extends TestCase
         $book->save();
 
         self::assertEquals('Atlas of animals', $book->translator()->get('title', 'uk'));
+    }
+
+    /** @test */
+    public function it_returns_null_if_translation_is_nullable(): void
+    {
+        $book = new Book();
+        $book->title = 'Atlas of animals';
+        $book->save();
+
+        $book->translator()->add('title', null, 'uk');
+
+        self::assertNull($book->translator()->get('title', 'uk'));
     }
 
     // TODO: probably move to strategy specific test.
@@ -208,26 +210,13 @@ class TranslationTest extends TestCase
         $book->translator()->add('title', 'Світ навколо нас', 'uk');
         self::assertEquals('Світ навколо нас', $book->translator()->get('title', 'uk'));
 
+        // TODO: remove when it will be rewritten using 'loaded strategy structure' on 'retrieved' event.
+        $book = $book->fresh();
+
         $book->translator()->add('title', 'Світ навколо нас. Дикі тварини', 'uk');
         self::assertEquals('Світ навколо нас. Дикі тварини', $book->translator()->get('title', 'uk'));
 
         $this->assertDatabaseCount('translations', 1);
-    }
-
-    /** @test */
-    public function it_removes_previous_translation_when_setting_null(): void
-    {
-        $book = new Book();
-        $book->title = 'The world around us';
-        $book->save();
-
-        $book->translator()->add('title', 'Світ навколо нас', 'uk');
-        $this->assertDatabaseCount('translations', 1);
-
-        $book->translator()->add('title', null, 'uk');
-        $this->assertDatabaseCount('translations', 0);
-
-        self::assertEquals('The world around us', $book->translator()->get('title', 'uk'));
     }
 
     /** @test */
