@@ -27,7 +27,7 @@ test:
 
 # Generate a coverage report as html
 coverage.html:
-	docker run --rm -it -v ${PWD}:/app app vendor/bin/phpunit --coverage-html tests/report
+	docker run --rm -it -v ${PWD}:/app app vendor/bin/phpunit --coverage-html tests/.coverage
 
 # Generate a coverage report as text
 coverage.text:
