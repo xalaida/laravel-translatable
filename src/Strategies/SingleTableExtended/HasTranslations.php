@@ -59,6 +59,7 @@ trait HasTranslations
      */
     public function translations(): MorphMany
     {
+        // TODO: add possibility to specify custom model (for example to support uuid)
         return $this->morphMany(Translation::class, 'translatable');
     }
 
@@ -75,6 +76,8 @@ trait HasTranslations
      */
     protected function handleDeletedEvent(): void
     {
+        // TODO: rewrite with $this->translator->delete();
+
         if ($this->shouldDeleteTranslations()) {
             $this->deleteTranslations();
         }
@@ -105,7 +108,7 @@ trait HasTranslations
     }
 
     /**
-     * Scope to remove the 'translations' relation from a query.
+     * Scope to remove the eager loading of translations from the query.
      */
     protected function scopeWithoutTranslations(Builder $query): Builder
     {
@@ -118,6 +121,7 @@ trait HasTranslations
      */
     protected function scopeWhereTranslatable(Builder $query, string $attribute, $value, string $locale = null, string $operator = '='): Builder
     {
+        // TODO: probably remove this check.
         $this->translator()->assertAttributeIsTranslatable($attribute);
 
         if (is_null($locale)) {
@@ -147,6 +151,7 @@ trait HasTranslations
      */
     protected function scopeOrderByTranslatable(Builder $query, string $attribute, string $direction = 'asc', string $locale = null): Builder
     {
+        // TODO: probably remove this check.
         $this->translator()->assertAttributeIsTranslatable($attribute);
 
         $locale = $locale ?: $this->translator()->getLocale();
