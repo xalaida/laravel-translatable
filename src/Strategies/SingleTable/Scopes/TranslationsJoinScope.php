@@ -23,7 +23,9 @@ class TranslationsJoinScope implements Scope
     {
         $translationModel = $this->resolveTranslationModel();
 
-        $query->addSelect($translatable->qualifyColumn('*'));
+        if (! $query->getQuery()->columns) {
+            $query->addSelect($translatable->qualifyColumn('*'));
+        }
 
         foreach ($translatable->getTranslatable() as $attribute) {
             $translationsJoinTable = $this->getJoinedTranslationsTable();
@@ -33,7 +35,9 @@ class TranslationsJoinScope implements Scope
                     $join->on("{$translationsJoinTable}.translatable_id", $translatable->qualifyColumn('id'))
                         ->where("{$translationsJoinTable}.translatable_type", $translatable->getMorphClass())
                         ->where("{$translationsJoinTable}.translatable_attribute", $attribute)
-                        ->where("{$translationsJoinTable}.locale", app()->getLocale());
+                        ->where("{$translationsJoinTable}.locale", value(function () use ($translatable) {
+                            return $translatable->translator()->getLocale();
+                        }));
                 });
         }
     }

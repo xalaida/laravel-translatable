@@ -48,6 +48,9 @@ class SingleTableStrategy implements TranslatorStrategy
             return $this->pendingTranslations[$locale][$attribute];
         }
 
+        // TODO: does not work with boot global join scope (boots only once and fix initial locale forever).
+        // return $this->model->getRawOriginal($attribute);
+
         return $this->getFromRelation($attribute, $locale);
     }
 
