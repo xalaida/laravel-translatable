@@ -11,7 +11,6 @@ use Illuminate\Support\Collection;
 use Nevadskiy\Translatable\Strategies\InteractsWithTranslations;
 use Nevadskiy\Translatable\Strategies\SingleTable\Models\Translation;
 use Nevadskiy\Translatable\Strategies\SingleTable\Scopes\TranslationsEagerLoadingScope;
-use Nevadskiy\Translatable\Strategies\SingleTable\Scopes\TranslationsJoinScope;
 use Nevadskiy\Translatable\Strategies\TranslatorStrategy;
 
 /**
@@ -160,6 +159,7 @@ trait HasTranslations
                 ->where($translationModel->qualifyColumn('translatable_attribute'), $attribute)
                 ->where($translationModel->qualifyColumn('locale'), $locale);
         })
+            // TODO: add condition if there are currently selected columns
             ->addSelect($this->qualifyColumn('*'))
             ->orderBy($translationModel->qualifyColumn('value'), $direction);
     }
@@ -178,4 +178,6 @@ trait HasTranslations
 
         return $this->whereTranslatable($field, $value)->first();
     }
+
+    // TODO: add join translatable attributes.
 }

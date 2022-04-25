@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\DB;
 use Nevadskiy\Translatable\Strategies\SingleTableExtended\HasTranslations;
 use Nevadskiy\Translatable\Tests\TestCase;
 
-class EagerLoadingTranslationsTest extends TestCase
+class EagerLoadTranslationsTest extends TestCase
 {
     /**
      * @inheritdoc
@@ -97,31 +97,6 @@ class EagerLoadingTranslationsTest extends TestCase
         [$book] = BookForEagerLoading::query()->withoutTranslations()->get();
 
         self::assertFalse($book->relationLoaded('translations'));
-    }
-
-    /**
-     * @skipped
-     * TODO: implement this (need to tweak laravel internals).
-     * This is possible only if the eloquent 'retrieved' event was fired AFTER eager loading.
-     * Similar approach: https://github.com/laravel-enso/versioning/blob/master/src/Traits/Versionable.php#L33
-     * Related to this: https://github.com/laravel/framework/issues/29658 (#29658)
-     * Probably PR this behaviour.
-     */
-    public function it_can_lazy_load_translation_on_model_with_eager_loaded_translations_after_switching_locale(): void
-    {
-        $book = new BookForEagerLoading();
-        $book->title = 'Atlas of animals';
-        $book->save();
-
-        $book->translator()->add('title', 'Атлас тварин', 'uk');
-        $book->translator()->add('title', 'Atlas zwierząt', 'pl');
-
-        $this->app->setLocale('uk');
-
-        [$book] = BookForEagerLoading::all();
-
-        self::assertEquals('Атлас тварин', $book->translator()->get('title', 'uk'));
-        self::assertEquals('Atlas zwierząt', $book->translator()->get('title', 'pl'));
     }
 
     /**

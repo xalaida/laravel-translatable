@@ -84,8 +84,7 @@ class Translator
     public function add(string $attribute, $value, string $locale = null): void
     {
         $this->set($attribute, $value, $locale);
-        // $this->model->save();
-        $this->save();
+        $this->model->save();
     }
 
     /**

@@ -85,6 +85,17 @@ class CreationTranslatableModelTest extends TestCase
         }
     }
 
+    /** @test */
+    public function it_stores_model_along_with_translation(): void
+    {
+        $book = new Book();
+        $book->title = 'Ocean monsters';
+        $book->translator()->add('title', 'Монстри океану', 'uk');
+
+        $this->assertDatabaseCount('translations', 1);
+        $this->assertDatabaseCount('books', 1);
+    }
+
     /**
      * @inheritdoc
      */

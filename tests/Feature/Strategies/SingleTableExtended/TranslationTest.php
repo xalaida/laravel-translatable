@@ -272,39 +272,6 @@ class TranslationTest extends TestCase
         self::assertEquals('Book about penguins', $translation);
     }
 
-    /** @test */
-    public function it_performs_only_one_query_to_retrieve_translation_for_same_attribute_and_locale(): void
-    {
-        $book = new Book();
-        $book->title = 'Book about penguins';
-        $book->save();
-
-        $book->translator()->add('title', 'Книга про пінгвінів', 'uk');
-
-        DB::connection()->enableQueryLog();
-
-        $book->translator()->get('title', 'uk');
-        $book->translator()->get('title', 'uk');
-        $book->translator()->get('title', 'uk');
-
-        self::assertCount(1, DB::connection()->getQueryLog());
-    }
-
-    /** @test */
-    public function it_cannot_add_translation_to_non_existing_model(): void
-    {
-        $book = new Book();
-        $book->title = 'Ocean monsters';
-
-        try {
-            $book->translator()->add('title', 'Монстри океану', 'uk');
-            $this->fail("Translation was added to non-existing model.");
-        } catch (Exception $e) {
-            $this->assertDatabaseCount('translations', 0);
-            $this->assertDatabaseCount('books', 0);
-        }
-    }
-
     /**
      * @inheritdoc
      */

@@ -111,6 +111,7 @@ trait HasTranslations
 
     /**
      * Scope to remove the eager loading of translations from the query.
+     * TODO: probably rename to 'withoutTranslationsScope'
      */
     protected function scopeWithoutTranslations(Builder $query): Builder
     {
