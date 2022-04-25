@@ -2,6 +2,7 @@
 
 namespace Nevadskiy\Translatable\Tests\Feature\Strategies\SingleTableExtended;
 
+use Exception;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\DB;
@@ -287,6 +288,21 @@ class TranslationTest extends TestCase
         $book->translator()->get('title', 'uk');
 
         self::assertCount(1, DB::connection()->getQueryLog());
+    }
+
+    /** @test */
+    public function it_cannot_add_translation_to_non_existing_model(): void
+    {
+        $book = new Book();
+        $book->title = 'Ocean monsters';
+
+        try {
+            $book->translator()->add('title', 'Монстри океану', 'uk');
+            $this->fail("Translation was added to non-existing model.");
+        } catch (Exception $e) {
+            $this->assertDatabaseCount('translations', 0);
+            $this->assertDatabaseCount('books', 0);
+        }
     }
 
     /**
