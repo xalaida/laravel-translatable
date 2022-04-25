@@ -436,7 +436,7 @@ Relation::morphMap([
 ```
 More about morph maps [here](https://laravel.com/docs/7.x/eloquent-relationships#custom-polymorphic-types).
 
-## Approaches
+## Links
 
 - https://www.soluling.com/Help/Database/Index.htm
 - https://medium.com/@cemalcanakgul/what-is-the-best-database-design-for-multi-language-data-b21982dd7265

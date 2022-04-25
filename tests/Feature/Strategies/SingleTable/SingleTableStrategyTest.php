@@ -11,7 +11,7 @@ use Nevadskiy\Translatable\Tests\TestCase;
 // TODO: missing translation for locale
 // TODO: test custom model (for uuid attributes)
 // TODO: using custom (not english) language for default values
-class TranslationTest extends TestCase
+class SingleTableStrategyTest extends TestCase
 {
     /**
      * @inheritdoc
@@ -33,12 +33,77 @@ class TranslationTest extends TestCase
         });
     }
 
+    // TODO: test translation for correct model.
+
     /** @test */
-    public function it_stores_translatable_attributes_in_the_global_translations_table(): void
+    public function it_stores_translations_using_single_table_strategy(): void
     {
         $book = new Book();
-        $book->title = 'My first book';
-        $book->description = 'Lorem ipsum';
+        $book->translator()->set('title', 'Amazing birds', 'en');
+        $book->translator()->set('title', 'Дивовижні птахи', 'uk');
+        $book->translator()->set('description', 'This book will help you discover all the secrets of birds', 'en');
+        $book->translator()->set('description', 'Ця книга допоможе тобі вивідати всі пташині таємниці', 'uk');
+        $book->save();
+
+        $this->assertDatabaseCount('books', 1);
+        $this->assertDatabaseCount('translations', 4);
+        $this->assertDatabaseHas('translations', [
+            'translatable_type' => $book->getMorphClass(),
+            'translatable_id' => $book->getKey(),
+            'translatable_attribute' => 'title',
+            'locale' => 'en',
+            'value' => 'Amazing birds'
+        ]);
+        $this->assertDatabaseHas('translations', [
+            'translatable_type' => $book->getMorphClass(),
+            'translatable_id' => $book->getKey(),
+            'translatable_attribute' => 'title',
+            'locale' => 'uk',
+            'value' => 'Дивовижні птахи'
+        ]);
+        $this->assertDatabaseHas('translations', [
+            'translatable_type' => $book->getMorphClass(),
+            'translatable_id' => $book->getKey(),
+            'translatable_attribute' => 'description',
+            'locale' => 'en',
+            'value' => 'This book will help you discover all the secrets of birds'
+        ]);
+        $this->assertDatabaseHas('translations', [
+            'translatable_type' => $book->getMorphClass(),
+            'translatable_id' => $book->getKey(),
+            'translatable_attribute' => 'description',
+            'locale' => 'uk',
+            'value' => 'Ця книга допоможе тобі вивідати всі пташині таємниці'
+        ]);
+    }
+
+    /** @test */
+    public function it_retrieves_translations_using_single_table_strategy(): void
+    {
+        $book = new Book();
+        $book->translator()->set('title', 'Amazing birds', 'en');
+        $book->translator()->set('title', 'Дивовижні птахи', 'uk');
+        $book->translator()->set('description', 'This book will help you discover all the secrets of birds', 'en');
+        $book->translator()->set('description', 'Ця книга допоможе тобі вивідати всі пташині таємниці', 'uk');
+        $book->save();
+
+        self::assertEquals('Amazing birds', $book->translator()->get('title', 'en'));
+        self::assertEquals('Дивовижні птахи', $book->translator()->get('title', 'uk'));
+        self::assertEquals('This book will help you discover all the secrets of birds', $book->translator()->get('description', 'en'));
+        self::assertEquals('Ця книга допоможе тобі вивідати всі пташині таємниці', $book->translator()->get('description', 'uk'));
+    }
+
+    /** @test */
+    public function it_stores_translations_using_attribute_interceptors_on_single_table_strategy(): void
+    {
+        $book = new Book();
+
+        $this->app->setLocale('en');
+        $book->title = 'Amazing birds';
+
+        $this->app->setLocale('uk');
+        $book->title = 'Дивовижні птахи';
+
         $book->save();
 
         $this->assertDatabaseCount('books', 1);
@@ -47,23 +112,35 @@ class TranslationTest extends TestCase
             'translatable_type' => $book->getMorphClass(),
             'translatable_id' => $book->getKey(),
             'translatable_attribute' => 'title',
-            'locale' => $this->app->getLocale(),
-            'value' => 'My first book'
+            'locale' => 'en',
+            'value' => 'Amazing birds'
         ]);
         $this->assertDatabaseHas('translations', [
             'translatable_type' => $book->getMorphClass(),
             'translatable_id' => $book->getKey(),
-            'translatable_attribute' => 'description',
-            'locale' => $this->app->getLocale(),
-            'value' => 'Lorem ipsum'
+            'translatable_attribute' => 'title',
+            'locale' => 'uk',
+            'value' => 'Дивовижні птахи'
         ]);
     }
 
-    // TODO: create in custom locale
-    // TODO: create in fallback locale
+    /** @test */
+    public function it_retrieves_translations_using_attribute_interceptors_on_single_table_strategy(): void
+    {
+        $book = new Book();
+        $book->translator()->set('title', 'Amazing birds', 'en');
+        $book->translator()->set('title', 'Дивовижні птахи', 'uk');
+        $book->save();
+
+        $this->app->setLocale('en');
+        self::assertEquals('Amazing birds', $book->title);
+
+        $this->app->setLocale('uk');
+        self::assertEquals('Дивовижні птахи', $book->title);
+    }
 
     /** @test */
-    public function it_has_nullable_attributes_when_translations_are_not_set(): void
+    public function it_fills_translatable_attributes_with_nulls_when_translations_are_missing(): void
     {
         $book = new Book();
         $book->save();
@@ -74,30 +151,9 @@ class TranslationTest extends TestCase
         self::assertNull($array['description']);
     }
 
-    /** @test */
-    public function it_handles_translations_for_translatable_attributes(): void
-    {
-        $book = new Book();
-        $book->save();
+    // TODO: create in custom locale
+    // TODO: create in fallback locale
 
-        $book->translator()->add('title', 'Моя перша книга', 'uk');
-
-        self::assertEquals('Моя перша книга', $book->translator()->get('title', 'uk'));
-    }
-
-//    /** @test */
-//    public function it_retrieves_correct_translation_from_multiple_locales(): void
-//    {
-//        $book = new Book();
-//        $book->title = 'Amazing birds';
-//        $book->save();
-//
-//        $book->translator()->add('title', 'Дивовижні птахи', 'uk');
-//        $book->translator()->add('title', 'Niesamowite ptaki', 'pl');
-//
-//        self::assertEquals('Niesamowite ptaki', $book->translator()->get('title', 'pl'));
-//    }
-//
 //    /** @test */
 //    public function it_retrieves_correct_translation_from_multiple_attributes(): void
 //    {
@@ -335,7 +391,7 @@ class TranslationTest extends TestCase
 }
 
 /**
- * @property string title
+ * @property string|null title
  * @property string|null description
  */
 class Book extends Model

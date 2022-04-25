@@ -6,11 +6,14 @@ use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Schema\Builder;
 use Illuminate\Foundation\Application;
+use Illuminate\Support\Traits\Localizable;
 use Nevadskiy\Translatable\TranslatableServiceProvider;
 use Orchestra\Testbench\TestCase as OrchestraTestCase;
 
 class TestCase extends OrchestraTestCase
 {
+    use Localizable;
+
     /**
      * Setup the test environment.
      */

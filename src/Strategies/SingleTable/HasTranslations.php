@@ -28,6 +28,7 @@ trait HasTranslations
     {
         // TODO: move booting to the strategy.
 
+        // TODO: try to rewrite this using join instead.
         static::addGlobalScope(new TranslationsEagerLoadScope());
 
         static::saved(static function (self $translatable) {
