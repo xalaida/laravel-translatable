@@ -4,6 +4,7 @@ namespace Nevadskiy\Translatable\Tests\Feature\Strategies\SingleTable;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\DB;
 use Nevadskiy\Translatable\Strategies\SingleTable\HasTranslations;
 use Nevadskiy\Translatable\Tests\TestCase;
 
@@ -166,9 +167,14 @@ class SingleTableStrategyTest extends TestCase
 
         $this->app->setLocale('uk');
 
-        $records = Book::all();
+        DB::connection()->enableQueryLog();
 
-        dd($records);
+        $records = Book::query()->get();
+
+        self::assertCount(1, DB::connection()->getQueryLog());
+        self::assertTrue($records[0]->is($book1));
+        self::assertEquals('Дивовижні птахи', $records[0]->title);
+        self::assertTrue($records[0]->created_at->eq($book1->created_at));
     }
 
     // TODO: create in custom locale
