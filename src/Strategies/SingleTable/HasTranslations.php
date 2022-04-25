@@ -31,6 +31,8 @@ trait HasTranslations
         // TODO: try to rewrite this using join instead.
         static::addGlobalScope(new TranslationsEagerLoadScope());
 
+        //static::addGlobalScope(new TranslationsEagerLoadScope());
+
         static::saved(static function (self $translatable) {
             $translatable->handleSavedEvent();
         });

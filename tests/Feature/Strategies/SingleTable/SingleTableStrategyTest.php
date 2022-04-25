@@ -151,6 +151,26 @@ class SingleTableStrategyTest extends TestCase
         self::assertNull($array['description']);
     }
 
+    /** @test */
+    public function it_loads_translations_using_single_database_query(): void
+    {
+        $book1 = new Book();
+        $book1->translator()->set('title', 'Amazing birds', 'en');
+        $book1->translator()->set('title', 'Дивовижні птахи', 'uk');
+        $book1->save();
+
+        $book2 = new Book();
+        $book2->translator()->set('title', 'Doctors in the animal world', 'en');
+        $book2->translator()->set('title', 'Лікарі у світі тварин', 'uk');
+        $book2->save();
+
+        $this->app->setLocale('uk');
+
+        $records = Book::all();
+
+        dd($records);
+    }
+
     // TODO: create in custom locale
     // TODO: create in fallback locale
 
