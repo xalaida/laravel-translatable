@@ -2,6 +2,7 @@
 
 namespace Nevadskiy\Translatable\Tests\Feature\Strategies\SingleTableExtended;
 
+use Exception;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Schema\Blueprint;
 use Nevadskiy\Translatable\Strategies\SingleTableExtended\HasTranslations;
@@ -33,19 +34,55 @@ class CreationTranslatableModelTest extends TestCase
     }
 
     /** @test */
-    public function it_creates_model_without_translations_when_custom_locale_is_set(): void
+    public function it_can_be_created_with_multiple_translations_at_once(): void
+    {
+        $book = new BookForCreation();
+        $book->translator()->set('title', 'Atlas of animals', 'en');
+        $book->translator()->set('title', 'Атлас тварин', 'uk');
+        $book->save();
+
+        $this->assertDatabaseCount('translations', 1);
+        $this->assertDatabaseCount('books', 1);
+        $this->assertDatabaseHas('books', [
+            'title' => 'Atlas of animals',
+        ]);
+        $this->assertDatabaseHas('translations', [
+            'value' => 'Атлас тварин',
+            'locale' => 'uk',
+        ]);
+    }
+
+    /** @test */
+    public function it_cannot_be_created_when_no_translation_was_set_to_fallback_locale(): void
+    {
+        $book = new BookForCreation();
+        $book->translator()->set('title', 'Атлас тварин', 'uk');
+        $book->translator()->set('title', 'Atlas zwierząt', 'pl');
+
+        try {
+            $book->save();
+            $this->fail("Model was created without fallback translation values.");
+        } catch (Exception $e) {
+            $this->assertDatabaseCount('books', 0);
+            $this->assertDatabaseCount('translations', 0);
+        }
+    }
+
+    /** @test */
+    public function it_cannot_be_created_in_custom_locale_when_attribute_is_not_nullable(): void
     {
         $this->app->setLocale('uk');
 
         $book = new BookForCreation();
         $book->title = 'Hunting smiles';
-        $book->save();
 
-        $this->assertDatabaseCount('translations', 0);
-        $this->assertDatabaseCount('books', 1);
-        $this->assertDatabaseHas('books', [
-            'title' => 'Hunting smiles',
-        ]);
+        try {
+            $book->save();
+            $this->fail("Model was created without fallback translation values.");
+        } catch (Exception $e) {
+            $this->assertDatabaseCount('books', 0);
+            $this->assertDatabaseCount('translations', 0);
+        }
     }
 
     /**
