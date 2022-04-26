@@ -14,10 +14,10 @@
         <testsuite name="all">
             <directory>tests/</directory>
         </testsuite>
-        <testsuite name="single-table">
+        <testsuite name="SingleTable">
             <directory>tests/Feature/Strategies/SingleTable</directory>
         </testsuite>
-        <testsuite name="single-table-extended">
+        <testsuite name="SingleTableExtended">
             <directory>tests/Feature/Strategies/SingleTableExtended</directory>
         </testsuite>
     </testsuites>
