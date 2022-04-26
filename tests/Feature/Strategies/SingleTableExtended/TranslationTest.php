@@ -200,8 +200,6 @@ class TranslationTest extends TestCase
         self::assertEquals('Wind in willows', $book->title);
     }
 
-    // TODO: extract this test into 'caching' group
-    // TODO: make this test work.
     /** @test */
     public function it_overrides_previous_translations(): void
     {
@@ -211,9 +209,6 @@ class TranslationTest extends TestCase
 
         $book->translator()->add('title', 'Світ навколо нас', 'uk');
         self::assertEquals('Світ навколо нас', $book->translator()->get('title', 'uk'));
-
-        // TODO: remove when it will be rewritten using 'loaded strategy structure' on 'retrieved' event.
-        $book = $book->fresh();
 
         $book->translator()->add('title', 'Світ навколо нас. Дикі тварини', 'uk');
         self::assertEquals('Світ навколо нас. Дикі тварини', $book->translator()->get('title', 'uk'));
