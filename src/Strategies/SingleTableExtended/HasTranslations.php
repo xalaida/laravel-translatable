@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Query\JoinClause;
 use Illuminate\Support\Collection;
 use Nevadskiy\Translatable\Strategies\InteractsWithTranslations;
-use Nevadskiy\Translatable\Strategies\SingleTable\Models\Translation;
+use Nevadskiy\Translatable\Strategies\SingleTableExtended\Models\Translation;
 use Nevadskiy\Translatable\Strategies\SingleTableExtended\Scopes\TranslationsEagerLoadScope;
 use Nevadskiy\Translatable\Strategies\TranslatorStrategy;
 

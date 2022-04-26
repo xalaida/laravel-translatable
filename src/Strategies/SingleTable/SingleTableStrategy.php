@@ -64,7 +64,6 @@ class SingleTableStrategy implements TranslatorStrategy
 
     /**
      * Save the pending translations on the model.
-     * TODO: should be protected and set up from the boot method.
      */
     public function save(): void
     {

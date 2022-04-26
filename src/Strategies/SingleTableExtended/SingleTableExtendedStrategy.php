@@ -5,8 +5,7 @@ namespace Nevadskiy\Translatable\Strategies\SingleTableExtended;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Nevadskiy\Translatable\Exceptions\TranslationMissingException;
-use Nevadskiy\Translatable\Strategies\SingleTable\HasTranslations;
-use Nevadskiy\Translatable\Strategies\SingleTable\Models\Translation;
+use Nevadskiy\Translatable\Strategies\SingleTableExtended\Models\Translation;
 use Nevadskiy\Translatable\Strategies\TranslatorStrategy;
 
 /**
