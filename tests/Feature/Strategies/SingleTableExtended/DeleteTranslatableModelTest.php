@@ -41,7 +41,7 @@ class DeleteTranslatableModelTest extends TestCase
     /** @test */
     public function it_deletes_translations_along_with_model(): void
     {
-        $book = new BookToDelete();
+        $book = new BookForDeletion();
         $book->title = 'Shadows of Forgotten Ancestors';
         $book->save();
 
@@ -107,7 +107,7 @@ class DeleteTranslatableModelTest extends TestCase
 /**
  * @property string title
  */
-class BookToDelete extends Model
+class BookForDeletion extends Model
 {
     use HasTranslations;
 
