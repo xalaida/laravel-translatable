@@ -10,7 +10,7 @@ use Nevadskiy\Translatable\Tests\TestCase;
 
 // TODO: add possibility to throw an exception when trying to create model in custom locale
 // TODO: add method to check if model can be created in custom locale (useful for UI warning message)
-class CreationTranslatableModelTest extends TestCase
+class CreateTranslatableModelTest extends TestCase
 {
     /**
      * @inheritdoc
