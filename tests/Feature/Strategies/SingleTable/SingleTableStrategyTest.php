@@ -7,10 +7,6 @@ use Illuminate\Database\Schema\Blueprint;
 use Nevadskiy\Translatable\Strategies\SingleTable\HasTranslations;
 use Nevadskiy\Translatable\Tests\TestCase;
 
-// TODO: review this testcase
-// TODO: missing translation for locale
-// TODO: test custom model (for uuid attributes)
-// TODO: using custom (not english) language for default values
 class SingleTableStrategyTest extends TestCase
 {
     /**
@@ -32,8 +28,6 @@ class SingleTableStrategyTest extends TestCase
             $table->timestamps();
         });
     }
-
-    // TODO: test translation for correct model.
 
     /** @test */
     public function it_stores_translations_using_single_table_strategy(): void

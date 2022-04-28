@@ -470,3 +470,9 @@ The MIT License (MIT). Please see [LICENSE](LICENSE.md) for more information.
 - [ ] add possibility to specify custom fallback locale per model in extended strategy.
 - [ ] `replicate` method should replicate model with all translations.
 - [ ] add possibility to use without uuid (add possibility to use custom translation model)
+- [ ] command to show missing translations
+
+- SingleTableStrategy
+  - [ ] add possibility to specify fallback locale per model 
+  - [ ] add possibility to disable fallback translations (return nulls if missing)
+  - [ ] specify custom `Translation` model (for example to use UUID)
