@@ -76,12 +76,11 @@ class FallbackTranslationTest extends TestCase
     public function it_retrieves_fallback_translation_with_accessor_applied(): void
     {
         $book = new BookWithFallback();
-        $book->title = 'sense gallery';
+        $book->translator()->set('title', 'sense gallery', $this->app->getFallbackLocale());
+        $book->translator()->set('title', 'галерея чуття', 'uk');
         $book->save();
 
         $this->app->setLocale('uk');
-        $book->translator()->add('title', 'галерея чуття', 'uk');
-
         self::assertEquals('Sense gallery', $book->translator()->getFallback('title'));
     }
 

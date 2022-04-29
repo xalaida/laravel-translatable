@@ -89,16 +89,14 @@ class AccessorsTranslationTest extends TestCase
     }
 
     /** @test */
-    public function it_correctly_stores_translations_after_applied_accessor(): void
+    public function it_does_not_restores_translations_after_resolving_accessor(): void
     {
         $book = new BookWithAccessors();
-        $book->title = 'forest song';
+        $book->translator()->set('title', 'forest song', 'en');
+        $book->translator()->set('title', 'лісова пісня', 'uk');
         $book->save();
 
         $this->app->setLocale('uk');
-        $book->title = 'лісова пісня';
-        $book->save();
-
         self::assertEquals('Лісова пісня', $book->title);
         $book->save();
 
@@ -109,11 +107,10 @@ class AccessorsTranslationTest extends TestCase
     public function it_still_applies_accessor_for_non_translatable_attributes(): void
     {
         $book = new BookWithAccessors();
-        $book->title = 'forest song';
-        $book->description = 'Beautiful ancient forest in Volyn';
+        $book->translator()->set('title', 'Forest song', 'en');
+        $book->translator()->set('description', 'Beautiful ancient forest in Volyn', 'en');
+        $book->translator()->set('description', 'Прекрасний предковічний ліс на Волині', 'uk');
         $book->save();
-
-        $book->translator()->add('description', 'Прекрасний предковічний ліс на Волині', 'uk');
 
         $this->app->setLocale('uk');
         self::assertEquals('Пре...', $book->description_short);
