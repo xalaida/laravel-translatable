@@ -44,6 +44,35 @@ class FallbackTranslationTest extends TestCase
     }
 
     /** @test */
+    public function it_retrieves_fallback_translation_when_translation_is_missing_for_custom_locale(): void
+    {
+        $book = new BookWithFallback();
+        $book->translator()->set('title', 'Sense gallery', $this->app->getFallbackLocale());
+        $book->save();
+
+        $this->app->setLocale('uk');
+
+        self::assertEquals('Sense gallery', $book->translator()->get('title', 'uk'));
+    }
+
+    /** @test */
+    public function it_updates_fallback_translation_when_adding_translation_in_fallback_locale(): void
+    {
+        $book = new Book();
+        $book->title = 'Encyclopedia of animals';
+        $book->save();
+
+        $book->translator()->add('title', 'Large encyclopedia of animals', $this->app->getFallbackLocale());
+
+        self::assertEquals('Large encyclopedia of animals', $book->title);
+        $this->assertDatabaseCount('translations', 1);
+        $this->assertDatabaseHas('translations', [
+            'value' => 'Large encyclopedia of animals',
+            'locale' => $this->app->getFallbackLocale(),
+        ]);
+    }
+
+    /** @test */
     public function it_retrieves_fallback_translation_with_accessor_applied(): void
     {
         $book = new BookWithFallback();

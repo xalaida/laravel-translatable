@@ -2,6 +2,7 @@
 
 namespace Nevadskiy\Translatable\Strategies\SingleTable;
 
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Nevadskiy\Translatable\Exceptions\TranslationMissingException;
 use Nevadskiy\Translatable\Strategies\SingleTable\Models\Translation;
@@ -9,9 +10,6 @@ use Nevadskiy\Translatable\Strategies\TranslatorStrategy;
 
 /**
  * TODO: add possibility to trigger an exception when creating model in non-default locale.
- * TODO: add possibility to extract translatable attributes out of the model into single table (allows to create models in custom locale)
- * TODO: structure translations on 'retrieve' event (only when it was fired AFTER eager loading, not before like now)
- * TODO: structure loaded translation in the strategy as this: ['en' => ['title' => null], 'uk' => ['title' => 'Книга']]
  */
 class SingleTableStrategy implements TranslatorStrategy
 {
@@ -23,6 +21,19 @@ class SingleTableStrategy implements TranslatorStrategy
      * @var Model|HasTranslations
      */
     protected $model;
+
+    /**
+     * Indicates if the translation state is booted.
+     */
+    protected $booted = false;
+
+    /**
+     * A list of cached translation.
+     * TODO: consider moving to Translator class.
+     *
+     * @var array
+     */
+    protected $translations = [];
 
     /**
      * A list of pending translation insertions.
@@ -40,18 +51,42 @@ class SingleTableStrategy implements TranslatorStrategy
     }
 
     /**
+     * This method could be replaced with a direct 'loadTranslations' call on Eloquent' "retrieved" event.
+     * But the "retrieved" event is fired BEFORE eager loading, so it is impossible now.
+     * @see https://github.com/laravel/framework/issues/29658
+     */
+    public function bootIfNotBooted(): void
+    {
+        if ($this->booted) {
+            return;
+        }
+
+        if (! $this->model->relationLoaded('translations')) {
+            return;
+        }
+
+        $this->loadTranslations($this->model->translations);
+
+        $this->booted = true;
+    }
+
+    /**
      * @inheritdoc
      */
     public function get(string $attribute, string $locale)
     {
-        if (isset($this->pendingTranslations[$locale][$attribute])) {
-            return $this->pendingTranslations[$locale][$attribute];
+        $this->bootIfNotBooted();
+
+        if (! array_key_exists($locale, $this->translations)) {
+            $this->translations[$locale] = [];
+            $this->loadTranslationsForLocale($locale);
         }
 
-        // TODO: does not work with boot global join scope (boots only once and fix initial locale forever).
-        // return $this->model->getRawOriginal($attribute);
+        if (! array_key_exists($attribute, $this->translations[$locale])) {
+            throw new TranslationMissingException($this->model, $attribute, $locale);
+        }
 
-        return $this->getFromRelation($attribute, $locale);
+        return $this->translations[$locale][$attribute];
     }
 
     /**
@@ -59,6 +94,7 @@ class SingleTableStrategy implements TranslatorStrategy
      */
     public function set(string $attribute, $value, string $locale): void
     {
+        $this->translations[$locale][$attribute] = $value;
         $this->pendingTranslations[$locale][$attribute] = $value;
     }
 
@@ -67,41 +103,13 @@ class SingleTableStrategy implements TranslatorStrategy
      */
     public function save(): void
     {
-        // TODO: assert that model exists in the database.
-
-        foreach ($this->pullPendingTranslations() as $locale => $attributes) {
+        foreach ($this->pendingTranslations as $locale => $attributes) {
             foreach ($attributes as $attribute => $value) {
                 $this->updateOrCreateTranslation($attribute, $locale, $value);
             }
         }
-    }
-
-    protected function pullPendingTranslations(): array
-    {
-        $pendingTranslations = $this->pendingTranslations;
 
         $this->pendingTranslations = [];
-
-        return $pendingTranslations;
-    }
-
-    /**
-     * @param string $attribute
-     * @param string $locale
-     * @return mixed
-     */
-    protected function getFromRelation(string $attribute, string $locale)
-    {
-        $translation = $this->model->translations->first(function (Translation $translation) use ($attribute, $locale) {
-            return $translation->translatable_attribute === $attribute
-                && $translation->locale === $locale;
-        });
-
-        if (! $translation) {
-            throw new TranslationMissingException($this->model, $attribute, $locale);
-        }
-
-        return $translation->getAttribute('value');
     }
 
     /**
@@ -117,33 +125,61 @@ class SingleTableStrategy implements TranslatorStrategy
         ]);
     }
 
+    /**
+     * Load translation values from the given collection of translations.
+     */
+    protected function loadTranslations(Collection $translations): void
+    {
+        $translations->each(function (Translation $translation) {
+            $this->translations[$translation->locale][$translation->translatable_attribute] = $translation->value;
+        });
+    }
+
+    /**
+     * Load translation values for the given locale.
+     */
+    protected function loadTranslationsForLocale(string $locale): void
+    {
+        $this->loadTranslations($this->getTranslationsForLocale($locale));
+    }
+
+    /**
+     * Get translations for the given locale.
+     */
+    protected function getTranslationsForLocale(string $locale): Collection
+    {
+        return $this->model->translations()
+            ->forLocale($locale)
+            ->get();
+    }
+
     // TODO: feature deleting
-//    /**
-//     * Delete translation from the model for the given attribute and locale.
-//     */
-//    public function delete(string $attribute, string $locale)
-//    {
-//        $this->model->translations()
-//            ->forAttribute($attribute)
-//            ->forLocale($locale)
-//            ->delete();
-//    }
-//
-//    /**
-//     * Delete all translations from the model for the given locale.
-//     */
-//    public function deleteForLocale(string $locale = null)
-//    {
-//        $this->model->translations()
-//            ->forLocale($locale)
-//            ->delete();
-//    }
-//
-//    /**
-//     * Delete all translations from the model.
-//     */
-//    public function deleteAll(): void
-//    {
-//        $this->model->translations()->delete();
-//    }
+    // /**
+    //  * Delete translation from the model for the given attribute and locale.
+    //  */
+    // public function delete(string $attribute, string $locale)
+    // {
+    //     $this->model->translations()
+    //         ->forAttribute($attribute)
+    //         ->forLocale($locale)
+    //         ->delete();
+    // }
+    //
+    // /**
+    //  * Delete all translations from the model for the given locale.
+    //  */
+    // public function deleteForLocale(string $locale = null)
+    // {
+    //     $this->model->translations()
+    //         ->forLocale($locale)
+    //         ->delete();
+    // }
+    //
+    // /**
+    //  * Delete all translations from the model.
+    //  */
+    // public function deleteAll(): void
+    // {
+    //     $this->model->translations()->delete();
+    // }
 }
