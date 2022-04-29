@@ -190,16 +190,4 @@ class SingleTableExtendedStrategy implements TranslatorStrategy
     // {
     //     $this->model->translations()->delete();
     // }
-
-    // /**
-    //  * @inheritdoc
-    //  */
-    // public function get(string $attribute, string $locale)
-    // {
-    //     if ($this->shouldGetFromOriginalAttribute($locale)) {
-    //         return $this->model->getRawOriginal($attribute);
-    //     }
-    //
-    //     return parent::get($attribute, $locale);
-    // }
 }
