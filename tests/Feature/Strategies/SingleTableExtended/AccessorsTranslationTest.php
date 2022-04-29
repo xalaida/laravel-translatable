@@ -142,6 +142,17 @@ class AccessorsTranslationTest extends TestCase
         self::assertEquals('Ancient forest.', $book->caption);
     }
 
+    /** @test */
+    public function it_applies_accessor_for_nullable_translatable_attribute(): void
+    {
+        $book = new BookWithAccessors();
+        $book->title = 'Ancient forest';
+        $book->caption = null;
+        $book->save();
+
+        self::assertEquals('.', $book->caption);
+    }
+
     /**
      * @inheritDoc
      */
@@ -180,7 +191,7 @@ class BookWithAccessors extends Model
         return Str::limit($this->description, 3);
     }
 
-    public function getCaptionAttribute(string $caption): string
+    public function getCaptionAttribute(?string $caption): string
     {
         return $caption . '.';
     }

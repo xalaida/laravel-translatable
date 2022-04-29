@@ -82,13 +82,7 @@ class Translator
      */
     public function get(string $attribute, string $locale = null)
     {
-        try {
-            return $this->getOrFail($attribute, $locale);
-        } catch (TranslationMissingException $e) {
-            event(new TranslationMissing($e->model, $e->attribute, $e->locale));
-
-            return $this->getFallback($attribute);
-        }
+        return $this->model->withAttributeGetter($attribute, $this->getRaw($attribute, $locale));
     }
 
     /**
@@ -96,26 +90,7 @@ class Translator
      */
     public function getOrFail(string $attribute, string $locale = null)
     {
-        $translation = $this->getRawOrFail($attribute, $locale);
-
-        if (is_null($translation)) {
-            return null;
-        }
-
-        return $this->model->withAttributeGetter($attribute, $translation);
-    }
-
-    /**
-     * Get the fallback translation of the model.
-     */
-    public function getFallback(string $attribute)
-    {
-        try {
-            return $this->getOrFail($attribute, $this->fallbackLocale);
-        } catch (TranslationMissingException $e) {
-            // TODO: probably log that fallback translation is missing...
-            return null;
-        }
+        return $this->model->withAttributeGetter($attribute, $this->getRawOrFail($attribute, $locale));
     }
 
     /**
@@ -143,11 +118,23 @@ class Translator
     }
 
     /**
+     * Get the fallback translation of the model.
+     */
+    public function getFallback(string $attribute)
+    {
+        return $this->model->withAttributeGetter($attribute, $this->getRawFallback($attribute));
+    }
+
+    /**
      * Get the raw fallback translation of the model.
      */
     public function getRawFallback(string $attribute)
     {
-        return $this->getRawOrFail($attribute, $this->fallbackLocale);
+        try {
+            return $this->getRawOrFail($attribute, $this->fallbackLocale);
+        } catch (TranslationMissingException $e) {
+            return null;
+        }
     }
 
     /**
