@@ -83,11 +83,7 @@ trait HasTranslations
             return true;
         }
 
-        if ($this->isForceDeleting()) {
-            return true;
-        }
-
-        return false;
+        return $this->isForceDeleting();
     }
 
     /**
