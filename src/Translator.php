@@ -32,7 +32,7 @@ class Translator
      *
      * @var string
      */
-    protected $defaultLocale;
+    protected $fallbackLocale;
 
     /**
      * Make a new translator instance.
@@ -41,8 +41,7 @@ class Translator
     {
         $this->model = $model;
         $this->strategy = $strategy;
-        // TODO: maybe rename into 'fallback' locale (as laravel config name).
-        $this->defaultLocale = 'en';
+        $this->fallbackLocale = 'en';
     }
 
     /**
@@ -61,7 +60,7 @@ class Translator
     {
         $locale = $locale ?: $this->getLocale();
 
-        return $locale === $this->defaultLocale;
+        return $locale === $this->fallbackLocale;
     }
 
     /**
@@ -126,6 +125,7 @@ class Translator
      */
     public function getOrFail(string $attribute, string $locale = null)
     {
+        // TODO: replace with getRawOrFail.
         $this->assertAttributeIsTranslatable($attribute);
 
         $translation = $this->strategy->get($attribute, $locale ?: $this->getLocale());
@@ -142,7 +142,11 @@ class Translator
      */
     public function getFallback(string $attribute)
     {
-        return $this->model->getOriginalAttribute($attribute);
+        try {
+            return $this->getOrFail($attribute, $this->fallbackLocale);
+        } catch (TranslationMissingException $e) {
+            return null;
+        }
     }
 
     /**
@@ -174,7 +178,7 @@ class Translator
      */
     public function getRawFallback(string $attribute)
     {
-        return $this->model->getRawOriginal($attribute);
+        return $this->strategy->get($attribute, $this->fallbackLocale);
     }
 
     /**

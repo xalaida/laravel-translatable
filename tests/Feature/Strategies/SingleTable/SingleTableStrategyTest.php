@@ -149,19 +149,6 @@ class SingleTableStrategyTest extends TestCase
     // TODO: create in fallback locale
 
 //    /** @test */
-//    public function it_retrieves_correct_translation_from_multiple_attributes(): void
-//    {
-//        $book = new Book();
-//        $book->title = 'Amazing birds';
-//        $book->save();
-//
-//        $book->translator()->add('title', 'Дивовижні птахи', 'uk');
-//        $book->translator()->add('description', 'Як упізнати птаха? Чому він співає?', 'uk');
-//
-//        self::assertEquals('Дивовижні птахи', $book->translator()->get('title', 'uk'));
-//    }
-//
-//    /** @test */
 //    public function it_retrieves_original_value_for_fallback_locale(): void
 //    {
 //        $book = new Book();
