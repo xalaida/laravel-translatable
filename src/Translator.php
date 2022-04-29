@@ -78,6 +78,79 @@ class Translator
     }
 
     /**
+     * Get the translation value of the given attribute to the given locale.
+     */
+    public function get(string $attribute, string $locale = null)
+    {
+        try {
+            return $this->getOrFail($attribute, $locale);
+        } catch (TranslationMissingException $e) {
+            event(new TranslationMissing($e->model, $e->attribute, $e->locale));
+
+            return $this->getFallback($attribute);
+        }
+    }
+
+    /**
+     * Get the translation value of the given attribute or throw an exception.
+     */
+    public function getOrFail(string $attribute, string $locale = null)
+    {
+        $translation = $this->getRawOrFail($attribute, $locale);
+
+        if (is_null($translation)) {
+            return null;
+        }
+
+        return $this->model->withAttributeGetter($attribute, $translation);
+    }
+
+    /**
+     * Get the fallback translation of the model.
+     */
+    public function getFallback(string $attribute)
+    {
+        try {
+            return $this->getOrFail($attribute, $this->fallbackLocale);
+        } catch (TranslationMissingException $e) {
+            // TODO: probably log that fallback translation is missing...
+            return null;
+        }
+    }
+
+    /**
+     * Get the raw translation value of the given attribute or throw an exception.
+     */
+    public function getRaw(string $attribute, string $locale = null)
+    {
+        try {
+            return $this->getRawOrFail($attribute, $locale);
+        } catch (TranslationMissingException $e) {
+            event(new TranslationMissing($e->model, $e->attribute, $e->locale));
+
+            return $this->getRawFallback($attribute);
+        }
+    }
+
+    /**
+     * Get the raw translation value of the given attribute or throw an exception.
+     */
+    public function getRawOrFail(string $attribute, string $locale = null)
+    {
+        $this->assertAttributeIsTranslatable($attribute);
+
+        return $this->strategy->get($attribute, $locale ?: $this->getLocale());
+    }
+
+    /**
+     * Get the raw fallback translation of the model.
+     */
+    public function getRawFallback(string $attribute)
+    {
+        return $this->getRawOrFail($attribute, $this->fallbackLocale);
+    }
+
+    /**
      * Save the given translation for the model.
      */
     public function add(string $attribute, $value, string $locale = null): void
@@ -104,81 +177,6 @@ class Translator
         }
 
         return $this;
-    }
-
-    /**
-     * Get the translation value of the given attribute to the given locale.
-     */
-    public function get(string $attribute, string $locale = null)
-    {
-        try {
-            return $this->getOrFail($attribute, $locale ?: $this->getLocale());
-        } catch (TranslationMissingException $e) {
-            event(new TranslationMissing($e->model, $e->attribute, $e->locale));
-
-            return $this->getFallback($attribute);
-        }
-    }
-
-    /**
-     * Get the translation value of the given attribute or throw an exception.
-     */
-    public function getOrFail(string $attribute, string $locale = null)
-    {
-        // TODO: replace with getRawOrFail.
-        $this->assertAttributeIsTranslatable($attribute);
-
-        $translation = $this->strategy->get($attribute, $locale ?: $this->getLocale());
-
-        if (is_null($translation)) {
-            return null;
-        }
-
-        return $this->model->withAttributeGetter($attribute, $translation);
-    }
-
-    /**
-     * Get the fallback translation of the model.
-     */
-    public function getFallback(string $attribute)
-    {
-        try {
-            return $this->getOrFail($attribute, $this->fallbackLocale);
-        } catch (TranslationMissingException $e) {
-            return null;
-        }
-    }
-
-    /**
-     * Get the raw translation value of the given attribute or throw an exception.
-     */
-    public function getRaw(string $attribute, string $locale = null)
-    {
-        try {
-            return $this->getRawOrFail($attribute, $locale ?: $this->getLocale());
-        } catch (TranslationMissingException $e) {
-            event(new TranslationMissing($e->model, $e->attribute, $e->locale));
-
-            return $this->getRawFallback($attribute);
-        }
-    }
-
-    /**
-     * Get the raw translation value of the given attribute or throw an exception.
-     */
-    public function getRawOrFail(string $attribute, string $locale = null)
-    {
-        $this->assertAttributeIsTranslatable($attribute);
-
-        return $this->strategy->get($attribute, $locale ?: $this->getLocale());
-    }
-
-    /**
-     * Get the raw fallback translation of the model.
-     */
-    public function getRawFallback(string $attribute)
-    {
-        return $this->strategy->get($attribute, $this->fallbackLocale);
     }
 
     /**
