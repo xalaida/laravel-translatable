@@ -1,11 +1,11 @@
 <?php
 
-namespace Nevadskiy\Translatable\Tests\Feature\Strategies\SingleTableExtended;
+namespace Nevadskiy\Translatable\Tests\Feature\Strategies\SingleTable;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Route;
-use Nevadskiy\Translatable\Strategies\SingleTableExtended\HasTranslations;
+use Nevadskiy\Translatable\Strategies\SingleTable\HasTranslations;
 use Nevadskiy\Translatable\Tests\TestCase;
 use function route;
 
@@ -30,8 +30,6 @@ class RouteModelBindingTest extends TestCase
     {
         $this->schema()->create('books', function (Blueprint $table) {
             $table->id();
-            $table->string('title')->nullable();
-            $table->string('slug');
             $table->timestamps();
         });
     }
@@ -44,16 +42,14 @@ class RouteModelBindingTest extends TestCase
         });
 
         $book = new BookWithRouteBinding();
-        $book->slug = 'swan-flock';
+        $book->translator()->set('slug', 'swan-flock', 'en');
+        $book->translator()->set('slug', 'лебедина-зграя', 'uk');
         $book->save();
 
-        $book->translator()->add('slug', 'лебедина-зграя', 'uk');
-
         $anotherBook = new BookWithRouteBinding();
-        $anotherBook->slug = 'two-hetmans';
+        $book->translator()->set('slug', 'two-hetmans', 'en');
+        $book->translator()->set('slug', 'два-гетьмани', 'uk');
         $anotherBook->save();
-
-        $anotherBook->translator()->add('slug', 'два-гетьмани', 'uk');
 
         $response = $this->get('/books/лебедина-зграя');
 
@@ -69,11 +65,8 @@ class RouteModelBindingTest extends TestCase
         });
 
         $book = new BookWithRouteBinding();
-        $book->title = 'Swan Flock';
-        $book->slug = 'swan-flock';
+        $book->translator()->set('title', 'Лебедина Зграя', 'uk');
         $book->save();
-
-        $book->translator()->add('title', 'Лебедина Зграя', 'uk');
 
         $response = $this->get('/books/Лебедина Зграя');
 
@@ -106,13 +99,11 @@ class RouteModelBindingTest extends TestCase
         });
 
         $book = new BookWithRouteBinding();
-        $book->slug = 'swan-flock';
+        $book->translator()->set('slug', 'swan-flock', 'en');
+        $book->translator()->set('slug', 'лебедина-зграя', 'uk');
         $book->save();
 
-        $book->translator()->add('slug', 'лебедина-зграя', 'uk');
-
         $this->app->setLocale('uk');
-
         $response = $this->get('/books/swan-flock');
 
         $response->assertOk();
@@ -155,10 +146,9 @@ class RouteModelBindingTest extends TestCase
         Route::get('/books/{book}')->name('books.show');
 
         $book = new BookWithRouteBinding();
-        $book->slug = 'swan-flock';
+        $book->translator()->set('slug', 'swan-flock', $this->app->getFallbackLocale());
+        $book->translator()->set('slug', 'лебедина-зграя', 'uk');
         $book->save();
-
-        $book->translator()->add('slug', 'лебедина-зграя', 'uk');
 
         self::assertEquals('/books/swan-flock', route('books.show', $book, false));
     }
