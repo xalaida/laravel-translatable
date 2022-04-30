@@ -148,9 +148,6 @@ class SingleTableStrategyTest extends TestCase
         self::assertNull($array['description']);
     }
 
-    // TODO: create in custom locale
-    // TODO: create in fallback locale
-
     /** @test */
     public function it_throws_exception_when_trying_to_get_missing_translation(): void
     {
