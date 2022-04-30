@@ -472,6 +472,7 @@ The MIT License (MIT). Please see [LICENSE](LICENSE.md) for more information.
 - [ ] add possibility to use without uuid (add possibility to use custom translation model)
 - [ ] command to show missing translations
 - [ ] add doc to show how to add custom strategy or extend existing
+- [ ] add json translations strategy (similar to spatie-translations) 
 
 - SingleTableStrategy
   - [ ] add possibility to specify fallback locale per model 
