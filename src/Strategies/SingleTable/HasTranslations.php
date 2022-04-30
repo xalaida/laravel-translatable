@@ -94,10 +94,6 @@ trait HasTranslations
             });
         }
 
-        if ($this->translator()->isFallbackLocale($locale)) {
-            return $query->where($attribute, $operator, $value);
-        }
-
         return $query->whereHas('translations', function (Builder $query) use ($attribute, $value, $locale, $operator) {
             $query->where('value', $operator, $value)
                 ->forAttribute($attribute)
