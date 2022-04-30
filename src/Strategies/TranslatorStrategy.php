@@ -18,4 +18,9 @@ interface TranslatorStrategy
      * Save all set translations into the database.
      */
     public function save(): void;
+
+    /**
+     * Delete all translations from the database
+     */
+    public function delete(): void;
 }

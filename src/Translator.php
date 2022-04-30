@@ -174,15 +174,15 @@ class Translator
         $this->strategy->save();
     }
 
-    public function unset()
+    /**
+     * Delete translation from the database.
+     */
+    public function delete(): void
     {
-        // TODO: implement this
+        $this->strategy->delete();
     }
 
-    /**
-     * Delete translation from the model for the given attribute and locale.
-     */
-    public function delete(string $attribute, string $locale = null)
+    public function unset()
     {
         // TODO: implement this
     }

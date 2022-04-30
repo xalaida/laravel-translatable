@@ -4,6 +4,7 @@ namespace Nevadskiy\Translatable\Strategies\SingleTableExtended;
 
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Nevadskiy\Translatable\Exceptions\TranslationMissingException;
 use Nevadskiy\Translatable\Strategies\SingleTableExtended\Models\Translation;
 use Nevadskiy\Translatable\Strategies\TranslatorStrategy;
@@ -13,8 +14,6 @@ use Nevadskiy\Translatable\Strategies\TranslatorStrategy;
  */
 class SingleTableExtendedStrategy implements TranslatorStrategy
 {
-    // TODO: boot translation similar how laravel model is doing this (original and translations array and dirty on save)
-
     /**
      * The translatable model instance.
      *
@@ -48,26 +47,6 @@ class SingleTableExtendedStrategy implements TranslatorStrategy
     public function __construct(Model $model)
     {
         $this->model = $model;
-    }
-
-    /**
-     * This method could be replaced with a direct 'loadTranslations' call on Eloquent' "retrieved" event.
-     * But the "retrieved" event is fired BEFORE eager loading, so it is impossible now.
-     * @see https://github.com/laravel/framework/issues/29658
-     */
-    public function bootIfNotBooted(): void
-    {
-        if ($this->booted) {
-            return;
-        }
-
-        if (! $this->model->relationLoaded('translations')) {
-            return;
-        }
-
-        $this->loadTranslations($this->model->translations);
-
-        $this->booted = true;
     }
 
     /**
@@ -107,7 +86,7 @@ class SingleTableExtendedStrategy implements TranslatorStrategy
     }
 
     /**
-     * Save the pending translations on the model.
+     * @inheritdoc
      */
     public function save(): void
     {
@@ -121,6 +100,36 @@ class SingleTableExtendedStrategy implements TranslatorStrategy
     }
 
     /**
+     * Delete model translations.
+     */
+    public function delete(): void
+    {
+        if ($this->shouldDeleteTranslations()) {
+            $this->deleteTranslations();
+        }
+    }
+
+    /**
+     * This method could be replaced with a direct 'loadTranslations' call on Eloquent' "retrieved" event.
+     * But the "retrieved" event is fired BEFORE eager loading, so it is impossible now.
+     * @see https://github.com/laravel/framework/issues/29658
+     */
+    protected function bootIfNotBooted(): void
+    {
+        if ($this->booted) {
+            return;
+        }
+
+        if (! $this->model->relationLoaded('translations')) {
+            return;
+        }
+
+        $this->loadTranslations($this->model->translations);
+
+        $this->booted = true;
+    }
+
+    /**
      * Update existing translation on the model or create a new one if it is missing.
      */
     protected function updateOrCreateTranslation(string $attribute, string $locale, $value): void
@@ -131,6 +140,34 @@ class SingleTableExtendedStrategy implements TranslatorStrategy
         ], [
             'value' => $value,
         ]);
+    }
+
+    /**
+     * Determine whether the translations should be deleted.
+     */
+    protected function shouldDeleteTranslations(): bool
+    {
+        if (! $this->usesSoftDeletes()) {
+            return true;
+        }
+
+        return $this->model->isForceDeleting();
+    }
+
+    /**
+     * Determine whether the model uses soft deletes.
+     */
+    protected function usesSoftDeletes(): bool
+    {
+        return collect(class_uses_recursive($this->model))->contains(SoftDeletes::class);
+    }
+
+    /**
+     * Delete the model translations.
+     */
+    protected function deleteTranslations(): void
+    {
+        $this->model->translations()->delete();
     }
 
     /**
@@ -181,13 +218,5 @@ class SingleTableExtendedStrategy implements TranslatorStrategy
     //     $this->model->translations()
     //         ->forLocale($locale)
     //         ->delete();
-    // }
-    //
-    // /**
-    //  * Delete all translations from the model.
-    //  */
-    // public function deleteAll(): void
-    // {
-    //     $this->model->translations()->delete();
     // }
 }

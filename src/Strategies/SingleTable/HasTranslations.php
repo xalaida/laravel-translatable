@@ -22,12 +22,10 @@ trait HasTranslations
     use InteractsWithTranslations;
 
     /**
-     * Boot the trait.
+     * Boot the translations' trait.
      */
     protected static function bootHasTranslations(): void
     {
-        // TODO: move booting to the strategy.
-
         static::addGlobalScope(new TranslationsEagerLoadingScope());
 
         static::saved(static function (self $translatable) {
@@ -68,31 +66,7 @@ trait HasTranslations
      */
     protected function handleDeletedEvent(): void
     {
-        if ($this->shouldDeleteTranslations()) {
-            $this->deleteTranslations();
-        }
-    }
-
-    /**
-     * Determine whether the model should delete translations.
-     * TODO: probably move to the strategy instance.
-     */
-    protected function shouldDeleteTranslations(): bool
-    {
-        if (! collect(class_uses_recursive($this))->contains(SoftDeletes::class)) {
-            return true;
-        }
-
-        return $this->isForceDeleting();
-    }
-
-    /**
-     * Delete the model translations.
-     * TODO: probably move to the strategy instance.
-     */
-    protected function deleteTranslations(): void
-    {
-        $this->translations()->delete();
+        $this->translator()->delete();
     }
 
     /**

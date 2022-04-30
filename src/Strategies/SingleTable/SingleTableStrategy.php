@@ -4,6 +4,7 @@ namespace Nevadskiy\Translatable\Strategies\SingleTable;
 
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Nevadskiy\Translatable\Exceptions\TranslationMissingException;
 use Nevadskiy\Translatable\Strategies\SingleTable\Models\Translation;
 use Nevadskiy\Translatable\Strategies\TranslatorStrategy;
@@ -51,26 +52,6 @@ class SingleTableStrategy implements TranslatorStrategy
     }
 
     /**
-     * This method could be replaced with a direct 'loadTranslations' call on Eloquent' "retrieved" event.
-     * But the "retrieved" event is fired BEFORE eager loading, so it is impossible now.
-     * @see https://github.com/laravel/framework/issues/29658
-     */
-    public function bootIfNotBooted(): void
-    {
-        if ($this->booted) {
-            return;
-        }
-
-        if (! $this->model->relationLoaded('translations')) {
-            return;
-        }
-
-        $this->loadTranslations($this->model->translations);
-
-        $this->booted = true;
-    }
-
-    /**
      * @inheritdoc
      */
     public function get(string $attribute, string $locale)
@@ -99,7 +80,7 @@ class SingleTableStrategy implements TranslatorStrategy
     }
 
     /**
-     * Save the pending translations on the model.
+     * @inheritdoc
      */
     public function save(): void
     {
@@ -113,6 +94,36 @@ class SingleTableStrategy implements TranslatorStrategy
     }
 
     /**
+     * @inheritdoc
+     */
+    public function delete(): void
+    {
+        if ($this->shouldDeleteTranslations()) {
+            $this->deleteTranslations();
+        }
+    }
+
+    /**
+     * This method could be replaced with a direct 'loadTranslations' call on Eloquent' "retrieved" event.
+     * But the "retrieved" event is fired BEFORE eager loading, so it is impossible now.
+     * @see https://github.com/laravel/framework/issues/29658
+     */
+    protected function bootIfNotBooted(): void
+    {
+        if ($this->booted) {
+            return;
+        }
+
+        if (! $this->model->relationLoaded('translations')) {
+            return;
+        }
+
+        $this->loadTranslations($this->model->translations);
+
+        $this->booted = true;
+    }
+
+    /**
      * Update existing translation on the model or create a new one if it is missing.
      */
     protected function updateOrCreateTranslation(string $attribute, string $locale, $value): void
@@ -123,6 +134,34 @@ class SingleTableStrategy implements TranslatorStrategy
         ], [
             'value' => $value,
         ]);
+    }
+
+    /**
+     * Determine whether the translations should be deleted.
+     */
+    protected function shouldDeleteTranslations(): bool
+    {
+        if (! $this->usesSoftDeletes()) {
+            return true;
+        }
+
+        return $this->model->isForceDeleting();
+    }
+
+    /**
+     * Determine whether the model uses soft deletes.
+     */
+    protected function usesSoftDeletes(): bool
+    {
+        return collect(class_uses_recursive($this->model))->contains(SoftDeletes::class);
+    }
+
+    /**
+     * Delete the model translations.
+     */
+    protected function deleteTranslations(): void
+    {
+        $this->model->translations()->delete();
     }
 
     /**
@@ -173,13 +212,5 @@ class SingleTableStrategy implements TranslatorStrategy
     //     $this->model->translations()
     //         ->forLocale($locale)
     //         ->delete();
-    // }
-    //
-    // /**
-    //  * Delete all translations from the model.
-    //  */
-    // public function deleteAll(): void
-    // {
-    //     $this->model->translations()->delete();
     // }
 }

@@ -22,7 +22,7 @@ trait HasTranslations
     use InteractsWithTranslations;
 
     /**
-     * Boot the trait.
+     * Boot the translations' trait.
      */
     protected static function bootHasTranslations(): void
     {
@@ -78,35 +78,7 @@ trait HasTranslations
      */
     protected function handleDeletedEvent(): void
     {
-        // TODO: rewrite with $this->translator->delete();
-
-        if ($this->shouldDeleteTranslations()) {
-            $this->deleteTranslations();
-        }
-    }
-
-    /**
-     * Determine whether the model should delete translations.
-     */
-    protected function shouldDeleteTranslations(): bool
-    {
-        if (! collect(class_uses_recursive($this))->contains(SoftDeletes::class)) {
-            return true;
-        }
-
-        if ($this->isForceDeleting()) {
-            return true;
-        }
-
-        return false;
-    }
-
-    /**
-     * Delete the model translations.
-     */
-    protected function deleteTranslations(): void
-    {
-        $this->translations()->delete();
+        $this->translator()->delete();
     }
 
     /**
