@@ -1,11 +1,11 @@
 <?php
 
-namespace Nevadskiy\Translatable\Tests\Feature\Strategies\SingleTableExtended;
+namespace Nevadskiy\Translatable\Tests\Feature\Strategies\SingleTable;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Str;
-use Nevadskiy\Translatable\Strategies\SingleTableExtended\HasTranslations;
+use Nevadskiy\Translatable\Strategies\SingleTable\HasTranslations;
 use Nevadskiy\Translatable\Tests\TestCase;
 
 class MutatorsTranslationTest extends TestCase
@@ -26,9 +26,7 @@ class MutatorsTranslationTest extends TestCase
     {
         $this->schema()->create('books', function (Blueprint $table) {
             $table->id();
-            $table->string('title');
             $table->string('description')->nullable();
-            $table->string('caption')->nullable();
             $table->timestamps();
         });
     }
@@ -37,26 +35,12 @@ class MutatorsTranslationTest extends TestCase
     public function it_applies_mutator_for_translatable_attributes(): void
     {
         $book = new BookWithMutators();
-        $book->title = 'Shot on the stairs';
+        $book->translator()->set('title', 'Shot on the stairs', 'en');
+        $book->translator()->set('title', 'Постріл на сходах', 'uk');
         $book->save();
 
-        $book->translator()->add('title', 'Постріл на сходах', 'uk');
-
-        $this->assertDatabaseHas('translations', [
-            'value' => 'Постріл на...',
-        ]);
-    }
-
-    /** @test */
-    public function it_does_not_override_original_attribute_with_mutated_value(): void
-    {
-        $book = new BookWithMutators();
-        $book->title = 'Shot on the stairs';
-        $book->save();
-
-        $book->translator()->add('title', 'Постріл на сходах', 'uk');
-
-        self::assertEquals('Shot on th...', $book->translator()->get('title'));
+        $this->assertDatabaseHas('translations', ['value' => 'Shot on th...']);
+        $this->assertDatabaseHas('translations', ['value' => 'Постріл на...']);
     }
 
     /** @test */
@@ -67,7 +51,6 @@ class MutatorsTranslationTest extends TestCase
         $book->save();
 
         $this->app->setLocale('uk');
-
         $book->title = 'Постріл на сходах';
 
         self::assertEquals('Постріл на...', $book->title);

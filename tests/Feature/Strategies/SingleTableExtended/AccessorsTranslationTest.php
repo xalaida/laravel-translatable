@@ -132,7 +132,7 @@ class AccessorsTranslationTest extends TestCase
     }
 
     /** @test */
-    public function it_applies_accessor_for_translatable_attributes_in_fallback_locale_once(): void
+    public function it_applies_accessor_for_translatable_attributes_in_fallback_locale_only_once(): void
     {
         $book = new BookWithAccessors();
         $book->title = 'Forest song';
