@@ -5,7 +5,6 @@ namespace Nevadskiy\Translatable\Strategies\SingleTable;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
-use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Query\JoinClause;
 use Illuminate\Support\Collection;
 use Nevadskiy\Translatable\Strategies\InteractsWithTranslations;
@@ -70,11 +69,11 @@ trait HasTranslations
     }
 
     /**
-     * Scope to remove the 'translations' relation from a query.
+     * Scope to remove translations eager loading from a query.
      */
     protected function scopeWithoutTranslations(Builder $query): Builder
     {
-        return $query->withoutGlobalScope(TranslationsEagerLoadScope::class);
+        return $query->withoutGlobalScope(TranslationsEagerLoadingScope::class);
     }
 
     /**

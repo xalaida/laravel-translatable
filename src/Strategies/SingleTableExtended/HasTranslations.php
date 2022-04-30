@@ -5,12 +5,11 @@ namespace Nevadskiy\Translatable\Strategies\SingleTableExtended;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
-use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Query\JoinClause;
 use Illuminate\Support\Collection;
 use Nevadskiy\Translatable\Strategies\InteractsWithTranslations;
 use Nevadskiy\Translatable\Strategies\SingleTableExtended\Models\Translation;
-use Nevadskiy\Translatable\Strategies\SingleTableExtended\Scopes\TranslationsEagerLoadScope;
+use Nevadskiy\Translatable\Strategies\SingleTableExtended\Scopes\TranslationsEagerLoadingScope;
 use Nevadskiy\Translatable\Strategies\TranslatorStrategy;
 
 /**
@@ -26,7 +25,7 @@ trait HasTranslations
      */
     protected static function bootHasTranslations(): void
     {
-        static::addGlobalScope(new TranslationsEagerLoadScope());
+        static::addGlobalScope(new TranslationsEagerLoadingScope());
 
         static::saved(static function (self $translatable) {
             $translatable->handleSavedEvent();
@@ -82,12 +81,12 @@ trait HasTranslations
     }
 
     /**
-     * Scope to remove the eager loading of translations from the query.
+     * Scope to remove translations eager loading from a query.
      * TODO: probably rename to 'withoutTranslationsScope'
      */
     protected function scopeWithoutTranslations(Builder $query): Builder
     {
-        return $query->withoutGlobalScope(TranslationsEagerLoadScope::class);
+        return $query->withoutGlobalScope(TranslationsEagerLoadingScope::class);
     }
 
     /**

@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Database\Eloquent\Scope;
 
-class TranslationsEagerLoadScope implements Scope
+class TranslationsEagerLoadingScope implements Scope
 {
     /**
      * @inheritDoc
