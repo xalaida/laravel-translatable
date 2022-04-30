@@ -91,19 +91,17 @@ trait HasTranslations
 
     /**
      * Scope to filter models by translatable attribute.
-     * TODO: add possibility to use qualified columns (table.attribute)
      */
     protected function scopeWhereTranslatable(Builder $query, string $attribute, $value, string $locale = null, string $operator = '='): Builder
     {
-        // TODO: probably remove this check.
         $this->translator()->assertAttributeIsTranslatable($attribute);
 
         if (is_null($locale)) {
             return $query->where(function (Builder $query) use ($attribute, $value, $operator) {
                 $query->where($attribute, $operator, $value)
                     ->orWhereHas('translations', function (Builder $query) use ($attribute, $value, $operator) {
-                        $query->where('value', $operator, $value)
-                            ->forAttribute($attribute);
+                        $query->forAttribute($attribute)
+                            ->where('value', $operator, $value);
                     });
             });
         }
@@ -113,9 +111,9 @@ trait HasTranslations
         }
 
         return $query->whereHas('translations', function (Builder $query) use ($attribute, $value, $locale, $operator) {
-            $query->where('value', $operator, $value)
-                ->forAttribute($attribute)
-                ->forLocale($locale);
+            $query->forAttribute($attribute)
+                ->forLocale($locale)
+                ->where('value', $operator, $value);
         });
     }
 
