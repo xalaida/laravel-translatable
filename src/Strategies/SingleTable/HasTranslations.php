@@ -115,10 +115,6 @@ trait HasTranslations
 
         $locale = $locale ?: $this->translator()->getLocale();
 
-        if ($this->translator()->isFallbackLocale($locale)) {
-            return $query->orderBy($attribute, $direction);
-        }
-
         // TODO: resolve model using resolver
         $translationModel = new Translation;
 
