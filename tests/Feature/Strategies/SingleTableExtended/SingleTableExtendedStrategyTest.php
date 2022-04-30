@@ -15,7 +15,7 @@ use Nevadskiy\Translatable\Tests\TestCase;
 // TODO: missing translation for locale
 // TODO: test custom model (for uuid attributes)
 // TODO: using custom (not english) language for default values
-class TranslationTest extends TestCase
+class SingleTableExtendedStrategyTest extends TestCase
 {
     /**
      * @inheritdoc
