@@ -1,6 +1,6 @@
 <?php
 
-namespace Nevadskiy\Translatable\Tests\Feature\Strategies\SingleTableExtended;
+namespace Nevadskiy\Translatable\Tests\Feature\Strategies\SingleTable;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Schema\Blueprint;
@@ -9,12 +9,9 @@ use Illuminate\Support\Str;
 use Nevadskiy\Translatable\Events\TranslationMissing;
 use Nevadskiy\Translatable\Exceptions\AttributeNotTranslatableException;
 use Nevadskiy\Translatable\Exceptions\TranslationMissingException;
-use Nevadskiy\Translatable\Strategies\SingleTableExtended\HasTranslations;
+use Nevadskiy\Translatable\Strategies\SingleTable\HasTranslations;
 use Nevadskiy\Translatable\Tests\TestCase;
 
-/**
- * TODO: test it using in-memory array strategy and simplify database test to just test attributes and originals
- */
 class RawTranslationTest extends TestCase
 {
     /**
@@ -33,7 +30,6 @@ class RawTranslationTest extends TestCase
     {
         $this->schema()->create('books', function (Blueprint $table) {
             $table->id();
-            $table->string('title');
             $table->timestamps();
         });
     }
@@ -42,22 +38,18 @@ class RawTranslationTest extends TestCase
     public function it_retrieves_raw_translation_value_for_given_locale(): void
     {
         $book = new BookWithRaw();
-        $book->title = 'forest song';
+        $book->translator()->set('title', 'лісова пісня', 'uk');
         $book->save();
-
-        $book->translator()->add('title', 'лісова пісня', 'uk');
 
         self::assertEquals('лісова пісня', $book->translator()->getRaw('title', 'uk'));
     }
 
     /** @test */
-    public function it_returns_original_value_when_raw_translation_is_missing(): void
+    public function it_returns_fallback_value_when_raw_translation_is_missing(): void
     {
         $book = new BookWithRaw();
-        $book->title = 'forest song';
+        $book->translator()->set('title', 'forest song', 'en');
         $book->save();
-
-        $book->translator()->add('title', 'лісова пісня', 'uk');
 
         self::assertEquals('forest song', $book->translator()->getRaw('title', 'pl'));
     }
@@ -66,10 +58,8 @@ class RawTranslationTest extends TestCase
     public function it_throws_exception_when_raw_translation_is_missing(): void
     {
         $book = new BookWithRaw();
-        $book->title = 'forest song';
+        $book->translator()->set('title', 'forest song', 'en');
         $book->save();
-
-        $book->translator()->add('title', 'лісова пісня', 'uk');
 
         $this->expectException(TranslationMissingException::class);
 
@@ -80,10 +70,8 @@ class RawTranslationTest extends TestCase
     public function it_retrieves_raw_translation_using_fail_method(): void
     {
         $book = new BookWithRaw();
-        $book->title = 'forest song';
+        $book->translator()->set('title', 'лісова пісня', 'uk');
         $book->save();
-
-        $book->translator()->add('title', 'лісова пісня', 'uk');
 
         self::assertEquals('лісова пісня', $book->translator()->getRawOrFail('title', 'uk'));
     }
@@ -92,10 +80,8 @@ class RawTranslationTest extends TestCase
     public function it_retrieves_translation_with_accessor_applied_using_get_method(): void
     {
         $book = new BookWithRaw();
-        $book->title = 'forest song';
+        $book->translator()->set('title', 'лісова пісня', 'uk');
         $book->save();
-
-        $book->translator()->add('title', 'лісова пісня', 'uk');
 
         self::assertEquals('Лісова пісня', $book->translator()->get('title', 'uk'));
     }
