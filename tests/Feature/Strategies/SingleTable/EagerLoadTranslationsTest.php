@@ -31,25 +31,6 @@ class EagerLoadTranslationsTest extends TestCase
     }
 
     /** @test */
-    public function it_eager_loads_translations_for_current_locale(): void
-    {
-        $book = new BookForEagerLoading();
-        $book->translator()->set('title', 'Forest', 'en');
-        $book->translator()->set('title', 'Ліс', 'uk');
-        $book->translator()->set('title', 'Las', 'pl');
-        $book->save();
-
-        $this->app->setLocale('uk');
-
-        [$book] = BookForEagerLoading::all();
-
-        self::assertTrue($book->relationLoaded('translations'));
-        self::assertCount(1, $book->translations);
-        self::assertEquals('uk', $book->translations[0]->locale);
-        self::assertEquals('Ліс', $book->translations[0]->value);
-    }
-
-    /** @test */
     public function it_eager_loads_translations_for_fallback_locale(): void
     {
         $book = new BookForEagerLoading();
@@ -62,6 +43,38 @@ class EagerLoadTranslationsTest extends TestCase
         self::assertCount(1, $book->translations);
         self::assertEquals('en', $book->translations[0]->locale);
         self::assertEquals('Forest', $book->translations[0]->value);
+    }
+
+    /** @test */
+    public function it_eager_loads_translations_for_current_and_fallback_locale_when_custom_locale_is_set(): void
+    {
+        $book = new BookForEagerLoading();
+        $book->translator()->set('title', 'Forest', 'en');
+        $book->translator()->set('title', 'Ліс', 'uk');
+        $book->save();
+
+        $this->app->setLocale('uk');
+        [$book] = BookForEagerLoading::all();
+
+        self::assertTrue($book->relationLoaded('translations'));
+        self::assertCount(2, $book->translations);
+        self::assertEquals('en', $book->translations[0]->locale);
+        self::assertEquals('uk', $book->translations[1]->locale);
+    }
+
+    /** @test */
+    public function it_eager_loads_only_translations_for_fallback_locale_when_no_custom_locale_is_set(): void
+    {
+        $book = new BookForEagerLoading();
+        $book->translator()->set('title', 'Forest', 'en');
+        $book->translator()->set('title', 'Ліс', 'uk');
+        $book->save();
+
+        [$book] = BookForEagerLoading::all();
+
+        self::assertTrue($book->relationLoaded('translations'));
+        self::assertCount(1, $book->translations);
+        self::assertEquals('en', $book->translations[0]->locale);
     }
 
     /** @test */

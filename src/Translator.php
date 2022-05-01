@@ -54,13 +54,21 @@ class Translator
     }
 
     /**
+     * Get the fallback locale.
+     */
+    public function getFallbackLocale(): string
+    {
+        return $this->fallbackLocale;
+    }
+
+    /**
      * Determine does the translator use the current or given locale as the default locale.
      */
     public function isFallbackLocale(string $locale = null): bool
     {
         $locale = $locale ?: $this->getLocale();
 
-        return $locale === $this->fallbackLocale;
+        return $locale === $this->getFallbackLocale();
     }
 
     /**
@@ -131,7 +139,7 @@ class Translator
     public function getRawFallback(string $attribute)
     {
         try {
-            return $this->getRawOrFail($attribute, $this->fallbackLocale);
+            return $this->getRawOrFail($attribute, $this->getFallbackLocale());
         } catch (TranslationMissingException $e) {
             return null;
         }
