@@ -34,8 +34,6 @@ trait HasTranslations
         static::deleted(static function (self $translatable) {
             $translatable->handleDeletedEvent();
         });
-
-        // TODO: add replicated handler.
     }
 
     /**
@@ -119,14 +117,17 @@ trait HasTranslations
 
         $translation = resolve(SingleTableStrategy::model());
 
-        return $query->leftJoin($translation->getTable(), function (JoinClause $join) use ($translation, $attribute, $locale) {
+        if (! $query->getQuery()->columns) {
+            $query->addSelect($this->qualifyColumn('*'));
+        }
+
+        $query->leftJoin($translation->getTable(), function (JoinClause $join) use ($translation, $attribute, $locale) {
             $join->on($translation->qualifyColumn('translatable_id'), '=', $this->qualifyColumn($this->getKeyName()))
                 ->where($translation->qualifyColumn('translatable_type'), $this->getMorphClass())
                 ->where($translation->qualifyColumn('translatable_attribute'), $attribute)
                 ->where($translation->qualifyColumn('locale'), $locale);
-        })
-            // TODO: add condition if there are currently selected columns
-            ->addSelect($this->qualifyColumn('*'))
-            ->orderBy($translation->qualifyColumn('value'), $direction);
+        });
+
+        return $query->orderBy($translation->qualifyColumn('value'), $direction);
     }
 }

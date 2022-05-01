@@ -125,6 +125,33 @@ class OrderByTranslatableScopeTest extends TestCase
 
         self::assertTrue($records[0]->is($book));
         self::assertEquals('Original value', $records[0]->value);
+        self::assertNull($records[0]->translatable_attribute);
+    }
+
+    /** @test */
+    public function it_can_select_only_specified_attributes_when_ordering_by_translatable_column(): void
+    {
+        $book1 = new BookOrderByTranslatable();
+        $book1->translator()->set('title', 'Son of the earth', 'en');
+        $book1->translator()->set('title', 'Син землі', 'uk');
+        $book1->save();
+
+        $book2 = new BookOrderByTranslatable();
+        $book2->translator()->set('title', 'The last prophet', 'en');
+        $book2->translator()->set('title', 'Останній пророк', 'uk');
+        $book2->save();
+
+        $this->app->setLocale('uk');
+
+        $records = BookOrderByTranslatable::query()
+            ->select(['books.id'])
+            ->orderByTranslatable('title')
+            ->get();
+
+        self::assertTrue($records[0]->is($book2));
+        self::assertTrue($records[1]->is($book1));
+        self::assertFalse(isset($records[0]->created_at));
+        self::assertFalse(isset($records[0]->translatable_attribute));
     }
 
     /**
