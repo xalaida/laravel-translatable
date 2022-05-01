@@ -3,7 +3,7 @@
 namespace Nevadskiy\Translatable\Tests\Support;
 
 use Illuminate\Database\Eloquent\Model;
-use Nevadskiy\Translatable\Strategies\InteractsWithTranslations;
+use Nevadskiy\Translatable\Strategies\InteractsWithTranslator;
 use Nevadskiy\Translatable\Strategies\TranslatorStrategy;
 
 /**
@@ -11,7 +11,7 @@ use Nevadskiy\Translatable\Strategies\TranslatorStrategy;
  */
 trait HasTranslations
 {
-    use InteractsWithTranslations;
+    use InteractsWithTranslator;
 
     /**
      * Get the translation strategy.

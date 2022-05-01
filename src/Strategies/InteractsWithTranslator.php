@@ -8,7 +8,7 @@ use Nevadskiy\Translatable\Translator;
 /**
  * @mixin Model
  */
-trait InteractsWithTranslations
+trait InteractsWithTranslator
 {
     /**
      * The model translator instance.
@@ -16,9 +16,9 @@ trait InteractsWithTranslations
     protected $translator;
 
     /**
-     * Init the trait.
+     * Initialize the trait.
      */
-    protected function initializeInteractsWithTranslations(): void
+    protected function initializeInteractsWithTranslator(): void
     {
         $this->translator = $this->newTranslator();
     }

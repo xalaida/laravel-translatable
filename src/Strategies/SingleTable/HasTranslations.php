@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Query\JoinClause;
 use Illuminate\Support\Collection;
-use Nevadskiy\Translatable\Strategies\InteractsWithTranslations;
+use Nevadskiy\Translatable\Strategies\InteractsWithTranslator;
 use Nevadskiy\Translatable\Strategies\SingleTable\Models\Translation;
 use Nevadskiy\Translatable\Strategies\SingleTable\Scopes\TranslationsEagerLoadingScope;
 use Nevadskiy\Translatable\Strategies\TranslatorStrategy;
@@ -18,7 +18,7 @@ use Nevadskiy\Translatable\Strategies\TranslatorStrategy;
  */
 trait HasTranslations
 {
-    use InteractsWithTranslations;
+    use InteractsWithTranslator;
 
     /**
      * Boot the translations' trait.

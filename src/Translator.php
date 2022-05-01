@@ -4,7 +4,7 @@ namespace Nevadskiy\Translatable;
 
 use Illuminate\Database\Eloquent\Model;
 use Nevadskiy\Translatable\Exceptions\TranslationMissingException;
-use Nevadskiy\Translatable\Strategies\InteractsWithTranslations;
+use Nevadskiy\Translatable\Strategies\InteractsWithTranslator;
 use Nevadskiy\Translatable\Strategies\TranslatorStrategy;
 use Nevadskiy\Translatable\Events\TranslationMissing;
 use Nevadskiy\Translatable\Exceptions\AttributeNotTranslatableException;
@@ -16,7 +16,7 @@ class Translator
     /**
      * The translatable model instance.
      *
-     * @var Model|InteractsWithTranslations
+     * @var Model|InteractsWithTranslator
      */
     private $model;
 
