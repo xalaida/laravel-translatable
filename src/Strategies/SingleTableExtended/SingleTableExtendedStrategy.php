@@ -20,14 +20,14 @@ class SingleTableExtendedStrategy implements TranslatorStrategy
      *
      * @var string
      */
-    private static $modelClass = Translation::class;
+    private static $model = Translation::class;
 
     /**
      * The translatable model instance.
      *
      * @var Model|HasTranslations
      */
-    protected $model;
+    protected $translatable;
 
     /**
      * Indicates if the translation state is booted.
@@ -51,21 +51,21 @@ class SingleTableExtendedStrategy implements TranslatorStrategy
     /**
      * Specify the translation model class.
      */
-    public static function useModel(string $modelClass): void
+    public static function useModel(string $model): void
     {
-        if (! is_a($modelClass, Translation::class, true)) {
+        if (! is_a($model, Translation::class, true)) {
             throw new InvalidArgumentException("A custom translation model must extend the base translation model.");
         }
 
-        static::$modelClass = $modelClass;
+        static::$model = $model;
     }
 
     /**
      * Get the model class.
      */
-    public static function modelClass(): string
+    public static function model(): string
     {
-        return static::$modelClass;
+        return static::$model;
     }
 
     /**
@@ -73,7 +73,7 @@ class SingleTableExtendedStrategy implements TranslatorStrategy
      */
     public function __construct(Model $model)
     {
-        $this->model = $model;
+        $this->translatable = $model;
     }
 
     /**
@@ -83,8 +83,8 @@ class SingleTableExtendedStrategy implements TranslatorStrategy
     {
         $this->bootIfNotBooted();
 
-        if ($this->model->translator()->isFallbackLocale($locale)) {
-            return $this->model->getRawOriginal($attribute);
+        if ($this->translatable->translator()->isFallbackLocale($locale)) {
+            return $this->translatable->getRawOriginal($attribute);
         }
 
         if (! array_key_exists($locale, $this->translations)) {
@@ -93,7 +93,7 @@ class SingleTableExtendedStrategy implements TranslatorStrategy
         }
 
         if (! array_key_exists($attribute, $this->translations[$locale])) {
-            throw new TranslationMissingException($this->model, $attribute, $locale);
+            throw new TranslationMissingException($this->translatable, $attribute, $locale);
         }
 
         return $this->translations[$locale][$attribute];
@@ -104,8 +104,8 @@ class SingleTableExtendedStrategy implements TranslatorStrategy
      */
     public function set(string $attribute, $value, string $locale): void
     {
-        if ($this->model->translator()->isFallbackLocale($locale)) {
-            $this->model->setRawOriginal($attribute, $value);
+        if ($this->translatable->translator()->isFallbackLocale($locale)) {
+            $this->translatable->setRawOriginal($attribute, $value);
         } else {
             $this->translations[$locale][$attribute] = $value;
             $this->pendingTranslations[$locale][$attribute] = $value;
@@ -147,11 +147,11 @@ class SingleTableExtendedStrategy implements TranslatorStrategy
             return;
         }
 
-        if (! $this->model->relationLoaded('translations')) {
+        if (! $this->translatable->relationLoaded('translations')) {
             return;
         }
 
-        $this->loadTranslations($this->model->translations);
+        $this->loadTranslations($this->translatable->translations);
 
         $this->booted = true;
     }
@@ -161,7 +161,7 @@ class SingleTableExtendedStrategy implements TranslatorStrategy
      */
     protected function updateOrCreateTranslation(string $attribute, string $locale, $value): void
     {
-        $this->model->translations()->updateOrCreate([
+        $this->translatable->translations()->updateOrCreate([
             'translatable_attribute' => $attribute,
             'locale' => $locale,
         ], [
@@ -178,7 +178,7 @@ class SingleTableExtendedStrategy implements TranslatorStrategy
             return true;
         }
 
-        return $this->model->isForceDeleting();
+        return $this->translatable->isForceDeleting();
     }
 
     /**
@@ -186,7 +186,7 @@ class SingleTableExtendedStrategy implements TranslatorStrategy
      */
     protected function usesSoftDeletes(): bool
     {
-        return collect(class_uses_recursive($this->model))->contains(SoftDeletes::class);
+        return collect(class_uses_recursive($this->translatable))->contains(SoftDeletes::class);
     }
 
     /**
@@ -194,7 +194,7 @@ class SingleTableExtendedStrategy implements TranslatorStrategy
      */
     protected function deleteTranslations(): void
     {
-        $this->model->translations()->delete();
+        $this->translatable->translations()->delete();
     }
 
     /**
@@ -220,7 +220,7 @@ class SingleTableExtendedStrategy implements TranslatorStrategy
      */
     protected function getTranslationsForLocale(string $locale): Collection
     {
-        return $this->model->translations()
+        return $this->translatable->translations()
             ->forLocale($locale)
             ->get();
     }

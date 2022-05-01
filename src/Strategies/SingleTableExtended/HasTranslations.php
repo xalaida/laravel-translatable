@@ -51,7 +51,7 @@ trait HasTranslations
      */
     public function translations(): MorphMany
     {
-        return $this->morphMany(SingleTableExtendedStrategy::modelClass(), 'translatable');
+        return $this->morphMany(SingleTableExtendedStrategy::model(), 'translatable');
     }
 
     /**
@@ -68,6 +68,20 @@ trait HasTranslations
     protected function handleDeletedEvent(): void
     {
         $this->translator()->delete();
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function resolveRouteBinding($value, $field = null): ?Model
+    {
+        $field = $field ?? $this->getRouteKeyName();
+
+        if (! $this->isTranslatable($field)) {
+            return parent::resolveRouteBinding($value, $field);
+        }
+
+        return $this->whereTranslatable($field, $value)->first();
     }
 
     /**
@@ -108,11 +122,9 @@ trait HasTranslations
 
     /**
      * Scope to order models by translatable attribute.
-     * TODO: add possibility to use qualified columns (table.attribute)
      */
     protected function scopeOrderByTranslatable(Builder $query, string $attribute, string $direction = 'asc', string $locale = null): Builder
     {
-        // TODO: probably remove this check.
         $this->translator()->assertAttributeIsTranslatable($attribute);
 
         $locale = $locale ?: $this->translator()->getLocale();
@@ -121,30 +133,16 @@ trait HasTranslations
             return $query->orderBy($attribute, $direction);
         }
 
-        // TODO: resolve model using resolver
-        $translationModel = new Translation;
+        $translation = resolve(SingleTableExtendedStrategy::model());
 
-        return $query->leftJoin($translationModel->getTable(), function (JoinClause $join) use ($translationModel, $attribute, $locale) {
-            $join->on($translationModel->qualifyColumn('translatable_id'), '=', $this->qualifyColumn($this->getKeyName()))
-                ->where($translationModel->qualifyColumn('translatable_type'), $this->getMorphClass())
-                ->where($translationModel->qualifyColumn('translatable_attribute'), $attribute)
-                ->where($translationModel->qualifyColumn('locale'), $locale);
+        return $query->leftJoin($translation->getTable(), function (JoinClause $join) use ($translation, $attribute, $locale) {
+            $join->on($translation->qualifyColumn('translatable_id'), '=', $this->qualifyColumn($this->getKeyName()))
+                ->where($translation->qualifyColumn('translatable_type'), $this->getMorphClass())
+                ->where($translation->qualifyColumn('translatable_attribute'), $attribute)
+                ->where($translation->qualifyColumn('locale'), $locale);
         })
+            // TODO: add condition if there are currently selected columns
             ->addSelect($this->qualifyColumn('*'))
-            ->orderBy($translationModel->qualifyColumn('value'), $direction);
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function resolveRouteBinding($value, $field = null): ?Model
-    {
-        $field = $field ?? $this->getRouteKeyName();
-
-        if (! $this->isTranslatable($field)) {
-            return parent::resolveRouteBinding($value, $field);
-        }
-
-        return $this->whereTranslatable($field, $value)->first();
+            ->orderBy($translation->qualifyColumn('value'), $direction);
     }
 }
