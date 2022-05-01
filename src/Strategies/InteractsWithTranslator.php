@@ -20,7 +20,11 @@ trait InteractsWithTranslator
      */
     protected function initializeInteractsWithTranslator(): void
     {
-        $this->translator = $this->newTranslator();
+        $translator = $this->newTranslator();
+
+        $this->configureTranslator($translator);
+
+        $this->translator = $translator;
     }
 
     /**
@@ -29,6 +33,14 @@ trait InteractsWithTranslator
     public function translator(): Translator
     {
         return $this->translator;
+    }
+
+    /**
+     * Configure the translator instance.
+     */
+    protected function configureTranslator(Translator $translator): void
+    {
+        //
     }
 
     /**
