@@ -22,11 +22,15 @@ use Nevadskiy\Translatable\Strategies\SingleTable\HasTranslations;
 class Translation extends Model
 {
     /**
-     * The attributes that aren't mass assignable.
+     * The attributes that are mass assignable.
      *
      * @var array
      */
-    protected $guarded = [];
+    protected $fillable = [
+        'translatable_attribute',
+        'locale',
+        'value',
+    ];
 
     /**
      * Get the translatable entity.

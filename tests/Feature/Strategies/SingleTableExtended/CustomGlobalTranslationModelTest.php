@@ -12,10 +12,6 @@ use Nevadskiy\Translatable\Strategies\SingleTableExtended\HasTranslations;
 use Nevadskiy\Translatable\Strategies\SingleTableExtended\SingleTableExtendedStrategy;
 use Nevadskiy\Translatable\Tests\TestCase;
 
-// TODO: minimize translation model dependencies.
-// - remove forLocale scope
-// - remove forAttribute scope
-// - remove $guarded array using unguarded() method
 class CustomGlobalTranslationModelTest extends TestCase
 {
     /**
@@ -88,6 +84,7 @@ class CustomGlobalTranslationModelTest extends TestCase
      */
     protected function tearDown(): void
     {
+        SingleTableExtendedStrategy::useModel(Translation::class);
         $this->schema()->drop('books');
         parent::tearDown();
     }
@@ -127,9 +124,6 @@ class CustomGlobalTranslation extends Translation
     public $incrementing = false;
 
     protected $keyType = 'string';
-
-    // TODO: remove this (and remove from base) by covering test.
-    protected $guarded = [];
 
     protected static function booted(): void
     {
