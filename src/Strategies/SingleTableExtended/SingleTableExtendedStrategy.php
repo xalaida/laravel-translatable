@@ -5,8 +5,9 @@ namespace Nevadskiy\Translatable\Strategies\SingleTableExtended;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use InvalidArgumentException;
 use Nevadskiy\Translatable\Exceptions\TranslationMissingException;
-use Nevadskiy\Translatable\Strategies\SingleTableExtended\Models\Translation;
+use Nevadskiy\Translatable\Strategies\SingleTable\Models\Translation;
 use Nevadskiy\Translatable\Strategies\TranslatorStrategy;
 
 /**
@@ -14,6 +15,13 @@ use Nevadskiy\Translatable\Strategies\TranslatorStrategy;
  */
 class SingleTableExtendedStrategy implements TranslatorStrategy
 {
+    /**
+     * The default mode class of the strategy.
+     *
+     * @var string
+     */
+    private static $modelClass = Translation::class;
+
     /**
      * The translatable model instance.
      *
@@ -40,6 +48,26 @@ class SingleTableExtendedStrategy implements TranslatorStrategy
      * @var array
      */
     protected $pendingTranslations = [];
+
+    /**
+     * Specify the translation model class.
+     */
+    public static function useModel(string $modelClass): void
+    {
+        if (! is_a($modelClass, Translation::class, true)) {
+            throw new InvalidArgumentException("A custom translation model must extend the base translation model.");
+        }
+
+        static::$modelClass = $modelClass;
+    }
+
+    /**
+     * Get the model class.
+     */
+    public static function modelClass(): string
+    {
+        return static::$modelClass;
+    }
 
     /**
      * Make a new strategy instance.

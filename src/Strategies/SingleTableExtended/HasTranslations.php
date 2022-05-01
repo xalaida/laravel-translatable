@@ -47,21 +47,11 @@ trait HasTranslations
     }
 
     /**
-     * Determine whether it should use original model value when the translation is missing for the current locale.
-     * TODO: implement this.
-     */
-    protected function useOriginalValueAsTranslationFallback(): bool
-    {
-        return true;
-    }
-
-    /**
      * Get the translations' relation.
      */
     public function translations(): MorphMany
     {
-        // TODO: add possibility to specify custom model (for example to support uuid)
-        return $this->morphMany(Translation::class, 'translatable');
+        return $this->morphMany(SingleTableExtendedStrategy::modelClass(), 'translatable');
     }
 
     /**
@@ -82,9 +72,8 @@ trait HasTranslations
 
     /**
      * Scope to remove translations eager loading from a query.
-     * TODO: probably rename to 'withoutTranslationsScope'
      */
-    protected function scopeWithoutTranslations(Builder $query): Builder
+    protected function scopeWithoutTranslationsScope(Builder $query): Builder
     {
         return $query->withoutGlobalScope(TranslationsEagerLoadingScope::class);
     }
