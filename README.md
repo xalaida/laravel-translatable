@@ -284,10 +284,10 @@ echo $book->getTranslation('description', 'uk'); // 'Очень длин'
 
 ##### Querying models without translations
 
-Sometimes you may need to query translatable model without the `translations` relation. You can do this using `withoutTranslations` scope.
+Sometimes you may need to query translatable model without the `translations` relation. You can do this using `withoutTranslationsScope` scope.
 
 ```php
-$books = Book::withoutTranslations()->get();
+$books = Book::withoutTranslationsScope()->get();
 ```
 
 ##### Querying translations 

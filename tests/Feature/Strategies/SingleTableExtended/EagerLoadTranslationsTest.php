@@ -94,7 +94,7 @@ class EagerLoadTranslationsTest extends TestCase
 
         $this->app->setLocale('uk');
 
-        [$book] = BookForEagerLoading::query()->withoutTranslations()->get();
+        [$book] = BookForEagerLoading::query()->withoutTranslationsScope()->get();
 
         self::assertFalse($book->relationLoaded('translations'));
     }

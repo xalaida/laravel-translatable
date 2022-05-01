@@ -71,7 +71,7 @@ trait HasTranslations
     /**
      * Scope to remove translations eager loading from a query.
      */
-    protected function scopeWithoutTranslations(Builder $query): Builder
+    protected function scopeWithoutTranslationsScope(Builder $query): Builder
     {
         return $query->withoutGlobalScope(TranslationsEagerLoadingScope::class);
     }
@@ -129,6 +129,4 @@ trait HasTranslations
 
         return $this->whereTranslatable($field, $value)->first();
     }
-
-    // TODO: add join translatable attributes.
 }

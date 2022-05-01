@@ -54,7 +54,7 @@ class LazyLoadTranslationsTest extends TestCase
         $book->translator()->set('title', 'Атлас тварин', 'uk');
         $book->save();
 
-        [$book] = BookForLazyLoading::query()->withoutTranslations()->get();
+        [$book] = BookForLazyLoading::query()->withoutTranslationsScope()->get();
 
         DB::connection()->enableQueryLog();
 
@@ -75,7 +75,7 @@ class LazyLoadTranslationsTest extends TestCase
 
         $this->app->setLocale('uk');
 
-        [$book] = BookForLazyLoading::query()->withoutTranslations()->get();
+        [$book] = BookForLazyLoading::query()->withoutTranslationsScope()->get();
 
         DB::connection()->enableQueryLog();
 
@@ -94,7 +94,7 @@ class LazyLoadTranslationsTest extends TestCase
         $book->translator()->set('title', 'Атлас тварин', 'uk');
         $book->save();
 
-        [$book] = BookForLazyLoading::query()->withoutTranslations()->get();
+        [$book] = BookForLazyLoading::query()->withoutTranslationsScope()->get();
 
         DB::connection()->enableQueryLog();
 
