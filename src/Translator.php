@@ -62,6 +62,16 @@ class Translator
     }
 
     /**
+     * Set up the fallback locale for the translator.
+     */
+    public function fallbackLocale(string $locale): Translator
+    {
+        $this->fallbackLocale = $locale;
+
+        return $this;
+    }
+
+    /**
      * Determine does the translator use the current or given locale as the default locale.
      */
     public function isFallbackLocale(string $locale = null): bool
