@@ -146,7 +146,6 @@ trait HasTranslations
     }
 
     /**
-     * TODO: add possibility to use qualified columns (table.attribute)
      * @inheritDoc
      */
     public function resolveRouteBinding($value, $field = null): ?Model
