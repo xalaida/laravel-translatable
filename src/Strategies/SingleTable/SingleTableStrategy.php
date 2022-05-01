@@ -5,16 +5,19 @@ namespace Nevadskiy\Translatable\Strategies\SingleTable;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use InvalidArgumentException;
 use Nevadskiy\Translatable\Exceptions\TranslationMissingException;
 use Nevadskiy\Translatable\Strategies\SingleTable\Models\Translation;
 use Nevadskiy\Translatable\Strategies\TranslatorStrategy;
 
-/**
- * TODO: add possibility to trigger an exception when creating model in non-default locale.
- */
 class SingleTableStrategy implements TranslatorStrategy
 {
-    // TODO: boot translation similar how laravel model is doing this (original and translations array and dirty on save)
+    /**
+     * The default mode class of the strategy.
+     *
+     * @var string
+     */
+    private static $modelClass = Translation::class;
 
     /**
      * The translatable model instance.
@@ -30,7 +33,6 @@ class SingleTableStrategy implements TranslatorStrategy
 
     /**
      * A list of cached translation.
-     * TODO: consider moving to Translator class.
      *
      * @var array
      */
@@ -42,6 +44,26 @@ class SingleTableStrategy implements TranslatorStrategy
      * @var array
      */
     protected $pendingTranslations = [];
+
+    /**
+     * Specify the translation model class.
+     */
+    public static function useModel(string $modelClass): void
+    {
+        if (! is_a($modelClass, Translation::class, true)) {
+            throw new InvalidArgumentException("A custom translation model must extend the base translation model.");
+        }
+
+        static::$modelClass = $modelClass;
+    }
+
+    /**
+     * Get the model class.
+     */
+    public static function modelClass(): string
+    {
+        return static::$modelClass;
+    }
 
     /**
      * Make a new strategy instance.

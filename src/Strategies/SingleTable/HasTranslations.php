@@ -49,7 +49,7 @@ trait HasTranslations
      */
     public function translations(): MorphMany
     {
-        return $this->morphMany(Translation::class, 'translatable');
+        return $this->morphMany(SingleTableStrategy::modelClass(), 'translatable');
     }
 
     /**

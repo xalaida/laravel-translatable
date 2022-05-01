@@ -36,7 +36,6 @@ class SingleTableExtendedStrategy implements TranslatorStrategy
 
     /**
      * A list of cached translation.
-     * TODO: consider moving to Translator class.
      *
      * @var array
      */
