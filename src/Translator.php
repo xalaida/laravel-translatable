@@ -28,6 +28,13 @@ class Translator
     private $strategy;
 
     /**
+     * Indicates whether the translator should use a fallback behaviour.
+     *
+     * @var bool
+     */
+    private $fallback = true;
+
+    /**
      * The default locale.
      *
      * @var string
@@ -67,6 +74,16 @@ class Translator
     public function fallbackLocale(string $locale): Translator
     {
         $this->fallbackLocale = $locale;
+
+        return $this;
+    }
+
+    /**
+     * Translator will return null instead of a translation in the fallback locale when the translation is missing.
+     */
+    public function disableFallback(): Translator
+    {
+        $this->fallback = false;
 
         return $this;
     }
@@ -119,10 +136,15 @@ class Translator
         try {
             return $this->getRawOrFail($attribute, $locale);
         } catch (TranslationMissingException $e) {
+            // TODO: dispatch missing event using model dispatcher.
             event(new TranslationMissing($e->model, $e->attribute, $e->locale));
-
-            return $this->getRawFallback($attribute);
         }
+
+        if (! $this->fallback) {
+            return null;
+        }
+
+        return $this->getRawFallback($attribute);
     }
 
     /**
