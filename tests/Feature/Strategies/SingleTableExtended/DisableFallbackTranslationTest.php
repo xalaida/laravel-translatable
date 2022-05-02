@@ -1,10 +1,10 @@
 <?php
 
-namespace Nevadskiy\Translatable\Tests\Feature\Strategies\SingleTable;
+namespace Nevadskiy\Translatable\Tests\Feature\Strategies\SingleTableExtended;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Schema\Blueprint;
-use Nevadskiy\Translatable\Strategies\SingleTable\HasTranslations;
+use Nevadskiy\Translatable\Strategies\SingleTableExtended\HasTranslations;
 use Nevadskiy\Translatable\Tests\TestCase;
 use Nevadskiy\Translatable\Translator;
 
@@ -26,6 +26,7 @@ class DisableFallbackTranslationTest extends TestCase
     {
         $this->schema()->create('books', function (Blueprint $table) {
             $table->id();
+            $table->string('title');
             $table->timestamps();
         });
     }
@@ -81,10 +82,8 @@ class DisableFallbackTranslationTest extends TestCase
         $book->title = 'Sense gallery';
         $book->save();
 
-        $this->assertDatabaseHas('translations', [
-            'locale' => $this->app->getFallbackLocale(),
-            'value' => 'Sense gallery',
-        ]);
+        $this->assertDatabaseHas('books', ['title' => 'Sense gallery']);
+        $this->assertDatabaseCount('translations', 0);
     }
 
     /**
