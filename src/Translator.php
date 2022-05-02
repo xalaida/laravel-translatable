@@ -48,12 +48,11 @@ class Translator
     {
         $this->model = $model;
         $this->strategy = $strategy;
-        $this->fallbackLocale = 'en';
+        $this->fallbackLocale = config('app.fallback_locale');
     }
 
     /**
      * Get the translator locale.
-     * TODO: refactor.
      */
     public function getLocale(): string
     {
@@ -136,7 +135,6 @@ class Translator
         try {
             return $this->getRawOrFail($attribute, $locale);
         } catch (TranslationMissingException $e) {
-            // TODO: dispatch missing event using model dispatcher.
             event(new TranslationMissing($e->model, $e->attribute, $e->locale));
         }
 
@@ -220,11 +218,6 @@ class Translator
     public function delete(): void
     {
         $this->strategy->delete();
-    }
-
-    public function unset()
-    {
-        // TODO: implement this
     }
 
     /**
