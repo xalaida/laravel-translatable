@@ -80,16 +80,6 @@ class Translator
     }
 
     /**
-     * Translator will return null instead of a translation in the fallback locale when the translation is missing.
-     */
-    public function disableFallback(): Translator
-    {
-        $this->fallback = false;
-
-        return $this;
-    }
-
-    /**
      * Determine does the translator use the current or given locale as the default locale.
      */
     public function isFallbackLocale(string $locale = null): bool
@@ -97,6 +87,16 @@ class Translator
         $locale = $locale ?: $this->getLocale();
 
         return $locale === $this->getFallbackLocale();
+    }
+
+    /**
+     * Translator will return null instead of a translation in the fallback locale when the translation is missing.
+     */
+    public function disableFallback(): Translator
+    {
+        $this->fallback = false;
+
+        return $this;
     }
 
     /**
