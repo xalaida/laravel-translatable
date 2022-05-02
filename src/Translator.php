@@ -48,6 +48,7 @@ class Translator
     {
         $this->model = $model;
         $this->strategy = $strategy;
+        // TODO: keep it sync with resources' translator and make it octane friendly.
         $this->fallbackLocale = config('app.fallback_locale');
     }
 
@@ -56,6 +57,7 @@ class Translator
      */
     public function getLocale(): string
     {
+        // TODO: refactor
         return app()->getLocale();
     }
 
