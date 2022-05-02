@@ -224,26 +224,4 @@ class SingleTableExtendedStrategy implements TranslatorStrategy
             ->forLocale($locale)
             ->get();
     }
-
-    // TODO: feature deleting
-    // /**
-    //  * Delete translation from the model for the given attribute and locale.
-    //  */
-    // public function delete(string $attribute, string $locale)
-    // {
-    //     $this->model->translations()
-    //         ->forAttribute($attribute)
-    //         ->forLocale($locale)
-    //         ->delete();
-    // }
-    //
-    // /**
-    //  * Delete all translations from the model for the given locale.
-    //  */
-    // public function deleteForLocale(string $locale = null)
-    // {
-    //     $this->model->translations()
-    //         ->forLocale($locale)
-    //         ->delete();
-    // }
 }
