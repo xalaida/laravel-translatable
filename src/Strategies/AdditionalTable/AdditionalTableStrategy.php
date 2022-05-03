@@ -40,10 +40,6 @@ class AdditionalTableStrategy implements TranslatorStrategy
      */
     public function get(string $attribute, string $locale)
     {
-        if ($this->shouldGetFromOriginalAttribute($locale)) {
-            return $this->model->getOriginalAttribute($attribute);
-        }
-
         if (isset($this->pendingTranslations[$locale][$attribute])) {
             return $this->pendingTranslations[$locale][$attribute];
         }
@@ -81,11 +77,6 @@ class AdditionalTableStrategy implements TranslatorStrategy
         $this->pendingTranslations = [];
 
         return $pendingTranslations;
-    }
-
-    private function shouldGetFromOriginalAttribute(string $locale): bool
-    {
-        return $this->isFallbackLocale($locale);
     }
 
     /**

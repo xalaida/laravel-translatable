@@ -74,26 +74,6 @@ class AdditionalTableStrategyTest extends TestCase
     }
 
     /** @test */
-    public function it_stores_translations_in_additional_table(): void
-    {
-        $product = ProductFactory::new()->create([
-            'title' => 'Reindeer Sweater',
-            'description' => 'Warm winter sweater',
-        ]);
-
-        $product->translator()->set('title', 'Свитер с оленями', 'uk');
-        $product->translator()->set('description', 'Теплый зимний свитер', 'uk');
-        $product->translator()->save();
-
-        $this->assertDatabaseCount('product_translations', 1);
-        $this->assertDatabaseHas('product_translations', [
-            'title' => 'Свитер с оленями',
-            'description' => 'Теплый зимний свитер',
-            'locale' => 'uk',
-        ]);
-    }
-
-    /** @test */
     public function it_does_not_store_translations_without_save_call(): void
     {
         $product = ProductFactory::new()->create([
@@ -245,7 +225,7 @@ class AdditionalTableStrategyTest extends TestCase
     }
 
     /** @test */
-    public function it_retrieves_translations_using_single_table_strategy(): void
+    public function it_retrieves_translations_using_additional_table_strategy(): void
     {
         $book = new Book();
         $book->translator()->set('title', 'Amazing birds', 'en');
