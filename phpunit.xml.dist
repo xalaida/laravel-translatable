@@ -20,6 +20,12 @@
         <testsuite name="SingleTableExtended">
             <directory>tests/Feature/Strategies/SingleTableExtended</directory>
         </testsuite>
+        <testsuite name="AdditionalTable">
+            <directory>tests/Feature/Strategies/AdditionalTable</directory>
+        </testsuite>
+        <testsuite name="AdditionalTableExtended">
+            <directory>tests/Feature/Strategies/AdditionalTableExtended</directory>
+        </testsuite>
     </testsuites>
     <filter>
         <whitelist>

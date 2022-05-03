@@ -5,9 +5,9 @@ namespace Nevadskiy\Translatable\Tests\Feature\Strategies\AdditionalTable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\DB;
+use Nevadskiy\Translatable\Exceptions\AttributeNotTranslatableException;
+use Nevadskiy\Translatable\Exceptions\TranslationMissingException;
 use Nevadskiy\Translatable\Strategies\AdditionalTable\HasTranslations;
-use Nevadskiy\Translatable\Tests\Support\Factories\ProductFactory;
-use Nevadskiy\Translatable\Tests\Support\Models\Product;
 use Nevadskiy\Translatable\Tests\TestCase;
 
 class AdditionalTableStrategyTest extends TestCase
@@ -40,163 +40,6 @@ class AdditionalTableStrategyTest extends TestCase
             $table->timestamps();
         });
     }
-
-    /** @test */
-    public function it_can_create_models_in_custom_locale_correctly(): void
-    {
-        $this->app->setLocale('uk');
-
-        $product = new Product();
-        $product->title = 'Свитер с оленями';
-        $product->description = 'Теплый зимний свитер';
-        $product->save();
-
-        $this->assertDatabaseHas('products', [
-            'title' => 'Свитер с оленями',
-            'description' => 'Теплый зимний свитер',
-        ]);
-        $this->assertDatabaseCount('product_translations', 0);
-    }
-
-    /** @test */
-    public function it_stores_translatable_model_correctly(): void
-    {
-        ProductFactory::new()->create([
-            'title' => 'Reindeer Sweater',
-            'description' => 'Warm winter sweater',
-        ]);
-
-        $this->assertDatabaseHas('products', [
-            'title' => 'Reindeer Sweater',
-            'description' => 'Warm winter sweater',
-        ]);
-        $this->assertDatabaseCount('product_translations', 0);
-    }
-
-    /** @test */
-    public function it_does_not_store_translations_without_save_call(): void
-    {
-        $product = ProductFactory::new()->create([
-            'title' => 'Reindeer Sweater',
-            'description' => 'Warm winter sweater',
-        ]);
-
-        $product->translator()->set('title', 'Свитер с оленями', 'uk');
-        $product->translator()->set('description', 'Теплый зимний свитер', 'uk');
-
-        $this->assertDatabaseCount('product_translations', 0);
-    }
-
-    /** @test */
-    public function it_does_not_override_translations_on_double_save_call(): void
-    {
-        $product = ProductFactory::new()->create([
-            'title' => 'Reindeer Sweater',
-            'description' => 'Warm winter sweater',
-        ]);
-
-        $product->translator()->set('title', 'Свитер с оленями', 'uk');
-        $product->translator()->set('description', 'Теплый зимний свитер', 'uk');
-        $product->translator()->save();
-
-        DB::enableQueryLog();
-
-        $product->translator()->save();
-
-        self::assertEmpty(DB::connection()->getQueryLog());
-        $this->assertDatabaseCount('product_translations', 1);
-    }
-
-    /** @test */
-    public function it_retrieves_translation_from_additional_table(): void
-    {
-        $product = ProductFactory::new()->create(['title' => 'Reindeer Sweater']);
-
-        $product->translator()->set('title', 'Свитер с оленями', 'uk');
-
-        self::assertEquals('Свитер с оленями', $product->translator()->get('title', 'uk'));
-    }
-
-    /** @test */
-    public function it_automatically_stores_translation_for_translatable_attribute_using_current_locale(): void
-    {
-        $product = ProductFactory::new()->create(['title' => 'Reindeer Sweater']);
-
-        $this->app->setLocale('uk');
-
-        $product->title = 'Свитер с оленями';
-        $product->save();
-
-        $this->assertDatabaseCount('product_translations', 1);
-        $this->assertDatabaseHas('product_translations', [
-            'title' => 'Свитер с оленями',
-            'locale' => 'uk',
-        ]);
-    }
-
-    /** @test */
-    public function it_automatically_retrieves_translation_for_translatable_attribute_using_current_locale(): void
-    {
-        $product = ProductFactory::new()->create(['title' => 'Reindeer Sweater']);
-
-        $product->translator()->set('title', 'Свитер с оленями', 'uk');
-
-        $this->app->setLocale('uk');
-
-        self::assertEquals('Свитер с оленями', $product->title);
-    }
-
-    /** @test */
-    public function it_retrieves_translations_without_additional_queries_when_they_are_preloaded(): void
-    {
-        $product1 = ProductFactory::new()->create(['title' => 'Reindeer Sweater']);
-        $product2 = ProductFactory::new()->create(['title' => 'Sony PlayStation']);
-        $product3 = ProductFactory::new()->create(['title' => 'LG Boiler']);
-
-        $product1->translator()->add('title', 'Свитер с оленями', 'uk');
-        $product2->translator()->add('title', 'Sony ИгроваяСтанция', 'uk');
-        $product3->translator()->add('title', 'LG чайник', 'uk');
-
-        $products = Product::query()->withoutGlobalScopes()->with('translations')->get();
-
-        $this->app->setLocale('uk');
-
-        DB::enableQueryLog();
-
-        self::assertEquals('Свитер с оленями', $products[0]->title);
-        self::assertEquals('Sony ИгроваяСтанция', $products[1]->title);
-        self::assertEquals('LG чайник', $products[2]->title);
-
-        self::assertEmpty(DB::getQueryLog());
-    }
-
-    /** @test */
-    public function it_automatically_eager_loads_translations_for_current_locale(): void
-    {
-        $product1 = ProductFactory::new()->create(['title' => 'Reindeer Sweater']);
-        $product2 = ProductFactory::new()->create(['title' => 'Sony PlayStation']);
-        $product3 = ProductFactory::new()->create(['title' => 'LG Boiler']);
-
-        $product1->translator()->add('title', 'Свитер с оленями', 'uk');
-        $product2->translator()->add('title', 'Sony ИгроваяСтанция', 'uk');
-        $product3->translator()->add('title', 'LG чайник', 'uk');
-
-        $this->app->setLocale('uk');
-
-        $products = Product::query()->get();
-
-        DB::enableQueryLog();
-
-        self::assertEquals('Свитер с оленями', $products[0]->title);
-        self::assertEquals('Sony ИгроваяСтанция', $products[1]->title);
-        self::assertEquals('LG чайник', $products[2]->title);
-
-        self::assertEmpty(DB::getQueryLog());
-    }
-
-    // TODO: REWORK ABOVE
-    // TODO: REWORK ABOVE
-    // TODO: REWORK ABOVE
 
     /** @test */
     public function it_stores_translations_using_additional_table_strategy(): void
@@ -241,7 +84,7 @@ class AdditionalTableStrategyTest extends TestCase
     }
 
     /** @test */
-    public function it_stores_translations_using_attribute_interceptors_on_single_table_strategy(): void
+    public function it_stores_translations_using_attribute_interceptors_with_additional_table_strategy(): void
     {
         $book = new Book();
 
@@ -254,21 +97,33 @@ class AdditionalTableStrategyTest extends TestCase
         $book->save();
 
         $this->assertDatabaseCount('books', 1);
-        $this->assertDatabaseCount('translations', 2);
-        $this->assertDatabaseHas('translations', [
-            'translatable_type' => $book->getMorphClass(),
-            'translatable_id' => $book->getKey(),
-            'translatable_attribute' => 'title',
+        $this->assertDatabaseCount('book_translations', 2);
+        $this->assertDatabaseHas('book_translations', [
+            'book_id' => $book->getKey(),
+            'title' => 'Amazing birds',
             'locale' => 'en',
-            'value' => 'Amazing birds'
         ]);
-        $this->assertDatabaseHas('translations', [
-            'translatable_type' => $book->getMorphClass(),
-            'translatable_id' => $book->getKey(),
-            'translatable_attribute' => 'title',
+        $this->assertDatabaseHas('book_translations', [
+            'book_id' => $book->getKey(),
+            'title' => 'Дивовижні птахи',
             'locale' => 'uk',
-            'value' => 'Дивовижні птахи'
         ]);
+    }
+
+    // TODO: extract into SetterTranslationTest
+    /** @test */
+    public function it_does_not_store_translations_using_attribute_interceptors_without_save_call(): void
+    {
+        $book = new Book();
+
+        $this->app->setLocale('en');
+        $book->title = 'Amazing birds';
+
+        $this->app->setLocale('uk');
+        $book->title = 'Дивовижні птахи';
+
+        $this->assertDatabaseCount('books', 0);
+        $this->assertDatabaseCount('book_translations', 0);
     }
 
     /** @test */
@@ -333,7 +188,7 @@ class AdditionalTableStrategyTest extends TestCase
             $book->translator()->add('created_at', now()->setTimezone('Europe/Kiev'), 'uk');
             self::fail('Exception was not thrown for not translatable attribute');
         } catch (AttributeNotTranslatableException $e) {
-            $this->assertDatabaseCount('translations', 1);
+            $this->assertDatabaseCount('book_translations', 1);
         }
     }
 
@@ -351,11 +206,11 @@ class AdditionalTableStrategyTest extends TestCase
     public function it_returns_null_if_translation_is_nullable(): void
     {
         $book = new Book();
-        $book->translator()->set('title', 'Atlas of animals', 'en');
-        $book->translator()->set('title', null, 'uk');
+        $book->translator()->set('title', 'Atlas of animals', 'uk');
+        $book->translator()->set('description', null, 'uk');
         $book->save();
 
-        self::assertNull($book->translator()->get('title', 'uk'));
+        self::assertNull($book->translator()->get('description', 'uk'));
     }
 
     /** @test */
@@ -371,7 +226,7 @@ class AdditionalTableStrategyTest extends TestCase
         $book->translator()->add('title', 'Світ навколо нас. Дикі тварини', 'uk');
 
         self::assertEquals('Світ навколо нас. Дикі тварини', $book->translator()->get('title', 'uk'));
-        $this->assertDatabaseCount('translations', 2);
+        $this->assertDatabaseCount('book_translations', 2);
     }
 
     /** @test */
@@ -390,7 +245,7 @@ class AdditionalTableStrategyTest extends TestCase
         $book->save();
 
         self::assertEmpty(DB::connection()->getQueryLog());
-        $this->assertDatabaseCount('translations', 2);
+        $this->assertDatabaseCount('book_translations', 2);
     }
 
     /** @test */
@@ -403,7 +258,7 @@ class AdditionalTableStrategyTest extends TestCase
         $book->translator()->add('title', 'Світ навколо нас', 'uk');
         $book->translator()->add('title', 'Світ навколо нас', 'uk');
 
-        $this->assertDatabaseCount('translations', 2);
+        $this->assertDatabaseCount('book_translations', 2);
     }
 
     /** @test */
@@ -423,6 +278,93 @@ class AdditionalTableStrategyTest extends TestCase
         $book->translator()->get('title', 'uk');
 
         self::assertCount(1, DB::connection()->getQueryLog());
+    }
+
+    // TODO: REWORK BELOW...
+
+    /** @test */
+    public function it_can_create_models_in_custom_locale_correctly(): void
+    {
+        $this->app->setLocale('uk');
+
+        $product = new Product();
+        $product->title = 'Свитер с оленями';
+        $product->description = 'Теплый зимний свитер';
+        $product->save();
+
+        $this->assertDatabaseHas('products', [
+            'title' => 'Свитер с оленями',
+            'description' => 'Теплый зимний свитер',
+        ]);
+        $this->assertDatabaseCount('product_translations', 0);
+    }
+
+    /** @test */
+    public function it_does_not_override_translations_on_double_save_call(): void
+    {
+        $product = ProductFactory::new()->create([
+            'title' => 'Reindeer Sweater',
+            'description' => 'Warm winter sweater',
+        ]);
+
+        $product->translator()->set('title', 'Свитер с оленями', 'uk');
+        $product->translator()->set('description', 'Теплый зимний свитер', 'uk');
+        $product->translator()->save();
+
+        DB::enableQueryLog();
+
+        $product->translator()->save();
+
+        self::assertEmpty(DB::connection()->getQueryLog());
+        $this->assertDatabaseCount('product_translations', 1);
+    }
+
+    /** @test */
+    public function it_retrieves_translations_without_additional_queries_when_they_are_preloaded(): void
+    {
+        $product1 = ProductFactory::new()->create(['title' => 'Reindeer Sweater']);
+        $product2 = ProductFactory::new()->create(['title' => 'Sony PlayStation']);
+        $product3 = ProductFactory::new()->create(['title' => 'LG Boiler']);
+
+        $product1->translator()->add('title', 'Свитер с оленями', 'uk');
+        $product2->translator()->add('title', 'Sony ИгроваяСтанция', 'uk');
+        $product3->translator()->add('title', 'LG чайник', 'uk');
+
+        $products = Product::query()->withoutGlobalScopes()->with('translations')->get();
+
+        $this->app->setLocale('uk');
+
+        DB::enableQueryLog();
+
+        self::assertEquals('Свитер с оленями', $products[0]->title);
+        self::assertEquals('Sony ИгроваяСтанция', $products[1]->title);
+        self::assertEquals('LG чайник', $products[2]->title);
+
+        self::assertEmpty(DB::getQueryLog());
+    }
+
+    /** @test */
+    public function it_automatically_eager_loads_translations_for_current_locale(): void
+    {
+        $product1 = ProductFactory::new()->create(['title' => 'Reindeer Sweater']);
+        $product2 = ProductFactory::new()->create(['title' => 'Sony PlayStation']);
+        $product3 = ProductFactory::new()->create(['title' => 'LG Boiler']);
+
+        $product1->translator()->add('title', 'Свитер с оленями', 'uk');
+        $product2->translator()->add('title', 'Sony ИгроваяСтанция', 'uk');
+        $product3->translator()->add('title', 'LG чайник', 'uk');
+
+        $this->app->setLocale('uk');
+
+        $products = Product::query()->get();
+
+        DB::enableQueryLog();
+
+        self::assertEquals('Свитер с оленями', $products[0]->title);
+        self::assertEquals('Sony ИгроваяСтанция', $products[1]->title);
+        self::assertEquals('LG чайник', $products[2]->title);
+
+        self::assertEmpty(DB::getQueryLog());
     }
 
     /**
