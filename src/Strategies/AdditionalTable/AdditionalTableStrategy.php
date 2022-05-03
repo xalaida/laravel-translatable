@@ -2,7 +2,9 @@
 
 namespace Nevadskiy\Translatable\Strategies\AdditionalTable;
 
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
+use Nevadskiy\Translatable\Exceptions\TranslationMissingException;
 use Nevadskiy\Translatable\Strategies\AdditionalTable\Models\Translation;
 use Nevadskiy\Translatable\Strategies\TranslatorStrategy;
 
@@ -16,7 +18,19 @@ class AdditionalTableStrategy implements TranslatorStrategy
      *
      * @var Model
      */
-    private $model;
+    private $translatable;
+
+    /**
+     * Indicates if the translation state is booted.
+     */
+    protected $booted = false;
+
+    /**
+     * A list of cached translation.
+     *
+     * @var array
+     */
+    protected $translations = [];
 
     /**
      * A list of pending translation insertions.
@@ -28,11 +42,11 @@ class AdditionalTableStrategy implements TranslatorStrategy
     /**
      * Make a new strategy instance.
      *
-     * @param Model|HasTranslations $model
+     * @param Model|HasTranslations $translatable
      */
-    public function __construct(Model $model)
+    public function __construct(Model $translatable)
     {
-        $this->model = $model;
+        $this->translatable = $translatable;
     }
 
     /**
@@ -40,11 +54,18 @@ class AdditionalTableStrategy implements TranslatorStrategy
      */
     public function get(string $attribute, string $locale)
     {
-        if (isset($this->pendingTranslations[$locale][$attribute])) {
-            return $this->pendingTranslations[$locale][$attribute];
+        $this->bootIfNotBooted();
+
+        if (! array_key_exists($locale, $this->translations)) {
+            $this->translations[$locale] = [];
+            $this->loadTranslationsForLocale($locale);
         }
 
-        return $this->getFromRelation($locale, $attribute);
+        if (! array_key_exists($attribute, $this->translations[$locale])) {
+            throw new TranslationMissingException($this->translatable, $attribute, $locale);
+        }
+
+        return $this->translations[$locale][$attribute];
     }
 
     /**
@@ -52,24 +73,43 @@ class AdditionalTableStrategy implements TranslatorStrategy
      */
     public function set(string $attribute, $value, string $locale): void
     {
+        $this->translations[$locale][$attribute] = $value;
         $this->pendingTranslations[$locale][$attribute] = $value;
     }
 
     /**
-     * Determine if the given locale is fallback locale.
+     * This method could be replaced with a direct 'loadTranslations' call on Eloquent' "retrieved" event.
+     * But the "retrieved" event is fired BEFORE eager loading, so it is impossible now.
+     * @see https://github.com/laravel/framework/issues/29658
      */
-    private function isFallbackLocale(string $locale): bool
+    protected function bootIfNotBooted(): void
     {
-        return $locale === 'en';
+        if ($this->booted) {
+            return;
+        }
+
+        $this->booted = true;
+
+        if ($this->translatable->relationLoaded('translations')) {
+            $this->loadTranslations($this->translatable->translations);
+        }
     }
 
     public function save(): void
     {
         foreach ($this->pullPendingTranslations() as $locale => $attributes) {
-            $this->model->translations()->updateOrCreate(['locale' => $locale], $attributes);
+            $this->translatable->translations()->updateOrCreate(['locale' => $locale], $attributes);
         }
     }
 
+    public function delete(): void
+    {
+        // TODO: Implement delete() method.
+    }
+
+    /**
+     * Pull pending translations.
+     */
     private function pullPendingTranslations(): array
     {
         $pendingTranslations = $this->pendingTranslations;
@@ -80,23 +120,32 @@ class AdditionalTableStrategy implements TranslatorStrategy
     }
 
     /**
-     * Find the translation value in the translations' relation.
+     * Load translation values from the given collection of translations.
      */
-    private function getFromRelation(string $locale, string $attribute)
+    protected function loadTranslations(Collection $translations): void
     {
-        $translation = $this->model->translations->first(function (Translation $translation) use ($locale) {
-            return $translation->locale === $locale;
+        $translations->each(function (Translation $translation) {
+            foreach ($this->translatable->getTranslatable() as $attribute) {
+                $this->translations[$translation->locale][$attribute] = $translation->getAttribute($attribute);
+            }
         });
-
-        if (! $translation) {
-            return null;
-        }
-
-        return $translation->getAttribute($attribute);
     }
 
-    public function delete(): void
+    /**
+     * Load translation values for the given locale.
+     */
+    protected function loadTranslationsForLocale(string $locale): void
     {
-        // TODO: Implement delete() method.
+        $this->loadTranslations($this->getTranslationsForLocale($locale));
+    }
+
+    /**
+     * Get translations for the given locale.
+     */
+    protected function getTranslationsForLocale(string $locale): Collection
+    {
+        return $this->translatable->translations()
+            ->forLocale($locale)
+            ->get();
     }
 }
