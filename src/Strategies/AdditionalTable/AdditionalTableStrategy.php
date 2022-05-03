@@ -69,8 +69,6 @@ class AdditionalTableStrategy implements TranslatorStrategy
 
     public function save(): void
     {
-        dd('here', $this->pendingTranslations);
-
         foreach ($this->pullPendingTranslations() as $locale => $attributes) {
             $this->model->translations()->updateOrCreate(['locale' => $locale], $attributes);
         }

@@ -24,7 +24,7 @@ trait HasTranslations
     /**
      * Boot the trait.
      */
-    protected static function bootHasEntityTranslations(): void
+    protected static function bootHasTranslations(): void
     {
         // static::addGlobalScope(new TranslationsEagerLoadScope());
 
