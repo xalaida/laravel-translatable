@@ -67,6 +67,8 @@ class SingleTableStrategy implements TranslatorStrategy
 
     /**
      * Make a new strategy instance.
+     *
+     * @param Model|HasTranslations $translatable
      */
     public function __construct(Model $translatable)
     {
@@ -106,13 +108,11 @@ class SingleTableStrategy implements TranslatorStrategy
      */
     public function save(): void
     {
-        foreach ($this->pendingTranslations as $locale => $attributes) {
+        foreach ($this->pullPendingTranslations() as $locale => $attributes) {
             foreach ($attributes as $attribute => $value) {
                 $this->updateOrCreateTranslation($attribute, $locale, $value);
             }
         }
-
-        $this->pendingTranslations = [];
     }
 
     /**
@@ -136,13 +136,11 @@ class SingleTableStrategy implements TranslatorStrategy
             return;
         }
 
-        if (! $this->translatable->relationLoaded('translations')) {
-            return;
-        }
-
-        $this->loadTranslations($this->translatable->translations);
-
         $this->booted = true;
+
+        if ($this->translatable->relationLoaded('translations')) {
+            $this->loadTranslations($this->translatable->translations);
+        }
     }
 
     /**
@@ -156,6 +154,18 @@ class SingleTableStrategy implements TranslatorStrategy
         ], [
             'value' => $value,
         ]);
+    }
+
+    /**
+     * Pull pending translations.
+     */
+    protected function pullPendingTranslations(): array
+    {
+        $pendingTranslations = $this->pendingTranslations;
+
+        $this->pendingTranslations = [];
+
+        return $pendingTranslations;
     }
 
     /**

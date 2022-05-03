@@ -117,13 +117,11 @@ class SingleTableExtendedStrategy implements TranslatorStrategy
      */
     public function save(): void
     {
-        foreach ($this->pendingTranslations as $locale => $attributes) {
+        foreach ($this->pullPendingTranslations() as $locale => $attributes) {
             foreach ($attributes as $attribute => $value) {
                 $this->updateOrCreateTranslation($attribute, $locale, $value);
             }
         }
-
-        $this->pendingTranslations = [];
     }
 
     /**
@@ -147,13 +145,11 @@ class SingleTableExtendedStrategy implements TranslatorStrategy
             return;
         }
 
-        if (! $this->translatable->relationLoaded('translations')) {
-            return;
-        }
-
-        $this->loadTranslations($this->translatable->translations);
-
         $this->booted = true;
+
+        if ($this->translatable->relationLoaded('translations')) {
+            $this->loadTranslations($this->translatable->translations);
+        }
     }
 
     /**
@@ -167,6 +163,18 @@ class SingleTableExtendedStrategy implements TranslatorStrategy
         ], [
             'value' => $value,
         ]);
+    }
+
+    /**
+     * Pull pending translations.
+     */
+    protected function pullPendingTranslations(): array
+    {
+        $pendingTranslations = $this->pendingTranslations;
+
+        $this->pendingTranslations = [];
+
+        return $pendingTranslations;
     }
 
     /**
