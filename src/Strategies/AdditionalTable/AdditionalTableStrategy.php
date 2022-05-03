@@ -12,11 +12,6 @@ use Nevadskiy\Translatable\Strategies\TranslatorStrategy;
 class AdditionalTableStrategy implements TranslatorStrategy
 {
     /**
-     * @TODO: add description. (probably just extract into separate strategy to provide simpler approach with trait and only related scoped)
-     */
-    private $copyingStructure = true;
-
-    /**
      * The translatable model instance.
      *
      * @var Model
@@ -61,11 +56,7 @@ class AdditionalTableStrategy implements TranslatorStrategy
      */
     public function set(string $attribute, $value, string $locale): void
     {
-        if ($this->shouldSetAsOriginalAttribute($locale)) {
-            $this->model->setOriginalAttribute($attribute, $value);
-        } else {
-            $this->pendingTranslations[$locale][$attribute] = $this->model->withAttributeSetter($attribute, $value);
-        }
+        $this->pendingTranslations[$locale][$attribute] = $value;
     }
 
     /**
@@ -78,15 +69,11 @@ class AdditionalTableStrategy implements TranslatorStrategy
 
     public function save(): void
     {
-        // TODO: possible 'nullable' insert error case here for multiple fields (we setting translation for only one field but actually required two).
+        dd('here', $this->pendingTranslations);
+
         foreach ($this->pullPendingTranslations() as $locale => $attributes) {
             $this->model->translations()->updateOrCreate(['locale' => $locale], $attributes);
         }
-
-//        // TODO: make this configurable OR probably remove completely that feature (think what if only fallback locale attributes are translated? its broken here)
-//        if ($translations) {
-//            $this->model->touch();
-//        }
     }
 
     private function pullPendingTranslations(): array
@@ -98,43 +85,8 @@ class AdditionalTableStrategy implements TranslatorStrategy
         return $pendingTranslations;
     }
 
-    public function copyingTranslatableStructure()
-    {
-        $this->copyingStructure = true;
-
-        return $this;
-    }
-
-    public function extendingTranslatableStructure()
-    {
-        $this->copyingStructure = false;
-
-        return $this;
-    }
-
-    /**
-     * @param string $locale
-     * @return bool
-     */
-    private function shouldSetAsOriginalAttribute(string $locale): bool
-    {
-        if (! $this->copyingStructure) {
-            return false;
-        }
-
-        if (! $this->model->exists) {
-            return true;
-        }
-
-        return $this->isFallbackLocale($locale);
-    }
-
     private function shouldGetFromOriginalAttribute(string $locale): bool
     {
-        if (! $this->copyingStructure) {
-            return false;
-        }
-
         return $this->isFallbackLocale($locale);
     }
 
@@ -152,5 +104,10 @@ class AdditionalTableStrategy implements TranslatorStrategy
         }
 
         return $translation->getAttribute($attribute);
+    }
+
+    public function delete(): void
+    {
+        // TODO: Implement delete() method.
     }
 }
