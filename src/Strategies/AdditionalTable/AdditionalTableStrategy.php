@@ -7,7 +7,6 @@ use Nevadskiy\Translatable\Strategies\AdditionalTable\Models\Translation;
 use Nevadskiy\Translatable\Strategies\TranslatorStrategy;
 
 /**
- * @TODO: add 'subscribe' hook to register model events (boot, saving, saved, deleting, deleted, etc).
  * TODO: add possibility to trigger an exception when creating model in non-default locale (only for copyingStructure mode).
  */
 class AdditionalTableStrategy implements TranslatorStrategy
