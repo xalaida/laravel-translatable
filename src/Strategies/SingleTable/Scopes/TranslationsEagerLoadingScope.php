@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Database\Eloquent\Scope;
+use Nevadskiy\Translatable\Strategies\SingleTable\HasTranslations;
 
 class TranslationsEagerLoadingScope implements Scope
 {
@@ -16,9 +17,20 @@ class TranslationsEagerLoadingScope implements Scope
     {
         $query->with(['translations' => function (Relation $query) use ($translatable) {
             $query->forLocale($translatable->translator()->getLocale())
-                ->when(! $translatable->translator()->isFallbackLocale(), function (Builder $query) use ($translatable) {
+                ->when($this->shouldLoadFallbackTranslations($translatable), function (Builder $query) use ($translatable) {
                     $query->orWhere('locale', $translatable->translator()->getFallbackLocale());
                 });
         }]);
+    }
+
+    /**
+     * @param Model|HasTranslations $translatable
+     * @return bool
+     */
+    public function shouldLoadFallbackTranslations(Model $translatable): bool
+    {
+        // TODO: if fallback disabled - do not eager load!
+
+        return ! $translatable->translator()->isFallbackLocale();
     }
 }

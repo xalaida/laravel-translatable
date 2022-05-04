@@ -87,6 +87,23 @@ class DisableFallbackTranslationTest extends TestCase
         ]);
     }
 
+    /** @test */
+    public function it_does_not_eager_load_disabled_fallback_translations(): void
+    {
+        // TODO: make this work (not needed for EXTENDED strategies)
+        $book = new BookWithDisabledFallback();
+        $book->translator()->set('title', 'Atlas of animals', 'en');
+        $book->translator()->set('title', 'Атлас тварин', 'uk');
+        $book->save();
+
+        $this->app->setLocale('uk');
+        [$book] = BookWithDisabledFallback::all();
+
+        self::assertTrue($book->relationLoaded('translations'));
+        self::assertCount(1, $book->translations);
+        self::assertEquals('uk', $book->translations[0]->locale);
+    }
+
     /**
      * @inheritdoc
      */
