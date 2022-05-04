@@ -6,11 +6,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 ### Added
-- Strategy to store translations in the separate table for specific model.
+- Different strategies to handle translations in their own way.
 
 ### Changed
-- Project structure according to support different strategies.
-- Rename `NotTranslatableAttributeException` into `AttributeNotTranslatableException`.
+- Project structure.
+- Move trait `Nevadskiy\Translatable\HasTranslations` to `Nevadskiy\Translatable\Strategies\SingleTable\HasTranslations`.
 
 ### Removed
 - `translate` and `translateMany` methods on the model.
