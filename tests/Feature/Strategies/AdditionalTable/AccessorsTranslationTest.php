@@ -8,8 +8,6 @@ use Illuminate\Support\Str;
 use Nevadskiy\Translatable\Strategies\AdditionalTable\HasTranslations;
 use Nevadskiy\Translatable\Tests\TestCase;
 
-// TODO: test custom translation table name
-// TODO: test custom foreign key name
 class AccessorsTranslationTest extends TestCase
 {
     /**
@@ -162,8 +160,8 @@ class AccessorsTranslationTest extends TestCase
 
 /**
  * @property string title
- * @property string description
- * @property string description_short
+ * @property string|null description
+ * @property string|null description_short
  */
 class BookWithAccessors extends Model
 {
