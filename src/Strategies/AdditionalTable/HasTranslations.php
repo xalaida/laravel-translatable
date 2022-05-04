@@ -7,8 +7,8 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Collection;
 use Nevadskiy\Translatable\Strategies\AdditionalTable\Models\Translation;
+use Nevadskiy\Translatable\Strategies\AdditionalTable\Scopes\TranslationsEagerLoadingScope;
 use Nevadskiy\Translatable\Strategies\InteractsWithTranslator;
-// use Nevadskiy\Translatable\Strategies\SingleTable\Scopes\TranslationsEagerLoadScope;
 use Nevadskiy\Translatable\Strategies\TranslatorStrategy;
 use function collect;
 
@@ -26,7 +26,7 @@ trait HasTranslations
      */
     protected static function bootHasTranslations(): void
     {
-        // static::addGlobalScope(new TranslationsEagerLoadScope());
+        static::addGlobalScope(new TranslationsEagerLoadingScope());
 
         static::saved(static function (self $translatable) {
             $translatable->handleSavedEvent();

@@ -174,17 +174,11 @@ class BookWithAccessors extends Model
         'description',
     ];
 
-    /**
-     * Get the table name of the entity translation.
-     */
     protected function getEntityTranslationTable(): string
     {
         return 'book_translations';
     }
 
-    /**
-     * Get the foreign key of the entity translation table.
-     */
     protected function getEntityTranslationForeignKey(): string
     {
         return 'book_id';

@@ -93,17 +93,11 @@ class BookWithCustomTranslationsTable extends Model
         'title',
     ];
 
-    /**
-     * Get the table name of the entity translation.
-     */
     protected function getEntityTranslationTable(): string
     {
         return 'book_entity_translations';
     }
 
-    /**
-     * Get the foreign key of the entity translation table.
-     */
     protected function getEntityTranslationForeignKey(): string
     {
         return 'entity_id';
