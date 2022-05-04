@@ -63,7 +63,7 @@ class EagerLoadTranslationsTest extends TestCase
     }
 
     /** @test */
-    public function it_eager_loads_only_translations_for_fallback_locale_when_no_custom_locale_is_set(): void
+    public function it_eager_loads_only_translations_for_fallback_locale_when_fallback_locale_is_set(): void
     {
         $book = new BookForEagerLoading();
         $book->translator()->set('title', 'Forest', 'en');
@@ -74,7 +74,7 @@ class EagerLoadTranslationsTest extends TestCase
 
         self::assertTrue($book->relationLoaded('translations'));
         self::assertCount(1, $book->translations);
-        self::assertEquals('en', $book->translations[0]->locale);
+        self::assertEquals($this->app->getFallbackLocale(), $book->translations[0]->locale);
     }
 
     /** @test */
@@ -123,8 +123,22 @@ class EagerLoadTranslationsTest extends TestCase
         self::assertFalse($book->relationLoaded('translations'));
     }
 
-    // TODO: eager load fallback translations
-    // TODO: it can disable fallback translations from being eager loaded
+    /** @test */
+    public function it_updates_eager_loaded_translations_with_new_set_value(): void
+    {
+        $book = new BookForEagerLoading();
+        $book->translator()->set('title', 'Atlas of animals', 'en');
+        $book->translator()->set('title', 'Атлас тварин', 'uk');
+        $book->save();
+
+        [$book] = BookForEagerLoading::all();
+
+        self::assertEquals('Атлас тварин', $book->translator()->get('title', 'uk'));
+
+        $book->translator()->set('title', 'Галерея чуття', 'uk');
+
+        self::assertEquals('Галерея чуття', $book->translator()->get('title', 'uk'));
+    }
 
     /**
      * @inheritdoc

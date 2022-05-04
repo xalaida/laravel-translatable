@@ -99,6 +99,23 @@ class EagerLoadTranslationsTest extends TestCase
         self::assertFalse($book->relationLoaded('translations'));
     }
 
+    /** @test */
+    public function it_updates_eager_loaded_translations_with_new_set_value(): void
+    {
+        $book = new BookForEagerLoading();
+        $book->translator()->set('title', 'Atlas of animals', 'en');
+        $book->translator()->set('title', 'Атлас тварин', 'uk');
+        $book->save();
+
+        [$book] = BookForEagerLoading::all();
+
+        self::assertEquals('Атлас тварин', $book->translator()->get('title', 'uk'));
+
+        $book->translator()->set('title', 'Галерея чуття', 'uk');
+
+        self::assertEquals('Галерея чуття', $book->translator()->get('title', 'uk'));
+    }
+
     /**
      * @inheritdoc
      */
