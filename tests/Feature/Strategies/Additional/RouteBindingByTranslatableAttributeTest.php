@@ -205,17 +205,11 @@ class ArticleWithSlug extends Model
         'slug',
     ];
 
-    /**
-     * Get the table name of the entity translation.
-     */
     protected function getEntityTranslationTable(): string
     {
         return 'article_translations';
     }
 
-    /**
-     * Get the foreign key of the entity translation table.
-     */
     protected function getEntityTranslationForeignKey(): string
     {
         return 'article_id';
