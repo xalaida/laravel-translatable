@@ -101,43 +101,7 @@ trait HasTranslations
      */
     protected function handleDeletedEvent(): void
     {
-        // TODO: probably move to the translation instance.
-
-        if ($this->shouldDeleteTranslations()) {
-            $this->deleteTranslations();
-        }
-    }
-
-    /**
-     * Determine whether the model should delete translations.
-     */
-    protected function shouldDeleteTranslations(): bool
-    {
-        if (! $this->isUsingSoftDeletes()) {
-            return true;
-        }
-
-        if ($this->isForceDeleting()) {
-            return true;
-        }
-
-        return false;
-    }
-
-    /**
-     * Determine whether the model uses soft deletes.
-     */
-    protected function isUsingSoftDeletes(): bool
-    {
-        return collect(class_uses_recursive($this))->contains(SoftDeletes::class);
-    }
-
-    /**
-     * Delete the model translations.
-     */
-    protected function deleteTranslations(): void
-    {
-        $this->translations()->delete();
+        $this->translator()->delete();
     }
 
     /**

@@ -4,6 +4,7 @@ namespace Nevadskiy\Translatable\Strategies\AdditionalTable;
 
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Nevadskiy\Translatable\Exceptions\TranslationMissingException;
 use Nevadskiy\Translatable\Strategies\AdditionalTable\Models\Translation;
 use Nevadskiy\Translatable\Strategies\TranslatorStrategy;
@@ -102,9 +103,42 @@ class AdditionalTableStrategy implements TranslatorStrategy
         }
     }
 
+    /**
+     * @inheritdoc
+     */
     public function delete(): void
     {
-        // TODO: Implement delete() method.
+        if ($this->shouldDeleteTranslations()) {
+            $this->deleteTranslations();
+        }
+    }
+
+    /**
+     * Determine whether the translations should be deleted.
+     */
+    protected function shouldDeleteTranslations(): bool
+    {
+        if (! $this->usesSoftDeletes()) {
+            return true;
+        }
+
+        return $this->translatable->isForceDeleting();
+    }
+
+    /**
+     * Determine whether the model uses soft deletes.
+     */
+    protected function usesSoftDeletes(): bool
+    {
+        return collect(class_uses_recursive($this->translatable))->contains(SoftDeletes::class);
+    }
+
+    /**
+     * Delete the model translations.
+     */
+    protected function deleteTranslations(): void
+    {
+        $this->translatable->translations()->delete();
     }
 
     /**
