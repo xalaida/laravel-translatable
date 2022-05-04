@@ -108,7 +108,7 @@ class LazyLoadTranslationsTest extends TestCase
     /** @test */
     public function it_performs_no_additional_queries_to_retrieve_translation_for_same_attribute_and_locale(): void
     {
-        $book = new Book();
+        $book = new BookForLazyLoading();
         $book->translator()->set('title', 'Atlas of animals', 'en');
         $book->translator()->set('title', 'Атлас тварин', 'uk');
         $book->save();
@@ -122,7 +122,22 @@ class LazyLoadTranslationsTest extends TestCase
         self::assertEmpty(DB::connection()->getQueryLog());
     }
 
-    // TODO: it_updates_cached_translation_during_set (sync with pendingTranslation array)
+    /** @test */
+    public function it_updates_lazy_loaded_translations_with_new_set_value(): void
+    {
+        $book = new BookForLazyLoading();
+        $book->translator()->set('title', 'Atlas of animals', 'en');
+        $book->translator()->set('title', 'Атлас тварин', 'uk');
+        $book->save();
+
+        $book = $book->fresh();
+
+        self::assertEquals('Атлас тварин', $book->translator()->get('title', 'uk'));
+
+        $book->translator()->set('title', 'Галерея чуття', 'uk');
+
+        self::assertEquals('Галерея чуття', $book->translator()->get('title', 'uk'));
+    }
 
     /**
      * @inheritdoc
