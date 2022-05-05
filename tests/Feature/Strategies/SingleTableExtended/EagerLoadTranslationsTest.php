@@ -2,6 +2,7 @@
 
 namespace Nevadskiy\Translatable\Tests\Feature\Strategies\SingleTableExtended;
 
+use Illuminate\Database\ConnectionInterface;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\DB;
@@ -72,7 +73,7 @@ class EagerLoadTranslationsTest extends TestCase
 
         $this->app->setLocale('uk');
 
-        DB::connection()->enableQueryLog();
+        $this->app[ConnectionInterface::class]->enableQueryLog();
 
         [$book1, $book2, $book3] = BookForEagerLoading::all();
 
@@ -80,7 +81,7 @@ class EagerLoadTranslationsTest extends TestCase
         self::assertEquals('Ліс', $book2->title);
         self::assertEquals('Енциклопедія тварин', $book3->title);
 
-        self::assertCount(2, DB::connection()->getQueryLog());
+        self::assertCount(2, $this->app[ConnectionInterface::class]->getQueryLog());
     }
 
     /** @test */

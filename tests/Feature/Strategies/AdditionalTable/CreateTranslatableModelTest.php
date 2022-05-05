@@ -2,8 +2,10 @@
 
 namespace Nevadskiy\Translatable\Tests\Feature\Strategies\AdditionalTable;
 
+use Illuminate\Database\ConnectionInterface;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\DB;
 use Nevadskiy\Translatable\Strategies\AdditionalTable\HasTranslations;
 use Nevadskiy\Translatable\Tests\TestCase;
 
@@ -109,6 +111,23 @@ class CreateTranslatableModelTest extends TestCase
 
         $this->assertDatabaseCount('books', 1);
         $this->assertDatabaseCount('book_translations', 0);
+    }
+
+    /** @test */
+    public function it_does_not_save_translations_on_second_save_call(): void
+    {
+        $book = new BookForCreation();
+        $book->translator()->set('title', 'Atlas of animals', 'en');
+        $book->translator()->set('description', 'The publication about the inhabitants of our planet', 'en');
+        $book->translator()->set('title', 'Атлас тварин', 'uk');
+        $book->translator()->set('description', 'Видання про мешканців нашої планети', 'uk');
+        $book->save();
+
+        $this->app[ConnectionInterface::class]->enableQueryLog();
+
+        $book->save();
+
+        self::assertEmpty($this->app[ConnectionInterface::class]->getQueryLog());
     }
 
     /**

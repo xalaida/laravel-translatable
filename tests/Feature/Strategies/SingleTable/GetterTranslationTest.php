@@ -2,6 +2,7 @@
 
 namespace Nevadskiy\Translatable\Tests\Feature\Strategies\SingleTable;
 
+use Illuminate\Database\ConnectionInterface;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\DB;
@@ -87,11 +88,11 @@ class GetterTranslationTest extends TestCase
         $this->app->setLocale('uk');
         self::assertEquals('Ведмежа книга', $book->title);
 
-        DB::connection()->enableQueryLog();
+        $this->app[ConnectionInterface::class]->enableQueryLog();
 
         $book->save();
 
-        self::assertEmpty(DB::connection()->getQueryLog());
+        self::assertEmpty($this->app[ConnectionInterface::class]->getQueryLog());
     }
 
     /**

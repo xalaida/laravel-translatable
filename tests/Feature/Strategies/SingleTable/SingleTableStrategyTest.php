@@ -2,9 +2,9 @@
 
 namespace Nevadskiy\Translatable\Tests\Feature\Strategies\SingleTable;
 
+use Illuminate\Database\ConnectionInterface;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Schema\Blueprint;
-use Illuminate\Support\Facades\DB;
 use Nevadskiy\Translatable\Exceptions\AttributeNotTranslatableException;
 use Nevadskiy\Translatable\Exceptions\TranslationMissingException;
 use Nevadskiy\Translatable\Strategies\SingleTable\HasTranslations;
@@ -235,11 +235,11 @@ class SingleTableStrategyTest extends TestCase
         $book->translator()->set('title', 'Світ навколо нас', 'uk');
         $book->save();
 
-        DB::connection()->enableQueryLog();
+        $this->app[ConnectionInterface::class]->enableQueryLog();
 
         $book->save();
 
-        self::assertEmpty(DB::connection()->getQueryLog());
+        self::assertEmpty($this->app[ConnectionInterface::class]->getQueryLog());
         $this->assertDatabaseCount('translations', 2);
     }
 
@@ -266,13 +266,13 @@ class SingleTableStrategyTest extends TestCase
 
         $book = $book->fresh();
 
-        DB::connection()->enableQueryLog();
+        $this->app[ConnectionInterface::class]->enableQueryLog();
 
         $book->translator()->get('title', 'uk');
         $book->translator()->get('title', 'uk');
         $book->translator()->get('title', 'uk');
 
-        self::assertCount(1, DB::connection()->getQueryLog());
+        self::assertCount(1, $this->app[ConnectionInterface::class]->getQueryLog());
     }
 
     /**

@@ -2,6 +2,7 @@
 
 namespace Nevadskiy\Translatable\Tests\Feature\Strategies\SingleTable;
 
+use Illuminate\Database\ConnectionInterface;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\DB;
@@ -56,12 +57,12 @@ class LazyLoadTranslationsTest extends TestCase
 
         [$book] = BookForLazyLoading::query()->withoutTranslationsScope()->get();
 
-        DB::connection()->enableQueryLog();
+        $this->app[ConnectionInterface::class]->enableQueryLog();
 
         self::assertEquals('Atlas of animals', $book->translator()->get('title', 'en'));
         self::assertEquals('Атлас тварин', $book->translator()->get('title', 'uk'));
 
-        self::assertCount(2, DB::connection()->getQueryLog());
+        self::assertCount(2, $this->app[ConnectionInterface::class]->getQueryLog());
     }
 
     /** @test */
@@ -77,13 +78,13 @@ class LazyLoadTranslationsTest extends TestCase
 
         [$book] = BookForLazyLoading::query()->withoutTranslationsScope()->get();
 
-        DB::connection()->enableQueryLog();
+        $this->app[ConnectionInterface::class]->enableQueryLog();
 
         self::assertEquals('Atlas of animals', $book->translator()->get('title', 'en'));
         self::assertEquals('Атлас тварин', $book->translator()->get('title', 'uk'));
         self::assertEquals('Atlas zwierząt', $book->translator()->get('title', 'pl'));
 
-        self::assertCount(3, DB::connection()->getQueryLog());
+        self::assertCount(3, $this->app[ConnectionInterface::class]->getQueryLog());
     }
 
     /** @test */
@@ -96,13 +97,13 @@ class LazyLoadTranslationsTest extends TestCase
 
         [$book] = BookForLazyLoading::query()->withoutTranslationsScope()->get();
 
-        DB::connection()->enableQueryLog();
+        $this->app[ConnectionInterface::class]->enableQueryLog();
 
         self::assertEquals('Atlas of animals', $book->translator()->get('title', 'pl'));
         self::assertEquals('Atlas of animals', $book->translator()->get('title', 'pl'));
         self::assertEquals('Atlas of animals', $book->translator()->get('title', 'pl'));
 
-        self::assertCount(2, DB::connection()->getQueryLog());
+        self::assertCount(2, $this->app[ConnectionInterface::class]->getQueryLog());
     }
 
     /** @test */
@@ -113,13 +114,13 @@ class LazyLoadTranslationsTest extends TestCase
         $book->translator()->set('title', 'Атлас тварин', 'uk');
         $book->save();
 
-        DB::connection()->enableQueryLog();
+        $this->app[ConnectionInterface::class]->enableQueryLog();
 
         $book->translator()->get('title', 'uk');
         $book->translator()->get('title', 'uk');
         $book->translator()->get('title', 'uk');
 
-        self::assertEmpty(DB::connection()->getQueryLog());
+        self::assertEmpty($this->app[ConnectionInterface::class]->getQueryLog());
     }
 
     /** @test */

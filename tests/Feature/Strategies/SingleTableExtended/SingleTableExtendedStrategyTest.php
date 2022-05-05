@@ -3,6 +3,7 @@
 namespace Nevadskiy\Translatable\Tests\Feature\Strategies\SingleTableExtended;
 
 use Exception;
+use Illuminate\Database\ConnectionInterface;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\DB;
@@ -227,11 +228,11 @@ class SingleTableExtendedStrategyTest extends TestCase
         $book->translator()->set('title', 'Світ навколо нас', 'uk');
         $book->save();
 
-        DB::connection()->enableQueryLog();
+        $this->app[ConnectionInterface::class]->enableQueryLog();
 
         $book->save();
 
-        self::assertEmpty(DB::connection()->getQueryLog());
+        self::assertEmpty($this->app[ConnectionInterface::class]->getQueryLog());
         $this->assertDatabaseCount('translations', 1);
     }
 
@@ -259,11 +260,11 @@ class SingleTableExtendedStrategyTest extends TestCase
 
         $book->translator()->add('title', 'Книга про пінгвінів', 'uk');
 
-        DB::connection()->enableQueryLog();
+        $this->app[ConnectionInterface::class]->enableQueryLog();
 
         $translation = $book->translator()->get('title', 'en');
 
-        self::assertEmpty(DB::connection()->getQueryLog());
+        self::assertEmpty($this->app[ConnectionInterface::class]->getQueryLog());
         self::assertEquals('Book about penguins', $translation);
     }
 
