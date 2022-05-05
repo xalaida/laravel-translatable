@@ -1,10 +1,10 @@
 <?php
 
-namespace Nevadskiy\Translatable\Tests\Feature\Strategies\SingleTable;
+namespace Nevadskiy\Translatable\Tests\Feature\Strategies\AdditionalTable;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Schema\Blueprint;
-use Nevadskiy\Translatable\Strategies\SingleTable\HasTranslations;
+use Nevadskiy\Translatable\Strategies\AdditionalTable\HasTranslations;
 use Nevadskiy\Translatable\Tests\TestCase;
 
 class SetterTranslationTest extends TestCase
@@ -28,6 +28,15 @@ class SetterTranslationTest extends TestCase
             $table->integer('size')->default(0);
             $table->timestamps();
         });
+
+        $this->schema()->create('book_translations', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('book_id');
+            $table->string('title')->nullable();
+            $table->string('description')->nullable();
+            $table->string('locale');
+            $table->timestamps();
+        });
     }
 
     /** @test */
@@ -38,20 +47,19 @@ class SetterTranslationTest extends TestCase
         $book->save();
 
         $this->app->setLocale('uk');
-
         $book->title = 'Монстри океану';
         $book->save();
 
         $this->assertDatabaseCount('books', 1);
-        $this->assertDatabaseCount('translations', 2);
         $this->assertDatabaseHas('books', ['id' => $book->getKey()]);
-        $this->assertDatabaseHas('translations', [
+        $this->assertDatabaseCount('book_translations', 2);
+        $this->assertDatabaseHas('book_translations', [
+            'title' => 'Ocean monsters',
             'locale' => 'en',
-            'value' => 'Ocean monsters',
         ]);
-        $this->assertDatabaseHas('translations', [
+        $this->assertDatabaseHas('book_translations', [
+            'title' => 'Монстри океану',
             'locale' => 'uk',
-            'value' => 'Монстри океану',
         ]);
     }
 
@@ -63,21 +71,19 @@ class SetterTranslationTest extends TestCase
         $book->save();
 
         $this->app->setLocale('uk');
-
         $book->fillable(['title'])->update(['title' => 'Монстри океану']);
-
         $book = $book->fresh();
 
         $this->assertDatabaseCount('books', 1);
-        $this->assertDatabaseCount('translations', 2);
         $this->assertDatabaseHas('books', ['id' => $book->getKey()]);
-        $this->assertDatabaseHas('translations', [
+        $this->assertDatabaseCount('book_translations', 2);
+        $this->assertDatabaseHas('book_translations', [
+            'title' => 'Ocean monsters',
             'locale' => 'en',
-            'value' => 'Ocean monsters',
         ]);
-        $this->assertDatabaseHas('translations', [
+        $this->assertDatabaseHas('book_translations', [
+            'title' => 'Монстри океану',
             'locale' => 'uk',
-            'value' => 'Монстри океану',
         ]);
     }
 
@@ -93,14 +99,14 @@ class SetterTranslationTest extends TestCase
 
         $this->assertDatabaseCount('books', 1);
         $this->assertDatabaseHas('books', ['id' => $book->getKey()]);
-        $this->assertDatabaseCount('translations', 1);
-        $this->assertDatabaseHas('translations', [
+        $this->assertDatabaseCount('book_translations', 1);
+        $this->assertDatabaseHas('book_translations', [
+            'title' => 'Ocean monsters',
             'locale' => 'en',
-            'value' => 'Ocean monsters',
         ]);
-        $this->assertDatabaseMissing('translations', [
+        $this->assertDatabaseMissing('book_translations', [
+            'title' => 'Монстри океану',
             'locale' => 'uk',
-            'value' => 'Монстри океану',
         ]);
     }
 
@@ -118,14 +124,14 @@ class SetterTranslationTest extends TestCase
 
         $this->assertDatabaseCount('books', 1);
         $this->assertDatabaseHas('books', ['id' => $book->getKey()]);
-        $this->assertDatabaseCount('translations', 2);
-        $this->assertDatabaseHas('translations', [
+        $this->assertDatabaseCount('book_translations', 2);
+        $this->assertDatabaseHas('book_translations', [
+            'title' => 'Ocean monsters',
             'locale' => 'en',
-            'value' => 'Ocean monsters',
         ]);
-        $this->assertDatabaseHas('translations', [
+        $this->assertDatabaseHas('book_translations', [
+            'title' => 'Монстри океану',
             'locale' => 'uk',
-            'value' => 'Монстри океану',
         ]);
     }
 
@@ -139,9 +145,10 @@ class SetterTranslationTest extends TestCase
         $this->app->setLocale('uk');
 
         self::assertEquals('Ocean monsters', $book->title);
+
         $book->save();
 
-        $this->assertDatabaseMissing('translations', ['locale' => 'uk']);
+        $this->assertDatabaseMissing('book_translations', ['locale' => 'uk']);
     }
 
     /** @test */
@@ -160,26 +167,16 @@ class SetterTranslationTest extends TestCase
         $book->save();
 
         $this->assertDatabaseCount('books', 1);
-        $this->assertDatabaseCount('translations', 4);
-        $this->assertDatabaseHas('translations', [
-            'translatable_attribute' => 'title',
+        $this->assertDatabaseCount('book_translations', 2);
+        $this->assertDatabaseHas('book_translations', [
+            'title' => 'Ocean monsters',
+            'description' => 'Dive in and take a closer look at the incredible sea creatures created by nature!',
             'locale' => 'en',
-            'value' => 'Ocean monsters',
         ]);
-        $this->assertDatabaseHas('translations', [
-            'translatable_attribute' => 'title',
+        $this->assertDatabaseHas('book_translations', [
+            'title' => 'Монстри океану',
+            'description' => 'Занурся та розглянь ближче неймовірних морських істот, створених природою!',
             'locale' => 'uk',
-            'value' => 'Монстри океану',
-        ]);
-        $this->assertDatabaseHas('translations', [
-            'translatable_attribute' => 'description',
-            'locale' => 'en',
-            'value' => 'Dive in and take a closer look at the incredible sea creatures created by nature!',
-        ]);
-        $this->assertDatabaseHas('translations', [
-            'translatable_attribute' => 'description',
-            'locale' => 'uk',
-            'value' => 'Занурся та розглянь ближче неймовірних морських істот, створених природою!',
         ]);
     }
 
@@ -205,7 +202,7 @@ class SetterTranslationTest extends TestCase
     }
 
     /** @test */
-    public function it_does_not_save_translations_for_fallback_locale(): void
+    public function it_overrides_translations_for_fallback_locale(): void
     {
         $book = new BookWithSetters();
         $book->title = 'Ocean---monsters';
@@ -215,15 +212,15 @@ class SetterTranslationTest extends TestCase
         $book->save();
 
         self::assertEquals('Ocean monsters', $book->title);
-        $this->assertDatabaseCount('translations', 1);
-        $this->assertDatabaseHas('translations', [
+        $this->assertDatabaseCount('book_translations', 1);
+        $this->assertDatabaseHas('book_translations', [
+            'title' => 'Ocean monsters',
             'locale' => $this->app->getFallbackLocale(),
-            'value' => 'Ocean monsters',
         ]);
     }
 
     /** @test */
-    public function it_does_not_save_translations_for_non_translatable_attributes(): void
+    public function it_does_not_store_translations_for_non_translatable_attributes(): void
     {
         $book = new BookWithSetters();
         $book->title = 'Ocean monsters';
@@ -237,8 +234,12 @@ class SetterTranslationTest extends TestCase
         $book = $book->fresh();
 
         self::assertEquals(3, $book->size);
-        $this->assertDatabaseCount('translations', 1);
-        $this->assertDatabaseMissing('translations', ['translatable_attribute' => 'size']);
+        $this->assertDatabaseHas('books', ['size' => 3]);
+        $this->assertDatabaseCount('book_translations', 1);
+        $this->assertDatabaseHas('book_translations', [
+            'title' => 'Ocean monsters',
+            'locale' => $this->app->getFallbackLocale(),
+        ]);
     }
 
     /** @test */
@@ -256,11 +257,10 @@ class SetterTranslationTest extends TestCase
         $book = $book->fresh();
 
         self::assertNull($book->title);
-        $this->assertDatabaseCount('translations', 2);
-        $this->assertDatabaseHas('translations', [
-            'translatable_attribute' => 'title',
+        $this->assertDatabaseCount('book_translations', 2);
+        $this->assertDatabaseHas('book_translations', [
+            'title' => null,
             'locale' => 'uk',
-            'value' => null,
         ]);
     }
 
@@ -269,6 +269,7 @@ class SetterTranslationTest extends TestCase
      */
     protected function tearDown(): void
     {
+        $this->schema()->drop('book_translations');
         $this->schema()->drop('books');
         parent::tearDown();
     }
@@ -289,4 +290,14 @@ class BookWithSetters extends Model
         'title',
         'description',
     ];
+
+    protected function getEntityTranslationTable(): string
+    {
+        return 'book_translations';
+    }
+
+    protected function getEntityTranslationForeignKey(): string
+    {
+        return 'book_id';
+    }
 }
