@@ -189,11 +189,6 @@ class BookWithRouteBinding extends Model
         'slug',
     ];
 
-    public function getRouteKeyName(): string
-    {
-        return 'slug';
-    }
-
     protected function getEntityTranslationTable(): string
     {
         return 'book_translations';
@@ -202,5 +197,10 @@ class BookWithRouteBinding extends Model
     protected function getEntityTranslationForeignKey(): string
     {
         return 'book_id';
+    }
+
+    public function getRouteKeyName(): string
+    {
+        return 'slug';
     }
 }
