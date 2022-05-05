@@ -100,6 +100,14 @@ class Translator
     }
 
     /**
+     * Determine whether the translator should return a fallback translation when the requested translation is missing.
+     */
+    public function shouldFallback(): bool
+    {
+        return $this->fallback;
+    }
+
+    /**
      * Set the translation for the model.
      */
     public function set(string $attribute, $value, string $locale = null): void
@@ -140,7 +148,7 @@ class Translator
             event(new TranslationMissing($e->model, $e->attribute, $e->locale));
         }
 
-        if (! $this->fallback) {
+        if (! $this->shouldFallback()) {
             return null;
         }
 
