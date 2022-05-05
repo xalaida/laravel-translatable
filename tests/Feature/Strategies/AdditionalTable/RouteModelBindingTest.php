@@ -1,11 +1,11 @@
 <?php
 
-namespace Nevadskiy\Translatable\Tests\Feature\Strategies\SingleTable;
+namespace Nevadskiy\Translatable\Tests\Feature\Strategies\AdditionalTable;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Route;
-use Nevadskiy\Translatable\Strategies\SingleTable\HasTranslations;
+use Nevadskiy\Translatable\Strategies\AdditionalTable\HasTranslations;
 use Nevadskiy\Translatable\Tests\TestCase;
 use function route;
 
@@ -30,6 +30,15 @@ class RouteModelBindingTest extends TestCase
     {
         $this->schema()->create('books', function (Blueprint $table) {
             $table->id();
+            $table->timestamps();
+        });
+
+        $this->schema()->create('book_translations', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('book_id');
+            $table->string('title')->nullable();
+            $table->string('slug');
+            $table->string('locale');
             $table->timestamps();
         });
     }
@@ -66,6 +75,7 @@ class RouteModelBindingTest extends TestCase
 
         $book = new BookWithRouteBinding();
         $book->translator()->set('title', 'Лебедина Зграя', 'uk');
+        $book->translator()->set('slug', 'лебедина-зграя', 'uk');
         $book->save();
 
         $response = $this->get('/books/Лебедина Зграя');
@@ -158,6 +168,7 @@ class RouteModelBindingTest extends TestCase
      */
     protected function tearDown(): void
     {
+        $this->schema()->drop('book_translations');
         $this->schema()->drop('books');
         parent::tearDown();
     }
@@ -181,5 +192,15 @@ class BookWithRouteBinding extends Model
     public function getRouteKeyName(): string
     {
         return 'slug';
+    }
+
+    protected function getEntityTranslationTable(): string
+    {
+        return 'book_translations';
+    }
+
+    protected function getEntityTranslationForeignKey(): string
+    {
+        return 'book_id';
     }
 }

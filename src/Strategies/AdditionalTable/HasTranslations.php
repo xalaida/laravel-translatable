@@ -2,6 +2,7 @@
 
 namespace Nevadskiy\Translatable\Strategies\AdditionalTable;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -10,11 +11,9 @@ use Nevadskiy\Translatable\Strategies\AdditionalTable\Models\Translation;
 use Nevadskiy\Translatable\Strategies\AdditionalTable\Scopes\TranslationsEagerLoadingScope;
 use Nevadskiy\Translatable\Strategies\InteractsWithTranslator;
 use Nevadskiy\Translatable\Strategies\TranslatorStrategy;
-use function collect;
 
 /**
  * @mixin Model
- * @mixin SoftDeletes
  * @property Collection|Translation[] translations
  */
 trait HasTranslations
@@ -105,45 +104,31 @@ trait HasTranslations
     }
 
     /**
-     * Retrieve the model for a bound value.
-     *
-     * @param mixed $value
-     * @param string|null $field
-     * @return Model|null
+     * @inheritDoc
      */
-    public function resolveRouteBinding($value, $field = null)
+    public function resolveRouteBinding($value, $field = null): ?Model
     {
         $field = $field ?? $this->getRouteKeyName();
 
-        if (! $this->shouldResolveRouteBindingUsingTranslations($field)) {
+        if (! $this->isTranslatable($field)) {
             return parent::resolveRouteBinding($value, $field);
         }
 
-        // TODO: feature resolving model by translatable attribute. (possible two ways: if missing use fallback or 404) so maybe do not implement this method.
-
-        $locale = $this->translator()->getLocale();
-
-        $model = $this->whereTranslatable($field, $value, $locale)->first();
-
-        if ($model) {
-            return $model;
-        }
-
-        return $this->newQuery()
-            ->where($field, $value)
-            ->whereDoesntHave('translations', function ($query) use ($field, $locale) {
-                $query->forAttribute($field);
-                $query->forLocale($locale);
-            })
-            ->first();
+        return $this->whereTranslatable($field, $value)->first();
     }
 
-    protected function shouldResolveRouteBindingUsingTranslations(string $field): bool
+    /**
+     * Scope to filter models by translatable attribute.
+     */
+    protected function scopeWhereTranslatable(Builder $query, string $attribute, $value, string $locale = null, string $operator = '='): Builder
     {
-        if (! $this->isTranslatable($field)) {
-            return false;
-        }
+        $this->translator()->assertAttributeIsTranslatable($attribute);
 
-        return ! $this->translator()->isFallbackLocale();
+        return $query->whereHas('translations', function (Builder $query) use ($attribute, $value, $locale, $operator) {
+            $query->where($attribute, $operator, $value)
+                ->when($locale, function (Builder  $query) use ($locale) {
+                    $query->forLocale($locale);
+                });
+        });
     }
 }
