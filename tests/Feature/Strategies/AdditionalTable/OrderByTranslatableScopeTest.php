@@ -1,10 +1,10 @@
 <?php
 
-namespace Nevadskiy\Translatable\Tests\Feature\Strategies\SingleTable;
+namespace Nevadskiy\Translatable\Tests\Feature\Strategies\AdditionalTable;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Schema\Blueprint;
-use Nevadskiy\Translatable\Strategies\SingleTable\HasTranslations;
+use Nevadskiy\Translatable\Strategies\AdditionalTable\HasTranslations;
 use Nevadskiy\Translatable\Tests\TestCase;
 
 class OrderByTranslatableScopeTest extends TestCase
@@ -28,6 +28,14 @@ class OrderByTranslatableScopeTest extends TestCase
             $table->string('value')->nullable();
             $table->timestamps();
         });
+
+        $this->schema()->create('book_translations', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('book_id');
+            $table->string('title');
+            $table->string('locale');
+            $table->timestamps();
+        });
     }
 
     /** @test */
@@ -45,7 +53,9 @@ class OrderByTranslatableScopeTest extends TestCase
 
         $this->app->setLocale('uk');
 
-        $records = BookOrderByTranslatable::query()->orderByTranslatable('title')->get();
+        $records = BookOrderByTranslatable::query()
+            ->orderByTranslatable('title')
+            ->get();
 
         self::assertTrue($records[0]->is($book2));
         self::assertTrue($records[1]->is($book1));
@@ -124,8 +134,7 @@ class OrderByTranslatableScopeTest extends TestCase
         $records = BookOrderByTranslatable::query()->orderByTranslatable('title', 'desc')->get();
 
         self::assertTrue($records[0]->is($book));
-        self::assertEquals('Original value', $records[0]->value);
-        self::assertFalse(isset($records[0]->translatable_attribute));
+        self::assertFalse(isset($records[0]->book_id));
     }
 
     /** @test */
@@ -151,7 +160,7 @@ class OrderByTranslatableScopeTest extends TestCase
         self::assertTrue($records[0]->is($book2));
         self::assertTrue($records[1]->is($book1));
         self::assertFalse(isset($records[0]->created_at));
-        self::assertFalse(isset($records[0]->translatable_attribute));
+        self::assertFalse(isset($records[0]->book_id));
     }
 
     /** @test */
@@ -181,6 +190,7 @@ class OrderByTranslatableScopeTest extends TestCase
      */
     protected function tearDown(): void
     {
+        $this->schema()->drop('book_translations');
         $this->schema()->drop('books');
         parent::tearDown();
     }
@@ -199,4 +209,14 @@ class BookOrderByTranslatable extends Model
     protected $translatable = [
         'title',
     ];
+
+    protected function getEntityTranslationTable(): string
+    {
+        return 'book_translations';
+    }
+
+    protected function getEntityTranslationForeignKey(): string
+    {
+        return 'book_id';
+    }
 }

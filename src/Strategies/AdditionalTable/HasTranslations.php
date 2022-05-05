@@ -5,7 +5,7 @@ namespace Nevadskiy\Translatable\Strategies\AdditionalTable;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Database\Query\JoinClause;
 use Illuminate\Support\Collection;
 use Nevadskiy\Translatable\Strategies\AdditionalTable\Models\Translation;
 use Nevadskiy\Translatable\Strategies\AdditionalTable\Scopes\TranslationsEagerLoadingScope;
@@ -130,5 +130,27 @@ trait HasTranslations
                     $query->forLocale($locale);
                 });
         });
+    }
+
+    /**
+     * Scope to order models by translatable attribute.
+     */
+    protected function scopeOrderByTranslatable(Builder $query, string $attribute, string $direction = 'asc', string $locale = null): Builder
+    {
+        $this->translator()->assertAttributeIsTranslatable($attribute);
+
+        $locale = $locale ?: $this->translator()->getLocale();
+        $translation = $this->getEntityTranslationInstance();
+
+        if (! $query->getQuery()->columns) {
+            $query->addSelect($this->qualifyColumn('*'));
+        }
+
+        $query->leftJoin($translation->getTable(), function (JoinClause $join) use ($translation, $locale) {
+            $join->on($translation->qualifyColumn($this->getEntityTranslationForeignKey()), '=', $this->qualifyColumn($this->getKeyName()))
+                ->where($translation->qualifyColumn('locale'), $locale);
+        });
+
+        return $query->orderBy($translation->qualifyColumn($attribute), $direction);
     }
 }

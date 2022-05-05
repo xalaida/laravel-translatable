@@ -114,7 +114,6 @@ trait HasTranslations
         $this->translator()->assertAttributeIsTranslatable($attribute);
 
         $locale = $locale ?: $this->translator()->getLocale();
-
         $translation = resolve(SingleTableStrategy::model());
 
         if (! $query->getQuery()->columns) {
