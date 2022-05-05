@@ -118,6 +118,14 @@ trait HasTranslations
     }
 
     /**
+     * Scope to remove translations eager loading from a query.
+     */
+    protected function scopeWithoutTranslationsScope(Builder $query): Builder
+    {
+        return $query->withoutGlobalScope(TranslationsEagerLoadingScope::class);
+    }
+
+    /**
      * Scope to filter models by translatable attribute.
      */
     protected function scopeWhereTranslatable(Builder $query, string $attribute, $value, string $locale = null, string $operator = '='): Builder
