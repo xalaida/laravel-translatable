@@ -14,7 +14,7 @@ class SingleTableStrategy extends RelationTranslatorStrategy
      *
      * @var string
      */
-    private static $model = Translation::class;
+    protected static $model = Translation::class;
 
     /**
      * Specify the translation model class.
