@@ -135,11 +135,6 @@ class BookWithCustomFallback extends Model
         'title',
     ];
 
-    public function configureTranslator(Translator $translator): void
-    {
-        $translator->fallbackLocale('uk');
-    }
-
     protected function getEntityTranslationTable(): string
     {
         return 'book_translations';
@@ -148,5 +143,10 @@ class BookWithCustomFallback extends Model
     protected function getEntityTranslationForeignKey(): string
     {
         return 'book_id';
+    }
+
+    public function configureTranslator(Translator $translator): void
+    {
+        $translator->fallbackLocale('uk');
     }
 }
