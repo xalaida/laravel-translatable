@@ -1,10 +1,10 @@
 <?php
 
-namespace Nevadskiy\Translatable\Tests\Feature\Strategies\SingleTable;
+namespace Nevadskiy\Translatable\Tests\Feature\Strategies\AdditionalTable;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Schema\Blueprint;
-use Nevadskiy\Translatable\Strategies\SingleTable\HasTranslations;
+use Nevadskiy\Translatable\Strategies\AdditionalTable\HasTranslations;
 use Nevadskiy\Translatable\Tests\TestCase;
 use Nevadskiy\Translatable\Translator;
 
@@ -26,6 +26,14 @@ class DisableFallbackTranslationTest extends TestCase
     {
         $this->schema()->create('books', function (Blueprint $table) {
             $table->id();
+            $table->timestamps();
+        });
+
+        $this->schema()->create('book_translations', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('book_id');
+            $table->string('title');
+            $table->string('locale');
             $table->timestamps();
         });
     }
@@ -81,9 +89,9 @@ class DisableFallbackTranslationTest extends TestCase
         $book->title = 'Sense gallery';
         $book->save();
 
-        $this->assertDatabaseHas('translations', [
+        $this->assertDatabaseHas('book_translations', [
+            'title' => 'Sense gallery',
             'locale' => $this->app->getFallbackLocale(),
-            'value' => 'Sense gallery',
         ]);
     }
 
@@ -108,6 +116,7 @@ class DisableFallbackTranslationTest extends TestCase
      */
     protected function tearDown(): void
     {
+        $this->schema()->drop('book_translations');
         $this->schema()->drop('books');
         parent::tearDown();
     }
@@ -125,6 +134,16 @@ class BookWithDisabledFallback extends Model
     protected $translatable = [
         'title',
     ];
+
+    protected function getEntityTranslationTable(): string
+    {
+        return 'book_translations';
+    }
+
+    protected function getEntityTranslationForeignKey(): string
+    {
+        return 'book_id';
+    }
 
     protected function configureTranslator(Translator $translator): void
     {

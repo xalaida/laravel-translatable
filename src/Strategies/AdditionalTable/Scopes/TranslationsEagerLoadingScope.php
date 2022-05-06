@@ -16,9 +16,21 @@ class TranslationsEagerLoadingScope implements Scope
     {
         $query->with(['translations' => function (Relation $query) use ($translatable) {
             $query->forLocale($translatable->translator()->getLocale())
-                ->when(! $translatable->translator()->isFallbackLocale(), function (Builder $query) use ($translatable) {
+                ->when($this->shouldLoadFallbackTranslations($translatable), function (Builder $query) use ($translatable) {
                     $query->orWhere('locale', $translatable->translator()->getFallbackLocale());
                 });
         }]);
+    }
+
+    /**
+     * Determine whether the fallback translations should be eager loaded.
+     */
+    public function shouldLoadFallbackTranslations(Model $translatable): bool
+    {
+        if (! $translatable->translator()->shouldFallback()) {
+            return false;
+        }
+
+        return ! $translatable->translator()->isFallbackLocale();
     }
 }
