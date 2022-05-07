@@ -11,6 +11,7 @@ use Nevadskiy\Translatable\Strategies\TranslatorStrategy;
 
 /**
  * TODO: add possibility to trigger an exception when creating model in non-default locale (only for copyingStructure mode).
+ * TODO: refactor by extending RelationStrategy
  */
 class AdditionalTableStrategy implements TranslatorStrategy
 {
@@ -19,7 +20,7 @@ class AdditionalTableStrategy implements TranslatorStrategy
      *
      * @var Model
      */
-    private $translatable;
+    protected $translatable;
 
     /**
      * Indicates if the translation state is booted.
@@ -96,6 +97,9 @@ class AdditionalTableStrategy implements TranslatorStrategy
         }
     }
 
+    /**
+     * @inheritdoc
+     */
     public function save(): void
     {
         foreach ($this->pullPendingTranslations() as $locale => $attributes) {
