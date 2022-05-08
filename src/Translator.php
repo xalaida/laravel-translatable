@@ -11,6 +11,8 @@ use Nevadskiy\Translatable\Exceptions\AttributeNotTranslatableException;
 use function app;
 use function event;
 
+// TODO: add possibility to retrieve value without fallback
+// TODO: add possibility to check if value is set (has method)
 class Translator
 {
     /**
@@ -135,6 +137,21 @@ class Translator
     public function getOrFail(string $attribute, string $locale = null)
     {
         return $this->model->withAttributeGetter($attribute, $this->getRawOrFail($attribute, $locale));
+    }
+
+    public function getOrNull()
+    {
+        // TODO
+    }
+
+    public function getOrFallback()
+    {
+        // TODO
+    }
+
+    public function getOr()
+    {
+        // TODO
     }
 
     /**
