@@ -11,9 +11,6 @@ use Nevadskiy\Translatable\Exceptions\AttributeNotTranslatableException;
 use function app;
 use function event;
 
-// TODO: cover test when fallback locale is missing (should throw an exception)
-// TODO: add possibility to check if value is set (has method)
-// TODO: consider adding unset method
 class Translator
 {
     /**
