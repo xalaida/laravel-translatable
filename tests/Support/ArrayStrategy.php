@@ -34,6 +34,14 @@ class ArrayStrategy implements TranslatorStrategy
      */
     public function save(): void
     {
-        // log saved...
+        //
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function delete(): void
+    {
+        //
     }
 }
