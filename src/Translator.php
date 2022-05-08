@@ -11,8 +11,9 @@ use Nevadskiy\Translatable\Exceptions\AttributeNotTranslatableException;
 use function app;
 use function event;
 
-// TODO: add possibility to retrieve value without fallback
+// TODO: cover test when fallback locale is missing (should throw an exception)
 // TODO: add possibility to check if value is set (has method)
+// TODO: consider adding unset method
 class Translator
 {
     /**
@@ -124,14 +125,6 @@ class Translator
     }
 
     /**
-     * Get the translation value of the given attribute to the given locale.
-     */
-    public function get(string $attribute, string $locale = null)
-    {
-        return $this->model->withAttributeGetter($attribute, $this->getRaw($attribute, $locale));
-    }
-
-    /**
      * Get the translation value of the given attribute or throw an exception.
      */
     public function getOrFail(string $attribute, string $locale = null)
@@ -139,37 +132,50 @@ class Translator
         return $this->model->withAttributeGetter($attribute, $this->getRawOrFail($attribute, $locale));
     }
 
-    public function getOrNull()
+    /**
+     * Get the translation value of the given attribute or the default value if it is missing.
+     *
+     * @param callable|string $default
+     */
+    public function getOr(string $attribute, string $locale = null, $default = null)
     {
-        // TODO
-    }
+        try {
+            return $this->getOrFail($attribute, $locale);
+        } catch (TranslationMissingException $e) {
+            event(new TranslationMissing($e->model, $e->attribute, $e->locale));
 
-    public function getOrFallback()
-    {
-        // TODO
-    }
-
-    public function getOr()
-    {
-        // TODO
+            return value($default);
+        }
     }
 
     /**
-     * Get the raw translation value of the given attribute or throw an exception.
+     * Get the translation value of the given attribute to the given locale.
      */
-    public function getRaw(string $attribute, string $locale = null)
+    public function get(string $attribute, string $locale = null)
     {
-        try {
-            return $this->getRawOrFail($attribute, $locale);
-        } catch (TranslationMissingException $e) {
-            event(new TranslationMissing($e->model, $e->attribute, $e->locale));
+        if ($this->shouldFallback()) {
+            return $this->getOrFallback($attribute, $locale);
         }
 
-        if (! $this->shouldFallback()) {
-            return null;
-        }
+        return $this->getOr($attribute, $locale);
+    }
 
-        return $this->getRawFallback($attribute);
+    /**
+     * Get the translation value of the given attribute or the fallback value if it is missing.
+     */
+    public function getOrFallback(string $attribute, string $locale = null)
+    {
+        return $this->getOr($attribute, $locale, function () use ($attribute) {
+            return $this->getFallback($attribute);
+        });
+    }
+
+    /**
+     * Get the fallback translation of the given attribute.
+     */
+    public function getFallback(string $attribute)
+    {
+        return $this->getOr($attribute, $this->getFallbackLocale());
     }
 
     /**
@@ -183,40 +189,12 @@ class Translator
     }
 
     /**
-     * Get the fallback translation of the model.
-     */
-    public function getFallback(string $attribute)
-    {
-        return $this->model->withAttributeGetter($attribute, $this->getRawFallback($attribute));
-    }
-
-    /**
-     * Get the raw fallback translation of the model.
-     */
-    public function getRawFallback(string $attribute)
-    {
-        try {
-            return $this->getRawOrFail($attribute, $this->getFallbackLocale());
-        } catch (TranslationMissingException $e) {
-            return null;
-        }
-    }
-
-    /**
      * Save the given translation for the model.
      */
     public function add(string $attribute, $value, string $locale = null): void
     {
         $this->set($attribute, $value, $locale);
         $this->model->save();
-    }
-
-    /**
-     * Add many translations to the model for the given locale.
-     */
-    public function addMany(array $translations, string $locale = null): void
-    {
-        $this->setMany($translations, $locale)->save();
     }
 
     /**
@@ -229,6 +207,14 @@ class Translator
         }
 
         return $this;
+    }
+
+    /**
+     * Add many translations to the model for the given locale.
+     */
+    public function addMany(array $translations, string $locale = null): void
+    {
+        $this->setMany($translations, $locale)->save();
     }
 
     /**
