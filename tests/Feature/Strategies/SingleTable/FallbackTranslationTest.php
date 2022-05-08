@@ -56,6 +56,38 @@ class FallbackTranslationTest extends TestCase
     }
 
     /** @test */
+    public function it_returns_default_value_when_translation_is_missing(): void
+    {
+        $book = new BookWithFallback();
+        $book->translator()->set('title', 'Sense gallery', $this->app->getFallbackLocale());
+        $book->save();
+
+        self::assertEquals('Невідома книга', $book->translator()->getOr('title', 'uk', 'Невідома книга'));
+    }
+
+    /** @test */
+    public function it_resolves_default_value_when_translation_is_missing(): void
+    {
+        $book = new BookWithFallback();
+        $book->translator()->set('title', 'Sense gallery', $this->app->getFallbackLocale());
+        $book->save();
+
+        self::assertEquals('Невідома книга', $book->translator()->getOr('title', 'uk', function () {
+            return 'Невідома книга';
+        }));
+    }
+
+    /** @test */
+    public function it_returns_null_when_translation_is_missing(): void
+    {
+        $book = new BookWithFallback();
+        $book->translator()->set('title', 'Sense gallery', $this->app->getFallbackLocale());
+        $book->save();
+
+        self::assertNull($book->translator()->getOr('title', 'uk'));
+    }
+
+    /** @test */
     public function it_updates_fallback_translation_when_adding_translation_in_fallback_locale(): void
     {
         $book = new Book();
@@ -96,19 +128,6 @@ class FallbackTranslationTest extends TestCase
             'value' => 'sense gallery',
             'locale' => $this->app->getFallbackLocale(),
         ]);
-    }
-
-    /** @test */
-    public function it_retrieves_raw_fallback_translation(): void
-    {
-        $book = new BookWithFallback();
-        $book->title = 'sense gallery';
-        $book->save();
-
-        $this->app->setLocale('uk');
-        $book->translator()->add('title', 'галерея чуття', 'uk');
-
-        self::assertEquals('sense gallery', $book->translator()->getRawFallback('title'));
     }
 
     /**

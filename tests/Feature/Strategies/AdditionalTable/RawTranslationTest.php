@@ -49,7 +49,7 @@ class RawTranslationTest extends TestCase
         $book->translator()->set('title', 'лісова пісня', 'uk');
         $book->save();
 
-        self::assertEquals('лісова пісня', $book->translator()->getRaw('title', 'uk'));
+        self::assertEquals('лісова пісня', $book->translator()->getRawOrFail('title', 'uk'));
     }
 
     /** @test */
@@ -59,7 +59,7 @@ class RawTranslationTest extends TestCase
         $book->translator()->set('title', 'forest song', 'en');
         $book->save();
 
-        self::assertEquals('forest song', $book->translator()->getRaw('title', 'pl'));
+        self::assertEquals('forest song', $book->translator()->getRawOrFail('title', 'pl'));
     }
 
     /** @test */
@@ -95,24 +95,6 @@ class RawTranslationTest extends TestCase
     }
 
     /** @test */
-    public function it_fires_translation_not_found_event_when_trying_to_get_raw_translation(): void
-    {
-        $book = new BookWithRaw();
-        $book->title = 'forest song';
-        $book->save();
-
-        Event::fake(TranslationMissing::class);
-
-        self::assertEquals('forest song', $book->translator()->getRaw('title', 'uk'));
-
-        Event::assertDispatched(TranslationMissing::class, static function (TranslationMissing $event) use ($book) {
-            return $event->attribute === 'title'
-                && $event->locale === 'uk'
-                && $event->model->is($book);
-        });
-    }
-
-    /** @test */
     public function it_throws_exception_when_trying_to_get_raw_translation_for_non_translatable_attribute(): void
     {
         $book = new BookWithRaw();
@@ -121,7 +103,7 @@ class RawTranslationTest extends TestCase
 
         $this->expectException(AttributeNotTranslatableException::class);
 
-        $book->translator()->getRaw('created_at');
+        $book->translator()->getRawOrFail('created_at');
     }
 
     /**

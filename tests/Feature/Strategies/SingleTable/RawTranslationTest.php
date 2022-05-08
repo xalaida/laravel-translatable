@@ -4,9 +4,7 @@ namespace Nevadskiy\Translatable\Tests\Feature\Strategies\SingleTable;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Schema\Blueprint;
-use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Str;
-use Nevadskiy\Translatable\Events\TranslationMissing;
 use Nevadskiy\Translatable\Exceptions\AttributeNotTranslatableException;
 use Nevadskiy\Translatable\Exceptions\TranslationMissingException;
 use Nevadskiy\Translatable\Strategies\SingleTable\HasTranslations;
@@ -41,17 +39,7 @@ class RawTranslationTest extends TestCase
         $book->translator()->set('title', 'лісова пісня', 'uk');
         $book->save();
 
-        self::assertEquals('лісова пісня', $book->translator()->getRaw('title', 'uk'));
-    }
-
-    /** @test */
-    public function it_returns_fallback_value_when_raw_translation_is_missing(): void
-    {
-        $book = new BookWithRaw();
-        $book->translator()->set('title', 'forest song', 'en');
-        $book->save();
-
-        self::assertEquals('forest song', $book->translator()->getRaw('title', 'pl'));
+        self::assertEquals('лісова пісня', $book->translator()->getRawOrFail('title', 'uk'));
     }
 
     /** @test */
@@ -67,16 +55,6 @@ class RawTranslationTest extends TestCase
     }
 
     /** @test */
-    public function it_retrieves_raw_translation_using_fail_method(): void
-    {
-        $book = new BookWithRaw();
-        $book->translator()->set('title', 'лісова пісня', 'uk');
-        $book->save();
-
-        self::assertEquals('лісова пісня', $book->translator()->getRawOrFail('title', 'uk'));
-    }
-
-    /** @test */
     public function it_retrieves_translation_with_accessor_applied_using_get_method(): void
     {
         $book = new BookWithRaw();
@@ -84,24 +62,6 @@ class RawTranslationTest extends TestCase
         $book->save();
 
         self::assertEquals('Лісова пісня', $book->translator()->get('title', 'uk'));
-    }
-
-    /** @test */
-    public function it_fires_translation_not_found_event_when_trying_to_get_raw_translation(): void
-    {
-        $book = new BookWithRaw();
-        $book->title = 'forest song';
-        $book->save();
-
-        Event::fake(TranslationMissing::class);
-
-        self::assertEquals('forest song', $book->translator()->getRaw('title', 'uk'));
-
-        Event::assertDispatched(TranslationMissing::class, static function (TranslationMissing $event) use ($book) {
-            return $event->attribute === 'title'
-                && $event->locale === 'uk'
-                && $event->model->is($book);
-        });
     }
 
     /** @test */
@@ -113,7 +73,7 @@ class RawTranslationTest extends TestCase
 
         $this->expectException(AttributeNotTranslatableException::class);
 
-        $book->translator()->getRaw('created_at');
+        $book->translator()->getRawOrFail('created_at');
     }
 
     /**

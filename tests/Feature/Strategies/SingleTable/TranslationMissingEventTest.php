@@ -51,6 +51,23 @@ class TranslationMissingEventTest extends TestCase
     }
 
     /** @test */
+    public function it_fires_event_when_fallback_translation_is_missing(): void
+    {
+        $book = new BookForTranslationMissingEvent();
+        $book->save();
+
+        Event::fake(TranslationMissing::class);
+
+        self::assertNull($book->translator()->getFallback('title'));
+
+        Event::assertDispatched(TranslationMissing::class, function (TranslationMissing $event) use ($book) {
+            return $event->attribute === 'title'
+                && $event->locale === $this->app->getFallbackLocale()
+                && $event->model->is($book);
+        });
+    }
+
+    /** @test */
     public function it_throw_translation_missing_exception_when_trying_to_get_missing_translation(): void
     {
         $book = new BookForTranslationMissingEvent();
@@ -63,7 +80,7 @@ class TranslationMissingEventTest extends TestCase
     }
 
     /** @test */
-    public function it_throw_translation_missing_exception_when_trying_to_get_fallback_translation(): void
+    public function it_throw_translation_missing_exception_when_trying_to_get_translation_in_fallback_locale(): void
     {
         $book = new BookForTranslationMissingEvent();
         $book->save();

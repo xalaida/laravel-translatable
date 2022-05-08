@@ -87,14 +87,14 @@ class AccessorsTranslationTest extends TestCase
     public function it_does_not_override_fallback_attribute_after_applying_accessor(): void
     {
         $book = new BookWithAccessors();
-        $book->translator()->set('title', 'Forest song', 'en');
+        $book->title = 'Forest song';
         $book->save();
 
         $book->translator()->add('title', 'Лісова пісня', 'uk');
         self::assertEquals('Лісова пісня.', $book->translator()->get('title', 'uk'));
         $book->save();
 
-        self::assertEquals('Forest song', $book->translator()->getRawFallback('title'));
+        self::assertEquals('Forest song', $book->translator()->getRawOrFail('title'));
     }
 
     /** @test */

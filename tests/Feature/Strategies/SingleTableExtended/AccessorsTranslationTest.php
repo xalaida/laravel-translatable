@@ -113,7 +113,7 @@ class AccessorsTranslationTest extends TestCase
         self::assertEquals('Лісова пісня', $book->title);
         $book->save();
 
-        self::assertEquals('лісова пісня', $book->fresh()->translator()->getRaw('title', 'uk'));
+        self::assertEquals('лісова пісня', $book->fresh()->translator()->getRawOrFail('title', 'uk'));
     }
 
     /** @test */
