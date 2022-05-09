@@ -48,7 +48,7 @@ class TranslationMissingEventTest extends TestCase
         $book->title = 'Nature clock';
         $book->save();
 
-        Translator::setEventDispatcher(Event::fake(TranslationMissing::class));
+        Event::fake(TranslationMissing::class);
 
         self::assertEquals('Nature clock', $book->translator()->get('title', 'uk'));
 
