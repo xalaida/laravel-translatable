@@ -2,40 +2,65 @@
 
 namespace Nevadskiy\Translatable;
 
+use Illuminate\Contracts\Events\Dispatcher;
 use Illuminate\Database\Eloquent\Model;
 use Nevadskiy\Translatable\Exceptions\TranslationMissingException;
 use Nevadskiy\Translatable\Strategies\InteractsWithTranslator;
 use Nevadskiy\Translatable\Strategies\TranslatorStrategy;
 use Nevadskiy\Translatable\Events\TranslationMissing;
 use Nevadskiy\Translatable\Exceptions\AttributeNotTranslatableException;
-use function app;
-use function event;
 
 class Translator
 {
+    /**
+     * The translator locale resolver.
+     *
+     * @var callable
+     */
+    protected static $localeResolver;
+
+    /**
+     * The fallback translator locale resolver.
+     *
+     * @var callable
+     */
+    protected static $fallbackLocaleResolver;
+
+    /**
+     * The event dispatcher instance.
+     *
+     * @var Dispatcher
+     */
+    protected static $dispatcher;
+
     /**
      * The translatable model instance.
      *
      * @var Model|InteractsWithTranslator
      */
-    private $model;
+    protected $model;
 
     /**
      * The translator strategy instance.
      *
      * @var TranslatorStrategy
      */
-    private $strategy;
+    protected $strategy;
+
+    /**
+     * The translator locale.
+     */
+    protected $locale;
 
     /**
      * Indicates whether the translator should use a fallback behaviour.
      *
      * @var bool
      */
-    private $fallback = true;
+    protected $fallback = true;
 
     /**
-     * The default locale.
+     * The translator fallback locale.
      *
      * @var string
      */
@@ -48,8 +73,16 @@ class Translator
     {
         $this->model = $model;
         $this->strategy = $strategy;
-        // TODO: keep it sync with resources' translator and make it octane friendly.
-        $this->fallbackLocale = config('app.fallback_locale');
+    }
+
+    /**
+     * Set the locale to the translator.
+     */
+    public function locale(string $locale): Translator
+    {
+        $this->locale = $locale;
+
+        return $this;
     }
 
     /**
@@ -57,20 +90,11 @@ class Translator
      */
     public function getLocale(): string
     {
-        // TODO: refactor
-        return app()->getLocale();
+        return $this->locale ?: call_user_func(static::$localeResolver);
     }
 
     /**
-     * Get the fallback locale.
-     */
-    public function getFallbackLocale(): string
-    {
-        return $this->fallbackLocale;
-    }
-
-    /**
-     * Set up the fallback locale for the translator.
+     * Set up the fallback locale to the translator.
      */
     public function fallbackLocale(string $locale): Translator
     {
@@ -80,7 +104,15 @@ class Translator
     }
 
     /**
-     * Determine does the translator use the current or given locale as the default locale.
+     * Get the fallback locale.
+     */
+    public function getFallbackLocale(): string
+    {
+        return $this->fallbackLocale ?: call_user_func(static::$fallbackLocaleResolver);
+    }
+
+    /**
+     * Determine if the given or current locale is a fallback locale.
      */
     public function isFallbackLocale(string $locale = null): bool
     {
@@ -90,11 +122,21 @@ class Translator
     }
 
     /**
-     * Translator will return null instead of a translation in the fallback locale when the translation is missing.
+     * Disable the fallback translator behaviour.
      */
     public function disableFallback(): Translator
     {
         $this->fallback = false;
+
+        return $this;
+    }
+
+    /**
+     * Enable the fallback translator behaviour.
+     */
+    public function enableFallback(): Translator
+    {
+        $this->fallback = true;
 
         return $this;
     }
@@ -139,7 +181,7 @@ class Translator
         try {
             return $this->getOrFail($attribute, $locale);
         } catch (TranslationMissingException $e) {
-            event(new TranslationMissing($e->model, $e->attribute, $e->locale));
+            $this->fireTranslationMissingEvent($e);
 
             return value($default);
         }
@@ -247,6 +289,16 @@ class Translator
     }
 
     /**
+     * Fire the translation missing event.
+     */
+    protected function fireTranslationMissingEvent(TranslationMissingException $e): void
+    {
+        if (isset(static::$dispatcher)) {
+            static::$dispatcher->dispatch(new TranslationMissing($e->model, $e->attribute, $e->locale));
+        }
+    }
+
+    /**
      * Assert that the given attribute is translatable.
      */
     public function assertAttributeIsTranslatable(string $attribute): void
@@ -254,5 +306,29 @@ class Translator
         if (! $this->model->isTranslatable($attribute)) {
             throw new AttributeNotTranslatableException($attribute);
         }
+    }
+
+    /**
+     * Set the default translator locale.
+     */
+    public static function resolveLocaleUsing(callable $locale): void
+    {
+        static::$localeResolver = $locale;
+    }
+
+    /**
+     * Set the default fallback translator locale.
+     */
+    public static function resolveFallbackLocaleUsing(callable $locale): void
+    {
+        static::$fallbackLocaleResolver = $locale;
+    }
+
+    /**
+     * Set the event dispatcher instance.
+     */
+    public static function setEventDispatcher(Dispatcher $dispatcher): void
+    {
+        static::$dispatcher = $dispatcher;
     }
 }

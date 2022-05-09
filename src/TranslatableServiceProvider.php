@@ -2,6 +2,7 @@
 
 namespace Nevadskiy\Translatable;
 
+use Illuminate\Contracts\Events\Dispatcher;
 use Illuminate\Support\ServiceProvider;
 
 class TranslatableServiceProvider extends ServiceProvider
@@ -19,8 +20,25 @@ class TranslatableServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        $this->bootTranslator();
         $this->bootCommands();
         $this->publishMigrations();
+    }
+
+    /**
+     * Boot the translator instance.
+     */
+    protected function bootTranslator(): void
+    {
+        Translator::resolveLocaleUsing(function () {
+            return app()->getLocale();
+        });
+
+        Translator::resolveFallbackLocaleUsing(function () {
+            return app()->getFallbackLocale();
+        });
+
+        Translator::setEventDispatcher($this->app[Dispatcher::class]);
     }
 
     /**
