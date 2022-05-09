@@ -6,14 +6,11 @@ use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Schema\Builder;
 use Illuminate\Foundation\Application;
-use Illuminate\Support\Traits\Localizable;
 use Nevadskiy\Translatable\TranslatableServiceProvider;
 use Orchestra\Testbench\TestCase as OrchestraTestCase;
 
 class TestCase extends OrchestraTestCase
 {
-    use Localizable;
-
     /**
      * Setup the test environment.
      */
@@ -24,7 +21,6 @@ class TestCase extends OrchestraTestCase
         $this->app->setLocale('en');
 
         $this->loadMigrationsFrom(__DIR__.'/../database/migrations');
-        // $this->loadMigrationsFrom(__DIR__.'/Support/Migrations');
 
         $this->artisan('migrate', ['--database' => 'testbench'])->run();
     }
@@ -55,6 +51,7 @@ class TestCase extends OrchestraTestCase
     }
 
     /**
+     * TODO: remove this and refactor tests
      * Freeze the current time.
      */
     protected function freezeTime(Carbon $time = null): Carbon
@@ -73,6 +70,8 @@ class TestCase extends OrchestraTestCase
      */
     protected function schema(): Builder
     {
-        return Model::getConnectionResolver()->connection()->getSchemaBuilder();
+        return Model::getConnectionResolver()
+            ->connection()
+            ->getSchemaBuilder();
     }
 }
