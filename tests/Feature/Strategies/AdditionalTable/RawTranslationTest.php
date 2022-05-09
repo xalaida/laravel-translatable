@@ -53,16 +53,6 @@ class RawTranslationTest extends TestCase
     }
 
     /** @test */
-    public function it_returns_fallback_value_when_raw_translation_is_missing(): void
-    {
-        $book = new BookWithRaw();
-        $book->translator()->set('title', 'forest song', 'en');
-        $book->save();
-
-        self::assertEquals('forest song', $book->translator()->getRawOrFail('title', 'pl'));
-    }
-
-    /** @test */
     public function it_throws_exception_when_raw_translation_is_missing(): void
     {
         $book = new BookWithRaw();
