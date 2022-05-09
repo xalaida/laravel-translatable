@@ -27,11 +27,11 @@ class Translator
     protected static $fallbackLocaleResolver;
 
     /**
-     * The event dispatcher instance.
+     * The event dispatcher resolver.
      *
-     * @var Dispatcher
+     * @var callable
      */
-    protected static $dispatcher;
+    protected static $dispatcherResolver;
 
     /**
      * The translatable model instance.
@@ -293,9 +293,7 @@ class Translator
      */
     protected function fireTranslationMissingEvent(TranslationMissingException $e): void
     {
-        if (isset(static::$dispatcher)) {
-            static::$dispatcher->dispatch(new TranslationMissing($e->model, $e->attribute, $e->locale));
-        }
+        $this->getEventDispatcher()->dispatch(new TranslationMissing($e->model, $e->attribute, $e->locale));
     }
 
     /**
@@ -309,7 +307,7 @@ class Translator
     }
 
     /**
-     * Set the default translator locale.
+     * Set the translator locale resolver.
      */
     public static function resolveLocaleUsing(callable $locale): void
     {
@@ -317,7 +315,7 @@ class Translator
     }
 
     /**
-     * Set the default fallback translator locale.
+     * Set the fallback translator locale resolver.
      */
     public static function resolveFallbackLocaleUsing(callable $locale): void
     {
@@ -325,10 +323,18 @@ class Translator
     }
 
     /**
-     * Set the event dispatcher instance.
+     * Set the event dispatcher resolver.
      */
-    public static function setEventDispatcher(Dispatcher $dispatcher): void
+    public static function resolveEventDispatcherUsing(callable $dispatcher): void
     {
-        static::$dispatcher = $dispatcher;
+        static::$dispatcherResolver = $dispatcher;
+    }
+
+    /**
+     * Get the event dispatcher instance.
+     */
+    protected function getEventDispatcher(): Dispatcher
+    {
+        return call_user_func(static::$dispatcherResolver);
     }
 }

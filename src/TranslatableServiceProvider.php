@@ -38,7 +38,9 @@ class TranslatableServiceProvider extends ServiceProvider
             return app()->getFallbackLocale();
         });
 
-        Translator::setEventDispatcher($this->app[Dispatcher::class]);
+        Translator::resolveEventDispatcherUsing(function () {
+            return resolve('events');
+        });
     }
 
     /**

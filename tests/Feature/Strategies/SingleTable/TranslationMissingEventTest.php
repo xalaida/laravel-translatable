@@ -9,6 +9,7 @@ use Nevadskiy\Translatable\Events\TranslationMissing;
 use Nevadskiy\Translatable\Exceptions\TranslationMissingException;
 use Nevadskiy\Translatable\Strategies\SingleTable\HasTranslations;
 use Nevadskiy\Translatable\Tests\TestCase;
+use Nevadskiy\Translatable\Translator;
 
 class TranslationMissingEventTest extends TestCase
 {
@@ -39,7 +40,7 @@ class TranslationMissingEventTest extends TestCase
         $book->title = 'Nature clock';
         $book->save();
 
-        Event::fake(TranslationMissing::class);
+        Translator::setEventDispatcher(Event::fake(TranslationMissing::class));
 
         self::assertEquals('Nature clock', $book->translator()->get('title', 'uk'));
 
