@@ -2,7 +2,6 @@
 
 namespace Nevadskiy\Translatable;
 
-use Illuminate\Contracts\Events\Dispatcher;
 use Illuminate\Support\ServiceProvider;
 
 class TranslatableServiceProvider extends ServiceProvider
