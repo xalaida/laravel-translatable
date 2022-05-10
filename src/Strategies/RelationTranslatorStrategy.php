@@ -10,6 +10,13 @@ use Nevadskiy\Translatable\Exceptions\TranslationMissingException;
 abstract class RelationTranslatorStrategy implements TranslatorStrategy
 {
     /**
+     * Indicates if lazy loading is enabled.
+     *
+     * @var bool
+     */
+    protected static $lazyLoading = true;
+
+    /**
      * The translatable model instance.
      *
      * @var Model
@@ -36,6 +43,22 @@ abstract class RelationTranslatorStrategy implements TranslatorStrategy
     protected $pendingTranslations = [];
 
     /**
+     * Disable lazy loading.
+     */
+    public static function disableLazyLoading(): void
+    {
+        static::$lazyLoading = false;
+    }
+
+    /**
+     * Enable lazy loading.
+     */
+    public static function enableLazyLoading(): void
+    {
+        static::$lazyLoading = true;
+    }
+
+    /**
      * Make a new strategy instance.
      */
     public function __construct(Model $translatable)
@@ -52,7 +75,7 @@ abstract class RelationTranslatorStrategy implements TranslatorStrategy
 
         if (! array_key_exists($locale, $this->translations)) {
             $this->translations[$locale] = [];
-            $this->loadTranslationsForLocale($locale);
+            $this->lazyLoadTranslationsForLocale($locale);
         }
 
         if (! array_key_exists($attribute, $this->translations[$locale])) {
@@ -67,8 +90,8 @@ abstract class RelationTranslatorStrategy implements TranslatorStrategy
      */
     public function set(string $attribute, $value, string $locale): void
     {
-        $this->translations[$locale][$attribute] = $value;
         $this->pendingTranslations[$locale][$attribute] = $value;
+        $this->translations[$locale][$attribute] = $value;
     }
 
     /**
@@ -120,9 +143,11 @@ abstract class RelationTranslatorStrategy implements TranslatorStrategy
     /**
      * Load translation values for the given locale.
      */
-    protected function loadTranslationsForLocale(string $locale): void
+    protected function lazyLoadTranslationsForLocale(string $locale): void
     {
-        $this->loadTranslations($this->getTranslationsForLocale($locale));
+        if (static::$lazyLoading) {
+            $this->loadTranslations($this->getTranslationsForLocale($locale));
+        }
     }
 
     /**
