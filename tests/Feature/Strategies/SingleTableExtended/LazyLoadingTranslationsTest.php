@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\DB;
 use Nevadskiy\Translatable\Strategies\SingleTableExtended\HasTranslations;
 use Nevadskiy\Translatable\Tests\TestCase;
 
-class LazyLoadTranslationsTest extends TestCase
+class LazyLoadingTranslationsTest extends TestCase
 {
     /**
      * @inheritdoc

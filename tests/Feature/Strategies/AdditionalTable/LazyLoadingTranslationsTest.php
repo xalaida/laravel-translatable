@@ -8,7 +8,7 @@ use Illuminate\Database\Schema\Blueprint;
 use Nevadskiy\Translatable\Strategies\AdditionalTable\HasTranslations;
 use Nevadskiy\Translatable\Tests\TestCase;
 
-class LazyLoadTranslationsTest extends TestCase
+class LazyLoadingTranslationsTest extends TestCase
 {
     /**
      * @inheritdoc

@@ -1,15 +1,15 @@
 <?php
 
-namespace Nevadskiy\Translatable\Tests\Feature\Strategies\SingleTable;
+namespace Nevadskiy\Translatable\Tests\Feature\Strategies\SingleTableExtended;
 
 use Illuminate\Database\ConnectionInterface;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\DB;
-use Nevadskiy\Translatable\Strategies\SingleTable\HasTranslations;
+use Nevadskiy\Translatable\Strategies\SingleTableExtended\HasTranslations;
 use Nevadskiy\Translatable\Tests\TestCase;
 
-class EagerLoadTranslationsTest extends TestCase
+class EagerLoadingTranslationsTest extends TestCase
 {
     /**
      * @inheritdoc
@@ -27,74 +27,49 @@ class EagerLoadTranslationsTest extends TestCase
     {
         $this->schema()->create('books', function (Blueprint $table) {
             $table->id();
+            $table->string('title');
             $table->timestamps();
         });
     }
 
     /** @test */
-    public function it_eager_loads_translations_for_fallback_locale(): void
+    public function it_eager_loads_translations_for_current_locale(): void
     {
         $book = new BookForEagerLoading();
-        $book->translator()->set('title', 'Forest', 'en');
+        $book->title = 'Forest';
         $book->save();
 
-        [$book] = BookForEagerLoading::all();
-
-        self::assertTrue($book->relationLoaded('translations'));
-        self::assertCount(1, $book->translations);
-        self::assertEquals('en', $book->translations[0]->locale);
-        self::assertEquals('Forest', $book->translations[0]->value);
-    }
-
-    /** @test */
-    public function it_eager_loads_translations_for_current_and_fallback_locale_when_custom_locale_is_set(): void
-    {
-        $book = new BookForEagerLoading();
-        $book->translator()->set('title', 'Forest', 'en');
-        $book->translator()->set('title', 'Ліс', 'uk');
-        $book->save();
+        $book->translator()->add('title', 'Ліс', 'uk');
+        $book->translator()->add('title', 'Las', 'pl');
 
         $this->app->setLocale('uk');
-        [$book] = BookForEagerLoading::all();
-
-        self::assertTrue($book->relationLoaded('translations'));
-        self::assertCount(2, $book->translations);
-        self::assertEquals('en', $book->translations[0]->locale);
-        self::assertEquals('uk', $book->translations[1]->locale);
-    }
-
-    /** @test */
-    public function it_eager_loads_only_translations_for_fallback_locale_when_fallback_locale_is_set(): void
-    {
-        $book = new BookForEagerLoading();
-        $book->translator()->set('title', 'Forest', 'en');
-        $book->translator()->set('title', 'Ліс', 'uk');
-        $book->save();
 
         [$book] = BookForEagerLoading::all();
 
         self::assertTrue($book->relationLoaded('translations'));
         self::assertCount(1, $book->translations);
-        self::assertEquals($this->app->getFallbackLocale(), $book->translations[0]->locale);
+        self::assertEquals('uk', $book->translations[0]->locale);
+        self::assertEquals('Ліс', $book->translations[0]->value);
     }
 
     /** @test */
     public function it_performs_only_two_queries_to_retrieve_models_and_translations_with_eager_loading(): void
     {
         $book1 = new BookForEagerLoading();
-        $book1->translator()->set('title', 'Atlas of animals', 'en');
-        $book1->translator()->set('title', 'Атлас тварин', 'uk');
+        $book1->title = 'Atlas of animals';
         $book1->save();
 
         $book2 = new BookForEagerLoading();
-        $book2->translator()->set('title', 'Forest', 'en');
-        $book2->translator()->set('title', 'Ліс', 'uk');
+        $book2->title = 'Forest';
         $book2->save();
 
         $book3 = new BookForEagerLoading();
-        $book3->translator()->set('title', 'Encyclopedia of animals', 'en');
-        $book3->translator()->set('title', 'Енциклопедія тварин', 'uk');
+        $book3->title = 'Encyclopedia of animals';
         $book3->save();
+
+        $book1->translator()->add('title', 'Атлас тварин', 'uk');
+        $book2->translator()->add('title', 'Ліс', 'uk');
+        $book3->translator()->add('title', 'Енциклопедія тварин', 'uk');
 
         $this->app->setLocale('uk');
 
@@ -113,9 +88,10 @@ class EagerLoadTranslationsTest extends TestCase
     public function it_allows_disabling_eager_loading_on_query_builder(): void
     {
         $book = new BookForEagerLoading();
-        $book->translator()->set('title', 'Atlas of animals', 'en');
-        $book->translator()->set('title', 'Атлас тварин', 'uk');
+        $book->title = 'Atlas of animals';
         $book->save();
+
+        $book->translator()->add('title', 'Атлас тварин', 'uk');
 
         $this->app->setLocale('uk');
 
