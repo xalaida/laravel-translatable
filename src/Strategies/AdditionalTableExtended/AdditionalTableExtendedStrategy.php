@@ -4,9 +4,6 @@ namespace Nevadskiy\Translatable\Strategies\AdditionalTableExtended;
 
 use Nevadskiy\Translatable\Strategies\AdditionalTable\AdditionalTableStrategy;
 
-/**
- * TODO: add possibility to trigger an exception when creating model in non-default locale (only for copyingStructure mode).
- */
 class AdditionalTableExtendedStrategy extends AdditionalTableStrategy
 {
     /**

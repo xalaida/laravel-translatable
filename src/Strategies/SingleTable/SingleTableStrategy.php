@@ -53,21 +53,13 @@ class SingleTableStrategy extends RelationTranslatorStrategy
     {
         foreach ($translations as $locale => $attributes) {
             foreach ($attributes as $attribute => $value) {
-                $this->updateOrCreateTranslation($attribute, $locale, $value);
+                $this->translatable->translations()->updateOrCreate([
+                    'translatable_attribute' => $attribute,
+                    'locale' => $locale,
+                ], [
+                    'value' => $value,
+                ]);
             }
         }
-    }
-
-    /**
-     * Update existing translation on the model or create a new one if it is missing.
-     */
-    protected function updateOrCreateTranslation(string $attribute, string $locale, $value): void
-    {
-        $this->translatable->translations()->updateOrCreate([
-            'translatable_attribute' => $attribute,
-            'locale' => $locale,
-        ], [
-            'value' => $value,
-        ]);
     }
 }
