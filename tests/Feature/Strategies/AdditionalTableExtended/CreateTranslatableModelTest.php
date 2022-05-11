@@ -36,7 +36,7 @@ class CreateTranslatableModelTest extends TestCase
             $table->id();
             $table->foreignId('book_id');
             $table->string('title');
-            $table->string('description');
+            $table->string('description')->nullable();
             $table->string('locale');
             $table->timestamps();
         });
@@ -109,6 +109,17 @@ class CreateTranslatableModelTest extends TestCase
             $this->assertDatabaseCount('books', 0);
             $this->assertDatabaseCount('book_translations', 0);
         }
+    }
+
+    /** @test */
+    public function it_stores_model_along_with_translation(): void
+    {
+        $book = new Book();
+        $book->title = 'Ocean monsters';
+        $book->translator()->add('title', 'Монстри океану', 'uk');
+
+        $this->assertDatabaseCount('books', 1);
+        $this->assertDatabaseCount('book_translations', 1);
     }
 
     /** @test */
