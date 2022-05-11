@@ -15,6 +15,7 @@ class TranslationsEagerLoadingScope implements Scope
     public function apply(Builder $query, Model $translatable): void
     {
         $query->with(['translations' => function (Relation $query) use ($translatable) {
+            // TODO: refactor using array syntax
             $query->forLocale($translatable->translator()->getLocale())
                 ->when($this->shouldLoadFallbackTranslations($translatable), function (Builder $query) use ($translatable) {
                     $query->orWhere('locale', $translatable->translator()->getFallbackLocale());
