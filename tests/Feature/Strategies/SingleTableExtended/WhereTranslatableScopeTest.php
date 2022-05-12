@@ -44,7 +44,9 @@ class WhereTranslatableScopeTest extends TestCase
 
         $book->translator()->add('title', 'Останній пророк', 'uk');
 
-        $records = BookWhereTranslatable::query()->whereTranslatable('title', 'Останній пророк')->get();
+        $records = BookWhereTranslatable::query()
+            ->whereTranslatable('title', 'Останній пророк')
+            ->get();
 
         self::assertCount(1, $records);
         self::assertTrue($records[0]->is($book));
@@ -58,12 +60,13 @@ class WhereTranslatableScopeTest extends TestCase
         $book->save();
 
         $anotherBook = new BookWhereTranslatable();
-        $anotherBook->title = 'Forest';
+        $anotherBook->translator()->set('title', 'Forest', 'en');
+        $anotherBook->translator()->set('title', 'Останній пророк', 'uk');
         $anotherBook->save();
 
-        $book->translator()->add('title', 'Останній пророк', 'uk');
-
-        $records = BookWhereTranslatable::query()->whereTranslatable('title', 'The last prophet')->get();
+        $records = BookWhereTranslatable::query()
+            ->whereTranslatable('title', 'The last prophet')
+            ->get();
 
         self::assertCount(1, $records);
         self::assertTrue($records[0]->is($book));
@@ -73,18 +76,18 @@ class WhereTranslatableScopeTest extends TestCase
     public function it_queries_records_by_translatable_attribute_and_locale(): void
     {
         $book = new BookWhereTranslatable();
-        $book->title = 'The last prophet';
+        $book->translator()->add('title', 'The last prophet', 'en');
+        $book->translator()->add('title', 'Останній пророк', 'uk');
         $book->save();
 
-        $book->translator()->add('title', 'Останній пророк', 'uk');
-
         $anotherBook = new BookWhereTranslatable();
-        $anotherBook->title = 'Forest';
+        $anotherBook->translator()->set('title', 'Forest', 'en');
+        $anotherBook->translator()->set('title', 'Останній пророк', 'pl');
         $anotherBook->save();
 
-        $book->translator()->add('title', 'Останній пророк', 'pl');
-
-        $records = BookWhereTranslatable::query()->whereTranslatable('title', 'Останній пророк', 'uk')->get();
+        $records = BookWhereTranslatable::query()
+            ->whereTranslatable('title', 'Останній пророк', 'uk')
+            ->get();
 
         self::assertCount(1, $records);
         self::assertTrue($records[0]->is($book));
@@ -99,7 +102,9 @@ class WhereTranslatableScopeTest extends TestCase
 
         $book->translator()->add('title', 'Останній пророк', 'uk');
 
-        $records = BookWhereTranslatable::query()->whereTranslatable('title', 'Останній пророк', 'pl')->get();
+        $records = BookWhereTranslatable::query()
+            ->whereTranslatable('title', 'Останній пророк', 'pl')
+            ->get();
 
         self::assertEmpty($records);
     }
@@ -113,7 +118,9 @@ class WhereTranslatableScopeTest extends TestCase
 
         $book->translator()->add('title', 'Останній пророк', 'uk');
 
-        $records = BookWhereTranslatable::query()->whereTranslatable('title', 'Останній пророк', 'en')->get();
+        $records = BookWhereTranslatable::query()
+            ->whereTranslatable('title', 'Останній пророк', 'en')
+            ->get();
 
         self::assertEmpty($records);
     }
@@ -137,7 +144,9 @@ class WhereTranslatableScopeTest extends TestCase
         $book3->title = 'Day of Wrath';
         $book3->save();
 
-        $books = BookWhereTranslatable::query()->whereTranslatable('title', 'Останній пророк')->get();
+        $books = BookWhereTranslatable::query()
+            ->whereTranslatable('title', 'Останній пророк')
+            ->get();
 
         self::assertCount(2, $books);
         self::assertTrue($books[0]->is($book1));
@@ -163,7 +172,9 @@ class WhereTranslatableScopeTest extends TestCase
         $book3->title = 'Day of Wrath';
         $book3->save();
 
-        $records = BookWhereTranslatable::query()->whereTranslatable('title', '%пророк', null, 'LIKE')->get();
+        $records = BookWhereTranslatable::query()
+            ->whereTranslatable('title', '%пророк', null, 'LIKE')
+            ->get();
 
         self::assertCount(2, $records);
         self::assertTrue($records[0]->is($book1));
@@ -175,8 +186,13 @@ class WhereTranslatableScopeTest extends TestCase
     {
         $this->expectException(AttributeNotTranslatableException::class);
 
-        BookWhereTranslatable::query()->whereTranslatable('id', 1)->get();
+        BookWhereTranslatable::query()
+            ->whereTranslatable('id', 1)
+            ->get();
     }
+
+    // TODO: test boolean for custom locale
+    // TODO: test boolean for fallback locale
 
     /**
      * @inheritdoc

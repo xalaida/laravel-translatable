@@ -187,6 +187,9 @@ class WhereTranslatableScopeTest extends TestCase
         BookWhereTranslatable::query()->whereTranslatable('id', 1)->get();
     }
 
+    // TODO: test boolean for custom locale
+    // TODO: test boolean for fallback locale
+
     /**
      * @inheritdoc
      */

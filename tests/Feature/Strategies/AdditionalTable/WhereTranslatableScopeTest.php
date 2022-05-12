@@ -211,6 +211,9 @@ class WhereTranslatableScopeTest extends TestCase
             ->get();
     }
 
+    // TODO: test boolean for custom locale
+    // TODO: test boolean for fallback locale
+
     /**
      * @inheritdoc
      */
