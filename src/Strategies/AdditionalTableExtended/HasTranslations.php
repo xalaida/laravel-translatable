@@ -148,6 +148,11 @@ trait HasTranslations
         $this->translator()->assertAttributeIsTranslatable($attribute);
 
         $locale = $locale ?: $this->translator()->getLocale();
+
+        if ($this->translator()->isFallbackLocale($locale)) {
+            return $query->orderBy($attribute, $direction);
+        }
+
         $translation = $this->getEntityTranslationInstance();
 
         if (! $query->getQuery()->columns) {
