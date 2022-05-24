@@ -5,6 +5,7 @@ namespace Nevadskiy\Translatable\Strategies\AdditionalTable\Models;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
+use RuntimeException;
 
 /**
  * @property int id
@@ -20,6 +21,18 @@ class Translation extends Model
      * @var array
      */
     protected $guarded = [];
+
+    /**
+     * Get the table associated with the model.
+     */
+    public function getTable(): string
+    {
+        if (! $this->table) {
+            throw new RuntimeException('Table is not defined for Translation model.');
+        }
+
+        return $this->table;
+    }
 
     /**
      * Scope translations by the given locale.

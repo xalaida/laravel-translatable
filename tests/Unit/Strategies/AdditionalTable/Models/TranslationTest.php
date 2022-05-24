@@ -5,6 +5,7 @@ namespace Nevadskiy\Translatable\Tests\Unit\Strategies\AdditionalTable\Models;
 use Illuminate\Database\Schema\Blueprint;
 use Nevadskiy\Translatable\Strategies\AdditionalTable\Models\Translation;
 use Nevadskiy\Translatable\Tests\TestCase;
+use RuntimeException;
 
 class TranslationTest extends TestCase
 {
@@ -80,6 +81,17 @@ class TranslationTest extends TestCase
         self::assertCount(2, $translations);
         self::assertTrue($translations->contains($translation1));
         self::assertTrue($translations->contains($translation3));
+    }
+
+    /** @test */
+    public function it_throws_exception_when_table_is_not_manually_set(): void
+    {
+        $translation = new Translation();
+
+        $this->expectException(RuntimeException::class);
+        $this->expectExceptionMessage("Table is not defined for Translation model.");
+
+        $translation->getTable();
     }
 
     /**
