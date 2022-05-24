@@ -51,6 +51,8 @@ trait HasTranslations
     {
         $instance = $this->getEntityTranslationInstance();
 
+        $instance->setTable($this->getEntityTranslationTable());
+
         return $this->newHasMany(
             $instance->newQuery(),
             $this,
@@ -64,11 +66,7 @@ trait HasTranslations
      */
     protected function getEntityTranslationInstance(): Translation
     {
-        $instance = $this->newRelatedInstance(Translation::class);
-
-        $instance->setTable($this->getEntityTranslationTable());
-
-        return $instance;
+        return $this->newRelatedInstance(Translation::class);
     }
 
     /**
