@@ -55,7 +55,7 @@ class TranslationTest extends TestCase
     }
 
     /** @test */
-    public function it_can_be_scoped_by_locale_array(): void
+    public function it_can_be_scoped_by_array_of_locales(): void
     {
         $translation1 = $this->model();
         $translation1->title = 'Отак загинув Гуска';
