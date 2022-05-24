@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 
 /**
  * @property int id
- * @property string|null locale
+ * @property string locale
  * @property Carbon updated_at
  * @property Carbon created_at
  */
@@ -23,9 +23,15 @@ class Translation extends Model
 
     /**
      * Scope translations by the given locale.
+     *
+     * @param string|array $locale
      */
-    public function scopeForLocale(Builder $query, ?string $locale): Builder
+    protected function scopeForLocale(Builder $query, $locale): Builder
     {
+        if (is_array($locale)) {
+            return $query->whereIn('locale', $locale);
+        }
+
         return $query->where('locale', $locale);
     }
 }
