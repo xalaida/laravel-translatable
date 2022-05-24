@@ -82,8 +82,8 @@ class CustomFallbackLocaleTest extends TestCase
 
         self::assertTrue($book->relationLoaded('translations'));
         self::assertCount(2, $book->translations);
-        self::assertEquals('uk', $book->translations[0]->locale);
-        self::assertEquals('pl', $book->translations[1]->locale);
+        self::assertTrue($book->translations->pluck('locale')->contains('uk'));
+        self::assertTrue($book->translations->pluck('locale')->contains('pl'));
     }
 
     /** @test */
