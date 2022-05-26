@@ -75,7 +75,7 @@ abstract class RelationTranslatorStrategy implements TranslatorStrategy
 
         if (! array_key_exists($locale, $this->translations)) {
             $this->translations[$locale] = [];
-            $this->lazyLoadTranslationsForLocale($locale);
+            $this->loadTranslationsForLocale($locale);
         }
 
         if (! array_key_exists($attribute, $this->translations[$locale])) {
@@ -143,7 +143,7 @@ abstract class RelationTranslatorStrategy implements TranslatorStrategy
     /**
      * Load translation values for the given locale.
      */
-    protected function lazyLoadTranslationsForLocale(string $locale): void
+    protected function loadTranslationsForLocale(string $locale): void
     {
         if (static::$lazyLoading) {
             $this->loadTranslations($this->getTranslationsForLocale($locale));
