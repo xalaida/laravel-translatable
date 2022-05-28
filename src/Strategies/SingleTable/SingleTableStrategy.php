@@ -22,7 +22,7 @@ class SingleTableStrategy extends RelationTranslatorStrategy
     public static function useModel(string $model): void
     {
         if (! is_a($model, Translation::class, true)) {
-            throw new InvalidArgumentException("A custom translation model must extend the base translation model.");
+            throw new InvalidArgumentException('A custom translation model must extend the base translation model.');
         }
 
         static::$model = $model;
