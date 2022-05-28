@@ -15,14 +15,14 @@ class TranslationsEagerLoadingScope implements Scope
     public function apply(Builder $query, Model $translatable): void
     {
         $query->with(['translations' => function (Relation $query) use ($translatable) {
-            $query->forLocale($this->getLocalesForLoading($translatable));
+            $query->forLocale($this->getLocalesToLoad($translatable));
         }]);
     }
 
     /**
-     * Get the locale list for eager loading.
+     * Get the locale list that should be eager loaded.
      */
-    protected function getLocalesForLoading(Model $translatable): array
+    protected function getLocalesToLoad(Model $translatable): array
     {
         $locales = [$translatable->translator()->getLocale()];
 
