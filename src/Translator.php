@@ -228,7 +228,7 @@ class Translator
     }
 
     /**
-     * Save the given translation for the model.
+     * Set and save the given translation for the model.
      */
     public function add(string $attribute, $value, string $locale = null): void
     {
