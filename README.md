@@ -463,7 +463,7 @@ The MIT License (MIT). Please see [LICENSE](LICENSE.md) for more information.
 
 - [ ] add possibility to eager load model with translations for all locales (useful for alternate route generation)
 - [ ] add plugin for auto-translation (for example using google translator API).
-- [ ] add nova admin package.
+- [ ] add link to nova package
 - [ ] add possibility to check missing translations.
 - [ ] add possibility to delete translations instead of setting `null` or empty string.
 - [ ] add possibility to specify custom fallback locale per model in extended strategy.
