@@ -76,7 +76,7 @@ trait HasTranslations
      */
     protected function getTranslationModelClass(): string
     {
-        return Translation::class;
+        return AdditionalTableStrategy::model();
     }
 
     /**
