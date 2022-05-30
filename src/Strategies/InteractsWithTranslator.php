@@ -12,6 +12,8 @@ trait InteractsWithTranslator
 {
     /**
      * The model translator instance.
+     *
+     * @var Translator
      */
     protected $translator;
 
@@ -179,7 +181,7 @@ trait InteractsWithTranslator
     }
 
     /**
-     * Get translatable attributes.
+     * Get attributes that are translatable.
      */
     public function getTranslatable(): array
     {
