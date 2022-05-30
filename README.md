@@ -461,6 +461,7 @@ The MIT License (MIT). Please see [LICENSE](LICENSE.md) for more information.
 ## 🔨 To Do
 
 - [ ] add possibility to specify `boolean` argument in `whereTranslatable` scope (cover with test)
+- [ ] add reverse `translatable` relation to the AdditionalTable strategy model
 - [ ] add possibility to eager load model with translations for all locales (useful for alternate route generation)
 - [ ] add plugin for auto-translation (for example using google translator API).
 - [ ] add link to nova package
