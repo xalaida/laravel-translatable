@@ -454,13 +454,13 @@ Please see [CONTRIBUTING](.github/CONTRIBUTING.md) for more information.
 
 If you discover any security related issues, please [e-mail me](mailto:nevadskiy@gmail.com) instead of using the issue tracker.
 
-
 ## 📜 License
 
 The MIT License (MIT). Please see [LICENSE](LICENSE.md) for more information.
 
 ## 🔨 To Do
 
+- [ ] add possibility to specify `boolean` argument in `whereTranslatable` scope (cover with test)
 - [ ] add possibility to eager load model with translations for all locales (useful for alternate route generation)
 - [ ] add plugin for auto-translation (for example using google translator API).
 - [ ] add link to nova package
