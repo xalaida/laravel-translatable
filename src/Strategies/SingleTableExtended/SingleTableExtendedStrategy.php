@@ -17,7 +17,7 @@ class SingleTableExtendedStrategy extends SingleTableStrategy
         $this->bootIfNotBooted();
 
         if ($this->translatable->translator()->isFallbackLocale($locale)) {
-            return $this->translatable->getRawOriginal($attribute);
+            return $this->translatable->getRawAttribute($attribute);
         }
 
         return parent::get($attribute, $locale);
@@ -29,7 +29,7 @@ class SingleTableExtendedStrategy extends SingleTableStrategy
     public function set(string $attribute, $value, string $locale): void
     {
         if ($this->translatable->translator()->isFallbackLocale($locale)) {
-            $this->translatable->setRawOriginal($attribute, $value);
+            $this->translatable->setRawAttribute($attribute, $value);
         } else {
             parent::set($attribute, $value, $locale);
         }

@@ -268,6 +268,20 @@ class SingleTableExtendedStrategyTest extends TestCase
         self::assertEquals('Book about penguins', $translation);
     }
 
+    /** @test */
+    public function it_returns_translation_during_saving(): void
+    {
+        Book::saving(function (Book $book) {
+            self::assertEquals('The world around us', $book->translator()->get('title', 'en'));
+            self::assertEquals('Світ навколо нас', $book->translator()->get('title', 'uk'));
+        });
+
+        $book = new Book();
+        $book->translator()->set('title', 'The world around us', 'en');
+        $book->translator()->set('title', 'Світ навколо нас', 'uk');
+        $book->save();
+    }
+
     /**
      * @inheritdoc
      */

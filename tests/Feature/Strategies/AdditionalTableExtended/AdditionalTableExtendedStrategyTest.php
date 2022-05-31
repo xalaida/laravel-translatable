@@ -269,7 +269,7 @@ class AdditionalTableExtendedStrategyTest extends TestCase
     }
 
     /** @test */
-    public function it_returns_translation_after_during_saving(): void
+    public function it_returns_translation_during_saving(): void
     {
         Book::saving(function (Book $book) {
             self::assertEquals('The world around us', $book->translator()->get('title', 'en'));
