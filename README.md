@@ -545,6 +545,7 @@ The MIT License (MIT). Please see [LICENSE](LICENSE.md) for more information.
 ## 🔨 To Do
 
 - [ ] add possibility to specify `boolean` argument in `whereTranslatable` scope (cover with test)
+- [ ] add `has` method
 - [ ] add reverse `translatable` relation to the ExtraTable strategy model
 - [ ] cover `Translations` class with tests 
 - [ ] add possibility to use translations in database model factories (consider adding Translations collection that handles by seeder `'name' => new Translations(['en' => '...', 'uk' => '...'])`) or add it directly to translator
