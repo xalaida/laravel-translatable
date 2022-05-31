@@ -4,11 +4,11 @@ namespace Nevadskiy\Translatable;
 
 use Illuminate\Contracts\Events\Dispatcher;
 use Illuminate\Database\Eloquent\Model;
+use Nevadskiy\Translatable\Events\TranslationMissing;
+use Nevadskiy\Translatable\Exceptions\AttributeNotTranslatableException;
 use Nevadskiy\Translatable\Exceptions\TranslationMissingException;
 use Nevadskiy\Translatable\Strategies\InteractsWithTranslator;
 use Nevadskiy\Translatable\Strategies\TranslatorStrategy;
-use Nevadskiy\Translatable\Events\TranslationMissing;
-use Nevadskiy\Translatable\Exceptions\AttributeNotTranslatableException;
 
 class Translator
 {
@@ -156,11 +156,15 @@ class Translator
     {
         $this->assertAttributeIsTranslatable($attribute);
 
-        $this->strategy->set(
-            $attribute,
-            $this->model->withAttributeSetter($attribute, $value),
-            $locale ?: $this->getLocale()
-        );
+        if ($value instanceof Translations) {
+            $this->setTranslations($attribute, $value);
+        } else {
+            $this->strategy->set(
+                $attribute,
+                $this->model->withAttributeSetter($attribute, $value),
+                $locale ?: $this->getLocale()
+            );
+        }
     }
 
     /**
@@ -286,6 +290,16 @@ class Translator
         }
 
         return $translations;
+    }
+
+    /**
+     * Set translation values for the given attribute.
+     */
+    protected function setTranslations(string $attribute, Translations $translations): void
+    {
+        foreach ($translations as $locale => $value) {
+            $this->set($attribute, $value, $locale);
+        }
     }
 
     /**

@@ -462,6 +462,7 @@ The MIT License (MIT). Please see [LICENSE](LICENSE.md) for more information.
 
 - [ ] add possibility to specify `boolean` argument in `whereTranslatable` scope (cover with test)
 - [ ] add reverse `translatable` relation to the AdditionalTable strategy model
+- [ ] cover `Translations` class with tests 
 - [ ] add possibility to use translations in database model factories (consider adding Translations collection that handles by seeder `'name' => new Translations(['en' => '...', 'uk' => '...'])`) or add it directly to translator
 - [ ] add possibility to eager load model with translations for all locales (useful for alternate route generation)
 - [ ] add plugin for auto-translation (for example using google translator API).
