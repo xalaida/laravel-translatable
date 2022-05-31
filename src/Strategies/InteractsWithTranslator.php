@@ -3,6 +3,7 @@
 namespace Nevadskiy\Translatable\Strategies;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Arr;
 use Nevadskiy\Translatable\Translator;
 
 /**
@@ -138,13 +139,23 @@ trait InteractsWithTranslator
     }
 
     /**
-     * Set the model's raw original attribute values.
+     * Set the model's raw attribute value.
      *
      * @param mixed $value
      */
-    public function setRawOriginal(string $attribute, $value): void
+    public function setRawAttribute(string $attribute, $value): void
     {
         $this->attributes[$attribute] = $value;
+    }
+
+    /**
+     * Set the model's raw attribute value.
+     *
+     * @return mixed
+     */
+    public function getRawAttribute(string $attribute)
+    {
+        return Arr::get($this->attributes, $attribute);
     }
 
     /**

@@ -253,8 +253,8 @@ class AdditionalTableExtendedStrategyTest extends TestCase
     public function it_performs_only_one_query_to_retrieve_translation_for_same_attribute_and_locale(): void
     {
         $book = new Book();
-        $book->translator()->add('title', 'The world around us', 'en');
-        $book->translator()->add('title', 'Світ навколо нас', 'uk');
+        $book->translator()->set('title', 'The world around us', 'en');
+        $book->translator()->set('title', 'Світ навколо нас', 'uk');
         $book->save();
 
         $book = $book->fresh();
@@ -266,6 +266,20 @@ class AdditionalTableExtendedStrategyTest extends TestCase
         $book->translator()->get('title', 'uk');
 
         self::assertCount(1, $this->app[ConnectionInterface::class]->getQueryLog());
+    }
+
+    /** @test */
+    public function it_returns_translation_after_during_saving(): void
+    {
+        Book::saving(function (Book $book) {
+            self::assertEquals('The world around us', $book->translator()->get('title', 'en'));
+            self::assertEquals('Світ навколо нас', $book->translator()->get('title', 'uk'));
+        });
+
+        $book = new Book();
+        $book->translator()->set('title', 'The world around us', 'en');
+        $book->translator()->set('title', 'Світ навколо нас', 'uk');
+        $book->save();
     }
 
     /**
