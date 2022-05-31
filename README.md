@@ -5,54 +5,36 @@
 [![License](https://poser.pugx.org/nevadskiy/laravel-translatable/license)](https://packagist.org/packages/nevadskiy/laravel-translatable)
 [![Latest Stable Version](https://poser.pugx.org/nevadskiy/laravel-translatable/v)](https://packagist.org/packages/nevadskiy/laravel-translatable)
 
-The package provides possibility to store translations for your Eloquent models.
+The package allows adding translations for your Eloquent models.
 
 ## 🍬 Features 
 
 - Storing model translations in the database.
-- Supporting model accessors & mutators & casts (even JSON).
+- Support model accessors & mutators & casts (even JSON).
 - Auto-resolving model translations for the current locale.
 - No need to rewrite existing code to make a model translatable.
-- Useful scopes to query translatable models.
+- 4 different strategies for storing translations.
 
 ## 📺 Demo
 
-### Using attribute and current locale
-
 ```php
-$book = Book::create(['title' => 'Book about giraffes']);
-
-// Storing translations
-app()->setLocale('es');
-$book->title = 'Libro sobre jirafas';
+$book = new Book()
+$book->translator()->set('title', 'Fifty miles', 'en')
+$book->translator()->set('title', "П'ятдесят верстов", 'uk')
 $book->save();
 
-// Reading translations
-app()->setLocale('es');
-echo $book->title; // 'Libro sobre jirafas'
-
 app()->setLocale('en');
-echo $book->title; // 'Book about giraffes'
-```
+echo $book->title; // Fifty miles
 
-### Using "translation" method
-
-```php
-$book = Book::create(['title' => 'Book about giraffes']);
-
-// Storing translation
-$book->translator()->set('title', 'Libro sobre jirafas', 'es');
-$book->translator()->save();
-
-// Reading translations
-echo $book->translator()->get('title', 'es'); // 'Libro sobre jirafas'
-echo $book->translator()->get('title', 'en'); // 'Book about giraffes'
+app()->setLocale('uk');
+echo $book->title; // П'ятдесят верстов
 ```
 
 ## ✅ Requirements
 
 - Laravel `7.0` or newer  
 - PHP `7.2` or newer
+- [Octane](https://github.com/laravel/octane) friendly
 
 ## 🔌 Installation
 
@@ -62,44 +44,13 @@ Install the package via composer.
 composer require nevadskiy/laravel-translatable
 ```
 
-## Strategies
+## 📄 Documentation
 
-There are few strategies that affect how translations will be saved in the database. 
+### Making models translatable
 
-### Single table strategy
+Add the `HasTranslations` trait of the strategy you want to use to your model that you want to make translatable.
 
-With this strategy, translations for every model will be stored in the same `translations` table.
-
-The table structure:
-
-| Column                 | Description                               |
-|------------------------|-------------------------------------------|
-| id                     | ID of the translation                     |
-| translatable_id        | Morph ID of the translatable model        |
-| translatable_type      | Morph type of the translatable model      |
-| translatable_attribute | Attribute of the translatable model       |
-| locale                 | Locale of the translation value           |
-| value                  | The translation value                     |
-| created_at             | The timestamp the translation was created |
-| updated_at             | The timestamp the translation was updated |
-
-#### Usage
-
-- Publish package migration.
-
-```bash
-php artisan vendor:publish --tag=translations
-```
-
-- Run the migration command.
-
-```bash
-php artisan migrate
-```
-
-## 🔨 Making models translatable 
-
-- Add a trait of the strategy you want to use to your model that you want to make translatable. For example, usage of the `HasTranslations` trait.
+For example, let's use the **Additional Table Extended** strategy.
 
 ```php
 <?php
@@ -107,19 +58,19 @@ php artisan migrate
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
-use Nevadskiy\Translatable\HasTranslations;
+use Nevadskiy\Translatable\Strategies\AdditionalTableExtended\HasTranslations;
 
-class Post extends Model
+class Book extends Model
 {
     use HasTranslations;
 }
 ```
 
-- Add the `$translatable` array to your models with attributes you want to be translatable.
+And you also need to specify which attributes should be translatable using the `$translatable` array.
 
 ```php
 /**
- * The attributes that can be translatable.
+ * The attributes that are translatable.
  *
  * @var array
  */
@@ -129,7 +80,7 @@ protected $translatable = [
 ];
 ```
 
-#### Final model may look like this
+Final model may look like this.
 
 ```php
 <?php
@@ -137,9 +88,9 @@ protected $translatable = [
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
-use Nevadskiy\Translatable\HasTranslations;
+use Nevadskiy\Translatable\Strategies\AdditionalTableExtended\HasTranslations;
 
-class Post extends Model
+class Book extends Model
 {
     use HasTranslations; 
 
@@ -148,6 +99,50 @@ class Post extends Model
         'description',
     ];
 }
+```
+
+### Strategies
+
+The package provides 4 different strategies that determine how translations will be stored in the database.
+
+- Single table strategy
+- Single table extended strategy
+- Additional table strategy
+- Additional table extended strategy
+
+The word "extended" in the strategy name indicates that this strategy can be added to existing models without having to change the structure of the table in the database, because the translations for the fallback locale are still stored in the original table, and only translations to custom locales are stored separately.
+
+---image compare table structure for different strategy---
+
+#### Single table strategy
+
+With this strategy, translations for every model will be stored in the single global `translations` table.
+
+The table structure:
+
+| Column                 | Description                                    |
+|------------------------|------------------------------------------------|
+| id                     | ID of the translation                          |
+| translatable_id        | Morph ID of the model of the translation       |
+| translatable_type      | Morph type of the translatable model           |
+| translatable_attribute | Attribute of the translatable model            |
+| locale                 | Locale of the translation value                |
+| value                  | The translation value                          |
+| created_at             | The timestamp when the translation was created |
+| updated_at             | The timestamp when the translation was updated |
+
+##### Usage
+
+Publish the strategy migration using the command:
+
+```bash
+php artisan vendor:publish --tag=translations-migration
+```
+
+Execute the `migrate` command:
+
+```bash
+php artisan migrate
 ```
 
 ## 📄 Documentation
@@ -337,7 +332,7 @@ If you do not want to automatically load or save translations when you interact 
 To disable it for a specific model, override the `getterAsTranslation` or `autoSaveTranslations` methods in your model like so.
 
 ```php
-class Post extends Model
+class Book extends Model
 {
     use HasTranslations;
 
@@ -411,14 +406,14 @@ More about sorting middleware [here](https://laravel.com/docs/8.x/middleware#sor
 
 ```php
 // routes/web.php
-Route::get('posts/{post:slug}', 'PostsController@show');
+Route::get('posts/{post:slug}', 'BooksController@show');
 ```
 
 ```php
-// app/Http/Controllers/PostController.php
-public function show(Post $post)
+// app/Http/Controllers/BookController.php
+public function show(Book $post)
 {
-    // Post model is resolved by translated slug using the current locale.
+    // Book model is resolved by translated slug using the current locale.
 }
 ```
 
@@ -430,7 +425,7 @@ It is recommended to use `morph map` for all translatable models to minimize cou
 use Illuminate\Database\Eloquent\Relations\Relation;
 
 Relation::morphMap([
-    'posts' => Post::class,
+    'books' => Book::class,
     'categories' => Category::class,
 ]);
 ```
