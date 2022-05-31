@@ -158,38 +158,108 @@ php artisan migrate
 
 ##### Usage
 
-Add the `Nevadskiy\Translatable\Strategies\ExtraTable\HasTranslations` trait to your model and specify `$translatable` attributes.
+Let's make, for example, a translatable `Book` model that has 2 translatable attributes: `title` and `description`.
 
-Make a migration for extra table for your model, for example:
+The model class may look like this:
 
 ```php
+<?php
+
+namespace App;
+
+use Illuminate\Database\Eloquent\Model;
+use Nevadskiy\Translatable\Strategies\ExtraTable\HasTranslations;
+
+class Book extends Model
+{
+    use HasTranslations; 
+
+    protected $translatable = [
+        'title', 
+        'description',
+    ];
+}
+```
+
+And we need 2 tables: `books` and `book_translations`, let's create them:
+
+```php
+php artisan make:migration create_books_table
 php artisan make:migration create_book_translations_table
 ```
 
-Add the following fields to the model:
+The simplest `books` table migration might look like this:
 
 ```php
-use Illuminate\Database\Schema\Blueprint;
+Schema::create('books', function (Blueprint $table) {
+    $table->id();
+    $table->timestamps();
+});
+```
 
+And the `book_translations` table will contain the `title` and `description` fields:
+
+```php
 Schema::create('book_translations', function (Blueprint $table) {
     $table->id();
     $table->foreignId('book_id')->references('id')->on('books')->cascadeOnDelete();
-    $table->string('locale');
+    $table->string('locale', 2);
     $table->string('title');
     $table->text('description');
-    $table->text('body');
     $table->timestamps();
 
     $table->unique(['book_id', 'locale']);
 });
 ```
 
-Execute the `migrate` command:
+That's all. The model is now prepared to work with translations.
 
-```bash
-php artisan migrate
+##### Custom foreign key
+
+...
+
+##### Custom table name
+
+...
+
+##### Custom model
+
+By default, you do not need to create a separate model to work with the translation table. 
+The strategy uses one `Translation` model internally and dynamically sets the name of the table into it.
+
+But if for some reason you need to create a custom translation model, then you can specify it by overriding the `getTranslationModelClass` method:
+
+```php
+<?php
+
+namespace App;
+
+use App\BookTranslation;
+use Illuminate\Database\Eloquent\Model;
+use Nevadskiy\Translatable\Strategies\ExtraTable\HasTranslations;
+
+class Book extends Model
+{
+    use HasTranslations;
+
+    public function getTranslationModelClass() : string
+    {
+        return BookTranslation::class;
+    }
+}
 ```
 
+Or specify a custom model globally in the `App\Providers\AppServiceProvider` class:
+
+```php
+use Nevadskiy\Translatable\Strategies\ExtraTable\ExtraTableStrategy;
+use App\Translation;
+
+public function boot()
+{
+    ExtraTableStrategy::useModel(Translation::class);
+}
+```
 
 #### Extra table extended strategy
 
@@ -201,24 +271,6 @@ php artisan migrate
 
 
 ## 📄 Documentation
-
-### Strategies
-
-#### Single Table
-
-- all translations are in the single table
-- consistent simple queries
-- model can be created in any locale
-- non-optimal indexes
-
-#### Single Table Extended
-
-- translations for default locale are in original table, for custom locale - in the global table
-- complex queries
-- model can be created only in fallback locale
-- non-optimal indexes
-- can use fallback translation when current is missing
-- can be added to an existing model without restructuring the original table
 
 ##### Automatically store and retrieve translations of the model using translatable attributes
 
@@ -438,16 +490,18 @@ public function handle($request, Closure $next)
 // app/Http/Kernel.php
 protected $middlewareGroups = [
     'web' => [
-        // ... default middleware stack
+        // ...
         \App\Http\Middleware\SetLocaleMiddleware::class, // <--- your middleware
         \Illuminate\Routing\Middleware\SubstituteBindings::class, // <--- bindings middleware
+        // ...
     ],
 ];
 
 protected $middlewarePriority = [
-    // ... default middleware stack
+    // ...
     \App\Http\Middleware\SetLocaleMiddleware::class, // <--- your middleware above
     \Illuminate\Routing\Middleware\SubstituteBindings::class, // <--- bindings middleware below
+    // ...
 ];
 ```
 
