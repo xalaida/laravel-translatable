@@ -50,7 +50,7 @@ composer require nevadskiy/laravel-translatable
 
 Add the `HasTranslations` trait of the strategy you want to use to your model that you want to make translatable.
 
-For example, let's use the **Additional Table Extended** strategy.
+For example, let's use the [Additional table extended](#additional-table-extended-strategy) strategy.
 
 ```php
 <?php
@@ -103,35 +103,26 @@ class Book extends Model
 
 ### Strategies
 
-The package provides 4 different strategies that determine how translations will be stored in the database.
+The package provides 4 different strategies that determine how translations will be stored in the database:
 
-- Single table strategy
-- Single table extended strategy
-- Additional table strategy
-- Additional table extended strategy
+* [Single table](#single-table-strategy)
+* [Single table extended](#single-table-extended-strategy)
+* [Additional table](#additional-table-strategy)
+* [Additional table extended](#additional-table-extended-strategy)
 
-The word "extended" in the strategy name indicates that this strategy can be added to existing models without having to change the structure of the table in the database, because the translations for the fallback locale are still stored in the original table, and only translations to custom locales are stored separately.
+The word **extended** in the strategy name indicates that this strategy can be added to existing models without having to change the structure of the database table, because the translations for the fallback locale are still stored in the original table, and only translations to custom (non-fallback) locales are stored separately.
 
 ---image compare table structure for different strategy---
 
 #### Single table strategy
 
-With this strategy, translations for every model will be stored in the single global `translations` table.
+With this strategy fallback translations are stored in the original model's table as usual.
 
-The table structure:
-
-| Column                 | Description                                    |
-|------------------------|------------------------------------------------|
-| id                     | ID of the translation                          |
-| translatable_id        | Morph ID of the model of the translation       |
-| translatable_type      | Morph type of the translatable model           |
-| translatable_attribute | Attribute of the translatable model            |
-| locale                 | Locale of the translation value                |
-| value                  | The translation value                          |
-| created_at             | The timestamp when the translation was created |
-| updated_at             | The timestamp when the translation was updated |
+Translations of non-fallback locales are stored in the single global `translations` table that holds translation for every model that uses [Single Table](#single-table-strategy) strategy.
 
 ##### Usage
+
+Add the `Nevadskiy\Translatable\Strategies\SingleTable\HasTranslations` trait to your model and specify `$translatable` attributes.
 
 Publish the strategy migration using the command:
 
@@ -145,13 +136,71 @@ Execute the `migrate` command:
 php artisan migrate
 ```
 
+#### Single table extended strategy
+
+##### Usage
+
+Add the `Nevadskiy\Translatable\Strategies\SingleTableExtended\HasTranslations` trait to your model and specify `$translatable` attributes.
+
+Publish the `translations` migration using the command:
+
+```bash
+php artisan vendor:publish --tag=translations-migration
+```
+
+Execute the `migrate` command:
+
+```bash
+php artisan migrate
+```
+
+#### Additional table strategy
+
+##### Usage
+
+Add the `Nevadskiy\Translatable\Strategies\AdditionalTable\HasTranslations` trait to your model and specify `$translatable` attributes.
+
+Make a migration for additional table for your model, for example:
+
+```php
+php artisan make:migration create_book_translations_table
+```
+
+Add the following fields to the model:
+
+```php
+use Illuminate\Database\Schema\Blueprint;
+
+Schema::create('book_translations', function (Blueprint $table) {
+    $table->id();
+    $table->foreignId('book_id')->references('id')->on('books')->cascadeOnDelete();
+    $table->string('locale');
+    $table->string('title');
+    $table->text('description');
+    $table->text('body');
+    $table->timestamps();
+
+    $table->unique(['book_id', 'locale']);
+});
+```
+
+Execute the `migrate` command:
+
+```bash
+php artisan migrate
+```
+
+
+#### Additional table extended strategy
+
+...
+
+...
+...
+...
+
+
 ## 📄 Documentation
-
-Default locale values are stored in the original table as usual.
-
-Values in non-default locales of each translatable model are stored in the single `translations` table.
-
-The package takes the default locale from the `config('app.fallback_locale')` value.
 
 ### Strategies
 
@@ -416,20 +465,6 @@ public function show(Book $post)
     // Book model is resolved by translated slug using the current locale.
 }
 ```
-
-##### Using morph map
-
-It is recommended to use `morph map` for all translatable models to minimize coupling between a database and application structure.
-
-```php
-use Illuminate\Database\Eloquent\Relations\Relation;
-
-Relation::morphMap([
-    'books' => Book::class,
-    'categories' => Category::class,
-]);
-```
-More about morph maps [here](https://laravel.com/docs/7.x/eloquent-relationships#custom-polymorphic-types).
 
 ## Links
 
