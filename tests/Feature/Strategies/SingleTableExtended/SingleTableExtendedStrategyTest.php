@@ -252,7 +252,7 @@ class SingleTableExtendedStrategyTest extends TestCase
     }
 
     /** @test */
-    public function it_does_not_perform_additional_query_for_fallback_locale(): void
+    public function it_performs_no_additional_queries_for_fallback_locale(): void
     {
         $book = new Book();
         $book->title = 'Book about penguins';

@@ -50,7 +50,7 @@ composer require nevadskiy/laravel-translatable
 
 Add the `HasTranslations` trait of the strategy you want to use to your model that you want to make translatable.
 
-For example, let's use the [Additional table extended](#additional-table-extended-strategy) strategy.
+For example, let's use the [Extra table extended](#extra-table-extended-strategy) strategy.
 
 ```php
 <?php
@@ -58,7 +58,7 @@ For example, let's use the [Additional table extended](#additional-table-extende
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
-use Nevadskiy\Translatable\Strategies\AdditionalTableExtended\HasTranslations;
+use Nevadskiy\Translatable\Strategies\ExtraTableExtended\HasTranslations;
 
 class Book extends Model
 {
@@ -88,7 +88,7 @@ Final model may look like this.
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
-use Nevadskiy\Translatable\Strategies\AdditionalTableExtended\HasTranslations;
+use Nevadskiy\Translatable\Strategies\ExtraTableExtended\HasTranslations;
 
 class Book extends Model
 {
@@ -107,8 +107,8 @@ The package provides 4 different strategies that determine how translations will
 
 * [Single table](#single-table-strategy)
 * [Single table extended](#single-table-extended-strategy)
-* [Additional table](#additional-table-strategy)
-* [Additional table extended](#additional-table-extended-strategy)
+* [Extra table](#extra-table-strategy)
+* [Extra table extended](#extra-table-extended-strategy)
 
 The word **extended** in the strategy name indicates that this strategy can be added to existing models without having to change the structure of the database table, because the translations for the fallback locale are still stored in the original table, and only translations to custom (non-fallback) locales are stored separately.
 
@@ -154,13 +154,13 @@ Execute the `migrate` command:
 php artisan migrate
 ```
 
-#### Additional table strategy
+#### Extra table strategy
 
 ##### Usage
 
-Add the `Nevadskiy\Translatable\Strategies\AdditionalTable\HasTranslations` trait to your model and specify `$translatable` attributes.
+Add the `Nevadskiy\Translatable\Strategies\ExtraTable\HasTranslations` trait to your model and specify `$translatable` attributes.
 
-Make a migration for additional table for your model, for example:
+Make a migration for extra table for your model, for example:
 
 ```php
 php artisan make:migration create_book_translations_table
@@ -191,7 +191,7 @@ php artisan migrate
 ```
 
 
-#### Additional table extended strategy
+#### Extra table extended strategy
 
 ...
 
@@ -491,7 +491,7 @@ The MIT License (MIT). Please see [LICENSE](LICENSE.md) for more information.
 ## 🔨 To Do
 
 - [ ] add possibility to specify `boolean` argument in `whereTranslatable` scope (cover with test)
-- [ ] add reverse `translatable` relation to the AdditionalTable strategy model
+- [ ] add reverse `translatable` relation to the ExtraTable strategy model
 - [ ] cover `Translations` class with tests 
 - [ ] add possibility to use translations in database model factories (consider adding Translations collection that handles by seeder `'name' => new Translations(['en' => '...', 'uk' => '...'])`) or add it directly to translator
 - [ ] add possibility to eager load model with translations for all locales (useful for alternate route generation)
