@@ -606,8 +606,3 @@ The MIT License (MIT). Please see [LICENSE](LICENSE.md) for more information.
 - [ ] add doc to show how to add custom strategy or extend existing
 - [ ] add json translations strategy (similar to spatie-translations) 
 - [ ] refactor eager loading scope to use array of locales syntax extracted to relation strategy (that allow to fallback not to only 2 locales but more, in future can support country specific locales)
-
-- SingleTableStrategy
-  - [ ] add possibility to specify fallback locale per model 
-  - [ ] add possibility to disable fallback translations (return nulls if missing)
-  - [ ] specify custom `Translation` model (for example to use UUID)
