@@ -57,7 +57,7 @@ Please see [CHANGELOG](CHANGELOG.md) for more information what has changed recen
 
 ## ☕ Contributing
 
-Please see [CONTRIBUTING](.github/CONTRIBUTING.md) for more information.
+Thank you for considering contributing. Please see [CONTRIBUTING](.github/CONTRIBUTING.md) for more information.
 
 ## 🔓 Security
 
