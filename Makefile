@@ -1,13 +1,9 @@
 # Install the app
-install: build vendor test
+install: build vendor
 
 # Build the app container
 build:
 	docker build -t app .
-
-# Rebuild the app container
-rebuild:
-	docker build --no-cache -t app .
 
 # Install app dependencies
 vendor:
