@@ -9,10 +9,9 @@ The package allows adding translations for your Eloquent models.
 
 ## 🍬 Features 
 
-- Storing model translations in the database.
-- Support model accessors & mutators & casts (even JSON).
-- Auto-resolving model translations for the current locale.
-- No need to rewrite existing code to make a model translatable.
+- Translatable attributes behave like regular model attributes.
+- Full support for accessors, mutators and casts (even JSON).
+- Fallback translations.
 - 4 different strategies for storing translations.
 
 ## 📺 Demo
@@ -34,11 +33,11 @@ echo $book->title; // П'ятдесят верстов
 
 - Laravel `7.0` or newer  
 - PHP `7.2` or newer
-- [Octane](https://github.com/laravel/octane) friendly
+- Can work with [Octane](https://github.com/laravel/octane)
 
 ## 🔌 Installation
 
-Install the package via composer.
+Install the package via composer:
 
 ```bash
 composer require nevadskiy/laravel-translatable
@@ -50,7 +49,7 @@ composer require nevadskiy/laravel-translatable
 
 Add the `HasTranslations` trait of the strategy you want to use to your model that you want to make translatable.
 
-For example, let's use the [Extra table extended](#extra-table-extended-strategy) strategy.
+For example, let's use the [Extra Table Extended](#extra-table-extended-strategy) strategy:
 
 ```php
 <?php
@@ -66,7 +65,7 @@ class Book extends Model
 }
 ```
 
-And you also need to specify which attributes should be translatable using the `$translatable` array.
+And you also need to specify which attributes should be translatable using the `translatable` array:
 
 ```php
 /**
@@ -80,7 +79,7 @@ protected $translatable = [
 ];
 ```
 
-Final model may look like this.
+That's all. Final model may look like this:
 
 ```php
 <?php
@@ -105,20 +104,20 @@ class Book extends Model
 
 The package provides 4 different strategies that determine how translations will be stored in the database:
 
-* [Single table](#single-table-strategy)
-* [Single table extended](#single-table-extended-strategy)
-* [Extra table](#extra-table-strategy)
-* [Extra table extended](#extra-table-extended-strategy)
+* [Single Table](#single-table-strategy)
+* [Single Table Extended](#single-table-extended-strategy)
+* [Extra Table](#extra-table-strategy)
+* [Extra Table Extended](#extra-table-extended-strategy)
 
 The word **extended** in the strategy name indicates that this strategy can be added to existing models without having to change the structure of the database table, because the translations for the fallback locale are still stored in the original table, and only translations to custom (non-fallback) locales are stored separately.
-
----image compare table structure for different strategy---
 
 #### Single table strategy
 
 With this strategy fallback translations are stored in the original model's table as usual.
 
 Translations of non-fallback locales are stored in the single global `translations` table that holds translation for every model that uses [Single Table](#single-table-strategy) strategy.
+
+---image that shows database structure---
 
 ##### Usage
 
@@ -136,7 +135,40 @@ Execute the `migrate` command:
 php artisan migrate
 ```
 
+##### Eager loading
+
+...
+
+##### Lazy loading
+
+...
+
+##### Custom fallback locale
+
+...
+
+##### Custom translation model
+
+...
+
+---add example with uuid---
+
+##### Raw translations
+
+...
+
+##### Route model binding
+
+...
+
+##### Restrictions
+
+Note that you cannot create translatable model by setting translations only for custom locale since the model requires the fallback translations to be saved in the original table.
+To avoid that you can mark translatable fields as nullable in the database migration or force a model creation in fallback locale.
+
 #### Single table extended strategy
+
+---image that shows database structure---
 
 ##### Usage
 
@@ -155,6 +187,8 @@ php artisan migrate
 ```
 
 #### Extra table strategy
+
+---image that shows database structure---
 
 ##### Usage
 
@@ -263,11 +297,23 @@ public function boot()
 
 #### Extra table extended strategy
 
+---image that shows database structure---
+
 ...
 
 ...
 ...
 ...
+
+### Fallback translations
+
+...
+
+### Fallback translations
+
+...
+
+### Storing translations
 
 
 ## 📄 Documentation
@@ -559,6 +605,7 @@ The MIT License (MIT). Please see [LICENSE](LICENSE.md) for more information.
 - [ ] command to show missing translations
 - [ ] add doc to show how to add custom strategy or extend existing
 - [ ] add json translations strategy (similar to spatie-translations) 
+- [ ] refactor eager loading scope to use array of locales syntax extracted to relation strategy (that allow to fallback not to only 2 locales but more, in future can support country specific locales)
 
 - SingleTableStrategy
   - [ ] add possibility to specify fallback locale per model 
