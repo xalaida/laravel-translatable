@@ -191,8 +191,127 @@ class WhereTranslatableScopeTest extends TestCase
             ->get();
     }
 
-    // TODO: test boolean for custom locale
-    // TODO: test boolean for fallback locale
+    /** @test */
+    public function it_queries_records_using_or_boolean(): void
+    {
+        $book1 = new BookWhereTranslatable();
+        $book1->translator()->set('title', 'The last prophet', 'en');
+        $book1->translator()->set('title', 'Останній пророк', 'uk');
+        $book1->save();
+
+        $book2 = new BookWhereTranslatable();
+        $book2->translator()->set('title', 'The first prophet', 'en');
+        $book2->save();
+
+        $book3 = new BookWhereTranslatable();
+        $book3->translator()->set('title', 'Day of Wrath', 'en');
+        $book3->save();
+
+        $records = BookWhereTranslatable::query()
+            ->whereTranslatable('title', '%пророк', null, 'LIKE')
+            ->whereTranslatable('title', 'Day of Wrath', 'en', '=', 'or')
+            ->get();
+
+        self::assertCount(2, $records);
+        self::assertTrue($records[0]->is($book1));
+        self::assertTrue($records[1]->is($book3));
+    }
+
+    /** @test */
+    public function it_queries_records_using_and_boolean_by_default(): void
+    {
+        $book = new BookWhereTranslatable();
+        $book->translator()->set('title', 'The last prophet', 'en');
+        $book->translator()->set('title', 'Останній пророк', 'uk');
+        $book->save();
+
+        $records = BookWhereTranslatable::query()
+            ->whereTranslatable('title', '%пророк', null, 'LIKE')
+            ->whereTranslatable('title', 'Day of Wrath', 'en')
+            ->get();
+
+        self::assertCount(0, $records);
+    }
+
+    /** @test */
+    public function it_queries_records_using_or_boolean_in_custom_locale(): void
+    {
+        $book1 = new BookWhereTranslatable();
+        $book1->translator()->set('title', 'The last prophet', 'en');
+        $book1->translator()->set('title', 'Останній пророк', 'uk');
+        $book1->save();
+
+        $book2 = new BookWhereTranslatable();
+        $book2->translator()->set('title', 'The first prophet', 'en');
+        $book2->save();
+
+        $book3 = new BookWhereTranslatable();
+        $book3->translator()->set('title', 'Day of Wrath', 'en');
+        $book3->translator()->set('title', 'День гніву', 'uk');
+        $book3->save();
+
+        $records = BookWhereTranslatable::query()
+            ->whereTranslatable('title', 'Останній пророк')
+            ->whereTranslatable('title', 'День гніву', 'uk', '=', 'or')
+            ->get();
+
+        self::assertCount(2, $records);
+        self::assertTrue($records[0]->is($book1));
+        self::assertTrue($records[1]->is($book3));
+    }
+
+    /** @test */
+    public function it_queries_records_using_or_boolean_in_nullable_locale(): void
+    {
+        $book1 = new BookWhereTranslatable();
+        $book1->translator()->set('title', 'The last prophet', 'en');
+        $book1->translator()->set('title', 'Останній пророк', 'uk');
+        $book1->save();
+
+        $book2 = new BookWhereTranslatable();
+        $book2->translator()->set('title', 'The first prophet', 'en');
+        $book2->save();
+
+        $book3 = new BookWhereTranslatable();
+        $book3->translator()->set('title', 'Day of Wrath', 'en');
+        $book3->translator()->set('title', 'День гніву', 'uk');
+        $book3->save();
+
+        $records = BookWhereTranslatable::query()
+            ->whereTranslatable('title', 'Останній пророк')
+            ->whereTranslatable('title', 'День гніву', null, '=', 'or')
+            ->get();
+
+        self::assertCount(2, $records);
+        self::assertTrue($records[0]->is($book1));
+        self::assertTrue($records[1]->is($book3));
+    }
+
+    /** @test */
+    public function it_queries_records_using_or_boolean_helper(): void
+    {
+        $book1 = new BookWhereTranslatable();
+        $book1->translator()->set('title', 'The last prophet', 'en');
+        $book1->translator()->set('title', 'Останній пророк', 'uk');
+        $book1->save();
+
+        $book2 = new BookWhereTranslatable();
+        $book2->translator()->set('title', 'The first prophet', 'en');
+        $book2->save();
+
+        $book3 = new BookWhereTranslatable();
+        $book3->translator()->set('title', 'Day of Wrath', 'en');
+        $book3->save();
+
+        $records = BookWhereTranslatable::query()
+            ->whereTranslatable('title', 'Останній пророк', 'uk')
+            ->orWhereTranslatable('title', 'Day of Wrath', 'en')
+            ->get();
+
+        self::assertCount(2, $records);
+        self::assertTrue($records[0]->is($book1));
+        self::assertTrue($records[1]->is($book3));
+    }
 
     /**
      * @inheritdoc

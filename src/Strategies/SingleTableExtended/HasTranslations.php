@@ -93,7 +93,7 @@ trait HasTranslations
     /**
      * Scope to filter models by translatable attribute.
      */
-    protected function scopeWhereTranslatable(Builder $query, string $attribute, $value, string $locale = null, string $operator = '='): Builder
+    protected function scopeWhereTranslatable(Builder $query, string $attribute, $value, string $locale = null, string $operator = '=', string $boolean = 'and'): Builder
     {
         $this->translator()->assertAttributeIsTranslatable($attribute);
 
@@ -104,18 +104,26 @@ trait HasTranslations
                         $query->forAttribute($attribute)
                             ->where('value', $operator, $value);
                     });
-            });
+            }, null, null, $boolean);
         }
 
         if ($this->translator()->isFallbackLocale($locale)) {
-            return $query->where($attribute, $operator, $value);
+            return $query->where($attribute, $operator, $value, $boolean);
         }
 
-        return $query->whereHas('translations', function (Builder $query) use ($attribute, $value, $locale, $operator) {
+        return $query->has('translations', '>=', 1, $boolean, function (Builder $query) use ($attribute, $value, $locale, $operator) {
             $query->forAttribute($attribute)
                 ->forLocale($locale)
                 ->where('value', $operator, $value);
         });
+    }
+
+    /**
+     * Scope to filter models by translatable attribute using the "or" boolean.
+     */
+    protected function scopeOrWhereTranslatable(Builder $query, string $attribute, $value, string $locale = null, string $operator = '=')
+    {
+        return $query->whereTranslatable($attribute, $value, $locale, $operator, 'or');
     }
 
     /**
