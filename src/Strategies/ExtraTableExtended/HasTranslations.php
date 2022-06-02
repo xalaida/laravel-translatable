@@ -162,6 +162,14 @@ trait HasTranslations
     }
 
     /**
+     * Scope to filter models by translatable attribute using the "or" boolean.
+     */
+    protected function scopeOrWhereTranslatable(Builder $query, string $attribute, $value, string $locale = null, string $operator = '=')
+    {
+        return $query->whereTranslatable($attribute, $value, $locale, $operator, 'or');
+    }
+
+    /**
      * Scope to order models by translatable attribute.
      */
     protected function scopeOrderByTranslatable(Builder $query, string $attribute, string $direction = 'asc', string $locale = null): Builder
