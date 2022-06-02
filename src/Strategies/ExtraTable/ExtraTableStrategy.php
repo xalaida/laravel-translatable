@@ -57,4 +57,22 @@ class ExtraTableStrategy extends RelationTranslatorStrategy
             $this->translatable->translations()->updateOrCreate(['locale' => $locale], $attributes);
         }
     }
+
+    /**
+     * @inheritdoc
+     */
+    public function getLocalesForEagerLoading(): array
+    {
+        $locales = [];
+
+        if ($this->translatable->translator()->shouldFallback()) {
+            $locales[] = $this->translatable->translator()->getFallbackLocale();
+        }
+
+        if (! $this->translatable->translator()->isFallbackLocale()) {
+            $locales[] = $this->translatable->translator()->getLocale();
+        }
+
+        return $locales;
+    }
 }

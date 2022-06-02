@@ -4,9 +4,6 @@ namespace Nevadskiy\Translatable\Strategies\SingleTableExtended;
 
 use Nevadskiy\Translatable\Strategies\SingleTable\SingleTableStrategy;
 
-/**
- * TODO: add possibility to trigger an exception when creating model in non-default locale.
- */
 class SingleTableExtendedStrategy extends SingleTableStrategy
 {
     /**
@@ -33,5 +30,19 @@ class SingleTableExtendedStrategy extends SingleTableStrategy
         } else {
             parent::set($attribute, $value, $locale);
         }
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getLocalesForEagerLoading(): array
+    {
+        $locales = [];
+
+        if (! $this->translatable->translator()->isFallbackLocale()) {
+            $locales[] = $this->translatable->translator()->getLocale();
+        }
+
+        return $locales;
     }
 }

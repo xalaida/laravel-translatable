@@ -141,6 +141,11 @@ abstract class RelationTranslatorStrategy implements TranslatorStrategy
     abstract protected function saveTranslations(array $translations): void;
 
     /**
+     * Get the locales list to be eager loaded.
+     */
+    abstract public function getLocalesForEagerLoading(): array;
+
+    /**
      * Load translation values for the given locale.
      */
     protected function loadTranslationsForLocale(string $locale): void

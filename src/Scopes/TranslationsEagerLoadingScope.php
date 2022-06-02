@@ -1,6 +1,6 @@
 <?php
 
-namespace Nevadskiy\Translatable\Strategies\ExtraTableExtended\Scopes;
+namespace Nevadskiy\Translatable\Scopes;
 
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
@@ -14,10 +14,14 @@ class TranslationsEagerLoadingScope implements Scope
      */
     public function apply(Builder $query, Model $translatable): void
     {
-        if (! $translatable->translator()->isFallbackLocale()) {
-            $query->with(['translations' => function (Relation $query) use ($translatable) {
-                $query->forLocale($translatable->translator()->getLocale());
-            }]);
+        $locales = $translatable->translator()->getStrategy()->getLocalesForEagerLoading();
+
+        if (! $locales) {
+            return;
         }
+
+        $query->with(['translations' => function (Relation $query) use ($locales) {
+            $query->forLocale($locales);
+        }]);
     }
 }

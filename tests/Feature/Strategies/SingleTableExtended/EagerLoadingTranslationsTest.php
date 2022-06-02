@@ -85,6 +85,18 @@ class EagerLoadingTranslationsTest extends TestCase
     }
 
     /** @test */
+    public function it_does_not_eager_load_translations_in_fallback_locale(): void
+    {
+        $book = new BookForEagerLoading();
+        $book->translator()->set('title', 'Sense Gallery', $this->app->getFallbackLocale());
+        $book->save();
+
+        [$book] = BookForEagerLoading::all();
+
+        self::assertFalse($book->relationLoaded('translations'));
+    }
+
+    /** @test */
     public function it_allows_disabling_eager_loading_on_query_builder(): void
     {
         $book = new BookForEagerLoading();

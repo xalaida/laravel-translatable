@@ -85,7 +85,7 @@ class CustomFallbackLocaleTest extends TestCase
     }
 
     /** @test */
-    public function it_does_not_eager_loads_translations_in_fallback_locale(): void
+    public function it_does_not_eager_load_translations_in_custom_fallback_locale(): void
     {
         $book = new BookWithCustomFallback();
         $book->translator()->set('title', 'Галерея чуття', 'uk');

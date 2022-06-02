@@ -7,8 +7,8 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Query\JoinClause;
 use Illuminate\Support\Collection;
+use Nevadskiy\Translatable\Scopes\TranslationsEagerLoadingScope;
 use Nevadskiy\Translatable\Strategies\ExtraTable\Models\Translation;
-use Nevadskiy\Translatable\Strategies\ExtraTableExtended\Scopes\TranslationsEagerLoadingScope;
 use Nevadskiy\Translatable\Strategies\InteractsWithTranslator;
 use Nevadskiy\Translatable\Strategies\TranslatorStrategy;
 

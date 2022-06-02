@@ -7,9 +7,9 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Query\JoinClause;
 use Illuminate\Support\Collection;
+use Nevadskiy\Translatable\Scopes\TranslationsEagerLoadingScope;
 use Nevadskiy\Translatable\Strategies\InteractsWithTranslator;
 use Nevadskiy\Translatable\Strategies\SingleTable\Models\Translation;
-use Nevadskiy\Translatable\Strategies\SingleTable\Scopes\TranslationsEagerLoadingScope;
 use Nevadskiy\Translatable\Strategies\TranslatorStrategy;
 
 /**

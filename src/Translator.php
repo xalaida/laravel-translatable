@@ -345,10 +345,18 @@ class Translator
     }
 
     /**
-     * Get the event dispatcher instance.
+     * Resolve the event dispatcher instance.
      */
     protected function getEventDispatcher(): Dispatcher
     {
         return call_user_func(static::$dispatcherResolver);
+    }
+
+    /**
+     * Get the translator strategy instance.
+     */
+    public function getStrategy(): TranslatorStrategy
+    {
+        return $this->strategy;
     }
 }

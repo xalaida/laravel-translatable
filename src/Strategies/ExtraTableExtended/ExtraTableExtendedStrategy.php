@@ -31,4 +31,18 @@ class ExtraTableExtendedStrategy extends ExtraTableStrategy
             parent::set($attribute, $value, $locale);
         }
     }
+
+    /**
+     * @inheritdoc
+     */
+    public function getLocalesForEagerLoading(): array
+    {
+        $locales = [];
+
+        if (! $this->translatable->translator()->isFallbackLocale()) {
+            $locales[] = $this->translatable->translator()->getLocale();
+        }
+
+        return $locales;
+    }
 }
