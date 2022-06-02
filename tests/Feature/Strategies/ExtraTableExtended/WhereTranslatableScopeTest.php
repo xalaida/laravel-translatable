@@ -221,10 +221,10 @@ class WhereTranslatableScopeTest extends TestCase
     /** @test */
     public function it_queries_records_using_and_boolean_by_default(): void
     {
-        $book1 = new BookWhereTranslatable();
-        $book1->translator()->set('title', 'The last prophet', 'en');
-        $book1->translator()->set('title', 'Останній пророк', 'uk');
-        $book1->save();
+        $book = new BookWhereTranslatable();
+        $book->translator()->set('title', 'The last prophet', 'en');
+        $book->translator()->set('title', 'Останній пророк', 'uk');
+        $book->save();
 
         $records = BookWhereTranslatable::query()
             ->whereTranslatable('title', '%пророк', null, 'LIKE')
