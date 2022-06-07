@@ -192,6 +192,20 @@ class Translator
     }
 
     /**
+     * Determine if the translation exists for the given attribute and locale.
+     */
+    public function has(string $attribute, string $locale = null): bool
+    {
+        try {
+            $this->getRawOrFail($attribute, $locale);
+
+            return true;
+        } catch (TranslationMissingException $e) {
+            return false;
+        }
+    }
+
+    /**
      * Get the translation value of the given attribute to the given locale.
      */
     public function get(string $attribute, string $locale = null)
