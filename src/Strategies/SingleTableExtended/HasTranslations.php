@@ -5,6 +5,7 @@ namespace Nevadskiy\Translatable\Strategies\SingleTableExtended;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
+use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Database\Query\JoinClause;
 use Illuminate\Support\Collection;
 use Nevadskiy\Translatable\Scopes\TranslationsEagerLoadingScope;
@@ -88,6 +89,19 @@ trait HasTranslations
     protected function scopeWithoutTranslationsScope(Builder $query): Builder
     {
         return $query->withoutGlobalScope(TranslationsEagerLoadingScope::class);
+    }
+
+    /**
+     * Scope to eager load translations with the given locales.
+     */
+    protected function scopeWithTranslations(Builder $query, array $locales = ['*']): Builder
+    {
+        return $query->withoutTranslationsScope()
+            ->with(['translations' => function (Relation $query) use ($locales) {
+                if (! (count($locales) === 1 && $locales[0] === '*')) {
+                    $query->forLocale($locales);
+                }
+            }]);
     }
 
     /**
