@@ -144,8 +144,8 @@ class CreateTranslatableModelTest extends TestCase
      */
     protected function tearDown(): void
     {
-        $this->schema()->drop('books');
         $this->schema()->drop('book_translations');
+        $this->schema()->drop('books');
         parent::tearDown();
     }
 }
