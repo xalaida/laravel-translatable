@@ -49,8 +49,6 @@ class WithTranslationsScopeTest extends TestCase
         $book->translator()->set('title', 'Ostatni prorok', 'pl');
         $book->save();
 
-        DB::enableQueryLog();
-
         [$record] = BookWithTranslations::query()
             ->withTranslations()
             ->get();
