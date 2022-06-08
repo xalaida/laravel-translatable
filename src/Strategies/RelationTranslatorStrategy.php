@@ -131,6 +131,14 @@ abstract class RelationTranslatorStrategy implements TranslatorStrategy
     }
 
     /**
+     * Get the pending translations.
+     */
+    public function getPendingTranslations(): array
+    {
+        return $this->pendingTranslations;
+    }
+
+    /**
      * Load translation values from the given collection of translations.
      */
     abstract protected function loadTranslations(Collection $translations): void;
