@@ -69,6 +69,8 @@ trait HasTranslations
 
         $instance->setTable($this->getEntityTranslationTable());
 
+        $instance->setRelated($this);
+
         return $instance;
     }
 
@@ -83,7 +85,7 @@ trait HasTranslations
     /**
      * Get the table name of the entity translation.
      */
-    protected function getEntityTranslationTable(): string
+    public function getEntityTranslationTable(): string
     {
         return $this->joiningTableSegment().'_translations';
     }
@@ -91,7 +93,7 @@ trait HasTranslations
     /**
      * Get the foreign key of the entity translation table.
      */
-    protected function getEntityTranslationForeignKey(): string
+    public function getEntityTranslationForeignKey(): string
     {
         return $this->getForeignKey();
     }
