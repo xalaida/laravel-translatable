@@ -1,10 +1,10 @@
 <?php
 
-namespace Nevadskiy\Translatable\Tests\Feature\Strategies\ExtraTable;
+namespace Nevadskiy\Translatable\Tests\Feature\Strategies\SingleTable;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Schema\Blueprint;
-use Nevadskiy\Translatable\Strategies\ExtraTable\HasTranslations;
+use Nevadskiy\Translatable\Strategies\SingleTable\HasTranslations;
 use Nevadskiy\Translatable\Tests\TestCase;
 
 class HasTranslationTest extends TestCase
@@ -25,15 +25,6 @@ class HasTranslationTest extends TestCase
     {
         $this->schema()->create('books', function (Blueprint $table) {
             $table->id();
-            $table->timestamps();
-        });
-
-        $this->schema()->create('book_translations', function (Blueprint $table) {
-            $table->id();
-            $table->foreignId('book_id');
-            $table->string('title');
-            $table->string('description')->nullable();
-            $table->string('locale');
             $table->timestamps();
         });
     }
@@ -93,7 +84,6 @@ class HasTranslationTest extends TestCase
      */
     protected function tearDown(): void
     {
-        $this->schema()->drop('book_translations');
         $this->schema()->drop('books');
         parent::tearDown();
     }
@@ -113,14 +103,4 @@ class BookHasTranslation extends Model
         'title',
         'description',
     ];
-
-    protected function getEntityTranslationTable(): string
-    {
-        return 'book_translations';
-    }
-
-    protected function getEntityTranslationForeignKey(): string
-    {
-        return 'book_id';
-    }
 }
