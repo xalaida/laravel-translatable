@@ -9,6 +9,7 @@ use Nevadskiy\Translatable\Exceptions\AttributeNotTranslatableException;
 use Nevadskiy\Translatable\Exceptions\TranslationMissingException;
 use Nevadskiy\Translatable\Strategies\InteractsWithTranslator;
 use Nevadskiy\Translatable\Strategies\TranslatorStrategy;
+use function call_user_func;
 
 class Translator
 {
@@ -78,7 +79,7 @@ class Translator
     /**
      * Set the locale to the translator.
      */
-    public function locale(string $locale): Translator
+    public function locale(string $locale): self
     {
         $this->locale = $locale;
 
@@ -96,7 +97,7 @@ class Translator
     /**
      * Set up the fallback locale to the translator.
      */
-    public function fallbackLocale(string $locale): Translator
+    public function fallbackLocale(string $locale): self
     {
         $this->fallbackLocale = $locale;
 
@@ -124,7 +125,7 @@ class Translator
     /**
      * Disable the fallback translator behaviour.
      */
-    public function disableFallback(): Translator
+    public function disableFallback(): self
     {
         $this->fallback = false;
 
@@ -134,7 +135,7 @@ class Translator
     /**
      * Enable the fallback translator behaviour.
      */
-    public function enableFallback(): Translator
+    public function enableFallback(): self
     {
         $this->fallback = true;
 
@@ -257,7 +258,7 @@ class Translator
     /**
      * Set many translations on the model for the given locale.
      */
-    public function setMany(array $translations, string $locale = null): Translator
+    public function setMany(array $translations, string $locale = null): self
     {
         foreach ($translations as $attribute => $value) {
             $this->set($attribute, $value, $locale);

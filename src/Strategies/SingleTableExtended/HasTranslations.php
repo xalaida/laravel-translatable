@@ -12,6 +12,7 @@ use Nevadskiy\Translatable\Scopes\TranslationsEagerLoadingScope;
 use Nevadskiy\Translatable\Strategies\InteractsWithTranslator;
 use Nevadskiy\Translatable\Strategies\SingleTable\Models\Translation;
 use Nevadskiy\Translatable\Strategies\TranslatorStrategy;
+use function count;
 
 /**
  * @mixin Model
@@ -111,7 +112,7 @@ trait HasTranslations
     {
         $this->translator()->assertAttributeIsTranslatable($attribute);
 
-        if (is_null($locale)) {
+        if (null === $locale) {
             return $query->where(function (Builder $query) use ($attribute, $value, $operator) {
                 $query->where($attribute, $operator, $value)
                     ->orWhereHas('translations', function (Builder $query) use ($attribute, $value, $operator) {

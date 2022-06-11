@@ -12,6 +12,7 @@ use Nevadskiy\Translatable\Scopes\TranslationsEagerLoadingScope;
 use Nevadskiy\Translatable\Strategies\ExtraTable\Models\Translation;
 use Nevadskiy\Translatable\Strategies\InteractsWithTranslator;
 use Nevadskiy\Translatable\Strategies\TranslatorStrategy;
+use function count;
 
 /**
  * @mixin Model

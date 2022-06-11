@@ -25,7 +25,7 @@ class Translations implements IteratorAggregate
     /**
      * Make a new list of translations.
      */
-    public static function make(array $translations): Translations
+    public static function make(array $translations): self
     {
         return new static($translations);
     }

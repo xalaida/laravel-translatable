@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Nevadskiy\Translatable\Strategies\SingleTable\HasTranslations;
+use function is_array;
 
 /**
  * @property int id
