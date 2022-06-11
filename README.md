@@ -5,7 +5,7 @@
 [![License](https://poser.pugx.org/nevadskiy/laravel-translatable/license)](https://packagist.org/packages/nevadskiy/laravel-translatable)
 [![Latest Stable Version](https://poser.pugx.org/nevadskiy/laravel-translatable/v)](https://packagist.org/packages/nevadskiy/laravel-translatable)
 
-The package allows adding translations for your Eloquent models.
+The package allows adding translations to your Eloquent models.
 
 ## 🍬 Features
 
