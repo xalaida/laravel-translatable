@@ -19,8 +19,8 @@ class TranslationsObjectTest extends TestCase
             'uk' => 'Крила',
         ]);
 
-        self::assertEquals('Wings', $book->translator()->get('title', 'en'));
-        self::assertEquals('Крила', $book->translator()->get('title', 'uk'));
+        static::assertSame('Wings', $book->translator()->get('title', 'en'));
+        static::assertSame('Крила', $book->translator()->get('title', 'uk'));
     }
 }
 

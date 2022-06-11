@@ -58,7 +58,7 @@ class RouteModelBindingTest extends TestCase
         $response = $this->get('/books/лебедина-зграя');
 
         $response->assertOk();
-        self::assertEquals($book->getKey(), $response->content());
+        static::assertSame($book->getKey(), (int) $response->content());
     }
 
     /** @test */
@@ -78,7 +78,7 @@ class RouteModelBindingTest extends TestCase
         $response = $this->get('/books/Лебедина Зграя');
 
         $response->assertOk();
-        self::assertEquals($book->getKey(), $response->content());
+        static::assertSame($book->getKey(), (int) $response->content());
     }
 
     /** @test */
@@ -95,7 +95,7 @@ class RouteModelBindingTest extends TestCase
         $response = $this->get("/books/{$book->getKey()}");
 
         $response->assertOk();
-        self::assertEquals($book->getKey(), $response->content());
+        static::assertSame($book->getKey(), (int) $response->content());
     }
 
     /** @test */
@@ -116,7 +116,7 @@ class RouteModelBindingTest extends TestCase
         $response = $this->get('/books/swan-flock');
 
         $response->assertOk();
-        self::assertEquals($book->getKey(), $response->content());
+        static::assertSame($book->getKey(), (int) $response->content());
     }
 
     /** @test */
@@ -146,7 +146,7 @@ class RouteModelBindingTest extends TestCase
         $book->save();
 
         $this->app->setLocale('uk');
-        self::assertEquals('/books/'.rawurlencode('лебедина-зграя'), route('books.show', $book, false));
+        static::assertSame('/books/'.rawurlencode('лебедина-зграя'), route('books.show', $book, false));
     }
 
     /** @test */
@@ -160,7 +160,7 @@ class RouteModelBindingTest extends TestCase
 
         $book->translator()->add('slug', 'лебедина-зграя', 'uk');
 
-        self::assertEquals('/books/swan-flock', route('books.show', $book, false));
+        static::assertSame('/books/swan-flock', route('books.show', $book, false));
     }
 
     /**

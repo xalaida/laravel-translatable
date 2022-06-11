@@ -138,7 +138,7 @@ class SetterTranslationTest extends TestCase
 
         $this->app->setLocale('uk');
 
-        self::assertEquals('Ocean monsters', $book->title);
+        static::assertSame('Ocean monsters', $book->title);
 
         $book->save();
 
@@ -185,13 +185,13 @@ class SetterTranslationTest extends TestCase
         $book->save();
 
         $this->app->setLocale('uk');
-        self::assertEquals('Монстри океану', $book->title);
+        static::assertSame('Монстри океану', $book->title);
 
         $this->app->setLocale('pl');
-        self::assertEquals('Morskie potwory', $book->title);
+        static::assertSame('Morskie potwory', $book->title);
 
         $this->app->setLocale($originalLocale);
-        self::assertEquals('Ocean monsters', $book->title);
+        static::assertSame('Ocean monsters', $book->title);
     }
 
     /** @test */
@@ -204,7 +204,7 @@ class SetterTranslationTest extends TestCase
         $book->title = 'Ocean monsters';
         $book->save();
 
-        self::assertEquals('Ocean monsters', $book->title);
+        static::assertSame('Ocean monsters', $book->title);
         $this->assertDatabaseHas('books', ['title' => 'Ocean monsters']);
         $this->assertDatabaseCount('book_translations', 0);
     }
@@ -223,7 +223,7 @@ class SetterTranslationTest extends TestCase
 
         $book = $book->fresh();
 
-        self::assertEquals(3, $book->size);
+        static::assertSame(3, $book->size);
         $this->assertDatabaseHas('books', [
             'title' => 'Ocean monsters',
             'size' => 3,
@@ -245,7 +245,7 @@ class SetterTranslationTest extends TestCase
 
         $book = $book->fresh();
 
-        self::assertNull($book->title);
+        static::assertNull($book->title);
         $this->assertDatabaseCount('book_translations', 1);
         $this->assertDatabaseHas('book_translations', [
             'title' => null,
@@ -278,6 +278,10 @@ class BookWithSetters extends Model
     protected $translatable = [
         'title',
         'description',
+    ];
+
+    protected $casts = [
+        'size' => 'int'
     ];
 
     protected function getEntityTranslationTable(): string

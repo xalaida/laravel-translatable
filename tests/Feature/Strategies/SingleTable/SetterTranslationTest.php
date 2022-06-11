@@ -138,7 +138,7 @@ class SetterTranslationTest extends TestCase
 
         $this->app->setLocale('uk');
 
-        self::assertEquals('Ocean monsters', $book->title);
+        static::assertSame('Ocean monsters', $book->title);
         $book->save();
 
         $this->assertDatabaseMissing('translations', ['locale' => 'uk']);
@@ -195,13 +195,13 @@ class SetterTranslationTest extends TestCase
         $book->save();
 
         $this->app->setLocale('uk');
-        self::assertEquals('Монстри океану', $book->title);
+        static::assertSame('Монстри океану', $book->title);
 
         $this->app->setLocale('pl');
-        self::assertEquals('Morskie potwory', $book->title);
+        static::assertSame('Morskie potwory', $book->title);
 
         $this->app->setLocale($originalLocale);
-        self::assertEquals('Ocean monsters', $book->title);
+        static::assertSame('Ocean monsters', $book->title);
     }
 
     /** @test */
@@ -214,7 +214,7 @@ class SetterTranslationTest extends TestCase
         $book->title = 'Ocean monsters';
         $book->save();
 
-        self::assertEquals('Ocean monsters', $book->title);
+        static::assertSame('Ocean monsters', $book->title);
         $this->assertDatabaseCount('translations', 1);
         $this->assertDatabaseHas('translations', [
             'locale' => $this->app->getFallbackLocale(),
@@ -236,7 +236,7 @@ class SetterTranslationTest extends TestCase
 
         $book = $book->fresh();
 
-        self::assertEquals(3, $book->size);
+        static::assertSame(3, $book->size);
         $this->assertDatabaseCount('translations', 1);
         $this->assertDatabaseMissing('translations', ['translatable_attribute' => 'size']);
     }
@@ -255,7 +255,7 @@ class SetterTranslationTest extends TestCase
 
         $book = $book->fresh();
 
-        self::assertNull($book->title);
+        static::assertNull($book->title);
         $this->assertDatabaseCount('translations', 2);
         $this->assertDatabaseHas('translations', [
             'translatable_attribute' => 'title',
@@ -288,5 +288,9 @@ class BookWithSetters extends Model
     protected $translatable = [
         'title',
         'description',
+    ];
+
+    protected $casts = [
+        'size' => 'int'
     ];
 }

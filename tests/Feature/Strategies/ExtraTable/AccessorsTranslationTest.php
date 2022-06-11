@@ -47,7 +47,7 @@ class AccessorsTranslationTest extends TestCase
         $book->translator()->set('title', 'Лісова пісня', 'uk');
         $book->save();
 
-        self::assertEquals('Лісова пісня.', $book->translator()->get('title', 'uk'));
+        static::assertSame('Лісова пісня.', $book->translator()->get('title', 'uk'));
     }
 
     /** @test */
@@ -59,7 +59,7 @@ class AccessorsTranslationTest extends TestCase
         $book->save();
 
         $this->app->setLocale('uk');
-        self::assertEquals('Лісова пісня.', $book->title);
+        static::assertSame('Лісова пісня.', $book->title);
     }
 
     /** @test */
@@ -70,7 +70,7 @@ class AccessorsTranslationTest extends TestCase
         $book->save();
 
         $this->app->setLocale('uk');
-        self::assertEquals('Forest song.', $book->title);
+        static::assertSame('Forest song.', $book->title);
     }
 
     /** @test */
@@ -80,7 +80,7 @@ class AccessorsTranslationTest extends TestCase
         $book->translator()->set('title', 'Forest song', 'en');
         $book->save();
 
-        self::assertEquals('Forest song.', $book->translator()->get('title', 'uk'));
+        static::assertSame('Forest song.', $book->translator()->get('title', 'uk'));
     }
 
     /** @test */
@@ -91,10 +91,10 @@ class AccessorsTranslationTest extends TestCase
         $book->save();
 
         $book->translator()->add('title', 'Лісова пісня', 'uk');
-        self::assertEquals('Лісова пісня.', $book->translator()->get('title', 'uk'));
+        static::assertSame('Лісова пісня.', $book->translator()->get('title', 'uk'));
         $book->save();
 
-        self::assertEquals('Forest song', $book->translator()->getRawOrFail('title'));
+        static::assertSame('Forest song', $book->translator()->getRawOrFail('title'));
     }
 
     /** @test */
@@ -106,10 +106,10 @@ class AccessorsTranslationTest extends TestCase
         $book->save();
 
         $this->app->setLocale('uk');
-        self::assertEquals('Лісова пісня.', $book->title);
+        static::assertSame('Лісова пісня.', $book->title);
         $book->save();
 
-        self::assertEquals('Лісова пісня', $book->fresh()->translator()->getRawOrFail('title', 'uk'));
+        static::assertSame('Лісова пісня', $book->fresh()->translator()->getRawOrFail('title', 'uk'));
     }
 
     /** @test */
@@ -123,7 +123,7 @@ class AccessorsTranslationTest extends TestCase
         $book->save();
 
         $this->app->setLocale('uk');
-        self::assertEquals('Пре...', $book->description_short);
+        static::assertSame('Пре...', $book->description_short);
     }
 
     /** @test */
@@ -133,7 +133,7 @@ class AccessorsTranslationTest extends TestCase
         $book->title = 'Forest song';
         $book->save();
 
-        self::assertEquals('Forest song.', $book->translator()->get('title'));
+        static::assertSame('Forest song.', $book->translator()->get('title'));
     }
 
     /** @test */
@@ -144,7 +144,7 @@ class AccessorsTranslationTest extends TestCase
         $book->description = null;
         $book->save();
 
-        self::assertEquals(null, $book->description_short);
+        static::assertNull($book->description_short);
     }
 
     /**

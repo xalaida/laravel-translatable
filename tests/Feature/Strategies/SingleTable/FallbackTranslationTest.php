@@ -40,7 +40,7 @@ class FallbackTranslationTest extends TestCase
 
         $this->app->setLocale('uk');
 
-        self::assertEquals('Sense gallery', $book->translator()->getFallback('title'));
+        static::assertSame('Sense gallery', $book->translator()->getFallback('title'));
     }
 
     /** @test */
@@ -52,7 +52,7 @@ class FallbackTranslationTest extends TestCase
 
         $this->app->setLocale('uk');
 
-        self::assertEquals('Sense gallery', $book->translator()->get('title', 'uk'));
+        static::assertSame('Sense gallery', $book->translator()->get('title', 'uk'));
     }
 
     /** @test */
@@ -62,7 +62,7 @@ class FallbackTranslationTest extends TestCase
         $book->translator()->set('title', 'Sense gallery', $this->app->getFallbackLocale());
         $book->save();
 
-        self::assertEquals('Невідома книга', $book->translator()->getOr('title', 'uk', 'Невідома книга'));
+        static::assertSame('Невідома книга', $book->translator()->getOr('title', 'uk', 'Невідома книга'));
     }
 
     /** @test */
@@ -72,7 +72,7 @@ class FallbackTranslationTest extends TestCase
         $book->translator()->set('title', 'Sense gallery', $this->app->getFallbackLocale());
         $book->save();
 
-        self::assertEquals('Невідома книга', $book->translator()->getOr('title', 'uk', function () {
+        static::assertSame('Невідома книга', $book->translator()->getOr('title', 'uk', function () {
             return 'Невідома книга';
         }));
     }
@@ -84,7 +84,7 @@ class FallbackTranslationTest extends TestCase
         $book->translator()->set('title', 'Sense gallery', $this->app->getFallbackLocale());
         $book->save();
 
-        self::assertNull($book->translator()->getOr('title', 'uk'));
+        static::assertNull($book->translator()->getOr('title', 'uk'));
     }
 
     /** @test */
@@ -96,7 +96,7 @@ class FallbackTranslationTest extends TestCase
 
         $book->translator()->add('title', 'Large encyclopedia of animals', $this->app->getFallbackLocale());
 
-        self::assertEquals('Large encyclopedia of animals', $book->title);
+        static::assertSame('Large encyclopedia of animals', $book->title);
         $this->assertDatabaseCount('translations', 1);
         $this->assertDatabaseHas('translations', [
             'value' => 'Large encyclopedia of animals',
@@ -113,7 +113,7 @@ class FallbackTranslationTest extends TestCase
         $book->save();
 
         $this->app->setLocale('uk');
-        self::assertEquals('Sense gallery', $book->translator()->getFallback('title'));
+        static::assertSame('Sense gallery', $book->translator()->getFallback('title'));
     }
 
     /** @test */

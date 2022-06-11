@@ -60,7 +60,7 @@ class CreateTranslatableModelTest extends TestCase
 
         try {
             $book->save();
-            $this->fail("Model was created without fallback translation values.");
+            static::fail("Model was created without fallback translation values.");
         } catch (Exception $e) {
             $this->assertDatabaseCount('books', 0);
             $this->assertDatabaseCount('translations', 0);
@@ -77,7 +77,7 @@ class CreateTranslatableModelTest extends TestCase
 
         try {
             $book->save();
-            $this->fail("Model was created without fallback translation values.");
+            static::fail("Model was created without fallback translation values.");
         } catch (Exception $e) {
             $this->assertDatabaseCount('books', 0);
             $this->assertDatabaseCount('translations', 0);
@@ -107,7 +107,7 @@ class CreateTranslatableModelTest extends TestCase
 
         $book->save();
 
-        self::assertEmpty($this->app[ConnectionInterface::class]->getQueryLog());
+        static::assertEmpty($this->app[ConnectionInterface::class]->getQueryLog());
     }
 
     /**

@@ -53,14 +53,14 @@ class WithTranslationsScopeTest extends TestCase
             ->withTranslations()
             ->get();
 
-        self::assertTrue($record->relationLoaded('translations'));
-        self::assertCount(3, $record->translations);
-        self::assertEquals('The last prophet', $record->translations[0]->title);
-        self::assertEquals('en', $record->translations[0]->locale);
-        self::assertEquals('Останній пророк', $record->translations[1]->title);
-        self::assertEquals('uk', $record->translations[1]->locale);
-        self::assertEquals('Ostatni prorok', $record->translations[2]->title);
-        self::assertEquals('pl', $record->translations[2]->locale);
+        static::assertTrue($record->relationLoaded('translations'));
+        static::assertCount(3, $record->translations);
+        static::assertSame('The last prophet', $record->translations[0]->title);
+        static::assertSame('en', $record->translations[0]->locale);
+        static::assertSame('Останній пророк', $record->translations[1]->title);
+        static::assertSame('uk', $record->translations[1]->locale);
+        static::assertSame('Ostatni prorok', $record->translations[2]->title);
+        static::assertSame('pl', $record->translations[2]->locale);
     }
 
     /** @test */
@@ -76,14 +76,14 @@ class WithTranslationsScopeTest extends TestCase
             ->withTranslations(['*'])
             ->get();
 
-        self::assertTrue($record->relationLoaded('translations'));
-        self::assertCount(3, $record->translations);
-        self::assertEquals('The last prophet', $record->translations[0]->title);
-        self::assertEquals('en', $record->translations[0]->locale);
-        self::assertEquals('Останній пророк', $record->translations[1]->title);
-        self::assertEquals('uk', $record->translations[1]->locale);
-        self::assertEquals('Ostatni prorok', $record->translations[2]->title);
-        self::assertEquals('pl', $record->translations[2]->locale);
+        static::assertTrue($record->relationLoaded('translations'));
+        static::assertCount(3, $record->translations);
+        static::assertSame('The last prophet', $record->translations[0]->title);
+        static::assertSame('en', $record->translations[0]->locale);
+        static::assertSame('Останній пророк', $record->translations[1]->title);
+        static::assertSame('uk', $record->translations[1]->locale);
+        static::assertSame('Ostatni prorok', $record->translations[2]->title);
+        static::assertSame('pl', $record->translations[2]->locale);
     }
 
     /** @test */
@@ -99,12 +99,12 @@ class WithTranslationsScopeTest extends TestCase
             ->withTranslations(['uk', 'pl'])
             ->get();
 
-        self::assertTrue($record->relationLoaded('translations'));
-        self::assertCount(2, $record->translations);
-        self::assertEquals('Останній пророк', $record->translations[0]->title);
-        self::assertEquals('uk', $record->translations[0]->locale);
-        self::assertEquals('Ostatni prorok', $record->translations[1]->title);
-        self::assertEquals('pl', $record->translations[1]->locale);
+        static::assertTrue($record->relationLoaded('translations'));
+        static::assertCount(2, $record->translations);
+        static::assertSame('Останній пророк', $record->translations[0]->title);
+        static::assertSame('uk', $record->translations[0]->locale);
+        static::assertSame('Ostatni prorok', $record->translations[1]->title);
+        static::assertSame('pl', $record->translations[1]->locale);
     }
 
     /**

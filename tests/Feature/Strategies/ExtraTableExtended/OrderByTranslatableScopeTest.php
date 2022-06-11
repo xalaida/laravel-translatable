@@ -58,8 +58,8 @@ class OrderByTranslatableScopeTest extends TestCase
             ->orderByTranslatable('title')
             ->get();
 
-        self::assertTrue($records[0]->is($book2));
-        self::assertTrue($records[1]->is($book1));
+        static::assertTrue($records[0]->is($book2));
+        static::assertTrue($records[1]->is($book1));
     }
 
     /** @test */
@@ -83,8 +83,8 @@ class OrderByTranslatableScopeTest extends TestCase
             ->orderByTranslatable('title', 'desc')
             ->get();
 
-        self::assertTrue($records[0]->is($book1));
-        self::assertTrue($records[1]->is($book2));
+        static::assertTrue($records[0]->is($book1));
+        static::assertTrue($records[1]->is($book2));
     }
 
     /** @test */
@@ -106,8 +106,8 @@ class OrderByTranslatableScopeTest extends TestCase
             ->orderByTranslatable('title', 'asc', 'uk')
             ->get();
 
-        self::assertTrue($records[0]->is($book2));
-        self::assertTrue($records[1]->is($book1));
+        static::assertTrue($records[0]->is($book2));
+        static::assertTrue($records[1]->is($book1));
     }
 
     /** @test */
@@ -125,8 +125,8 @@ class OrderByTranslatableScopeTest extends TestCase
             ->orderByTranslatable('title', 'asc', 'en')
             ->get();
 
-        self::assertTrue($records[0]->is($book2));
-        self::assertTrue($records[1]->is($book1));
+        static::assertTrue($records[0]->is($book2));
+        static::assertTrue($records[1]->is($book1));
     }
 
     /** @test */
@@ -144,8 +144,8 @@ class OrderByTranslatableScopeTest extends TestCase
             ->orderByTranslatable('title', 'desc')
             ->get();
 
-        self::assertTrue($records[0]->is($book));
-        self::assertEquals('Fallback', $records[0]->locale);
+        static::assertTrue($records[0]->is($book));
+        static::assertSame('Fallback', $records[0]->locale);
     }
 
     /** @test */
@@ -168,10 +168,10 @@ class OrderByTranslatableScopeTest extends TestCase
             ->orderByTranslatable('title')
             ->get();
 
-        self::assertTrue($records[0]->is($book2));
-        self::assertTrue($records[1]->is($book1));
-        self::assertFalse(isset($records[0]->locale));
-        self::assertFalse(isset($records[0]->created_at));
+        static::assertTrue($records[0]->is($book2));
+        static::assertTrue($records[1]->is($book1));
+        static::assertFalse(isset($records[0]->locale));
+        static::assertFalse(isset($records[0]->created_at));
     }
 
     /**

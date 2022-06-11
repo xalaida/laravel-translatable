@@ -50,8 +50,8 @@ class LazyLoadingTranslationsTest extends TestCase
         $this->app->setLocale('uk');
         [$book] = BookForLazyLoading::all();
 
-        self::assertEquals('Атлас тварин', $book->translator()->get('title', 'uk'));
-        self::assertEquals('Atlas zwierząt', $book->translator()->get('title', 'pl'));
+        static::assertSame('Атлас тварин', $book->translator()->get('title', 'uk'));
+        static::assertSame('Atlas zwierząt', $book->translator()->get('title', 'pl'));
     }
 
     /** @test */
@@ -66,10 +66,10 @@ class LazyLoadingTranslationsTest extends TestCase
 
         $this->app[ConnectionInterface::class]->enableQueryLog();
 
-        self::assertEquals('Atlas of animals', $book->translator()->get('title', 'en'));
-        self::assertEquals('Атлас тварин', $book->translator()->get('title', 'uk'));
+        static::assertSame('Atlas of animals', $book->translator()->get('title', 'en'));
+        static::assertSame('Атлас тварин', $book->translator()->get('title', 'uk'));
 
-        self::assertCount(2, $this->app[ConnectionInterface::class]->getQueryLog());
+        static::assertCount(2, $this->app[ConnectionInterface::class]->getQueryLog());
     }
 
     /** @test */
@@ -87,11 +87,11 @@ class LazyLoadingTranslationsTest extends TestCase
 
         $this->app[ConnectionInterface::class]->enableQueryLog();
 
-        self::assertEquals('Atlas of animals', $book->translator()->get('title', 'en'));
-        self::assertEquals('Атлас тварин', $book->translator()->get('title', 'uk'));
-        self::assertEquals('Atlas zwierząt', $book->translator()->get('title', 'pl'));
+        static::assertSame('Atlas of animals', $book->translator()->get('title', 'en'));
+        static::assertSame('Атлас тварин', $book->translator()->get('title', 'uk'));
+        static::assertSame('Atlas zwierząt', $book->translator()->get('title', 'pl'));
 
-        self::assertCount(3, $this->app[ConnectionInterface::class]->getQueryLog());
+        static::assertCount(3, $this->app[ConnectionInterface::class]->getQueryLog());
     }
 
     /** @test */
@@ -106,11 +106,11 @@ class LazyLoadingTranslationsTest extends TestCase
 
         $this->app[ConnectionInterface::class]->enableQueryLog();
 
-        self::assertEquals('Atlas of animals', $book->translator()->get('title', 'pl'));
-        self::assertEquals('Atlas of animals', $book->translator()->get('title', 'pl'));
-        self::assertEquals('Atlas of animals', $book->translator()->get('title', 'pl'));
+        static::assertSame('Atlas of animals', $book->translator()->get('title', 'pl'));
+        static::assertSame('Atlas of animals', $book->translator()->get('title', 'pl'));
+        static::assertSame('Atlas of animals', $book->translator()->get('title', 'pl'));
 
-        self::assertCount(2, $this->app[ConnectionInterface::class]->getQueryLog());
+        static::assertCount(2, $this->app[ConnectionInterface::class]->getQueryLog());
     }
 
     /** @test */
@@ -127,7 +127,7 @@ class LazyLoadingTranslationsTest extends TestCase
         $book->translator()->get('title', 'uk');
         $book->translator()->get('title', 'uk');
 
-        self::assertEmpty($this->app[ConnectionInterface::class]->getQueryLog());
+        static::assertEmpty($this->app[ConnectionInterface::class]->getQueryLog());
     }
 
     /** @test */
@@ -140,11 +140,11 @@ class LazyLoadingTranslationsTest extends TestCase
 
         $book = $book->fresh();
 
-        self::assertEquals('Атлас тварин', $book->translator()->get('title', 'uk'));
+        static::assertSame('Атлас тварин', $book->translator()->get('title', 'uk'));
 
         $book->translator()->set('title', 'Галерея чуття', 'uk');
 
-        self::assertEquals('Галерея чуття', $book->translator()->get('title', 'uk'));
+        static::assertSame('Галерея чуття', $book->translator()->get('title', 'uk'));
     }
 
     /**

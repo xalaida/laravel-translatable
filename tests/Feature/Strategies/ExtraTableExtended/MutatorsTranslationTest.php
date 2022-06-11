@@ -65,7 +65,7 @@ class MutatorsTranslationTest extends TestCase
         $this->app->setLocale('uk');
         $book->title = 'Постріл на сходах';
 
-        self::assertEquals('Постріл на сходах.', $book->title);
+        static::assertSame('Постріл на сходах.', $book->title);
     }
 
     /** @test */
@@ -76,7 +76,7 @@ class MutatorsTranslationTest extends TestCase
         $book->description = 'Detective of the 20s';
         $book->save();
 
-        self::assertEquals('Detective...', $book->description);
+        static::assertSame('Detective...', $book->description);
     }
 
     /** @test */
@@ -86,7 +86,7 @@ class MutatorsTranslationTest extends TestCase
         $book->title = 'Forest song';
         $book->save();
 
-        self::assertEquals('Forest song.', $book->title);
+        static::assertSame('Forest song.', $book->title);
     }
 
     /**

@@ -46,8 +46,8 @@ class SetterTranslationTest extends TestCase
 
         $book = $book->fresh();
 
-        self::assertEquals('Монстри океану', $book->translator()->get('title', 'uk'));
-        self::assertEquals('Ocean monsters', $book->getOriginalAttribute('title'));
+        static::assertSame('Монстри океану', $book->translator()->get('title', 'uk'));
+        static::assertSame('Ocean monsters', $book->getOriginalAttribute('title'));
         $this->assertDatabaseCount('translations', 1);
     }
 
@@ -64,8 +64,8 @@ class SetterTranslationTest extends TestCase
 
         $book = $book->fresh();
 
-        self::assertEquals('Монстри океану', $book->translator()->get('title', 'uk'));
-        self::assertEquals('Ocean monsters', $book->getOriginalAttribute('title'));
+        static::assertSame('Монстри океану', $book->translator()->get('title', 'uk'));
+        static::assertSame('Ocean monsters', $book->getOriginalAttribute('title'));
         $this->assertDatabaseCount('translations', 1);
     }
 
@@ -82,8 +82,8 @@ class SetterTranslationTest extends TestCase
 
         $book = $book->fresh();
 
-        self::assertEquals('Ocean monsters', $book->translator()->get('title', 'uk'));
-        self::assertEquals('Ocean monsters', $book->title);
+        static::assertSame('Ocean monsters', $book->translator()->get('title', 'uk'));
+        static::assertSame('Ocean monsters', $book->title);
         $this->assertDatabaseCount('translations', 0);
     }
 
@@ -101,8 +101,8 @@ class SetterTranslationTest extends TestCase
         $book->title = 'Монстри океану';
         $book->save();
 
-        self::assertEquals('Монстри океану', $book->translator()->get('title'));
-        self::assertEquals('Ocean monsters', $book->getOriginalAttribute('title'));
+        static::assertSame('Монстри океану', $book->translator()->get('title'));
+        static::assertSame('Ocean monsters', $book->getOriginalAttribute('title'));
         $this->assertDatabaseCount('translations', 1);
     }
 
@@ -115,7 +115,7 @@ class SetterTranslationTest extends TestCase
 
         $this->app->setLocale('uk');
 
-        self::assertEquals('Ocean monsters', $book->title);
+        static::assertSame('Ocean monsters', $book->title);
 
         $book->save();
 
@@ -139,9 +139,9 @@ class SetterTranslationTest extends TestCase
 
         $book = $book->fresh();
 
-        self::assertEquals('Монстри океану', $book->title);
-        self::assertEquals('Занурся та розглянь ближче неймовірних морських істот, створених природою!', $book->description);
-        self::assertEquals(25, $book->size);
+        static::assertSame('Монстри океану', $book->title);
+        static::assertSame('Занурся та розглянь ближче неймовірних морських істот, створених природою!', $book->description);
+        static::assertSame(25, $book->size);
 
         $this->assertDatabaseCount('translations', 2);
     }
@@ -159,13 +159,13 @@ class SetterTranslationTest extends TestCase
         $book->translator()->set('title', 'Morskie potwory', 'pl');
 
         $this->app->setLocale('uk');
-        self::assertEquals('Монстри океану', $book->title);
+        static::assertSame('Монстри океану', $book->title);
 
         $this->app->setLocale('pl');
-        self::assertEquals('Morskie potwory', $book->title);
+        static::assertSame('Morskie potwory', $book->title);
 
         $this->app->setLocale($originalLocale);
-        self::assertEquals('Ocean monsters', $book->title);
+        static::assertSame('Ocean monsters', $book->title);
     }
 
     /** @test */
@@ -180,7 +180,7 @@ class SetterTranslationTest extends TestCase
         $book->title = 'Ocean monsters';
         $book->save();
 
-        self::assertEquals('Ocean monsters', $book->title);
+        static::assertSame('Ocean monsters', $book->title);
         $this->assertDatabaseCount('translations', 0);
     }
 
@@ -198,7 +198,7 @@ class SetterTranslationTest extends TestCase
 
         $book = $book->fresh();
 
-        self::assertEquals(3, $book->size);
+        static::assertSame(3, $book->size);
         $this->assertDatabaseCount('translations', 0);
     }
 
@@ -216,7 +216,7 @@ class SetterTranslationTest extends TestCase
 
         $book = $book->fresh();
 
-        self::assertNull($book->title);
+        static::assertNull($book->title);
         $this->assertDatabaseCount('translations', 1);
     }
 
@@ -244,5 +244,9 @@ class BookWithSetters extends Model
     protected $translatable = [
         'title',
         'description',
+    ];
+
+    protected $casts = [
+        'size' => 'int'
     ];
 }

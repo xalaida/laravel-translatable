@@ -37,7 +37,7 @@ class DisableFallbackTranslationTest extends TestCase
         $book->translator()->set('title', 'Sense gallery', $this->app->getFallbackLocale());
         $book->save();
 
-        self::assertNull($book->translator()->get('title', 'uk'));
+        static::assertNull($book->translator()->get('title', 'uk'));
     }
 
     /** @test */
@@ -48,7 +48,7 @@ class DisableFallbackTranslationTest extends TestCase
         $book->save();
 
         $this->app->setLocale('uk');
-        self::assertNull($book->title);
+        static::assertNull($book->title);
     }
 
     /** @test */
@@ -59,7 +59,7 @@ class DisableFallbackTranslationTest extends TestCase
         $book->translator()->set('title', 'Галерея чуття', 'uk');
         $book->save();
 
-        self::assertEquals('Галерея чуття', $book->translator()->get('title', 'uk'));
+        static::assertSame('Галерея чуття', $book->translator()->get('title', 'uk'));
     }
 
     /** @test */
@@ -71,7 +71,7 @@ class DisableFallbackTranslationTest extends TestCase
         $book->save();
 
         $this->app->setLocale('uk');
-        self::assertEquals('Sense gallery', $book->translator()->getFallback('title'));
+        static::assertSame('Sense gallery', $book->translator()->getFallback('title'));
     }
 
     /** @test */
@@ -98,9 +98,9 @@ class DisableFallbackTranslationTest extends TestCase
         $this->app->setLocale('uk');
         [$book] = BookWithDisabledFallback::all();
 
-        self::assertTrue($book->relationLoaded('translations'));
-        self::assertCount(1, $book->translations);
-        self::assertEquals('uk', $book->translations[0]->locale);
+        static::assertTrue($book->relationLoaded('translations'));
+        static::assertCount(1, $book->translations);
+        static::assertSame('uk', $book->translations[0]->locale);
     }
 
     /**

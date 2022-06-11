@@ -40,7 +40,7 @@ class CustomFallbackLocaleTest extends TestCase
         $book->save();
 
         $this->app->setLocale('uk');
-        self::assertEquals('Галерея чуття', $book->translator()->get('title', 'pl'));
+        static::assertSame('Галерея чуття', $book->translator()->get('title', 'pl'));
     }
 
     /** @test */
@@ -51,7 +51,7 @@ class CustomFallbackLocaleTest extends TestCase
         $book->translator()->set('title', 'Sense Gallery', $this->app->getFallbackLocale());
         $book->save();
 
-        self::assertEquals('Галерея чуття', $book->translator()->getFallback('title'));
+        static::assertSame('Галерея чуття', $book->translator()->getFallback('title'));
     }
 
     /** @test */
@@ -79,9 +79,9 @@ class CustomFallbackLocaleTest extends TestCase
         $this->app->setLocale('pl');
         [$book] = BookWithCustomFallback::all();
 
-        self::assertTrue($book->relationLoaded('translations'));
-        self::assertCount(1, $book->translations);
-        self::assertEquals('pl', $book->translations[0]->locale);
+        static::assertTrue($book->relationLoaded('translations'));
+        static::assertCount(1, $book->translations);
+        static::assertSame('pl', $book->translations[0]->locale);
     }
 
     /** @test */
@@ -96,7 +96,7 @@ class CustomFallbackLocaleTest extends TestCase
         $this->app->setLocale('uk');
         [$book] = BookWithCustomFallback::all();
 
-        self::assertFalse($book->relationLoaded('translations'));
+        static::assertFalse($book->relationLoaded('translations'));
     }
 
     /**

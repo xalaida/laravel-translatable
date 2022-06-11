@@ -41,7 +41,7 @@ class GetterTranslationTest extends TestCase
         $book->save();
 
         $this->app->setLocale('uk');
-        self::assertEquals('Ведмежа книга', $book->title);
+        static::assertSame('Ведмежа книга', $book->title);
     }
 
     /** @test */
@@ -52,7 +52,7 @@ class GetterTranslationTest extends TestCase
         $book->save();
 
         $this->app->setLocale('uk');
-        self::assertEquals('The Bear Book', $book->title);
+        static::assertSame('The Bear Book', $book->title);
     }
 
     /** @test */
@@ -63,7 +63,7 @@ class GetterTranslationTest extends TestCase
         $book->translator()->set('title', 'Ведмежа книга', 'uk');
         $book->save();
 
-        self::assertEquals('The Bear Book', $book->title);
+        static::assertSame('The Bear Book', $book->title);
     }
 
     /** @test */
@@ -74,7 +74,7 @@ class GetterTranslationTest extends TestCase
         $book->size = 25;
         $book->save();
 
-        self::assertEquals(25, $book->size);
+        static::assertSame(25, $book->size);
     }
 
     /** @test */
@@ -86,13 +86,13 @@ class GetterTranslationTest extends TestCase
         $book->save();
 
         $this->app->setLocale('uk');
-        self::assertEquals('Ведмежа книга', $book->title);
+        static::assertSame('Ведмежа книга', $book->title);
 
         $this->app[ConnectionInterface::class]->enableQueryLog();
 
         $book->save();
 
-        self::assertEmpty($this->app[ConnectionInterface::class]->getQueryLog());
+        static::assertEmpty($this->app[ConnectionInterface::class]->getQueryLog());
     }
 
     /**

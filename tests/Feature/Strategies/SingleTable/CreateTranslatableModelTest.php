@@ -104,7 +104,7 @@ class CreateTranslatableModelTest extends TestCase
 
         $book->save();
 
-        self::assertEmpty($this->app[ConnectionInterface::class]->getQueryLog());
+        static::assertEmpty($this->app[ConnectionInterface::class]->getQueryLog());
     }
 
     /**

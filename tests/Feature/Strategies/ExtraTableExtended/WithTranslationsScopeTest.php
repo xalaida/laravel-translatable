@@ -51,14 +51,14 @@ class WithTranslationsScopeTest extends TestCase
             ->withTranslations()
             ->get();
 
-        self::assertTrue($record->relationLoaded('translations'));
-        self::assertCount(2, $record->translations);
+        static::assertTrue($record->relationLoaded('translations'));
+        static::assertCount(2, $record->translations);
 
-        self::assertEquals('Тіні забутих предків', $record->translations[0]->title);
-        self::assertEquals('uk', $record->translations[0]->locale);
+        static::assertSame('Тіні забутих предків', $record->translations[0]->title);
+        static::assertSame('uk', $record->translations[0]->locale);
 
-        self::assertEquals('Cienie zapomnianych przodków', $record->translations[1]->title);
-        self::assertEquals('pl', $record->translations[1]->locale);
+        static::assertSame('Cienie zapomnianych przodków', $record->translations[1]->title);
+        static::assertSame('pl', $record->translations[1]->locale);
     }
 
     /** @test */
@@ -74,14 +74,14 @@ class WithTranslationsScopeTest extends TestCase
             ->withTranslations(['*'])
             ->get();
 
-        self::assertTrue($record->relationLoaded('translations'));
-        self::assertCount(2, $record->translations);
+        static::assertTrue($record->relationLoaded('translations'));
+        static::assertCount(2, $record->translations);
 
-        self::assertEquals('Тіні забутих предків', $record->translations[0]->title);
-        self::assertEquals('uk', $record->translations[0]->locale);
+        static::assertSame('Тіні забутих предків', $record->translations[0]->title);
+        static::assertSame('uk', $record->translations[0]->locale);
 
-        self::assertEquals('Cienie zapomnianych przodków', $record->translations[1]->title);
-        self::assertEquals('pl', $record->translations[1]->locale);
+        static::assertSame('Cienie zapomnianych przodków', $record->translations[1]->title);
+        static::assertSame('pl', $record->translations[1]->locale);
     }
 
     /** @test */
@@ -98,14 +98,14 @@ class WithTranslationsScopeTest extends TestCase
             ->withTranslations(['uk', 'pl'])
             ->get();
 
-        self::assertTrue($record->relationLoaded('translations'));
-        self::assertCount(2, $record->translations);
+        static::assertTrue($record->relationLoaded('translations'));
+        static::assertCount(2, $record->translations);
 
-        self::assertEquals('Тіні забутих предків', $record->translations[0]->title);
-        self::assertEquals('uk', $record->translations[0]->locale);
+        static::assertSame('Тіні забутих предків', $record->translations[0]->title);
+        static::assertSame('uk', $record->translations[0]->locale);
 
-        self::assertEquals('Cienie zapomnianych przodków', $record->translations[1]->title);
-        self::assertEquals('pl', $record->translations[1]->locale);
+        static::assertSame('Cienie zapomnianych przodków', $record->translations[1]->title);
+        static::assertSame('pl', $record->translations[1]->locale);
     }
 
     /**

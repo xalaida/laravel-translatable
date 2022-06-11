@@ -49,7 +49,7 @@ class SingleTableExtendedStrategyTest extends TestCase
 
         $book->translator()->add('title', 'Моя перша книга', 'uk');
 
-        self::assertEquals('Моя перша книга', $book->translator()->get('title', 'uk'));
+        static::assertSame('Моя перша книга', $book->translator()->get('title', 'uk'));
     }
 
     /** @test */
@@ -62,7 +62,7 @@ class SingleTableExtendedStrategyTest extends TestCase
         $book->translator()->add('title', 'Дивовижні птахи', 'uk');
         $book->translator()->add('title', 'Niesamowite ptaki', 'pl');
 
-        self::assertEquals('Niesamowite ptaki', $book->translator()->get('title', 'pl'));
+        static::assertSame('Niesamowite ptaki', $book->translator()->get('title', 'pl'));
     }
 
     /** @test */
@@ -75,7 +75,7 @@ class SingleTableExtendedStrategyTest extends TestCase
         $book->translator()->add('title', 'Дивовижні птахи', 'uk');
         $book->translator()->add('description', 'Як упізнати птаха? Чому він співає?', 'uk');
 
-        self::assertEquals('Дивовижні птахи', $book->translator()->get('title', 'uk'));
+        static::assertSame('Дивовижні птахи', $book->translator()->get('title', 'uk'));
     }
 
     /** @test */
@@ -87,7 +87,7 @@ class SingleTableExtendedStrategyTest extends TestCase
 
         $book->translator()->add('title', 'Книга про пінгвінів', 'uk');
 
-        self::assertEquals('Book about penguins', $book->translator()->get('title', 'en'));
+        static::assertSame('Book about penguins', $book->translator()->get('title', 'en'));
     }
 
     /** @test */
@@ -99,8 +99,8 @@ class SingleTableExtendedStrategyTest extends TestCase
 
         $book->translator()->add('title', 'Large encyclopedia of animals', 'en');
 
-        self::assertEquals('Large encyclopedia of animals', $book->title);
-        self::assertEmpty($book->translations);
+        static::assertSame('Large encyclopedia of animals', $book->title);
+        static::assertEmpty($book->translations);
     }
 
     /** @test */
@@ -136,7 +136,7 @@ class SingleTableExtendedStrategyTest extends TestCase
 
         try {
             $book->translator()->add('created_at', now()->setTimezone('Europe/Kiev'), 'uk');
-            self::fail('Exception was not thrown for not translatable attribute');
+            static::fail('Exception was not thrown for not translatable attribute');
         } catch (AttributeNotTranslatableException $e) {
             $this->assertDatabaseCount('translations', 0);
         }
@@ -149,7 +149,7 @@ class SingleTableExtendedStrategyTest extends TestCase
         $book->title = 'Atlas of animals';
         $book->save();
 
-        self::assertEquals('Atlas of animals', $book->translator()->get('title', 'uk'));
+        static::assertSame('Atlas of animals', $book->translator()->get('title', 'uk'));
     }
 
     /** @test */
@@ -161,7 +161,7 @@ class SingleTableExtendedStrategyTest extends TestCase
 
         $book->translator()->add('title', null, 'uk');
 
-        self::assertNull($book->translator()->get('title', 'uk'));
+        static::assertNull($book->translator()->get('title', 'uk'));
     }
 
     // TODO: probably move to strategy specific test.
@@ -196,9 +196,9 @@ class SingleTableExtendedStrategyTest extends TestCase
         $book->translator()->add('title', 'Вітер у вербах', 'uk');
         $book->translator()->add('title', 'Wiatr w wierzbach', 'pl');
 
-        self::assertEquals('Вітер у вербах', $book->translator()->get('title', 'uk'));
-        self::assertEquals('Wiatr w wierzbach', $book->translator()->get('title', 'pl'));
-        self::assertEquals('Wind in willows', $book->title);
+        static::assertSame('Вітер у вербах', $book->translator()->get('title', 'uk'));
+        static::assertSame('Wiatr w wierzbach', $book->translator()->get('title', 'pl'));
+        static::assertSame('Wind in willows', $book->title);
     }
 
     /** @test */
@@ -209,10 +209,10 @@ class SingleTableExtendedStrategyTest extends TestCase
         $book->save();
 
         $book->translator()->add('title', 'Світ навколо нас', 'uk');
-        self::assertEquals('Світ навколо нас', $book->translator()->get('title', 'uk'));
+        static::assertSame('Світ навколо нас', $book->translator()->get('title', 'uk'));
 
         $book->translator()->add('title', 'Світ навколо нас. Дикі тварини', 'uk');
-        self::assertEquals('Світ навколо нас. Дикі тварини', $book->translator()->get('title', 'uk'));
+        static::assertSame('Світ навколо нас. Дикі тварини', $book->translator()->get('title', 'uk'));
 
         $this->assertDatabaseCount('translations', 1);
     }
@@ -232,7 +232,7 @@ class SingleTableExtendedStrategyTest extends TestCase
 
         $book->save();
 
-        self::assertEmpty($this->app[ConnectionInterface::class]->getQueryLog());
+        static::assertEmpty($this->app[ConnectionInterface::class]->getQueryLog());
         $this->assertDatabaseCount('translations', 1);
     }
 
@@ -264,16 +264,16 @@ class SingleTableExtendedStrategyTest extends TestCase
 
         $translation = $book->translator()->get('title', 'en');
 
-        self::assertEmpty($this->app[ConnectionInterface::class]->getQueryLog());
-        self::assertEquals('Book about penguins', $translation);
+        static::assertEmpty($this->app[ConnectionInterface::class]->getQueryLog());
+        static::assertSame('Book about penguins', $translation);
     }
 
     /** @test */
     public function it_returns_translation_during_saving(): void
     {
         Book::saving(function (Book $book) {
-            self::assertEquals('The world around us', $book->translator()->get('title', 'en'));
-            self::assertEquals('Світ навколо нас', $book->translator()->get('title', 'uk'));
+            self::assertSame('The world around us', $book->translator()->get('title', 'en'));
+            self::assertSame('Світ навколо нас', $book->translator()->get('title', 'uk'));
         });
 
         $book = new Book();

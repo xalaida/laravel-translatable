@@ -53,8 +53,8 @@ class TranslationTest extends TestCase
             ->forLocale('uk')
             ->get();
 
-        self::assertCount(1, $translations);
-        self::assertTrue($translations->first()->is($translation1));
+        static::assertCount(1, $translations);
+        static::assertTrue($translations->first()->is($translation1));
     }
 
     /** @test */
@@ -88,9 +88,9 @@ class TranslationTest extends TestCase
             ->forLocale(['uk', 'pl'])
             ->get();
 
-        self::assertCount(2, $translations);
-        self::assertTrue($translations->contains($translation1));
-        self::assertTrue($translations->contains($translation3));
+        static::assertCount(2, $translations);
+        static::assertTrue($translations->contains($translation1));
+        static::assertTrue($translations->contains($translation3));
     }
 
     /** @test */
@@ -117,8 +117,8 @@ class TranslationTest extends TestCase
             ->forAttribute('title')
             ->get();
 
-        self::assertCount(1, $translations);
-        self::assertTrue($translations->first()->is($translation1));
+        static::assertCount(1, $translations);
+        static::assertTrue($translations->first()->is($translation1));
     }
 
     /**

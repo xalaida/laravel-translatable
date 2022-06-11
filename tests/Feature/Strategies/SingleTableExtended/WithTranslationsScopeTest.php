@@ -44,16 +44,16 @@ class WithTranslationsScopeTest extends TestCase
             ->withTranslations()
             ->get();
 
-        self::assertTrue($record->relationLoaded('translations'));
-        self::assertCount(2, $record->translations);
+        static::assertTrue($record->relationLoaded('translations'));
+        static::assertCount(2, $record->translations);
 
-        self::assertEquals('Тіні забутих предків', $record->translations[0]->value);
-        self::assertEquals('title', $record->translations[0]->translatable_attribute);
-        self::assertEquals('uk', $record->translations[0]->locale);
+        static::assertSame('Тіні забутих предків', $record->translations[0]->value);
+        static::assertSame('title', $record->translations[0]->translatable_attribute);
+        static::assertSame('uk', $record->translations[0]->locale);
 
-        self::assertEquals('Про кохання гуцулів Івана й Марічки з ворогуючих родів', $record->translations[1]->value);
-        self::assertEquals('description', $record->translations[1]->translatable_attribute);
-        self::assertEquals('uk', $record->translations[1]->locale);
+        static::assertSame('Про кохання гуцулів Івана й Марічки з ворогуючих родів', $record->translations[1]->value);
+        static::assertSame('description', $record->translations[1]->translatable_attribute);
+        static::assertSame('uk', $record->translations[1]->locale);
     }
 
     /** @test */
@@ -69,16 +69,16 @@ class WithTranslationsScopeTest extends TestCase
             ->withTranslations(['*'])
             ->get();
 
-        self::assertTrue($record->relationLoaded('translations'));
-        self::assertCount(2, $record->translations);
+        static::assertTrue($record->relationLoaded('translations'));
+        static::assertCount(2, $record->translations);
 
-        self::assertEquals('Тіні забутих предків', $record->translations[0]->value);
-        self::assertEquals('title', $record->translations[0]->translatable_attribute);
-        self::assertEquals('uk', $record->translations[0]->locale);
+        static::assertSame('Тіні забутих предків', $record->translations[0]->value);
+        static::assertSame('title', $record->translations[0]->translatable_attribute);
+        static::assertSame('uk', $record->translations[0]->locale);
 
-        self::assertEquals('Про кохання гуцулів Івана й Марічки з ворогуючих родів', $record->translations[1]->value);
-        self::assertEquals('description', $record->translations[1]->translatable_attribute);
-        self::assertEquals('uk', $record->translations[1]->locale);
+        static::assertSame('Про кохання гуцулів Івана й Марічки з ворогуючих родів', $record->translations[1]->value);
+        static::assertSame('description', $record->translations[1]->translatable_attribute);
+        static::assertSame('uk', $record->translations[1]->locale);
     }
 
     /** @test */
@@ -96,20 +96,20 @@ class WithTranslationsScopeTest extends TestCase
             ->withTranslations(['uk', 'pl'])
             ->get();
 
-        self::assertTrue($record->relationLoaded('translations'));
-        self::assertCount(3, $record->translations);
+        static::assertTrue($record->relationLoaded('translations'));
+        static::assertCount(3, $record->translations);
 
-        self::assertEquals('Cienie zapomnianych przodków', $record->translations[0]->value);
-        self::assertEquals('title', $record->translations[0]->translatable_attribute);
-        self::assertEquals('pl', $record->translations[0]->locale);
+        static::assertSame('Cienie zapomnianych przodków', $record->translations[0]->value);
+        static::assertSame('title', $record->translations[0]->translatable_attribute);
+        static::assertSame('pl', $record->translations[0]->locale);
 
-        self::assertEquals('Тіні забутих предків', $record->translations[1]->value);
-        self::assertEquals('title', $record->translations[1]->translatable_attribute);
-        self::assertEquals('uk', $record->translations[1]->locale);
+        static::assertSame('Тіні забутих предків', $record->translations[1]->value);
+        static::assertSame('title', $record->translations[1]->translatable_attribute);
+        static::assertSame('uk', $record->translations[1]->locale);
 
-        self::assertEquals('Про кохання гуцулів Івана й Марічки з ворогуючих родів', $record->translations[2]->value);
-        self::assertEquals('description', $record->translations[2]->translatable_attribute);
-        self::assertEquals('uk', $record->translations[2]->locale);
+        static::assertSame('Про кохання гуцулів Івана й Марічки з ворогуючих родів', $record->translations[2]->value);
+        static::assertSame('description', $record->translations[2]->translatable_attribute);
+        static::assertSame('uk', $record->translations[2]->locale);
     }
 
     /**

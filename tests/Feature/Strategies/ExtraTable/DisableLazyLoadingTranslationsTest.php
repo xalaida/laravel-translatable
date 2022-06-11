@@ -54,10 +54,10 @@ class DisableLazyLoadingTranslationsTest extends TestCase
 
         $this->app[ConnectionInterface::class]->enableQueryLog();
 
-        self::assertEquals(null, $book->translator()->get('title', 'uk'));
-        self::assertEquals(null, $book->translator()->get('title', 'pl'));
+        static::assertNull($book->translator()->get('title', 'uk'));
+        static::assertNull($book->translator()->get('title', 'pl'));
 
-        self::assertCount(0, $this->app[ConnectionInterface::class]->getQueryLog());
+        static::assertCount(0, $this->app[ConnectionInterface::class]->getQueryLog());
     }
 
     /** @test */
@@ -77,10 +77,10 @@ class DisableLazyLoadingTranslationsTest extends TestCase
 
         $this->app[ConnectionInterface::class]->enableQueryLog();
 
-        self::assertEquals('Атлас тварин', $book->translator()->get('title', 'uk'));
-        self::assertEquals(null, $book->translator()->get('title', 'en'));
+        static::assertSame('Атлас тварин', $book->translator()->get('title', 'uk'));
+        static::assertNull($book->translator()->get('title', 'en'));
 
-        self::assertCount(0, $this->app[ConnectionInterface::class]->getQueryLog());
+        static::assertCount(0, $this->app[ConnectionInterface::class]->getQueryLog());
     }
 
     /**

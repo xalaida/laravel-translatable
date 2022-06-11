@@ -47,7 +47,7 @@ class RawTranslationTest extends TestCase
 
         $book->translator()->add('title', 'лісова пісня', 'uk');
 
-        self::assertEquals('лісова пісня', $book->translator()->getRawOrFail('title', 'uk'));
+        static::assertSame('лісова пісня', $book->translator()->getRawOrFail('title', 'uk'));
     }
 
     /** @test */
@@ -73,7 +73,7 @@ class RawTranslationTest extends TestCase
 
         $book->translator()->add('title', 'лісова пісня', 'uk');
 
-        self::assertEquals('лісова пісня', $book->translator()->getRawOrFail('title', 'uk'));
+        static::assertSame('лісова пісня', $book->translator()->getRawOrFail('title', 'uk'));
     }
 
     /** @test */
@@ -85,7 +85,7 @@ class RawTranslationTest extends TestCase
 
         $book->translator()->add('title', 'лісова пісня', 'uk');
 
-        self::assertEquals('Лісова пісня', $book->translator()->get('title', 'uk'));
+        static::assertSame('Лісова пісня', $book->translator()->get('title', 'uk'));
     }
 
     /** @test */

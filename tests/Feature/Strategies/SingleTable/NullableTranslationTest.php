@@ -37,7 +37,7 @@ class NullableTranslationTest extends TestCase
         $book->translator()->set('title', null, 'uk');
         $book->save();
 
-        self::assertNull($book->translator()->get('title', 'uk'));
+        static::assertNull($book->translator()->get('title', 'uk'));
         $this->assertDatabaseHas('translations', [
             'locale' => 'uk',
             'value' => null,
@@ -53,7 +53,7 @@ class NullableTranslationTest extends TestCase
         $book->save();
 
         $book->translator()->add('title', null, 'uk');
-        self::assertNull($book->translator()->get('title', 'uk'));
+        static::assertNull($book->translator()->get('title', 'uk'));
     }
 
     /** @test */
@@ -65,7 +65,7 @@ class NullableTranslationTest extends TestCase
 
         $book->translator()->add('title', null, 'en');
 
-        self::assertNull($book->fresh()->title);
+        static::assertNull($book->fresh()->title);
     }
 
     /**

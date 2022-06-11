@@ -48,8 +48,8 @@ class WhereTranslatableScopeTest extends TestCase
             ->whereTranslatable('title', 'Останній пророк')
             ->get();
 
-        self::assertCount(1, $records);
-        self::assertTrue($records[0]->is($book));
+        static::assertCount(1, $records);
+        static::assertTrue($records[0]->is($book));
     }
 
     /** @test */
@@ -68,8 +68,8 @@ class WhereTranslatableScopeTest extends TestCase
             ->whereTranslatable('title', 'The last prophet')
             ->get();
 
-        self::assertCount(1, $records);
-        self::assertTrue($records[0]->is($book));
+        static::assertCount(1, $records);
+        static::assertTrue($records[0]->is($book));
     }
 
     /** @test */
@@ -89,8 +89,8 @@ class WhereTranslatableScopeTest extends TestCase
             ->whereTranslatable('title', 'Останній пророк', 'uk')
             ->get();
 
-        self::assertCount(1, $records);
-        self::assertTrue($records[0]->is($book));
+        static::assertCount(1, $records);
+        static::assertTrue($records[0]->is($book));
     }
 
     /** @test */
@@ -106,7 +106,7 @@ class WhereTranslatableScopeTest extends TestCase
             ->whereTranslatable('title', 'Останній пророк', 'pl')
             ->get();
 
-        self::assertEmpty($records);
+        static::assertEmpty($records);
     }
 
     /** @test */
@@ -122,7 +122,7 @@ class WhereTranslatableScopeTest extends TestCase
             ->whereTranslatable('title', 'Останній пророк', 'en')
             ->get();
 
-        self::assertEmpty($records);
+        static::assertEmpty($records);
     }
 
     /** @test */
@@ -148,9 +148,9 @@ class WhereTranslatableScopeTest extends TestCase
             ->whereTranslatable('title', 'Останній пророк')
             ->get();
 
-        self::assertCount(2, $books);
-        self::assertTrue($books[0]->is($book1));
-        self::assertTrue($books[1]->is($book2));
+        static::assertCount(2, $books);
+        static::assertTrue($books[0]->is($book1));
+        static::assertTrue($books[1]->is($book2));
     }
 
     /** @test */
@@ -176,9 +176,9 @@ class WhereTranslatableScopeTest extends TestCase
             ->whereTranslatable('title', '%пророк', null, 'LIKE')
             ->get();
 
-        self::assertCount(2, $records);
-        self::assertTrue($records[0]->is($book1));
-        self::assertTrue($records[1]->is($book2));
+        static::assertCount(2, $records);
+        static::assertTrue($records[0]->is($book1));
+        static::assertTrue($records[1]->is($book2));
     }
 
     /** @test */
@@ -212,9 +212,9 @@ class WhereTranslatableScopeTest extends TestCase
             ->whereTranslatable('title', 'Day of Wrath', 'en', '=', 'or')
             ->get();
 
-        self::assertCount(2, $records);
-        self::assertTrue($records[0]->is($book1));
-        self::assertTrue($records[1]->is($book3));
+        static::assertCount(2, $records);
+        static::assertTrue($records[0]->is($book1));
+        static::assertTrue($records[1]->is($book3));
     }
 
     /** @test */
@@ -230,7 +230,7 @@ class WhereTranslatableScopeTest extends TestCase
             ->whereTranslatable('title', 'Day of Wrath', 'en')
             ->get();
 
-        self::assertCount(0, $records);
+        static::assertCount(0, $records);
     }
 
     /** @test */
@@ -255,9 +255,9 @@ class WhereTranslatableScopeTest extends TestCase
             ->whereTranslatable('title', 'День гніву', 'uk', '=', 'or')
             ->get();
 
-        self::assertCount(2, $records);
-        self::assertTrue($records[0]->is($book1));
-        self::assertTrue($records[1]->is($book3));
+        static::assertCount(2, $records);
+        static::assertTrue($records[0]->is($book1));
+        static::assertTrue($records[1]->is($book3));
     }
 
     /** @test */
@@ -282,9 +282,9 @@ class WhereTranslatableScopeTest extends TestCase
             ->whereTranslatable('title', 'День гніву', null, '=', 'or')
             ->get();
 
-        self::assertCount(2, $records);
-        self::assertTrue($records[0]->is($book1));
-        self::assertTrue($records[1]->is($book3));
+        static::assertCount(2, $records);
+        static::assertTrue($records[0]->is($book1));
+        static::assertTrue($records[1]->is($book3));
     }
 
     /** @test */
@@ -308,9 +308,9 @@ class WhereTranslatableScopeTest extends TestCase
             ->orWhereTranslatable('title', 'Day of Wrath', 'en')
             ->get();
 
-        self::assertCount(2, $records);
-        self::assertTrue($records[0]->is($book1));
-        self::assertTrue($records[1]->is($book3));
+        static::assertCount(2, $records);
+        static::assertTrue($records[0]->is($book1));
+        static::assertTrue($records[1]->is($book3));
     }
 
     /**

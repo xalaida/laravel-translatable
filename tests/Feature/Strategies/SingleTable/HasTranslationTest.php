@@ -38,7 +38,7 @@ class HasTranslationTest extends TestCase
         $book->save();
 
         $this->app->setLocale('uk');
-        self::assertTrue($book->translator()->has('title'));
+        static::assertTrue($book->translator()->has('title'));
     }
 
     /** @test */
@@ -50,7 +50,7 @@ class HasTranslationTest extends TestCase
         $book->save();
 
         $this->app->setLocale('pl');
-        self::assertFalse($book->translator()->has('title'));
+        static::assertFalse($book->translator()->has('title'));
     }
 
     /** @test */
@@ -61,9 +61,9 @@ class HasTranslationTest extends TestCase
         $book->translator()->set('title', 'Весняне оповідання', 'uk');
         $book->save();
 
-        self::assertTrue($book->translator()->has('title', 'en'));
-        self::assertTrue($book->translator()->has('title', 'uk'));
-        self::assertFalse($book->translator()->has('title', 'pl'));
+        static::assertTrue($book->translator()->has('title', 'en'));
+        static::assertTrue($book->translator()->has('title', 'uk'));
+        static::assertFalse($book->translator()->has('title', 'pl'));
     }
 
     /** @test */
@@ -75,8 +75,8 @@ class HasTranslationTest extends TestCase
         $book->translator()->set('title', 'Весняне оповідання', 'uk');
         $book->save();
 
-        self::assertTrue($book->translator()->has('description', 'en'));
-        self::assertFalse($book->translator()->has('description', 'pl'));
+        static::assertTrue($book->translator()->has('description', 'en'));
+        static::assertFalse($book->translator()->has('description', 'pl'));
     }
 
     /**

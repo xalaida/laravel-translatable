@@ -41,7 +41,7 @@ class FallbackTranslationTest extends TestCase
         $this->app->setLocale('uk');
         $book->translator()->add('title', 'Галерея чуття', 'uk');
 
-        self::assertEquals('Sense gallery', $book->translator()->getFallback('title'));
+        static::assertSame('Sense gallery', $book->translator()->getFallback('title'));
     }
 
     /** @test */
@@ -54,7 +54,7 @@ class FallbackTranslationTest extends TestCase
         $this->app->setLocale('uk');
         $book->translator()->add('title', 'Галерея чуття', 'uk');
 
-        self::assertEquals('Sense gallery', $book->translator()->getFallback('title'));
+        static::assertSame('Sense gallery', $book->translator()->getFallback('title'));
     }
 
     /** @test */
@@ -64,7 +64,7 @@ class FallbackTranslationTest extends TestCase
         $book->translator()->set('title', 'Sense gallery', $this->app->getFallbackLocale());
         $book->save();
 
-        self::assertEquals('Невідома книга', $book->translator()->getOr('title', 'uk', 'Невідома книга'));
+        static::assertSame('Невідома книга', $book->translator()->getOr('title', 'uk', 'Невідома книга'));
     }
 
     /** @test */
@@ -74,7 +74,7 @@ class FallbackTranslationTest extends TestCase
         $book->translator()->set('title', 'Sense gallery', $this->app->getFallbackLocale());
         $book->save();
 
-        self::assertEquals('Невідома книга', $book->translator()->getOr('title', 'uk', function () {
+        static::assertSame('Невідома книга', $book->translator()->getOr('title', 'uk', function () {
             return 'Невідома книга';
         }));
     }
@@ -86,7 +86,7 @@ class FallbackTranslationTest extends TestCase
         $book->translator()->set('title', 'Sense gallery', $this->app->getFallbackLocale());
         $book->save();
 
-        self::assertNull($book->translator()->getOr('title', 'uk'));
+        static::assertNull($book->translator()->getOr('title', 'uk'));
     }
 
     /**

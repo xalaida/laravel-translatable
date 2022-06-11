@@ -45,7 +45,7 @@ class CastTranslationTest extends TestCase
         ], 'uk');
         $book->save();
 
-        self::assertEquals([
+        static::assertSame([
             'title' => 'Лебедина зграя',
             'author' => 'Василь Земляк',
         ], $book->translator()->get('content', 'uk'));
@@ -67,7 +67,7 @@ class CastTranslationTest extends TestCase
 
         $this->app->setLocale('uk');
 
-        self::assertEquals([
+        static::assertSame([
             'title' => 'Лебедина зграя',
             'author' => 'Василь Земляк',
         ], $book->content);
@@ -85,7 +85,7 @@ class CastTranslationTest extends TestCase
 
         $this->app->setLocale('uk');
 
-        self::assertEquals([
+        static::assertSame([
             'title' => 'Swan flock',
             'author' => 'Vasil Zemlyak',
         ], $book->content);
@@ -106,8 +106,8 @@ class CastTranslationTest extends TestCase
 
         $this->app->setLocale('uk');
 
-        self::assertInstanceOf(DateTimeInterface::class, $book->published_at);
-        self::assertTrue($now->equalTo($book->published_at));
+        static::assertInstanceOf(DateTimeInterface::class, $book->published_at);
+        static::assertTrue($now->equalTo($book->published_at));
     }
 
     /**

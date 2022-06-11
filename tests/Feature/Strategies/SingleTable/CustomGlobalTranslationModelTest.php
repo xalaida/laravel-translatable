@@ -53,7 +53,7 @@ class CustomGlobalTranslationModelTest extends TestCase
         $book->translator()->set('title', 'Атлас тварин', 'uk');
         $book->save();
 
-        self::assertInstanceOf(CustomGlobalTranslation::class, $book->translations->first());
+        static::assertInstanceOf(CustomGlobalTranslation::class, $book->translations->first());
         $this->assertDatabaseCount('books', 1);
         $this->assertDatabaseCount('custom_translations', 2);
         $this->assertDatabaseHas('custom_translations', [

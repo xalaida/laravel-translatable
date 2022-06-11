@@ -40,10 +40,10 @@ class EagerLoadingTranslationsTest extends TestCase
 
         [$book] = BookForEagerLoading::all();
 
-        self::assertTrue($book->relationLoaded('translations'));
-        self::assertCount(1, $book->translations);
-        self::assertEquals('en', $book->translations[0]->locale);
-        self::assertEquals('Forest', $book->translations[0]->value);
+        static::assertTrue($book->relationLoaded('translations'));
+        static::assertCount(1, $book->translations);
+        static::assertSame('en', $book->translations[0]->locale);
+        static::assertSame('Forest', $book->translations[0]->value);
     }
 
     /** @test */
@@ -57,10 +57,10 @@ class EagerLoadingTranslationsTest extends TestCase
         $this->app->setLocale('uk');
         [$book] = BookForEagerLoading::all();
 
-        self::assertTrue($book->relationLoaded('translations'));
-        self::assertCount(2, $book->translations);
-        self::assertEquals('en', $book->translations[0]->locale);
-        self::assertEquals('uk', $book->translations[1]->locale);
+        static::assertTrue($book->relationLoaded('translations'));
+        static::assertCount(2, $book->translations);
+        static::assertSame('en', $book->translations[0]->locale);
+        static::assertSame('uk', $book->translations[1]->locale);
     }
 
     /** @test */
@@ -73,9 +73,9 @@ class EagerLoadingTranslationsTest extends TestCase
 
         [$book] = BookForEagerLoading::all();
 
-        self::assertTrue($book->relationLoaded('translations'));
-        self::assertCount(1, $book->translations);
-        self::assertEquals($this->app->getFallbackLocale(), $book->translations[0]->locale);
+        static::assertTrue($book->relationLoaded('translations'));
+        static::assertCount(1, $book->translations);
+        static::assertSame($this->app->getFallbackLocale(), $book->translations[0]->locale);
     }
 
     /** @test */
@@ -102,11 +102,11 @@ class EagerLoadingTranslationsTest extends TestCase
 
         [$book1, $book2, $book3] = BookForEagerLoading::all();
 
-        self::assertEquals('Атлас тварин', $book1->title);
-        self::assertEquals('Ліс', $book2->title);
-        self::assertEquals('Енциклопедія тварин', $book3->title);
+        static::assertSame('Атлас тварин', $book1->title);
+        static::assertSame('Ліс', $book2->title);
+        static::assertSame('Енциклопедія тварин', $book3->title);
 
-        self::assertCount(2, $this->app[ConnectionInterface::class]->getQueryLog());
+        static::assertCount(2, $this->app[ConnectionInterface::class]->getQueryLog());
     }
 
     /** @test */
@@ -121,7 +121,7 @@ class EagerLoadingTranslationsTest extends TestCase
 
         [$book] = BookForEagerLoading::query()->withoutTranslationsScope()->get();
 
-        self::assertFalse($book->relationLoaded('translations'));
+        static::assertFalse($book->relationLoaded('translations'));
     }
 
     /** @test */
@@ -134,11 +134,11 @@ class EagerLoadingTranslationsTest extends TestCase
 
         [$book] = BookForEagerLoading::all();
 
-        self::assertEquals('Атлас тварин', $book->translator()->get('title', 'uk'));
+        static::assertSame('Атлас тварин', $book->translator()->get('title', 'uk'));
 
         $book->translator()->set('title', 'Галерея чуття', 'uk');
 
-        self::assertEquals('Галерея чуття', $book->translator()->get('title', 'uk'));
+        static::assertSame('Галерея чуття', $book->translator()->get('title', 'uk'));
     }
 
     /**

@@ -50,8 +50,8 @@ class OrderByTranslatableScopeTest extends TestCase
 
         $records = BookOrderByTranslatable::query()->orderByTranslatable('title')->get();
 
-        self::assertTrue($records[0]->is($book2));
-        self::assertTrue($records[1]->is($book1));
+        static::assertTrue($records[0]->is($book2));
+        static::assertTrue($records[1]->is($book1));
     }
 
     /** @test */
@@ -73,8 +73,8 @@ class OrderByTranslatableScopeTest extends TestCase
 
         $records = BookOrderByTranslatable::query()->orderByTranslatable('title', 'desc')->get();
 
-        self::assertTrue($records[0]->is($book1));
-        self::assertTrue($records[1]->is($book2));
+        static::assertTrue($records[0]->is($book1));
+        static::assertTrue($records[1]->is($book2));
     }
 
     /** @test */
@@ -94,8 +94,8 @@ class OrderByTranslatableScopeTest extends TestCase
 
         $records = BookOrderByTranslatable::query()->orderByTranslatable('title', 'asc', 'uk')->get();
 
-        self::assertTrue($records[0]->is($book2));
-        self::assertTrue($records[1]->is($book1));
+        static::assertTrue($records[0]->is($book2));
+        static::assertTrue($records[1]->is($book1));
     }
 
     /** @test */
@@ -111,8 +111,8 @@ class OrderByTranslatableScopeTest extends TestCase
 
         $records = BookOrderByTranslatable::query()->orderByTranslatable('title', 'asc', 'en')->get();
 
-        self::assertTrue($records[0]->is($book1));
-        self::assertTrue($records[1]->is($book2));
+        static::assertTrue($records[0]->is($book1));
+        static::assertTrue($records[1]->is($book2));
     }
 
     /** @test */
@@ -129,8 +129,8 @@ class OrderByTranslatableScopeTest extends TestCase
 
         $records = BookOrderByTranslatable::query()->orderByTranslatable('title', 'desc')->get();
 
-        self::assertTrue($records[0]->is($book));
-        self::assertEquals('Original value', $records[0]->value);
+        static::assertTrue($records[0]->is($book));
+        static::assertSame('Original value', $records[0]->value);
     }
 
     /** @test */
@@ -153,10 +153,10 @@ class OrderByTranslatableScopeTest extends TestCase
             ->orderByTranslatable('title')
             ->get();
 
-        self::assertTrue($records[0]->is($book2));
-        self::assertTrue($records[1]->is($book1));
-        self::assertFalse(isset($records[0]->created_at));
-        self::assertFalse(isset($records[0]->translatable_attribute));
+        static::assertTrue($records[0]->is($book2));
+        static::assertTrue($records[1]->is($book1));
+        static::assertFalse(isset($records[0]->created_at));
+        static::assertFalse(isset($records[0]->translatable_attribute));
     }
 
     /**

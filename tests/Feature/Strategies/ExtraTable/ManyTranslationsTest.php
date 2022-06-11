@@ -71,7 +71,7 @@ class ManyTranslationsTest extends TestCase
                 'title' => 'Атлас тварин',
                 'created_at' => now()->setTimezone('Europe/Kiev'),
             ], 'uk');
-            self::fail('Exception was not thrown for not translatable attribute');
+            static::fail('Exception was not thrown for not translatable attribute');
         } catch (AttributeNotTranslatableException $e) {
             $this->assertDatabaseCount('book_translations', 0);
         }

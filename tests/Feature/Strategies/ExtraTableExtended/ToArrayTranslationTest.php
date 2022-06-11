@@ -53,7 +53,7 @@ class ToArrayTranslationTest extends TestCase
 
         $this->app->setLocale('uk');
 
-        self::assertEquals([
+        static::assertSame([
            'title' => 'У джунглях',
            'description' => 'Книга наповнена кумедними яскравими ілюстраціями та підписами до них',
         ], $book->translator()->toArray('uk'));
@@ -73,13 +73,13 @@ class ToArrayTranslationTest extends TestCase
 
         $array = $book->toArray();
 
-        self::assertArrayHasKey('id', $array);
-        self::assertArrayHasKey('title', $array);
-        self::assertArrayHasKey('description', $array);
-        self::assertArrayHasKey('updated_at', $array);
-        self::assertArrayHasKey('created_at', $array);
-        self::assertEquals('У джунглях', $array['title']);
-        self::assertEquals('Книга наповнена кумедними яскравими ілюстраціями та підписами до них', $array['description']);
+        static::assertArrayHasKey('id', $array);
+        static::assertArrayHasKey('title', $array);
+        static::assertArrayHasKey('description', $array);
+        static::assertArrayHasKey('updated_at', $array);
+        static::assertArrayHasKey('created_at', $array);
+        static::assertSame('У джунглях', $array['title']);
+        static::assertSame('Книга наповнена кумедними яскравими ілюстраціями та підписами до них', $array['description']);
     }
 
     /** @test */
@@ -94,8 +94,8 @@ class ToArrayTranslationTest extends TestCase
 
         $array = $book->toArray();
 
-        self::assertEquals('У джунглях', $array['title']);
-        self::assertNull($array['description']);
+        static::assertSame('У джунглях', $array['title']);
+        static::assertNull($array['description']);
     }
 
     /**
