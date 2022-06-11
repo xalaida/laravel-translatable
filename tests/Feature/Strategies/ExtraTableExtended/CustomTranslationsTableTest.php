@@ -1,10 +1,10 @@
 <?php
 
-namespace Nevadskiy\Translatable\Tests\Feature\Strategies\ExtraTable;
+namespace Nevadskiy\Translatable\Tests\Feature\Strategies\ExtraTableExtended;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Schema\Blueprint;
-use Nevadskiy\Translatable\Strategies\ExtraTable\HasTranslations;
+use Nevadskiy\Translatable\Strategies\ExtraTableExtended\HasTranslations;
 use Nevadskiy\Translatable\Tests\TestCase;
 
 class CustomTranslationsTableTest extends TestCase
@@ -25,6 +25,7 @@ class CustomTranslationsTableTest extends TestCase
     {
         $this->schema()->create('books', function (Blueprint $table) {
             $table->id();
+            $table->string('title');
             $table->timestamps();
         });
 
@@ -45,9 +46,8 @@ class CustomTranslationsTableTest extends TestCase
         $book->translator()->set('title', 'Лісова пісня', 'uk');
         $book->save();
 
-        $this->assertDatabaseHas('book_entity_translations', [
+        $this->assertDatabaseHas('books', [
             'title' => 'Forest song',
-            'locale' => 'en',
         ]);
         $this->assertDatabaseHas('book_entity_translations', [
             'title' => 'Лісова пісня',
@@ -59,9 +59,13 @@ class CustomTranslationsTableTest extends TestCase
     public function it_stores_translations_using_custom_foreign_key(): void
     {
         $book = new BookWithCustomTranslationsTable();
+        $book->translator()->set('title', 'Forest song', 'en');
         $book->translator()->set('title', 'Лісова пісня', 'uk');
         $book->save();
 
+        $this->assertDatabaseHas('books', [
+            'title' => 'Forest song',
+        ]);
         $this->assertDatabaseHas('book_entity_translations', [
             'entity_id' => $book->getKey(),
             'title' => 'Лісова пісня',
