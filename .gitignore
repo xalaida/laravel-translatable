@@ -1,7 +1,6 @@
-/vendor
 /.idea
 /.vscode
+/vendor
 /tests/.coverage
 .phpunit.result.cache
-.php_cs.cache
-TODO.md
+.php-cs-fixer.cache
