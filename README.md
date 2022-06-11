@@ -43,25 +43,21 @@ Install the package via composer:
 composer require nevadskiy/laravel-translatable
 ```
 
-## 📄 Documentation
+## 📑 Documentation
 
 Documentation for the package can be found in the [Wiki section](https://github.com/nevadskiy/laravel-translatable/wiki). 
 
 ## ✨ Laravel Nova
 
-There is a [small package](https://github.com/nevadskiy/nova-translatable) for the Laravel Nova admin that adds support for translatable fields.
+There is a [small package](https://github.com/nevadskiy/nova-translatable) for the Laravel Nova that adds support for translatable fields.
 
-## 📑 Changelog
+## 📄 Changelog
 
 Please see [CHANGELOG](CHANGELOG.md) for more information what has changed recently.
 
 ## ☕ Contributing
 
 Thank you for considering contributing. Please see [CONTRIBUTING](.github/CONTRIBUTING.md) for more information.
-
-## 🔓 Security
-
-If you discover any security related issues, please [e-mail me](mailto:nevadskiy@gmail.com) instead of using the issue tracker.
 
 ## 📜 License
 
