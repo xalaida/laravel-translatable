@@ -87,7 +87,7 @@ class ManyTranslationsTest extends TestCase
 
 /**
  * @property string title
- * @property string|null description
+ * @property string description
  */
 class BookWithManyTranslations extends Model
 {

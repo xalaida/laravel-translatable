@@ -1,11 +1,11 @@
 <?php
 
-namespace Nevadskiy\Translatable\Tests\Feature\Strategies\SingleTableExtended;
+namespace Nevadskiy\Translatable\Tests\Feature\Strategies\ExtraTableExtended;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Schema\Blueprint;
 use Nevadskiy\Translatable\Exceptions\AttributeNotTranslatableException;
-use Nevadskiy\Translatable\Strategies\SingleTableExtended\HasTranslations;
+use Nevadskiy\Translatable\Strategies\ExtraTableExtended\HasTranslations;
 use Nevadskiy\Translatable\Tests\TestCase;
 
 class ManyTranslationsTest extends TestCase
@@ -27,16 +27,28 @@ class ManyTranslationsTest extends TestCase
         $this->schema()->create('books', function (Blueprint $table) {
             $table->id();
             $table->string('title');
-            $table->text('description')->nullable();
+            $table->string('description');
+            $table->timestamps();
+        });
+
+        $this->schema()->create('book_translations', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('book_id');
+            $table->string('title');
+            $table->string('description');
+            $table->string('locale');
             $table->timestamps();
         });
     }
 
     /** @test */
-    public function it_saves_many_translations_to_database(): void
+    public function it_saves_many_translations_to_database_at_once(): void
     {
         $book = new BookWithManyTranslations();
-        $book->title = 'Atlas of animals';
+        $book->translator()->setMany([
+            'title' => 'Atlas of animals',
+            'description' => '"Atlas of Animals" - a unique publication about the inhabitants of our planet with author\'s illustrations.',
+        ]);
         $book->save();
 
         $book->translator()->addMany([
@@ -44,19 +56,17 @@ class ManyTranslationsTest extends TestCase
             'description' => '«Атлас тварин» ‒ унікальне видання про мешканців нашої планети з авторськими ілюстраціями.',
         ], 'uk');
 
-        $this->assertDatabaseCount('translations', 2);
-        $this->assertDatabaseHas('translations', [
-            'translatable_id' => $book->getKey(),
-            'translatable_type' => $book->getMorphClass(),
-            'translatable_attribute' => 'title',
-            'value' => 'Атлас тварин',
-            'locale' => 'uk',
+        $this->assertDatabaseCount('books', 1);
+        $this->assertDatabaseHas('books', [
+            'id' => $book->getKey(),
+            'title' => 'Atlas of animals',
+            'description' => '"Atlas of Animals" - a unique publication about the inhabitants of our planet with author\'s illustrations.',
         ]);
-        $this->assertDatabaseHas('translations', [
-            'translatable_id' => $book->getKey(),
-            'translatable_type' => $book->getMorphClass(),
-            'translatable_attribute' => 'description',
-            'value' => '«Атлас тварин» ‒ унікальне видання про мешканців нашої планети з авторськими ілюстраціями.',
+        $this->assertDatabaseCount('book_translations', 1);
+        $this->assertDatabaseHas('book_translations', [
+            'book_id' => $book->getKey(),
+            'title' => 'Атлас тварин',
+            'description' => '«Атлас тварин» ‒ унікальне видання про мешканців нашої планети з авторськими ілюстраціями.',
             'locale' => 'uk',
         ]);
     }
@@ -65,7 +75,10 @@ class ManyTranslationsTest extends TestCase
     public function it_throws_exception_when_trying_to_save_many_translations_with_mixed_non_translatable_attribute(): void
     {
         $book = new BookWithManyTranslations();
-        $book->title = 'Atlas of animals';
+        $book->translator()->setMany([
+            'title' => 'Atlas of animals',
+            'description' => '"Atlas of Animals" - a unique publication about the inhabitants of our planet with author\'s illustrations.',
+        ]);
         $book->save();
 
         try {
@@ -75,7 +88,7 @@ class ManyTranslationsTest extends TestCase
             ], 'uk');
             self::fail('Exception was not thrown for not translatable attribute');
         } catch (AttributeNotTranslatableException $e) {
-            $this->assertDatabaseCount('translations', 0);
+            $this->assertDatabaseCount('book_translations', 0);
         }
     }
 
@@ -84,6 +97,7 @@ class ManyTranslationsTest extends TestCase
      */
     protected function tearDown(): void
     {
+        $this->schema()->drop('book_translations');
         $this->schema()->drop('books');
         parent::tearDown();
     }
@@ -103,4 +117,14 @@ class BookWithManyTranslations extends Model
         'title',
         'description',
     ];
+
+    protected function getEntityTranslationTable(): string
+    {
+        return 'book_translations';
+    }
+
+    protected function getEntityTranslationForeignKey(): string
+    {
+        return 'book_id';
+    }
 }
