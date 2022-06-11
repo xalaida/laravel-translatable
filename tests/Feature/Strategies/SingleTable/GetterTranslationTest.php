@@ -78,7 +78,7 @@ class GetterTranslationTest extends TestCase
     }
 
     /** @test */
-    public function it_does_not_store_retrieved_values_from_getter_again(): void
+    public function it_does_not_restore_resolved_values_from_getter_on_save(): void
     {
         $book = new BookWithGetters();
         $book->translator()->set('title', 'The Bear Book', 'en');

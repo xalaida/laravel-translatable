@@ -1,11 +1,11 @@
 <?php
 
-namespace Nevadskiy\Translatable\Tests\Feature\Strategies\ExtraTable;
+namespace Nevadskiy\Translatable\Tests\Feature\Strategies\ExtraTableExtended;
 
 use Illuminate\Database\ConnectionInterface;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Schema\Blueprint;
-use Nevadskiy\Translatable\Strategies\ExtraTable\HasTranslations;
+use Nevadskiy\Translatable\Strategies\ExtraTableExtended\HasTranslations;
 use Nevadskiy\Translatable\Tests\TestCase;
 
 class GetterTranslationTest extends TestCase
@@ -26,6 +26,7 @@ class GetterTranslationTest extends TestCase
     {
         $this->schema()->create('books', function (Blueprint $table) {
             $table->id();
+            $table->string('title');
             $table->integer('size')->default(0);
             $table->timestamps();
         });
