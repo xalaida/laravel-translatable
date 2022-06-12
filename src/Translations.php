@@ -23,14 +23,6 @@ class Translations implements IteratorAggregate
     }
 
     /**
-     * Make a new list of translations.
-     */
-    public static function make(array $translations): self
-    {
-        return new static($translations);
-    }
-
-    /**
      * Get an iterator for the items.
      */
     public function getIterator(): ArrayIterator
