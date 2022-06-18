@@ -5,7 +5,7 @@ namespace Nevadskiy\Translatable;
 use ArrayIterator;
 use IteratorAggregate;
 
-class Translations implements IteratorAggregate
+class TranslationSet implements IteratorAggregate
 {
     /**
      * The array of translations.

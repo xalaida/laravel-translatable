@@ -157,7 +157,7 @@ class Translator
     {
         $this->assertAttributeIsTranslatable($attribute);
 
-        if ($value instanceof Translations) {
+        if ($value instanceof TranslationSet) {
             $this->setTranslations($attribute, $value);
         } else {
             $this->strategy->set(
@@ -310,7 +310,7 @@ class Translator
     /**
      * Set translation values for the given attribute.
      */
-    protected function setTranslations(string $attribute, Translations $translations): void
+    protected function setTranslations(string $attribute, TranslationSet $translations): void
     {
         foreach ($translations as $locale => $value) {
             $this->set($attribute, $value, $locale);

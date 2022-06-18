@@ -5,16 +5,16 @@ namespace Nevadskiy\Translatable\Tests\Feature;
 use Illuminate\Database\Eloquent\Model;
 use Nevadskiy\Translatable\Tests\Support\HasTranslations;
 use Nevadskiy\Translatable\Tests\TestCase;
-use Nevadskiy\Translatable\Translations;
+use Nevadskiy\Translatable\TranslationSet;
 
-class TranslationsObjectTest extends TestCase
+class TranslationSetTest extends TestCase
 {
     /** @test */
     public function it_sets_many_translations_from_translations_object(): void
     {
         $book = new BookForTranslationsObject();
 
-        $book->title = new Translations([
+        $book->title = new TranslationSet([
             'en' => 'Wings',
             'uk' => 'Крила',
         ]);
