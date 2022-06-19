@@ -5,6 +5,7 @@ namespace Nevadskiy\Translatable\Tests\Feature\Strategies\ExtraTable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Str;
+use InvalidArgumentException;
 use Nevadskiy\Translatable\Strategies\ExtraTable\ExtraTableStrategy;
 use Nevadskiy\Translatable\Strategies\ExtraTable\HasTranslations;
 use Nevadskiy\Translatable\Strategies\ExtraTable\Models\Translation as DefaultTranslation;
@@ -61,6 +62,14 @@ class CustomGlobalTranslationModelTest extends TestCase
         ]);
     }
 
+    /** @test */
+    public function it_throws_exception_when_translation_model_does_not_extend_default_translation_model(): void
+    {
+        $this->expectException(InvalidArgumentException::class);
+
+        ExtraTableStrategy::useModel(InvalidTranslation::class);
+    }
+
     /**
      * @inheritDoc
      */
@@ -107,4 +116,9 @@ class Translation extends DefaultTranslation
             $translation->setAttribute($translation->getKeyName(), Str::orderedUuid());
         });
     }
+}
+
+class InvalidTranslation extends Model
+{
+
 }
