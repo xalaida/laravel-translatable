@@ -70,8 +70,6 @@ trait HasTranslations
 
         $instance->setTable($this->getEntityTranslationTable());
 
-        $instance->setRelated($this);
-
         return $instance;
     }
 
