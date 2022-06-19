@@ -206,7 +206,7 @@ class ExtraTableStrategyTest extends TestCase
     public function it_returns_null_if_translation_is_nullable(): void
     {
         $book = new Book();
-        $book->translator()->set('title', 'Atlas of animals', 'uk');
+        $book->translator()->set('title', 'Світ навколо нас', 'uk');
         $book->translator()->set('description', null, 'uk');
         $book->save();
 
@@ -280,6 +280,23 @@ class ExtraTableStrategyTest extends TestCase
         static::assertCount(1, $this->app[ConnectionInterface::class]->getQueryLog());
     }
 
+    /** @test */
+    public function it_clears_pending_translations_after_saving(): void
+    {
+        $book = new Book();
+        $book->translator()->set('title', 'Amazing birds', 'en');
+        $book->translator()->set('description', 'This book will help you discover all the secrets of birds', 'en');
+
+        static::assertSame(['en' => [
+            'title' => 'Amazing birds',
+            'description' => 'This book will help you discover all the secrets of birds',
+        ]], $book->translator()->getStrategy()->getPendingTranslations());
+
+        $book->save();
+
+        static::assertSame([], $book->translator()->getStrategy()->getPendingTranslations());
+    }
+
     /**
      * @inheritdoc
      */
@@ -293,7 +310,7 @@ class ExtraTableStrategyTest extends TestCase
 
 /**
  * @property string title
- * @property string description
+ * @property string|null description
  */
 class Book extends Model
 {
