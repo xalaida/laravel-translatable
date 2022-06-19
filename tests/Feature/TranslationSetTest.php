@@ -12,7 +12,7 @@ class TranslationSetTest extends TestCase
     /** @test */
     public function it_sets_many_translations_from_translations_object(): void
     {
-        $book = new BookForTranslationsObject();
+        $book = new BookForTranslationSet();
 
         $book->title = new TranslationSet([
             'en' => 'Wings',
@@ -27,7 +27,7 @@ class TranslationSetTest extends TestCase
 /**
  * @property string title
  */
-class BookForTranslationsObject extends Model
+class BookForTranslationSet extends Model
 {
     use HasTranslations;
 
