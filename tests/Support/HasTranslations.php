@@ -18,6 +18,6 @@ trait HasTranslations
      */
     protected function getTranslationStrategy(): TranslatorStrategy
     {
-        return new ArrayStrategy();
+        return new ArrayStrategy($this);
     }
 }

@@ -2,6 +2,8 @@
 
 namespace Nevadskiy\Translatable\Tests\Support;
 
+use Illuminate\Database\Eloquent\Model;
+use Nevadskiy\Translatable\Exceptions\TranslationMissingException;
 use Nevadskiy\Translatable\Strategies\TranslatorStrategy;
 
 class ArrayStrategy implements TranslatorStrategy
@@ -14,11 +16,30 @@ class ArrayStrategy implements TranslatorStrategy
     private $translations;
 
     /**
+     * The translatable model instance.
+     *
+     * @var Model
+     */
+    private $model;
+
+    /**
+     * Make a new strategy instance.
+     */
+    public function __construct(Model $model)
+    {
+        $this->model = $model;
+    }
+
+    /**
      * @inheritDoc
      */
     public function get(string $attribute, string $locale)
     {
-        return $this->translations[$locale][$attribute] ?? null;
+        if (! isset($this->translations[$locale][$attribute])) {
+            throw new TranslationMissingException($this->model, $attribute, $locale);
+        }
+
+        return $this->translations[$locale][$attribute];
     }
 
     /**
