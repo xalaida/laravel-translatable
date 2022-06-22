@@ -2,6 +2,7 @@
 
 namespace Nevadskiy\Translatable\Tests\Feature\Strategies\ExtraTableExtended;
 
+use Carbon\Carbon;
 use DateTimeInterface;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Schema\Blueprint;
@@ -110,20 +111,20 @@ class CastTranslationTest extends TestCase
     /** @test */
     public function it_still_casts_non_translatable_attributes(): void
     {
-        $now = $this->freezeTime(now());
+        Carbon::setTestNow(now()->startOfSecond());
 
         $book = new BookWithCasts();
         $book->content = [
             'title' => 'Swan flock',
             'author' => 'Vasil Zemlyak',
         ];
-        $book->published_at = $now;
+        $book->published_at = now();
         $book->save();
 
         $this->app->setLocale('uk');
 
         static::assertInstanceOf(DateTimeInterface::class, $book->published_at);
-        static::assertTrue($now->equalTo($book->published_at));
+        static::assertTrue(now()->equalTo($book->published_at));
     }
 
     /**

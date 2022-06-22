@@ -51,21 +51,6 @@ class TestCase extends OrchestraTestCase
     }
 
     /**
-     * TODO: remove this and refactor tests
-     * Freeze the current time.
-     */
-    protected function freezeTime(Carbon $time = null): Carbon
-    {
-        $time = $time ?: Carbon::now();
-
-        $time = Carbon::createFromTimestamp($time->getTimestamp());
-
-        Carbon::setTestNow($time);
-
-        return $time;
-    }
-
-    /**
      * Get a schema builder instance.
      */
     protected function schema(): Builder

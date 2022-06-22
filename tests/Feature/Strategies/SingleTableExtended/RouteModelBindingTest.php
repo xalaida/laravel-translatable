@@ -4,6 +4,7 @@ namespace Nevadskiy\Translatable\Tests\Feature\Strategies\SingleTableExtended;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Support\Facades\Route;
 use Nevadskiy\Translatable\Strategies\SingleTableExtended\HasTranslations;
 use Nevadskiy\Translatable\Tests\TestCase;
@@ -39,7 +40,7 @@ class RouteModelBindingTest extends TestCase
     /** @test */
     public function it_resolves_model_from_route_binding_by_translatable_attribute(): void
     {
-        Route::middleware('bindings')->get('/books/{book}', function (BookWithRouteBinding $book) {
+        Route::middleware(SubstituteBindings::class)->get('/books/{book}', function (BookWithRouteBinding $book) {
             return $book->getKey();
         });
 
@@ -64,7 +65,7 @@ class RouteModelBindingTest extends TestCase
     /** @test */
     public function it_resolves_model_from_route_binding_using_custom_attribute(): void
     {
-        Route::middleware('bindings')->get('/books/{book:title}', function (BookWithRouteBinding $book) {
+        Route::middleware(SubstituteBindings::class)->get('/books/{book:title}', function (BookWithRouteBinding $book) {
             return $book->getKey();
         });
 
@@ -84,7 +85,7 @@ class RouteModelBindingTest extends TestCase
     /** @test */
     public function it_resolves_model_from_route_binding_using_non_translatable_attribute(): void
     {
-        Route::middleware('bindings')->get('/books/{book:id}', function (BookWithRouteBinding $book) {
+        Route::middleware(SubstituteBindings::class)->get('/books/{book:id}', function (BookWithRouteBinding $book) {
             return $book->getKey();
         });
 
@@ -101,7 +102,7 @@ class RouteModelBindingTest extends TestCase
     /** @test */
     public function it_resolves_model_from_route_binding_using_fallback_translation(): void
     {
-        Route::middleware('bindings')->get('/books/{book}', function (BookWithRouteBinding $book) {
+        Route::middleware(SubstituteBindings::class)->get('/books/{book}', function (BookWithRouteBinding $book) {
             return $book->getKey();
         });
 
@@ -122,7 +123,7 @@ class RouteModelBindingTest extends TestCase
     /** @test */
     public function it_returns_404_when_model_is_not_found(): void
     {
-        Route::middleware('bindings')->get('/books/{book}', function (BookWithRouteBinding $book) {
+        Route::middleware(SubstituteBindings::class)->get('/books/{book}', function (BookWithRouteBinding $book) {
             return $book->getKey();
         });
 
