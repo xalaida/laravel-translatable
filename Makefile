@@ -1,16 +1,12 @@
 # Install the app
-install: build deps test
+install: build vendor
 
 # Build the app container
 build:
 	docker build -t app .
 
-# Rebuild the app container
-rebuild:
-	docker build --no-cache -t app .
-
 # Install app dependencies
-deps:
+vendor:
 	docker run --rm -it -v ${PWD}:/app app composer install
 
 # Update app dependencies
@@ -26,15 +22,15 @@ test:
 	docker run --rm -it -v ${PWD}:/app app vendor/bin/phpunit
 
 # Generate a coverage report as html
-coverage-html:
-	docker run --rm -it -v ${PWD}:/app app vendor/bin/phpunit --coverage-html tests/report
+coverage.html:
+	docker run --rm -it -v ${PWD}:/app app vendor/bin/phpunit --coverage-html tests/.coverage
 
 # Generate a coverage report as text
-coverage-text:
+coverage.text:
 	docker run --rm -it -v ${PWD}:/app app vendor/bin/phpunit --coverage-text
 
 # Coverage text alias
-coverage: coverage-text
+coverage: coverage.text
 
 # Fix the code style
 fix:

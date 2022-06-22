@@ -2,7 +2,7 @@
   "name": "nevadskiy/laravel-translatable",
   "description": "The package provides possibility to translate your Eloquent models into different languages using a single database table.",
   "license": "MIT",
-  "keywords": ["translations", "localization", "laravel"],
+  "keywords": ["translations", "translation", "localization", "model", "database", "laravel"],
   "homepage": "https://github.com/nevadskiy/laravel-translatable",
   "authors": [
     {
@@ -12,14 +12,13 @@
   ],
   "require": {
     "php": "^7.2|^8.0",
-    "laravel/framework": "^7.0|^8.0",
-    "nevadskiy/laravel-uuid": "^0.7.0"
+    "laravel/framework": "^7.0|^8.0|^9.0"
   },
   "require-dev": {
-    "phpunit/phpunit": "^8.0",
-    "orchestra/testbench": "^5.0|^6.0",
+    "phpunit/phpunit": "^8.0|^9.0",
+    "orchestra/testbench": "^5.0|^6.0|^7.0",
     "mockery/mockery": "^1.2",
-    "friendsofphp/php-cs-fixer": "^2.16"
+    "friendsofphp/php-cs-fixer": "^3.0"
   },
   "autoload": {
     "psr-4": {
