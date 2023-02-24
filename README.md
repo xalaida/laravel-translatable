@@ -1,9 +1,9 @@
 # Add translations to your Eloquent models
 
-[![Tests](https://github.com/nevadskiy/laravel-translatable/workflows/tests/badge.svg)](https://packagist.org/packages/nevadskiy/laravel-translatable)
-[![Code Coverage](https://codecov.io/gh/nevadskiy/laravel-translatable/branch/master/graphs/badge.svg?branch=master)](https://packagist.org/packages/nevadskiy/laravel-translatable)
-[![License](https://poser.pugx.org/nevadskiy/laravel-translatable/license)](https://packagist.org/packages/nevadskiy/laravel-translatable)
-[![Latest Stable Version](https://poser.pugx.org/nevadskiy/laravel-translatable/v)](https://packagist.org/packages/nevadskiy/laravel-translatable)
+[![PHPUnit](https://img.shields.io/github/actions/workflow/status/nevadskiy/laravel-translatable/phpunit.yml?branch=master)](https://packagist.org/packages/nevadskiy/laravel-translatable)
+[![Code Coverage](https://img.shields.io/codecov/c/github/nevadskiy/laravel-translatable?token=9X6AQQYCPA)](https://packagist.org/packages/nevadskiy/laravel-translatable)
+[![Latest Stable Version](https://img.shields.io/packagist/v/nevadskiy/laravel-translatable)](https://packagist.org/packages/nevadskiy/laravel-translatable)
+[![License](https://img.shields.io/github/license/nevadskiy/laravel-translatable)](https://packagist.org/packages/nevadskiy/laravel-translatable)
 
 [![Stand With Ukraine](https://raw.githubusercontent.com/vshymanskyy/StandWithUkraine/main/banner-direct-single.svg)](https://stand-with-ukraine.pp.ua)
 
