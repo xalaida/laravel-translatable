@@ -1,44 +1,47 @@
 {
-  "name": "nevadskiy/laravel-translatable",
-  "description": "The package provides possibility to translate your Eloquent models into different languages using a single database table.",
-  "license": "MIT",
-  "keywords": ["translations", "translation", "localization", "model", "database", "laravel"],
-  "homepage": "https://github.com/nevadskiy/laravel-translatable",
-  "authors": [
-    {
-      "name": "Nevadskiy",
-      "email": "nevadskiy@gmail.com"
+    "name": "nevadskiy/laravel-translatable",
+    "description": "Add translations to your Eloquent models",
+    "license": "MIT",
+    "keywords": [
+        "translations",
+        "translation",
+        "localization",
+        "model",
+        "database",
+        "laravel"
+    ],
+    "homepage": "https://github.com/nevadskiy/laravel-translatable",
+    "authors": [
+        {
+            "name": "Nevadskiy",
+            "email": "nevadskiy@gmail.com"
+        }
+    ],
+    "require": {
+        "php": "^7.2|^8.0",
+        "laravel/framework": "^7.0|^8.0|^9.0|^10.0"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^8.0|^9.0",
+        "orchestra/testbench": "^5.0|^6.0|^7.0|^8.0",
+        "mockery/mockery": "^1.2",
+        "friendsofphp/php-cs-fixer": "^3.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "Nevadskiy\\Translatable\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Nevadskiy\\Translatable\\Tests\\": "tests/"
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Nevadskiy\\Translatable\\TranslatableServiceProvider"
+            ]
+        }
     }
-  ],
-  "require": {
-    "php": "^7.2|^8.0",
-    "laravel/framework": "^7.0|^8.0|^9.0"
-  },
-  "require-dev": {
-    "phpunit/phpunit": "^8.0|^9.0",
-    "orchestra/testbench": "^5.0|^6.0|^7.0",
-    "mockery/mockery": "^1.2",
-    "friendsofphp/php-cs-fixer": "^3.0"
-  },
-  "autoload": {
-    "psr-4": {
-      "Nevadskiy\\Translatable\\": "src/"
-    }
-  },
-  "autoload-dev": {
-    "psr-4": {
-      "Nevadskiy\\Translatable\\Tests\\": "tests/"
-    }
-  },
-  "extra": {
-    "laravel": {
-      "providers": [
-        "Nevadskiy\\Translatable\\TranslatableServiceProvider"
-      ]
-    }
-  },
-  "scripts": {
-    "test": "phpunit --colors=always",
-    "fix": "php-cs-fixer fix"
-  }
 }
