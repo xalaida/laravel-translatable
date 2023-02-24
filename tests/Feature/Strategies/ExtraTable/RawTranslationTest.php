@@ -4,9 +4,7 @@ namespace Nevadskiy\Translatable\Tests\Feature\Strategies\ExtraTable;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Schema\Blueprint;
-use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Str;
-use Nevadskiy\Translatable\Events\TranslationMissing;
 use Nevadskiy\Translatable\Exceptions\AttributeNotTranslatableException;
 use Nevadskiy\Translatable\Exceptions\TranslationMissingException;
 use Nevadskiy\Translatable\Strategies\ExtraTable\HasTranslations;

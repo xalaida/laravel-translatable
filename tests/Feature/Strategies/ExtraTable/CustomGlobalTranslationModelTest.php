@@ -120,5 +120,4 @@ class Translation extends DefaultTranslation
 
 class InvalidTranslation extends Model
 {
-
 }

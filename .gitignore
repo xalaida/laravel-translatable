@@ -1,6 +1,9 @@
+/.cache
 /.idea
 /.vscode
 /vendor
-/tests/.coverage
-.phpunit.result.cache
-.php-cs-fixer.cache
+/tests/.report
+.env
+.php-cs-fixer.php
+composer.lock
+phpunit.xml

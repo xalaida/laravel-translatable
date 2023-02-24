@@ -4,8 +4,6 @@ namespace Nevadskiy\Translatable\Tests\Feature\Strategies\ExtraTable;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Schema\Blueprint;
-use Illuminate\Support\Facades\DB;
-use Nevadskiy\Translatable\Exceptions\AttributeNotTranslatableException;
 use Nevadskiy\Translatable\Strategies\ExtraTable\HasTranslations;
 use Nevadskiy\Translatable\Tests\TestCase;
 

@@ -6,40 +6,46 @@ We accept contributions via Pull Requests.
 
 ## Pull Requests
 
-- **Add tests!** - Your patch won't be accepted if it doesn't have tests.
+- **Add tests** - Your patch won't be accepted if it doesn't have tests.
 
-- **Document any change in behaviour** - Make sure the [wiki documentation](https://github.com/nevadskiy/laravel-translatable/wiki) are kept up-to-date.
+- **Consider our release cycle** - We try to follow [SemVer v2.0.0](http://semver.org/).
 
-- **Consider our release cycle** - We try to follow [SemVer v2.0.0](http://semver.org/). Randomly breaking public APIs is not an option.
+- **Document any change in behaviour** - Make sure the [README.md](../README.md) and any other relevant documentation are kept up-to-date.
 
 - **One pull request per feature** - If you want to do more than one thing, send multiple pull requests.
-
-- **Send coherent history** - Make sure each individual commit in your pull request is meaningful.
 
 ## Setup
 
 The project setup is based upon [docker](https://docs.docker.com/engine/install).
+
 For convenience, common tasks are wrapped up in the [Makefile](../Makefile) for usage with [GNU make](https://www.gnu.org/software/make/).
 
-1. Fork and clone the project
+## Installation
 
-2. Run the installation command
+Fork and clone the project:
+
 ```bash
-# Using global composer
-composer install
+git clone https://github.com/nevadskiy/laravel-translatable.git
+```
 
-# Using docker & makefile
-make install
+Build docker containers:
+
+```bash
+docker compose build
+```
+
+Install the composer dependencies:
+
+```bash
+docker compose run --rm composer install
 ```
 
 ## Running Tests
 
-```bash
-# Using global composer
-composer test
+To run tests, execute the following command:
 
-# Using docker & makefile
-make test
+```bash
+docker compose run --rm phpunit
 ```
 
 ## Code Style
@@ -47,11 +53,7 @@ make test
 Formatting is automated through [PHP-CS-Fixer](https://github.com/FriendsOfPHP/PHP-CS-Fixer)
 
 ```bash
-# Using global composer
-composer fix
-
-# Using docker & makefile
-make fix
+docker compose run --rm php-cs-fixer fix
 ```
 
 **Happy coding**!

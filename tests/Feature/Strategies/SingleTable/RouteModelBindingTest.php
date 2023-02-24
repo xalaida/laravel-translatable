@@ -15,7 +15,7 @@ use function route;
  */
 class RouteModelBindingTest extends TestCase
 {
-        /**
+    /**
      * @inheritdoc
      */
     protected function setUp(): void

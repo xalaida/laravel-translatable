@@ -2,7 +2,6 @@
 
 namespace Nevadskiy\Translatable\Tests;
 
-use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Schema\Builder;
 use Illuminate\Foundation\Application;

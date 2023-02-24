@@ -2,11 +2,9 @@
 
 namespace Nevadskiy\Translatable\Tests\Feature\Strategies\SingleTableExtended;
 
-use Exception;
 use Illuminate\Database\ConnectionInterface;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Schema\Blueprint;
-use Illuminate\Support\Facades\DB;
 use Nevadskiy\Translatable\Exceptions\TranslationMissingException;
 use Nevadskiy\Translatable\Strategies\SingleTableExtended\HasTranslations;
 use Nevadskiy\Translatable\Exceptions\AttributeNotTranslatableException;
