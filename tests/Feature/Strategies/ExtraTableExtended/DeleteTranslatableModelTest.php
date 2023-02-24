@@ -90,4 +90,3 @@ class BookForDeletion extends Model
         return 'book_id';
     }
 }
-

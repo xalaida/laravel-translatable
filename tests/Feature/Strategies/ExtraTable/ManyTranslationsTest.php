@@ -2,7 +2,6 @@
 
 namespace Nevadskiy\Translatable\Tests\Feature\Strategies\ExtraTable;
 
-use Illuminate\Database\ConnectionInterface;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Schema\Blueprint;
 use Nevadskiy\Translatable\Exceptions\AttributeNotTranslatableException;

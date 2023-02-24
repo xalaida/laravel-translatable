@@ -70,4 +70,3 @@ class BookForDeletion extends Model
         'title',
     ];
 }
-

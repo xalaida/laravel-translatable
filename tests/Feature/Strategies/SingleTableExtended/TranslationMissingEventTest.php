@@ -9,7 +9,6 @@ use Nevadskiy\Translatable\Events\TranslationMissing;
 use Nevadskiy\Translatable\Exceptions\TranslationMissingException;
 use Nevadskiy\Translatable\Strategies\SingleTableExtended\HasTranslations;
 use Nevadskiy\Translatable\Tests\TestCase;
-use Nevadskiy\Translatable\Translator;
 
 class TranslationMissingEventTest extends TestCase
 {

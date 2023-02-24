@@ -5,7 +5,6 @@ namespace Nevadskiy\Translatable\Tests\Feature\Strategies\SingleTable;
 use Illuminate\Database\ConnectionInterface;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Schema\Blueprint;
-use Illuminate\Support\Facades\DB;
 use Nevadskiy\Translatable\Strategies\SingleTable\HasTranslations;
 use Nevadskiy\Translatable\Tests\TestCase;
 
