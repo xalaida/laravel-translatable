@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <phpunit
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     bootstrap="vendor/autoload.php"
     backupGlobals="false"
     backupStaticAttributes="false"
@@ -11,28 +10,28 @@
     convertWarningsToExceptions="true"
     processIsolation="false"
     stopOnFailure="false"
-    xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/9.3/phpunit.xsd"
+    cacheResultFile=".cache/.phpunit.result.cache"
 >
+    <testsuites>
+        <testsuite name="Package Test Suite">
+            <directory>tests/</directory>
+        </testsuite>
+        <testsuite name="Single Table">
+            <directory>tests/Feature/Strategies/SingleTable</directory>
+        </testsuite>
+        <testsuite name="Single Table Extended">
+            <directory>tests/Feature/Strategies/SingleTableExtended</directory>
+        </testsuite>
+        <testsuite name="Extra Table">
+            <directory>tests/Feature/Strategies/ExtraTable</directory>
+        </testsuite>
+        <testsuite name="Extra Table Extended">
+            <directory>tests/Feature/Strategies/ExtraTableExtended</directory>
+        </testsuite>
+    </testsuites>
     <coverage>
         <include>
             <directory suffix=".php">src/</directory>
         </include>
     </coverage>
-    <testsuites>
-        <testsuite name="All">
-            <directory>tests/</directory>
-        </testsuite>
-        <testsuite name="SingleTable">
-            <directory>tests/Feature/Strategies/SingleTable</directory>
-        </testsuite>
-        <testsuite name="SingleTableExtended">
-            <directory>tests/Feature/Strategies/SingleTableExtended</directory>
-        </testsuite>
-        <testsuite name="ExtraTable">
-            <directory>tests/Feature/Strategies/ExtraTable</directory>
-        </testsuite>
-        <testsuite name="ExtraTableExtended">
-            <directory>tests/Feature/Strategies/ExtraTableExtended</directory>
-        </testsuite>
-    </testsuites>
 </phpunit>
