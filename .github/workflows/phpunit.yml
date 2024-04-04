@@ -33,12 +33,13 @@ jobs:
 
     container:
       image: ${{ matrix.image }}
+      options: --user root
       env:
         COMPOSER_PREFER_STABLE: 1
         COMPOSER_PREFER_LOWEST: ${{ matrix.prefer_lowest }}
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
       - run: curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
       - run: composer require ${{ matrix.dependencies }} --no-update --no-interaction --no-progress
       - run: composer update --no-interaction --no-progress
