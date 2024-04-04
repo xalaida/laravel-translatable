@@ -38,44 +38,22 @@ jobs:
         COMPOSER_PREFER_LOWEST: ${{ matrix.prefer_lowest }}
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Install Composer
-        run: curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
-
-      - name: Specify Composer dependencies
-        run: composer require ${{ matrix.dependencies }} --no-update --no-interaction --no-progress
-
-      - name: Update Composer dependencies
-        run: composer update --no-interaction --no-progress
-
-      - name: Debug
-        run: ls -la
-
-      - name: Run PHPUnit
-        run: vendor/bin/phpunit --verbose
+      - uses: actions/checkout@v3
+      - run: curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
+      - run: composer require ${{ matrix.dependencies }} --no-update --no-interaction --no-progress
+      - run: composer update --no-interaction --no-progress
+      - run: ls -la
+      - run: vendor/bin/phpunit --verbose
 
   coverage:
-    name: Analyze code coverage
-
     runs-on: ubuntu-latest
 
     env:
       PHP_VERSION: 7.2
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Build containers
-        run: docker compose build
-
-      - name: Install Composer dependencies
-        run: docker compose run composer update --no-interaction --no-progress
-
-      - name: Run PHPUnit with a coverage analysis
-        run: docker compose run phpunit --coverage-clover coverage.xml
-
-      - name: Upload the coverage report
-        uses: codecov/codecov-action@v3
+      - uses: actions/checkout@v4
+      - run: docker compose build
+      - run: docker compose run composer update --no-interaction --no-progress
+      - run: docker compose run phpunit --coverage-clover coverage.xml
+      - uses: codecov/codecov-action@v3
