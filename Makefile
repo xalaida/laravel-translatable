@@ -15,7 +15,7 @@ build:
 
 # Install composer dependencies
 composer.install:
-	docker compose run --rm composer install
+	docker compose run --rm composer install --ignore-platform-req=php+
 
 # Update composer dependencies
 composer.update:

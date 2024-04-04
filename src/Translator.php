@@ -9,6 +9,7 @@ use Nevadskiy\Translatable\Exceptions\AttributeNotTranslatableException;
 use Nevadskiy\Translatable\Exceptions\TranslationMissingException;
 use Nevadskiy\Translatable\Strategies\InteractsWithTranslator;
 use Nevadskiy\Translatable\Strategies\TranslatorStrategy;
+
 use function call_user_func;
 
 class Translator

@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Nevadskiy\Translatable\Exceptions\TranslationMissingException;
+
 use function array_key_exists;
 
 abstract class RelationTranslatorStrategy implements TranslatorStrategy
