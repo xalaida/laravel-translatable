@@ -11,23 +11,23 @@ jobs:
         include:
           - image: php:7.2-cli-alpine
             dependencies: laravel/framework:^7.0
-            prefer_lowest: 1
+            prefer_lowest: 0
 
           - image: php:7.3-cli-alpine
             dependencies: laravel/framework:^8.0
-            prefer_lowest: 1
+            prefer_lowest: 0
 
           - image: php:8.0-cli-alpine
             dependencies: laravel/framework:^9.0
-            prefer_lowest: 1
+            prefer_lowest: 0
 
           - image: php:8.1-cli-alpine
             dependencies: laravel/framework:^10.0
-            prefer_lowest: 1
+            prefer_lowest: 0
 
           - image: php:8.2-cli-alpine
             dependencies: laravel/framework:^11.0
-            prefer_lowest: 1
+            prefer_lowest: 0
 
     runs-on: ubuntu-latest
 
