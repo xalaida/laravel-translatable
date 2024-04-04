@@ -38,12 +38,12 @@ jobs:
         COMPOSER_PREFER_LOWEST: ${{ matrix.prefer_lowest }}
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v2
       - run: curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
       - run: composer require ${{ matrix.dependencies }} --no-update --no-interaction --no-progress
       - run: composer update --no-interaction --no-progress
       - run: ls -la
-      - run: vendor/bin/phpunit --verbose
+      - run: vendor/bin/phpunit
 
   coverage:
     runs-on: ubuntu-latest
