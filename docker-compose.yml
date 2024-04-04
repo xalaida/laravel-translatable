@@ -5,19 +5,17 @@ services:
     environment:
       COMPOSER_CACHE_DIR: /app/.cache/composer
     volumes:
-      - ./:/app
+      - .:/app
     entrypoint: composer
 
   phpunit:
     build:
       dockerfile: .docker/php${PHP_VERSION:-8.2}/Dockerfile
     volumes:
-      - ./:/app
+      - .:/app
     entrypoint: vendor/bin/phpunit
 
   php-cs-fixer:
-    build:
-      dockerfile: .docker/php${PHP_VERSION:-8.2}/Dockerfile
+    image: ghcr.io/php-cs-fixer/php-cs-fixer:3-php8.3
     volumes:
-      - ./:/app
-    entrypoint: vendor/bin/php-cs-fixer
+      - .:/code
