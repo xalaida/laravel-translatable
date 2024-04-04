@@ -1,6 +1,7 @@
 services:
   composer:
-    image: composer
+    build:
+      dockerfile: .docker/php${PHP_VERSION:-7.2}/Dockerfile
     environment:
       COMPOSER_CACHE_DIR: /app/.cache/composer
     volumes:
