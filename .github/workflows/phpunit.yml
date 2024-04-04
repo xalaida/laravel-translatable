@@ -1,39 +1,57 @@
 name: PHPUnit
 
-on: [ push, pull_request ]
+on:
+  - pull_request
+  - push
 
 jobs:
   test:
-    name: Run PHPUnit on PHP ${{ matrix.php }} with ${{ matrix.dependencies }} dependencies
+    strategy:
+      matrix:
+        include:
+          - image: php:7.2-cli-alpine
+            dependencies: laravel/framework:^7.0
+            prefer_lowest: 1
+
+          - image: php:7.3-cli-alpine
+            dependencies: laravel/framework:^8.0
+            prefer_lowest: 1
+
+          - image: php:8.0-cli-alpine
+            dependencies: laravel/framework:^9.0
+            prefer_lowest: 1
+
+          - image: php:8.1-cli-alpine
+            dependencies: laravel/framework:^10.0
+            prefer_lowest: 1
+
+          - image: php:8.2-cli-alpine
+            dependencies: laravel/framework:^11.0
+            prefer_lowest: 1
 
     runs-on: ubuntu-latest
 
-    strategy:
-      fail-fast: false
-      matrix:
-        php: [ '7.2', '7.3', '7.4', '8.0', '8.1', '8.2' ]
-        dependencies: [ 'highest' ]
-
-    env:
-      PHP_VERSION: ${{ matrix.php }}
+    container:
+      image: ${{ matrix.image }}
+      env:
+        COMPOSER_PREFER_STABLE: 1
+        COMPOSER_PREFER_LOWEST: ${{ matrix.prefer_lowest }}
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
 
-      - name: Build containers
-        run: docker compose build
+      - name: Install Composer
+        run: curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 
-      - name: Install Composer dependencies with the highest version
-        if: matrix.dependencies == 'highest'
-        run: docker compose run composer update --no-interaction --no-progress
+      - name: Specify Composer dependencies
+        run: composer require ${{ matrix.dependencies }} --no-update --no-interaction --no-progress
 
-      - name: Install Composer dependencies with the lowest stable version
-        if: matrix.dependencies == 'lowest'
-        run: docker compose run composer update --no-interaction --no-progress --prefer-lowest --prefer-stable
+      - name: Update Composer dependencies
+        run: composer update --no-interaction --no-progress
 
       - name: Run PHPUnit
-        run: docker compose run phpunit
+        run: vendor/bin/phpunit
 
   coverage:
     name: Analyze code coverage
