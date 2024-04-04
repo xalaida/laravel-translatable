@@ -9,41 +9,46 @@ jobs:
     strategy:
       matrix:
         include:
-          - image: php:7.2-cli-alpine
+          - php: 7.2
             dependencies: laravel/framework:^7.0
             prefer_lowest: 0
 
-          - image: php:7.3-cli-alpine
+          - php: 7.3
             dependencies: laravel/framework:^8.0
             prefer_lowest: 0
 
-          - image: php:8.0-cli-alpine
+          - php: 8.0
             dependencies: laravel/framework:^9.0
             prefer_lowest: 0
 
-          - image: php:8.1-cli-alpine
+          - php: 8.1
             dependencies: laravel/framework:^10.0
             prefer_lowest: 0
 
-          - image: php:8.2-cli-alpine
+          - php: 8.2
             dependencies: laravel/framework:^11.0
             prefer_lowest: 0
 
     runs-on: ubuntu-latest
 
-    container:
-      image: ${{ matrix.image }}
-      options: --user root
-      env:
-        COMPOSER_PREFER_STABLE: 1
-        COMPOSER_PREFER_LOWEST: ${{ matrix.prefer_lowest }}
+    env:
+      COMPOSER_PREFER_STABLE: 1
+      COMPOSER_PREFER_LOWEST: ${{ matrix.prefer_lowest }}
 
     steps:
       - uses: actions/checkout@v4
-      - run: curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
+
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php }}
+          coverage: none
+
       - run: composer require ${{ matrix.dependencies }} --no-update --no-interaction --no-progress
+
       - run: composer update --no-interaction --no-progress
+
       - run: ls -la
+
       - run: vendor/bin/phpunit
 
   coverage:
@@ -54,7 +59,11 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
+
       - run: docker compose build
+
       - run: docker compose run composer update --no-interaction --no-progress
+
       - run: docker compose run phpunit --coverage-clover coverage.xml
+
       - uses: codecov/codecov-action@v3
