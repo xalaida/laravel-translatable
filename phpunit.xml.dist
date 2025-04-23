@@ -16,18 +16,6 @@
         <testsuite name="Package Test Suite">
             <directory>tests/</directory>
         </testsuite>
-        <testsuite name="Single Table">
-            <directory>tests/Feature/Strategies/SingleTable</directory>
-        </testsuite>
-        <testsuite name="Single Table Extended">
-            <directory>tests/Feature/Strategies/SingleTableExtended</directory>
-        </testsuite>
-        <testsuite name="Extra Table">
-            <directory>tests/Feature/Strategies/ExtraTable</directory>
-        </testsuite>
-        <testsuite name="Extra Table Extended">
-            <directory>tests/Feature/Strategies/ExtraTableExtended</directory>
-        </testsuite>
     </testsuites>
     <coverage>
         <include>
